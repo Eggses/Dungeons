@@ -7,11 +7,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.function.Consumer;
 
-public class EquipmentManger {
+public class EquipmentManager {
 
     private final EntityEquipment entityEquipment;
 
-    public EquipmentManger(LivingEntity entity) {
+    public EquipmentManager(LivingEntity entity) {
         this.entityEquipment = entity.getEquipment();
     }
 
@@ -44,6 +44,8 @@ public class EquipmentManger {
 
     private void setItem(ItemStack item, Consumer<ItemStack> consumer) {
         if (item == null) return;
+
+        item = item.clone();
 
         ItemMeta itemMeta = item.getItemMeta();
         itemMeta.setUnbreakable(true);

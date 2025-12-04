@@ -7,6 +7,7 @@ public class Knight {
 
 
 
+
     public static LivingEntity createKnight(
 
             Class<? extends LivingEntity> entityClass,

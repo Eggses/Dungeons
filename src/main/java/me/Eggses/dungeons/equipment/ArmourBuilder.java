@@ -32,15 +32,15 @@ public class ArmourBuilder {
     }
 
     public ArmourEquipment generateFullSet() {
-        return new ArmourEquipment(helmet.clone(), chestplate.clone(), leggings.clone(), boots.clone());
+        return new ArmourEquipment(helmet, chestplate, leggings, boots);
     }
 
     public ArmourEquipment generateTopHalfOfSet() {
-        return new ArmourEquipment(helmet.clone(), chestplate.clone(), null, null);
+        return new ArmourEquipment(helmet, chestplate, null, null);
     }
 
     public ArmourEquipment generateHelmetOnly() {
-        return new ArmourEquipment(helmet.clone(), null, null, null);
+        return new ArmourEquipment(helmet, null, null, null);
     }
 
     private ItemStack createArmourPiece(Material armourMaterial) {

@@ -18,11 +18,11 @@ public class WeaponEquipment {
     }
 
     public ItemStack getMainHand() {
-        return mainHand.clone();
+        return mainHand;
     }
 
     public ItemStack getOffHand() {
-        return offHand.clone();
+        return offHand;
     }
 
     private ItemStack createItem(Material material) {
