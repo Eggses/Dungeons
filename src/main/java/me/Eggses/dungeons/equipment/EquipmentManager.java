@@ -34,14 +34,6 @@ public class EquipmentManager {
         zeroDropChances();
     }
 
-    public void setEquipment(WeaponEquipment weaponEquipment) {
-        setEquipment(weaponEquipment, null);
-    }
-
-    public void setEquipment(ArmourEquipment armourEquipment) {
-        setEquipment(null, armourEquipment);
-    }
-
     private void setItem(ItemStack item, Consumer<ItemStack> consumer) {
         if (item == null) return;
 
