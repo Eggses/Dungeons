@@ -17,6 +17,10 @@ public class WeaponEquipment {
         this(mainHandMaterial, null);
     }
 
+    public WeaponEquipment() {
+        this(null, null);
+    }
+
     public ItemStack getMainHand() {
         return mainHand;
     }
@@ -26,7 +30,7 @@ public class WeaponEquipment {
     }
 
     private ItemStack createItem(Material material) {
-        if (material == null) return  null;
+        if (material == null) return null;
         return new ItemStack(material, 1);
     }
 }

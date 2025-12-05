@@ -19,17 +19,13 @@ public class EquipmentManager {
 
         if (entityEquipment == null) return;
 
-        if (weaponEquipment != null) {
-            setItem(weaponEquipment.getMainHand(), entityEquipment::setItemInMainHand);
-            setItem(weaponEquipment.getOffHand(), entityEquipment::setItemInOffHand);
-        }
+        setItem(weaponEquipment.getMainHand(), entityEquipment::setItemInMainHand);
+        setItem(weaponEquipment.getOffHand(), entityEquipment::setItemInOffHand);
 
-        if (armourEquipment != null) {
-            setItem(armourEquipment.getHelmet(), entityEquipment::setHelmet);
-            setItem(armourEquipment.getChestplate(), entityEquipment::setChestplate);
-            setItem(armourEquipment.getLeggings(), entityEquipment::setLeggings);
-            setItem(armourEquipment.getBoots(), entityEquipment::setBoots);
-        }
+        setItem(armourEquipment.getHelmet(), entityEquipment::setHelmet);
+        setItem(armourEquipment.getChestplate(), entityEquipment::setChestplate);
+        setItem(armourEquipment.getLeggings(), entityEquipment::setLeggings);
+        setItem(armourEquipment.getBoots(), entityEquipment::setBoots);
 
         zeroDropChances();
     }

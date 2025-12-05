@@ -19,18 +19,26 @@ public class EntityManager {
     }
 
     public void spawnMob(MobBuilder mobBuilder) {
-        DungeonMob dungeonMob = new DungeonMob(mobBuilder);
-        entities.put(dungeonMob.getUUID(), dungeonMob);
-        dungeonMob.startTasks(taskManager);
+
+        for (int i = 0; i < mobBuilder.getCount(); i++) {
+            DungeonMob dungeonMob = new DungeonMob(mobBuilder);
+            entities.put(dungeonMob.getUUID(), dungeonMob);
+            dungeonMob.startTasks(taskManager);
+        }
     }
 
+    /*
+    return boolean if sucessful, maybe method in each class
+    can count how many mobs, count how ,many return trues
+    to work out if an area is cleared.
+
+
+     */
     public void removeMob(UUID uuid) {
 
         DungeonEntity dungeonEntity = entities.remove(uuid);
         if (dungeonEntity == null) return;
 
-        if (dungeonEntity instanceof DungeonMob dungeonMob) {
-            dungeonMob.endTasks();
-        }
+        dungeonEntity.endTasks();
     }
 }

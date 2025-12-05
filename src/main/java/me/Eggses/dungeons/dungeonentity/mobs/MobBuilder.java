@@ -1,10 +1,9 @@
 package me.Eggses.dungeons.dungeonentity.mobs;
 
-import me.Eggses.dungeons.tasks.EntityTaskBehaviour;
+import me.Eggses.dungeons.taskbehaviour.EntityTaskBehaviour;
 import me.Eggses.dungeons.eventbehaviour.EntityEventBehaviour;
 import me.Eggses.dungeons.equipment.ArmourEquipment;
 import me.Eggses.dungeons.equipment.WeaponEquipment;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 
@@ -14,15 +13,14 @@ public class MobBuilder {
 
     private Class<? extends LivingEntity> entityType;
     private Location location;
-    private int dungeonLevel = 0;
-    private WeaponEquipment weaponEquipment;
-    private ArmourEquipment armourEquipment;
-    private EntityEventBehaviour entityEventBehaviour;
-    private EntityTaskBehaviour entityTaskBehaviour;
-    private Consumer<LivingEntity> onSpawn;
+    private int dungeonLevel = 1;
+    private WeaponEquipment weaponEquipment = new WeaponEquipment();
+    private ArmourEquipment armourEquipment = new ArmourEquipment();
+    private EntityEventBehaviour entityEventBehaviour = new EntityEventBehaviour();
+    private EntityTaskBehaviour entityTaskBehaviour = new EntityTaskBehaviour();
+    private Consumer<LivingEntity> onSpawn = (entity) -> {};
     private int count = 1;
-    private Component name;
-    private String suffix;
+    private MobName mobName = new MobName();
 
     public MobBuilder(Class<? extends LivingEntity> entityType, Location location) {
         this.entityType = entityType;
@@ -76,13 +74,8 @@ public class MobBuilder {
         return this;
     }
 
-    public MobBuilder name(Component name) {
-        this.name = name;
-        return this;
-    }
-
-    public MobBuilder suffix(String suffix) {
-        this.suffix = suffix;
+    public MobBuilder mobName(MobName mobName) {
+        this.mobName = mobName;
         return this;
     }
 
@@ -122,11 +115,7 @@ public class MobBuilder {
         return count;
     }
 
-    public Component getName() {
-        return name;
-    }
-
-    public String getSuffix() {
-        return suffix;
+    public MobName getMobName() {
+        return mobName;
     }
 }
