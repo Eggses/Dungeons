@@ -1,9 +1,9 @@
-package me.Eggses.dungeons.dungeonentity.mobs;
+package me.Eggses.dungeons.entities.dungeonentity.mobs;
 
-import me.Eggses.dungeons.taskbehaviour.EntityTaskBehaviour;
-import me.Eggses.dungeons.eventbehaviour.EntityEventBehaviour;
-import me.Eggses.dungeons.equipment.ArmourEquipment;
-import me.Eggses.dungeons.equipment.WeaponEquipment;
+import me.Eggses.dungeons.entities.taskbehaviour.EntityTaskBehaviour;
+import me.Eggses.dungeons.entities.eventbehaviour.EntityEventBehaviour;
+import me.Eggses.dungeons.entities.equipment.ArmourEquipment;
+import me.Eggses.dungeons.entities.equipment.WeaponEquipment;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 

@@ -1,8 +1,8 @@
-package me.Eggses.dungeons.dungeonentity;
+package me.Eggses.dungeons.entities.dungeonentity;
 
-import me.Eggses.dungeons.dungeonentity.mobs.DungeonEntity;
-import me.Eggses.dungeons.dungeonentity.mobs.DungeonMob;
-import me.Eggses.dungeons.dungeonentity.mobs.MobBuilder;
+import me.Eggses.dungeons.entities.dungeonentity.mobs.DungeonEntity;
+import me.Eggses.dungeons.entities.dungeonentity.mobs.DungeonMob;
+import me.Eggses.dungeons.entities.dungeonentity.mobs.MobBuilder;
 
 import java.util.HashMap;
 import java.util.Map;

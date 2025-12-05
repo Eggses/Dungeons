@@ -1,4 +1,4 @@
-package me.Eggses.dungeons.equipment;
+package me.Eggses.dungeons.entities.equipment;
 
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.EntityEquipment;

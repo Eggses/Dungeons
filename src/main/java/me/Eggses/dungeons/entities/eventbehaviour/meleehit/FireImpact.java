@@ -1,4 +1,4 @@
-package me.Eggses.dungeons.eventbehaviour.meleehit;
+package me.Eggses.dungeons.entities.eventbehaviour.meleehit;
 
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 

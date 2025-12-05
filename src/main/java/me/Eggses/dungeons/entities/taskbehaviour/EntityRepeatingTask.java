@@ -1,6 +1,6 @@
-package me.Eggses.dungeons.taskbehaviour;
+package me.Eggses.dungeons.entities.taskbehaviour;
 
-import me.Eggses.dungeons.dungeonentity.TaskManager;
+import me.Eggses.dungeons.entities.dungeonentity.TaskManager;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.scheduler.BukkitTask;
 

@@ -1,4 +1,4 @@
-package me.Eggses.dungeons.dungeonentity.mobs;
+package me.Eggses.dungeons.entities.dungeonentity.mobs;
 
 import org.bukkit.entity.LivingEntity;
 

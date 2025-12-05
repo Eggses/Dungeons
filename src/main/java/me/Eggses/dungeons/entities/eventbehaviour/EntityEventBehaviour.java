@@ -1,4 +1,4 @@
-package me.Eggses.dungeons.eventbehaviour;
+package me.Eggses.dungeons.entities.eventbehaviour;
 
 import java.util.ArrayList;
 import java.util.List;

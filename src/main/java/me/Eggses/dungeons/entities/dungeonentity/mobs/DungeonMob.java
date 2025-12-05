@@ -1,10 +1,10 @@
-package me.Eggses.dungeons.dungeonentity.mobs;
+package me.Eggses.dungeons.entities.dungeonentity.mobs;
 
-import me.Eggses.dungeons.dungeonentity.TaskManager;
-import me.Eggses.dungeons.taskbehaviour.ActiveEntityTasks;
-import me.Eggses.dungeons.taskbehaviour.EntityTaskBehaviour;
-import me.Eggses.dungeons.eventbehaviour.EntityEventBehaviour;
-import me.Eggses.dungeons.equipment.EquipmentManager;
+import me.Eggses.dungeons.entities.dungeonentity.TaskManager;
+import me.Eggses.dungeons.entities.taskbehaviour.ActiveEntityTasks;
+import me.Eggses.dungeons.entities.taskbehaviour.EntityTaskBehaviour;
+import me.Eggses.dungeons.entities.eventbehaviour.EntityEventBehaviour;
+import me.Eggses.dungeons.entities.equipment.EquipmentManager;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;

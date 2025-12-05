@@ -1,4 +1,4 @@
-package me.Eggses.dungeons.taskbehaviour;
+package me.Eggses.dungeons.entities.taskbehaviour;
 
 import java.util.ArrayList;
 import java.util.List;
