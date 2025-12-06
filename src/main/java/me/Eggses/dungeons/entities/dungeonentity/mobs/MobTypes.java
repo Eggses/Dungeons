@@ -6,9 +6,24 @@ import java.util.function.Consumer;
 
 public enum MobTypes {
 
-    KNIGHT((entity) -> {}, new MobName("Knight", false)),
-    FIEND((entity) -> {}, new MobName("Fiend", false)),
-    ENCHANTER((entity) -> {}, new MobName("Enchanter", true));
+    KNIGHT((entity) -> {
+
+
+        // increase size
+        // kb
+        // thats it..
+
+    }, new MobName("Knight", false)),
+
+
+    FIEND((entity) -> {
+        // NMS spider jumpiung goal
+    }, new MobName("Fiend", false)),
+
+
+    ENCHANTER((entity) -> {
+        // NMS flee from player goal.
+    }, new MobName("Enchanter", true));
 
     private final Consumer<LivingEntity> onSpawn;
     private final MobName mobName;

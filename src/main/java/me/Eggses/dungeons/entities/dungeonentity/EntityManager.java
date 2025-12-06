@@ -18,6 +18,10 @@ public class EntityManager {
         this.taskManager = taskManager;
     }
 
+    public boolean contains(UUID uuid) {
+        return entities.get(uuid) != null;
+    }
+
     public void spawnMob(MobBuilder mobBuilder) {
 
         for (int i = 0; i < mobBuilder.getCount(); i++) {
