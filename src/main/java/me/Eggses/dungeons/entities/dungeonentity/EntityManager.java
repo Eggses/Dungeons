@@ -28,9 +28,8 @@ public class EntityManager {
     public void spawnMob(MobBuilder mobBuilder) {
 
         for (int i = 0; i < mobBuilder.getCount(); i++) {
-            DungeonMob dungeonMob = new DungeonMob(mobBuilder, messageCreator);
+            DungeonMob dungeonMob = new DungeonMob(mobBuilder, taskManager, messageCreator);
             entities.put(dungeonMob.getUUID(), dungeonMob);
-            dungeonMob.startTasks(taskManager);
         }
     }
 

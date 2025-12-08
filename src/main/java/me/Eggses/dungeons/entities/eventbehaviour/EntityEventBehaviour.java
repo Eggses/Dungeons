@@ -1,5 +1,9 @@
 package me.Eggses.dungeons.entities.eventbehaviour;
 
+import me.Eggses.dungeons.entities.dungeonentity.mobs.DungeonEntity;
+import me.Eggses.dungeons.entities.eventbehaviour.meleehit.MeleeHitEventBehaviour;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +15,11 @@ public class EntityEventBehaviour {
         entityEventBehaviours.add(eventBehaviour);
     }
 
-    public List<EventBehaviour> getEntityEventBehaviours() {
-        return entityEventBehaviours;
+    public void handleMeleeHitEvent(DungeonEntity dungeonEntity, EntityDamageByEntityEvent event) {
+        for (EventBehaviour eventBehaviour : entityEventBehaviours) {
+            if (eventBehaviour instanceof MeleeHitEventBehaviour meleeHitEventBehaviour) {
+                meleeHitEventBehaviour.handleEvent(dungeonEntity, event);
+            }
+        }
     }
 }

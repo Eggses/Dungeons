@@ -8,7 +8,7 @@ import org.bukkit.inventory.meta.trim.ArmorTrim;
 import org.bukkit.inventory.meta.trim.TrimMaterial;
 import org.bukkit.inventory.meta.trim.TrimPattern;
 
-public class ArmourBuilder {
+public class ArmourCreator {
 
     private final ItemStack helmet;
     private final ItemStack chestplate;
@@ -18,7 +18,7 @@ public class ArmourBuilder {
     private final TrimPattern trimPattern;
     private final TrimMaterial trimMaterial;
 
-    public ArmourBuilder(ArmorMaterial armorMaterial,
+    public ArmourCreator(ArmorMaterial armorMaterial,
                          TrimPattern trimPattern,
                          TrimMaterial trimMaterial) {
 
@@ -46,6 +46,9 @@ public class ArmourBuilder {
     private ItemStack createArmourPiece(Material armourMaterial) {
 
         ItemStack armourPiece = new ItemStack(armourMaterial, 1);
+
+        if (trimPattern == null || trimMaterial == null) return armourPiece;
+
         ItemMeta itemMeta = armourPiece.getItemMeta();
 
         if (!(itemMeta instanceof ArmorMeta armorMeta)) {
@@ -59,7 +62,6 @@ public class ArmourBuilder {
 
         return armourPiece;
     }
-
 
     public enum ArmorMaterial {
         LEATHER(

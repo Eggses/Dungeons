@@ -3,12 +3,10 @@ package me.Eggses.dungeons.entities.dungeonentity.mobs;
 import me.Eggses.dungeons.entities.attributes.AttributeController;
 import me.Eggses.dungeons.entities.dungeonentity.TaskManager;
 import me.Eggses.dungeons.entities.nameutility.NameFormatter;
-import me.Eggses.dungeons.entities.taskbehaviour.ActiveEntityTasks;
-import me.Eggses.dungeons.entities.taskbehaviour.EntityTaskBehaviour;
 import me.Eggses.dungeons.entities.eventbehaviour.EntityEventBehaviour;
 import me.Eggses.dungeons.entities.equipment.EquipmentManager;
+import me.Eggses.dungeons.entities.taskbehaviour.ActiveEntityTasks;
 import me.Eggses.dungeons.utility.MessageCreator;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
@@ -20,81 +18,54 @@ import java.util.UUID;
 public class DungeonMob implements DungeonEntity {
 
     private final LivingEntity entity;
-    private final EntityEventBehaviour entityEventBehaviour;
-    private final EntityTaskBehaviour entityTaskBehaviour;
-    private final ActiveEntityTasks activeEntityTasks = new ActiveEntityTasks();
-    private final AttributeController attributeController = new AttributeController(this);
-    private final NameFormatter nameFormatter;
 
-    private final MessageCreator messageCreator;
     private final int dungeonLevel;
     private final MobName mobName;
+    private final NameFormatter nameFormatter;
+    private final EntityEventBehaviour entityEventBehaviour;
 
-    private Component name;
+    private final AttributeController attributeController = new AttributeController(this);
+    private final ActiveEntityTasks activeEntityTasks = new ActiveEntityTasks();
 
-    public DungeonMob(MobBuilder mobBuilder, MessageCreator messageCreator) {
+    public DungeonMob(MobBuilder mobBuilder, TaskManager taskManager, MessageCreator messageCreator) {
 
+        // Spawn Entity
         Location location = mobBuilder.getLocation();
         World world = location.getWorld();
         entity = world.spawn(location, mobBuilder.getEntityType());
-        entity.setPersistent(true);
 
-        this.messageCreator = messageCreator;
+        // Set Instance Fields
         this.dungeonLevel = mobBuilder.getDungeonLevel();
-        this.entityEventBehaviour = mobBuilder.getEntityEventBehaviour();
-        this.entityTaskBehaviour = mobBuilder.getEntityTaskBehaviour();
-        this.mobName = mobBuilder.getMobName();
         this.nameFormatter = new NameFormatter(this, messageCreator);
+        this.mobName = mobBuilder.getMobName();
+        this.entityEventBehaviour = mobBuilder.getEntityEventBehaviour();
 
-        EquipmentManager equipmentManager = new EquipmentManager(entity);
+        // Apply Armour
+        EquipmentManager equipmentManager = new EquipmentManager(this);
         equipmentManager.setEquipment(mobBuilder.getWeaponEquipment(), mobBuilder.getArmourEquipment());
 
+        // Apply Attributes
         attributeController.applyAttributes();
 
+        // Update Mob
+        entity.setPersistent(true);
         AttributeInstance attributeInstance = entity.getAttribute(Attribute.MAX_HEALTH);
         if (attributeInstance != null) {
             entity.setHealth(attributeInstance.getValue());
         }
 
+        // Set Name
         updateName();
 
-        mobBuilder.getOnSpawn().accept(entity);
-    }
+        // Start Tasks
+        activeEntityTasks.addAndRunTasks(mobBuilder.getEntityTaskBehaviour(), this, taskManager);
 
-    public void startTasks(TaskManager taskManager) {
-        activeEntityTasks.addAndRunTasks(entityTaskBehaviour, entity, taskManager);
-    }
-
-    public int getDungeonLevel() {
-        return dungeonLevel;
-    }
-
-    public EntityEventBehaviour getEntityEventBehaviour() {
-        return entityEventBehaviour;
+        // Finally
+        mobBuilder.getSpawnFinalizer().accept(entity);
     }
 
     public AttributeController getAttributeController() {
         return attributeController;
-    }
-
-    @Override
-    public LivingEntity getEntity() {
-        return entity;
-    }
-
-    @Override
-    public MobName getMobName() {
-        return null;
-    }
-
-
-    @Override
-    public void updateName() {
-        AttributeInstance attributeInstance = entity.getAttribute(Attribute.MAX_HEALTH);
-        if (attributeInstance != null) {
-            int health = (int) attributeInstance.getValue();
-            entity.customName(nameFormatter.createName(health));
-        }
     }
 
     @Override
@@ -103,7 +74,36 @@ public class DungeonMob implements DungeonEntity {
     }
 
     @Override
+    public LivingEntity getEntity() {
+        return entity;
+    }
+
+    @Override
     public void endTasks() {
         activeEntityTasks.clearAllTasks();
+    }
+
+    @Override
+    public EntityEventBehaviour getEntityEventBehaviour() {
+        return entityEventBehaviour;
+    }
+
+    @Override
+    public int getDungeonLevel() {
+        return dungeonLevel;
+    }
+
+    @Override
+    public MobName getMobName() {
+        return mobName;
+    }
+
+    @Override
+    public void updateName() {
+        AttributeInstance attributeInstance = entity.getAttribute(Attribute.MAX_HEALTH);
+        if (attributeInstance != null) {
+            int health = (int) attributeInstance.getValue();
+            entity.customName(nameFormatter.createName(health));
+        }
     }
 }

@@ -1,6 +1,6 @@
 package me.Eggses.dungeons.entities.attributes;
 
-import me.Eggses.dungeons.entities.dungeonentity.mobs.DungeonMob;
+import me.Eggses.dungeons.entities.dungeonentity.mobs.DungeonEntity;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 
@@ -33,13 +33,13 @@ public class AttributeController {
         additiveIncreaseAttributeMap.put(Attribute.ARMOR_TOUGHNESS, ARMOUR_TOUGHNESS_PER_LEVEL);
     }
 
-    private final DungeonMob dungeonMob;
+    private final DungeonEntity dungeonEntity;
 
-    public AttributeController(DungeonMob dungeonMob) {
-        this.dungeonMob = dungeonMob;
+    public AttributeController(DungeonEntity dungeonEntity) {
+        this.dungeonEntity = dungeonEntity;
     }
 
-    private static BiFunction<DungeonMob, Double, Double> damageFormulaBuilder(double constant) {
+    private static BiFunction<DungeonEntity, Double, Double> damageFormulaBuilder(double constant) {
         return (mob, baseDamage) -> {
             double level = mob.getDungeonLevel();
             double multiplier = 1.0 + (constant * level);
@@ -47,22 +47,22 @@ public class AttributeController {
         };
     }
 
-    private static final BiFunction<DungeonMob, Double, Double> EXPLOSION_DAMAGE_FORMULA =
+    private static final BiFunction<DungeonEntity, Double, Double> EXPLOSION_DAMAGE_FORMULA =
             damageFormulaBuilder(CREEPER_DAMAGE_PERCENTAGE_INCREASE);
-    private static final BiFunction<DungeonMob, Double, Double> RANGED_DAMAGE_FORMULA =
+    private static final BiFunction<DungeonEntity, Double, Double> RANGED_DAMAGE_FORMULA =
             damageFormulaBuilder(RANGED_DAMAGE_PERCENTAGE_INCREASE);
-    private static final BiFunction<DungeonMob, Double, Double> MAGIC_DAMAGE_FORMULA =
+    private static final BiFunction<DungeonEntity, Double, Double> MAGIC_DAMAGE_FORMULA =
             damageFormulaBuilder(MAGIC_DAMAGE_PERCENTAGE_INCREASE);
 
-    public static BiFunction<DungeonMob, Double, Double> getExplosionDamageFormula() {
+    public static BiFunction<DungeonEntity, Double, Double> getExplosionDamageFormula() {
         return EXPLOSION_DAMAGE_FORMULA;
     }
 
-    public static BiFunction<DungeonMob, Double, Double> getRangedDamageFormula() {
+    public static BiFunction<DungeonEntity, Double, Double> getRangedDamageFormula() {
         return RANGED_DAMAGE_FORMULA;
     }
 
-    public static BiFunction<DungeonMob, Double, Double> getMagicDamageFormula() {
+    public static BiFunction<DungeonEntity, Double, Double> getMagicDamageFormula() {
         return MAGIC_DAMAGE_FORMULA;
     }
 
@@ -76,14 +76,14 @@ public class AttributeController {
 
 
     public void setBaseAttribute(Attribute attribute, double value) {
-        AttributeInstance attributeInstance = dungeonMob.getEntity().getAttribute(attribute);
+        AttributeInstance attributeInstance = dungeonEntity.getEntity().getAttribute(attribute);
         if (attributeInstance == null) return;
 
         attributeInstance.setBaseValue(value);
     }
 
     public void applyAttributes() {
-        int dungeonLevel = dungeonMob.getDungeonLevel();
+        int dungeonLevel = dungeonEntity.getDungeonLevel();
         applyAttributesFromMap(percentageIncreaseAttributeMap, PERCENTAGE_INCREASE_FORMULA, dungeonLevel);
         applyAttributesFromMap(additiveIncreaseAttributeMap, ADDITIVE_INCREASE_FORMULA, dungeonLevel);
     }
@@ -96,7 +96,7 @@ public class AttributeController {
             Attribute attribute = entry.getKey();
             double constant = entry.getValue();
 
-            AttributeInstance attributeInstance = dungeonMob.getEntity().getAttribute(attribute);
+            AttributeInstance attributeInstance = dungeonEntity.getEntity().getAttribute(attribute);
             if (attributeInstance == null) continue;
 
             double updatedBaseValue = formula.apply(attributeInstance, constant, dungeonLevel);

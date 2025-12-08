@@ -18,7 +18,7 @@ public class MobBuilder {
     private ArmourEquipment armourEquipment = new ArmourEquipment();
     private EntityEventBehaviour entityEventBehaviour = new EntityEventBehaviour();
     private EntityTaskBehaviour entityTaskBehaviour = new EntityTaskBehaviour();
-    private Consumer<LivingEntity> onSpawn = (entity) -> {};
+    private Consumer<LivingEntity> spawnFinalizer = (entity) -> {};
     private int count = 1;
     private MobName mobName = new MobName();
 
@@ -64,8 +64,8 @@ public class MobBuilder {
         return this;
     }
 
-    public MobBuilder onSpawn(Consumer<LivingEntity> onSpawn) {
-        this.onSpawn = onSpawn;
+    public MobBuilder spawnFinalizer(Consumer<LivingEntity> spawnFinalizer) {
+        this.spawnFinalizer = spawnFinalizer;
         return this;
     }
 
@@ -105,8 +105,8 @@ public class MobBuilder {
         return entityEventBehaviour;
     }
 
-    public Consumer<LivingEntity> getOnSpawn() {
-        return onSpawn;
+    public Consumer<LivingEntity> getSpawnFinalizer() {
+        return spawnFinalizer;
     }
 
     public EntityTaskBehaviour getEntityTaskBehaviour() {

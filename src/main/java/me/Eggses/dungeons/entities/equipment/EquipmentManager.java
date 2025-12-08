@@ -1,6 +1,6 @@
 package me.Eggses.dungeons.entities.equipment;
 
-import org.bukkit.entity.LivingEntity;
+import me.Eggses.dungeons.entities.dungeonentity.mobs.DungeonEntity;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -11,8 +11,8 @@ public class EquipmentManager {
 
     private final EntityEquipment entityEquipment;
 
-    public EquipmentManager(LivingEntity entity) {
-        this.entityEquipment = entity.getEquipment();
+    public EquipmentManager(DungeonEntity dungeonEntity) {
+        this.entityEquipment = dungeonEntity.getEntity().getEquipment();
     }
 
     public void setEquipment(WeaponEquipment weaponEquipment, ArmourEquipment armourEquipment) {

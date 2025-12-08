@@ -1,7 +1,7 @@
 package me.Eggses.dungeons.entities.taskbehaviour;
 
 import me.Eggses.dungeons.entities.dungeonentity.TaskManager;
-import org.bukkit.entity.LivingEntity;
+import me.Eggses.dungeons.entities.dungeonentity.mobs.DungeonEntity;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
@@ -12,11 +12,11 @@ public class ActiveEntityTasks {
     private final List<BukkitTask> activeTasks = new ArrayList<>();
 
     public void addAndRunTasks(EntityTaskBehaviour entityTaskBehaviour,
-                               LivingEntity livingEntity,
+                               DungeonEntity dungeonEntity,
                                TaskManager taskManager) {
 
         for (EntityTask entityTask : entityTaskBehaviour.getEntityTasks()) {
-            activeTasks.add(entityTask.schedule(livingEntity, taskManager));
+            activeTasks.add(entityTask.schedule(dungeonEntity, taskManager));
         }
     }
 
@@ -26,6 +26,5 @@ public class ActiveEntityTasks {
                 task.cancel();
             }
         }
-        activeTasks.clear();
     }
 }
