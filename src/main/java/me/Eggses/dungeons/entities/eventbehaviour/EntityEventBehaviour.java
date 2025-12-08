@@ -1,6 +1,6 @@
 package me.Eggses.dungeons.entities.eventbehaviour;
 
-import me.Eggses.dungeons.entities.dungeonentity.mobs.DungeonEntity;
+import me.Eggses.dungeons.entities.mobs.DungeonEntity;
 import me.Eggses.dungeons.entities.eventbehaviour.meleehit.MeleeHitEventBehaviour;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 

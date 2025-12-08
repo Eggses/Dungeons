@@ -1,6 +1,6 @@
 package me.Eggses.dungeons.entities.eventbehaviour.meleehit;
 
-import me.Eggses.dungeons.entities.dungeonentity.mobs.DungeonEntity;
+import me.Eggses.dungeons.entities.mobs.DungeonEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 public class FireImpact implements MeleeHitEventBehaviour {

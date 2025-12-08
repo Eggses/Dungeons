@@ -1,6 +1,6 @@
 package me.Eggses.dungeons.entities.equipment;
 
-import me.Eggses.dungeons.entities.dungeonentity.mobs.DungeonEntity;
+import me.Eggses.dungeons.entities.mobs.DungeonEntity;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;

@@ -1,4 +1,4 @@
-package me.Eggses.dungeons.entities.dungeonentity.mobs;
+package me.Eggses.dungeons.entities.nameutility;
 
 public class MobName {
 

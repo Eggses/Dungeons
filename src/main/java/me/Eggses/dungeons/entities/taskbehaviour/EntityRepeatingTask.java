@@ -1,7 +1,6 @@
 package me.Eggses.dungeons.entities.taskbehaviour;
 
-import me.Eggses.dungeons.entities.dungeonentity.TaskManager;
-import me.Eggses.dungeons.entities.dungeonentity.mobs.DungeonEntity;
+import me.Eggses.dungeons.entities.mobs.DungeonEntity;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.function.BiConsumer;

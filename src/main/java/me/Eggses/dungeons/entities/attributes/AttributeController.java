@@ -1,6 +1,6 @@
 package me.Eggses.dungeons.entities.attributes;
 
-import me.Eggses.dungeons.entities.dungeonentity.mobs.DungeonEntity;
+import me.Eggses.dungeons.entities.mobs.DungeonEntity;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 

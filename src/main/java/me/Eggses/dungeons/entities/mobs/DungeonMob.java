@@ -1,7 +1,8 @@
-package me.Eggses.dungeons.entities.dungeonentity.mobs;
+package me.Eggses.dungeons.entities.mobs;
 
 import me.Eggses.dungeons.entities.attributes.AttributeController;
-import me.Eggses.dungeons.entities.dungeonentity.TaskManager;
+import me.Eggses.dungeons.entities.nameutility.MobName;
+import me.Eggses.dungeons.entities.taskbehaviour.TaskManager;
 import me.Eggses.dungeons.entities.nameutility.NameFormatter;
 import me.Eggses.dungeons.entities.eventbehaviour.EntityEventBehaviour;
 import me.Eggses.dungeons.entities.equipment.EquipmentManager;

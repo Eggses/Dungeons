@@ -1,5 +1,6 @@
-package me.Eggses.dungeons.entities.dungeonentity.mobs;
+package me.Eggses.dungeons.entities.mobs;
 
+import me.Eggses.dungeons.entities.nameutility.MobName;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.function.Consumer;

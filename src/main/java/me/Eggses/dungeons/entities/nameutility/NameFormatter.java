@@ -1,7 +1,6 @@
 package me.Eggses.dungeons.entities.nameutility;
 
-import me.Eggses.dungeons.entities.dungeonentity.mobs.DungeonEntity;
-import me.Eggses.dungeons.entities.dungeonentity.mobs.MobName;
+import me.Eggses.dungeons.entities.mobs.DungeonEntity;
 import me.Eggses.dungeons.utility.MessageCreator;
 import net.kyori.adventure.text.Component;
 

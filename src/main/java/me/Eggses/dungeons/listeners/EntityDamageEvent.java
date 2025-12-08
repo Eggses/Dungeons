@@ -1,6 +1,6 @@
 package me.Eggses.dungeons.listeners;
 
-import me.Eggses.dungeons.entities.dungeonentity.EntityManager;
+import me.Eggses.dungeons.entities.EntityManager;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

@@ -1,5 +1,6 @@
-package me.Eggses.dungeons.entities.dungeonentity.mobs;
+package me.Eggses.dungeons.entities.mobs;
 
+import me.Eggses.dungeons.entities.nameutility.MobName;
 import me.Eggses.dungeons.entities.taskbehaviour.EntityTaskBehaviour;
 import me.Eggses.dungeons.entities.eventbehaviour.EntityEventBehaviour;
 import me.Eggses.dungeons.entities.equipment.ArmourEquipment;

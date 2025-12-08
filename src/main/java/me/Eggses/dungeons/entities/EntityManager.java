@@ -1,8 +1,9 @@
-package me.Eggses.dungeons.entities.dungeonentity;
+package me.Eggses.dungeons.entities;
 
-import me.Eggses.dungeons.entities.dungeonentity.mobs.DungeonEntity;
-import me.Eggses.dungeons.entities.dungeonentity.mobs.DungeonMob;
-import me.Eggses.dungeons.entities.dungeonentity.mobs.MobBuilder;
+import me.Eggses.dungeons.entities.taskbehaviour.TaskManager;
+import me.Eggses.dungeons.entities.mobs.DungeonEntity;
+import me.Eggses.dungeons.entities.mobs.DungeonMob;
+import me.Eggses.dungeons.entities.mobs.MobBuilder;
 import me.Eggses.dungeons.utility.MessageCreator;
 
 import java.util.HashMap;
