@@ -21,16 +21,16 @@ public class AttributeController {
     private static final double CREEPER_DAMAGE_PERCENTAGE_INCREASE = 0.015;
     private static final double MAGIC_DAMAGE_PERCENTAGE_INCREASE = 0.02;
 
-    private static final Map<Attribute, Double> percentageIncreaseAttributeMap = new HashMap<>();
-    private static final Map<Attribute, Double> additiveIncreaseAttributeMap = new HashMap<>();
+    private static final Map<Attribute, Double> PERCENTAGE_INCREASE_ATTRIBUTE_MAP = new HashMap<>();
+    private static final Map<Attribute, Double> ADDITIVE_INCREASE_ATTRIBUTE_MAP = new HashMap<>();
 
     static {
-        percentageIncreaseAttributeMap.put(Attribute.MAX_HEALTH, BASE_HEALTH_PERCENTAGE_INCREASE);
-        percentageIncreaseAttributeMap.put(Attribute.ATTACK_DAMAGE, MELEE_DAMAGE_PERCENTAGE_INCREASE);
-        percentageIncreaseAttributeMap.put(Attribute.MOVEMENT_SPEED, MOVEMENT_SPEED_PERCENTAGE_INCREASE);
+        PERCENTAGE_INCREASE_ATTRIBUTE_MAP.put(Attribute.MAX_HEALTH, BASE_HEALTH_PERCENTAGE_INCREASE);
+        PERCENTAGE_INCREASE_ATTRIBUTE_MAP.put(Attribute.ATTACK_DAMAGE, MELEE_DAMAGE_PERCENTAGE_INCREASE);
+        PERCENTAGE_INCREASE_ATTRIBUTE_MAP.put(Attribute.MOVEMENT_SPEED, MOVEMENT_SPEED_PERCENTAGE_INCREASE);
 
-        additiveIncreaseAttributeMap.put(Attribute.ARMOR, ARMOUR_PER_LEVEL);
-        additiveIncreaseAttributeMap.put(Attribute.ARMOR_TOUGHNESS, ARMOUR_TOUGHNESS_PER_LEVEL);
+        ADDITIVE_INCREASE_ATTRIBUTE_MAP.put(Attribute.ARMOR, ARMOUR_PER_LEVEL);
+        ADDITIVE_INCREASE_ATTRIBUTE_MAP.put(Attribute.ARMOR_TOUGHNESS, ARMOUR_TOUGHNESS_PER_LEVEL);
     }
 
     private final DungeonEntity dungeonEntity;
@@ -84,8 +84,8 @@ public class AttributeController {
 
     public void applyAttributes() {
         int dungeonLevel = dungeonEntity.getDungeonLevel();
-        applyAttributesFromMap(percentageIncreaseAttributeMap, PERCENTAGE_INCREASE_FORMULA, dungeonLevel);
-        applyAttributesFromMap(additiveIncreaseAttributeMap, ADDITIVE_INCREASE_FORMULA, dungeonLevel);
+        applyAttributesFromMap(PERCENTAGE_INCREASE_ATTRIBUTE_MAP, PERCENTAGE_INCREASE_FORMULA, dungeonLevel);
+        applyAttributesFromMap(ADDITIVE_INCREASE_ATTRIBUTE_MAP, ADDITIVE_INCREASE_FORMULA, dungeonLevel);
     }
 
     private void applyAttributesFromMap(Map<Attribute, Double> attributeMap,

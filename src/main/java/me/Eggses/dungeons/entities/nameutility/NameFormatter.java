@@ -3,21 +3,24 @@ package me.Eggses.dungeons.entities.nameutility;
 import me.Eggses.dungeons.entities.mobs.DungeonEntity;
 import me.Eggses.dungeons.utility.MessageCreator;
 import net.kyori.adventure.text.Component;
+import org.bukkit.entity.EntityType;
 
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.TreeMap;
 
 public class NameFormatter {
 
-    private static final Map<Integer, String> levelColourMap = new TreeMap<>();
+    private static final Map<Integer, String> LEVEL_COLOUR_MAP = new TreeMap<>();
+    private static final Map<EntityType, String> ENTITY_NAME_CACHE = new EnumMap<>(EntityType.class);
 
     static {
-        levelColourMap.put(0, "<green>");
-        levelColourMap.put(10, "<blue>");
-        levelColourMap.put(20, "<gold>");
-        levelColourMap.put(30, "<light_purple>");
-        levelColourMap.put(40, "<white>");
-        levelColourMap.put(50, "<red>");
+        LEVEL_COLOUR_MAP.put(0, "<green>");
+        LEVEL_COLOUR_MAP.put(10, "<blue>");
+        LEVEL_COLOUR_MAP.put(20, "<gold>");
+        LEVEL_COLOUR_MAP.put(30, "<light_purple>");
+        LEVEL_COLOUR_MAP.put(40, "<white>");
+        LEVEL_COLOUR_MAP.put(50, "<red>");
     }
 
     private final DungeonEntity dungeonEntity;
@@ -43,9 +46,9 @@ public class NameFormatter {
 
     private Component createLevelPart(int dungeonLevel) {
 
-        String colour = levelColourMap.get(0);
+        String colour = LEVEL_COLOUR_MAP.get(0);
 
-        for (Map.Entry<Integer, String> entry : levelColourMap.entrySet()) {
+        for (Map.Entry<Integer, String> entry : LEVEL_COLOUR_MAP.entrySet()) {
             int level = entry.getKey();
             if (dungeonLevel < level) break;
             colour = entry.getValue();
@@ -65,25 +68,35 @@ public class NameFormatter {
             name = mobName.getName() + " ";
         } else {
 
-            String enumName = dungeonEntity.getEntity().getType().name();
-            StringBuilder cleanedName = new StringBuilder();
+            EntityType entityType = dungeonEntity.getEntity().getType();
+            name = ENTITY_NAME_CACHE.get(entityType);
 
-            String[] splitName = enumName.split("_");
-
-            for (String part : splitName) {
-                if (part.length() == 1) {
-                    cleanedName.append(part).append(" ");
-                    continue;
-                }
-
-                String restInLowerCase = part.substring(1).toLowerCase();
-
-                String full = part.charAt(0) + restInLowerCase + " ";
-
-                cleanedName.append(full);
+            if (name == null) {
+                name = createNameFromEnum(entityType);
+                ENTITY_NAME_CACHE.put(entityType, name);
             }
-            name = cleanedName.toString();
         }
         return messageCreator.createMessage("<white>" + name);
+    }
+
+    private String createNameFromEnum(EntityType entityType) {
+
+        StringBuilder cleanedName = new StringBuilder();
+
+        String[] splitName = entityType.name().split("_");
+
+        for (String part : splitName) {
+            if (part.length() == 1) {
+                cleanedName.append(part).append(" ");
+                continue;
+            }
+
+            String restInLowerCase = part.substring(1).toLowerCase();
+
+            String full = part.charAt(0) + restInLowerCase + " ";
+
+            cleanedName.append(full);
+        }
+        return cleanedName.toString();
     }
 }
