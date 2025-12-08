@@ -1,6 +1,7 @@
 package me.Eggses.dungeons.listeners;
 
 import me.Eggses.dungeons.entities.EntityManager;
+import me.Eggses.dungeons.entities.mobs.DungeonEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -8,6 +9,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public class EntityDamageEvent implements Listener {
@@ -33,6 +35,16 @@ public class EntityDamageEvent implements Listener {
             return;
         }
 
+        Optional<DungeonEntity> maybeMob = entityManager.getDungeonEntity(uuidOfDefender);
+
+        maybeMob.ifPresent(dungeonEntity ->
+                        dungeonEntity.getEntityEventBehaviour().handleEntityDamageEntityEvent(dungeonEntity, event));
+
+
+        Optional<DungeonEntity> maybeMob2 = entityManager.getDungeonEntity(uuidOfDefender);
+        maybeMob2.ifPresent(DungeonEntity::updateName);
+
+        // apply specific attribute damage
         if (event.getCause() == DamageCause.PROJECTILE) {
 
         }

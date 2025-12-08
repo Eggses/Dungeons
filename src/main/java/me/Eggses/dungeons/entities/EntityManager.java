@@ -8,6 +8,7 @@ import me.Eggses.dungeons.utility.MessageCreator;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 public class EntityManager {
@@ -26,6 +27,10 @@ public class EntityManager {
         return entities.get(uuid) != null;
     }
 
+    public Optional<DungeonEntity> getDungeonEntity(UUID uuid) {
+        return Optional.ofNullable(entities.get(uuid));
+    }
+
     public void spawnMob(MobBuilder mobBuilder) {
 
         for (int i = 0; i < mobBuilder.getCount(); i++) {
@@ -38,11 +43,10 @@ public class EntityManager {
     return boolean if sucessful, maybe method in each class
     can count how many mobs, count how ,many return trues
     to work out if an area is cleared.
-
-
      */
     public void removeMob(UUID uuid) {
 
+        // remove on death
         DungeonEntity dungeonEntity = entities.remove(uuid);
         if (dungeonEntity == null) return;
 

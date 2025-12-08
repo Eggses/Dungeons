@@ -17,7 +17,6 @@ public class EntityRepeatingTask implements EntityTask {
         this.repeatingPeriodInTicks = repeatingPeriodInTicks;
     }
 
-
     @Override
     public BukkitTask schedule(DungeonEntity dungeonEntity, TaskManager taskManager) {
         Runnable runnable = () -> task.accept(dungeonEntity, taskManager);

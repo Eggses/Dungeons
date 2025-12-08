@@ -13,8 +13,9 @@ public class EntityEventBehaviour {
 
     private final List<EventBehaviour<?>> entityEventBehaviours = new ArrayList<>();
 
-    public void addEventBehaviour(EventBehaviour<?> eventBehaviour) {
+    public EntityEventBehaviour addEventBehaviour(EventBehaviour<?> eventBehaviour) {
         entityEventBehaviours.add(eventBehaviour);
+        return this;
     }
 
     public void handleEntityDamageEntityEvent(DungeonEntity dungeonEntity, EntityDamageByEntityEvent event) {
