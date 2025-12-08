@@ -62,11 +62,7 @@ public class DungeonMob implements DungeonEntity {
         activeEntityTasks.addAndRunTasks(mobBuilder.getEntityTaskBehaviour(), this, taskManager);
 
         // Finally
-        mobBuilder.getSpawnFinalizer().accept(entity);
-    }
-
-    public AttributeController getAttributeController() {
-        return attributeController;
+        mobBuilder.getSpawnFinalizer().accept(this);
     }
 
     @Override
@@ -87,6 +83,11 @@ public class DungeonMob implements DungeonEntity {
     @Override
     public EntityEventBehaviour getEntityEventBehaviour() {
         return entityEventBehaviour;
+    }
+
+    @Override
+    public AttributeController getAttributeController() {
+        return attributeController;
     }
 
     @Override

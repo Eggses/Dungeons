@@ -1,5 +1,6 @@
 package me.Eggses.dungeons.entities.mobs;
 
+import me.Eggses.dungeons.entities.attributes.AttributeController;
 import me.Eggses.dungeons.entities.eventbehaviour.EntityEventBehaviour;
 import me.Eggses.dungeons.entities.nameutility.MobName;
 import org.bukkit.entity.LivingEntity;
@@ -13,6 +14,7 @@ public interface DungeonEntity {
     LivingEntity getEntity();
     void endTasks();
     EntityEventBehaviour getEntityEventBehaviour();
+    AttributeController getAttributeController();
 
     // More Methods
     int getDungeonLevel();

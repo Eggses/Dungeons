@@ -19,7 +19,7 @@ public class MobBuilder {
     private ArmourEquipment armourEquipment = new ArmourEquipment();
     private EntityEventBehaviour entityEventBehaviour = new EntityEventBehaviour();
     private EntityTaskBehaviour entityTaskBehaviour = new EntityTaskBehaviour();
-    private Consumer<LivingEntity> spawnFinalizer = (entity) -> {};
+    private Consumer<DungeonEntity> spawnFinalizer = (entity) -> {};
     private int count = 1;
     private MobName mobName = new MobName();
 
@@ -65,7 +65,7 @@ public class MobBuilder {
         return this;
     }
 
-    public MobBuilder spawnFinalizer(Consumer<LivingEntity> spawnFinalizer) {
+    public MobBuilder spawnFinalizer(Consumer<DungeonEntity> spawnFinalizer) {
         this.spawnFinalizer = spawnFinalizer;
         return this;
     }
@@ -77,6 +77,12 @@ public class MobBuilder {
 
     public MobBuilder mobName(MobName mobName) {
         this.mobName = mobName;
+        return this;
+    }
+
+    public MobBuilder mobNameAndSpawnFinalizer(MobType mobType) {
+        this.mobName = mobType.getMobName();
+        this.spawnFinalizer = mobType.getSpawnFinalizer();
         return this;
     }
 
@@ -106,7 +112,7 @@ public class MobBuilder {
         return entityEventBehaviour;
     }
 
-    public Consumer<LivingEntity> getSpawnFinalizer() {
+    public Consumer<DungeonEntity> getSpawnFinalizer() {
         return spawnFinalizer;
     }
 
