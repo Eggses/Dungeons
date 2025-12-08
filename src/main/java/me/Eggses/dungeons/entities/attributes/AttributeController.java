@@ -19,6 +19,7 @@ public class AttributeController {
 
     private static final double RANGED_DAMAGE_PERCENTAGE_INCREASE = 0.03;
     private static final double CREEPER_DAMAGE_PERCENTAGE_INCREASE = 0.015;
+    private static final double MAGIC_DAMAGE_PERCENTAGE_INCREASE = 0.02;
 
     private static final Map<Attribute, Double> percentageIncreaseAttributeMap = new HashMap<>();
     private static final Map<Attribute, Double> additiveIncreaseAttributeMap = new HashMap<>();
@@ -32,27 +33,26 @@ public class AttributeController {
         additiveIncreaseAttributeMap.put(Attribute.ARMOR_TOUGHNESS, ARMOUR_TOUGHNESS_PER_LEVEL);
     }
 
+    private final DungeonMob dungeonMob;
+
+    public AttributeController(DungeonMob dungeonMob) {
+        this.dungeonMob = dungeonMob;
+    }
+
+    private static BiFunction<DungeonMob, Double, Double> damageFormulaBuilder(double constant) {
+        return (mob, baseDamage) -> {
+            double level = mob.getDungeonLevel();
+            double multiplier = 1.0 + (constant * level);
+            return baseDamage * multiplier;
+        };
+    }
+
     private static final BiFunction<DungeonMob, Double, Double> EXPLOSION_DAMAGE_FORMULA =
-            (mob, baseDamage) -> {
-                double level = mob.getDungeonLevel();
-                double multiplier = 1.0 + (CREEPER_DAMAGE_PERCENTAGE_INCREASE * level);
-                return baseDamage * multiplier;
-            };
-
+            damageFormulaBuilder(CREEPER_DAMAGE_PERCENTAGE_INCREASE);
     private static final BiFunction<DungeonMob, Double, Double> RANGED_DAMAGE_FORMULA =
-            (mob, baseDamage) -> {
-                double level = mob.getDungeonLevel();
-                double multiplier = 1.0 + (RANGED_DAMAGE_PERCENTAGE_INCREASE * level);
-                return baseDamage * multiplier;
-            };
-
-    private static final TriFunction<AttributeInstance, Double, Integer, Double> PERCENTAGE_INCREASE_FORMULA =
-            (attributeInstance, constant, level) ->
-                    attributeInstance.getBaseValue() * (1.0 + (constant * level));
-
-    private static final TriFunction<AttributeInstance, Double, Integer, Double> ADDITIVE_INCREASE_FORMULA =
-            (attributeInstance, constant, level) ->
-                    attributeInstance.getBaseValue() + (constant * level);
+            damageFormulaBuilder(RANGED_DAMAGE_PERCENTAGE_INCREASE);
+    private static final BiFunction<DungeonMob, Double, Double> MAGIC_DAMAGE_FORMULA =
+            damageFormulaBuilder(MAGIC_DAMAGE_PERCENTAGE_INCREASE);
 
     public static BiFunction<DungeonMob, Double, Double> getExplosionDamageFormula() {
         return EXPLOSION_DAMAGE_FORMULA;
@@ -62,21 +62,33 @@ public class AttributeController {
         return RANGED_DAMAGE_FORMULA;
     }
 
-    public void setBaseAttribute(DungeonMob dungeonMob, Attribute attribute, double value) {
+    public static BiFunction<DungeonMob, Double, Double> getMagicDamageFormula() {
+        return MAGIC_DAMAGE_FORMULA;
+    }
+
+    private static final TriFunction<AttributeInstance, Double, Integer, Double> PERCENTAGE_INCREASE_FORMULA =
+            (attributeInstance, constant, level) ->
+                    attributeInstance.getBaseValue() * (1.0 + (constant * level));
+
+    private static final TriFunction<AttributeInstance, Double, Integer, Double> ADDITIVE_INCREASE_FORMULA =
+            (attributeInstance, constant, level) ->
+                    attributeInstance.getBaseValue() + (constant * level);
+
+
+    public void setBaseAttribute(Attribute attribute, double value) {
         AttributeInstance attributeInstance = dungeonMob.getEntity().getAttribute(attribute);
         if (attributeInstance == null) return;
 
         attributeInstance.setBaseValue(value);
     }
 
-    public void applyAttributes(DungeonMob dungeonMob) {
+    public void applyAttributes() {
         int dungeonLevel = dungeonMob.getDungeonLevel();
-        applyAttributesFromMap(dungeonMob, percentageIncreaseAttributeMap, PERCENTAGE_INCREASE_FORMULA, dungeonLevel);
-        applyAttributesFromMap(dungeonMob, additiveIncreaseAttributeMap, ADDITIVE_INCREASE_FORMULA, dungeonLevel);
+        applyAttributesFromMap(percentageIncreaseAttributeMap, PERCENTAGE_INCREASE_FORMULA, dungeonLevel);
+        applyAttributesFromMap(additiveIncreaseAttributeMap, ADDITIVE_INCREASE_FORMULA, dungeonLevel);
     }
 
-    private void applyAttributesFromMap(DungeonMob dungeonMob,
-                                        Map<Attribute, Double> attributeMap,
+    private void applyAttributesFromMap(Map<Attribute, Double> attributeMap,
                                         TriFunction<AttributeInstance, Double, Integer, Double> formula,
                                         int dungeonLevel) {
 
@@ -87,9 +99,8 @@ public class AttributeController {
             AttributeInstance attributeInstance = dungeonMob.getEntity().getAttribute(attribute);
             if (attributeInstance == null) continue;
 
-            double updatedBaseValue = formula.transform(attributeInstance, constant, dungeonLevel);
+            double updatedBaseValue = formula.apply(attributeInstance, constant, dungeonLevel);
             attributeInstance.setBaseValue(updatedBaseValue);
-
         }
     }
 }

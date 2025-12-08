@@ -3,6 +3,7 @@ package me.Eggses.dungeons.entities.dungeonentity;
 import me.Eggses.dungeons.entities.dungeonentity.mobs.DungeonEntity;
 import me.Eggses.dungeons.entities.dungeonentity.mobs.DungeonMob;
 import me.Eggses.dungeons.entities.dungeonentity.mobs.MobBuilder;
+import me.Eggses.dungeons.utility.MessageCreator;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,9 +14,11 @@ public class EntityManager {
     private final Map<UUID, DungeonEntity> entities = new HashMap<>();
 
     private final TaskManager taskManager;
+    private final MessageCreator messageCreator;
 
-    public EntityManager(TaskManager taskManager) {
+    public EntityManager(TaskManager taskManager, MessageCreator messageCreator) {
         this.taskManager = taskManager;
+        this.messageCreator = messageCreator;
     }
 
     public boolean contains(UUID uuid) {
@@ -25,7 +28,7 @@ public class EntityManager {
     public void spawnMob(MobBuilder mobBuilder) {
 
         for (int i = 0; i < mobBuilder.getCount(); i++) {
-            DungeonMob dungeonMob = new DungeonMob(mobBuilder);
+            DungeonMob dungeonMob = new DungeonMob(mobBuilder, messageCreator);
             entities.put(dungeonMob.getUUID(), dungeonMob);
             dungeonMob.startTasks(taskManager);
         }

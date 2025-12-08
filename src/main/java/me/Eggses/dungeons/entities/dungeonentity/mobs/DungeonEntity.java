@@ -8,4 +8,7 @@ public interface DungeonEntity {
     UUID getUUID();
     void endTasks();
     LivingEntity getEntity();
+    MobName getMobName();
+    void updateName();
+    int getDungeonLevel();
 }

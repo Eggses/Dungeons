@@ -16,6 +16,7 @@ public class TaskManager {
         return Bukkit.getScheduler().runTaskTimer(plugin, runnable, delayInTicks, periodInTicks);
     }
 
+    @Deprecated
     public BukkitTask runTaskLater(Runnable runnable, long delayInTicks) {
         return Bukkit.getScheduler().runTaskLater(plugin, runnable, delayInTicks);
     }

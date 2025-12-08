@@ -18,18 +18,20 @@ public class EntityRepeatingTask implements EntityTask {
         this.repeatingPeriodInTicks = repeatingPeriodInTicks;
     }
 
+    @Deprecated
     public BiConsumer<LivingEntity, TaskManager> getTask() {
         return task;
     }
 
+    @Deprecated
     public long getDelayInTicks() {
         return delayInTicks;
     }
 
+    @Deprecated
     public long getRepeatingPeriodInTicks() {
         return repeatingPeriodInTicks;
     }
-
 
     @Override
     public BukkitTask schedule(LivingEntity livingEntity, TaskManager taskManager) {

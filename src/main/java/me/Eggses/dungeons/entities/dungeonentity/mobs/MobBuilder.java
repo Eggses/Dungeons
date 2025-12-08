@@ -79,6 +79,8 @@ public class MobBuilder {
         return this;
     }
 
+    // Getters
+
     public Class<? extends LivingEntity> getEntityType() {
         return entityType;
     }

@@ -74,6 +74,12 @@ public class ArmourBuilder {
                 Material.CHAINMAIL_LEGGINGS,
                 Material.CHAINMAIL_BOOTS
         ),
+        COPPER(
+                Material.COPPER_HELMET,
+                Material.COPPER_CHESTPLATE,
+                Material.COPPER_LEGGINGS,
+                Material.COPPER_BOOTS
+        ),
         IRON(
                 Material.IRON_HELMET,
                 Material.IRON_CHESTPLATE,
