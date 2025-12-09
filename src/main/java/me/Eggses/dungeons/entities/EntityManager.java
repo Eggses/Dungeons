@@ -27,8 +27,8 @@ public class EntityManager {
         return entities.get(uuid) != null;
     }
 
-    public Optional<DungeonEntity> getDungeonEntity(UUID uuid) {
-        return Optional.ofNullable(entities.get(uuid));
+    public DungeonEntity getDungeonEntity(UUID uuid) {
+        return entities.get(uuid);
     }
 
     public void spawnMob(MobBuilder mobBuilder) {

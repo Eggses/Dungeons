@@ -102,10 +102,7 @@ public class DungeonMob implements DungeonEntity {
 
     @Override
     public void updateName() {
-        AttributeInstance attributeInstance = entity.getAttribute(Attribute.MAX_HEALTH);
-        if (attributeInstance != null) {
-            int health = (int) attributeInstance.getValue();
-            entity.customName(nameFormatter.createName(health));
-        }
+        int health = (int) entity.getHealth();
+        entity.customName(nameFormatter.createName(health));
     }
 }

@@ -26,8 +26,8 @@ public class EntityExplosionEvent implements Listener {
 
 
         if (entityManager.contains(event.getEntity().getUniqueId())) {
-           Optional<DungeonEntity> maybeMob = entityManager.getDungeonEntity(event.getEntity().getUniqueId());
-           maybeMob.ifPresent(mob -> mob.getEntityEventBehaviour().handleExplosionEvent(mob, event));
+            DungeonEntity dungeonEntity = entityManager.getDungeonEntity(event.getEntity().getUniqueId());
+            dungeonEntity.getEntityEventBehaviour().handleExplosionEvent(dungeonEntity, event);
         }
 
 

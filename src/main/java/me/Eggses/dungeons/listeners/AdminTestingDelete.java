@@ -7,6 +7,7 @@ import me.Eggses.dungeons.entities.equipment.WeaponEquipment;
 import me.Eggses.dungeons.entities.eventbehaviour.EntityEventBehaviour;
 import me.Eggses.dungeons.entities.eventbehaviour.damage.FireImpact;
 import me.Eggses.dungeons.entities.eventbehaviour.damage.FrostImpact;
+import me.Eggses.dungeons.entities.eventbehaviour.explosion.BeeExplosion;
 import me.Eggses.dungeons.entities.mobs.MobBuilder;
 import me.Eggses.dungeons.entities.mobs.MobType;
 import me.Eggses.dungeons.entities.taskbehaviour.EntityRepeatingTask;
@@ -14,10 +15,7 @@ import me.Eggses.dungeons.entities.taskbehaviour.EntityTaskBehaviour;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.Bogged;
-import org.bukkit.entity.Husk;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Skeleton;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -75,9 +73,14 @@ public class AdminTestingDelete implements Listener {
                             player.sendMessage("Task Ran");
                         }), 0, 20))
                 );
+
+        MobBuilder explosive = new MobBuilder(Creeper.class, location)
+                .entityEventBehaviour(new EntityEventBehaviour().addEventBehaviour(new BeeExplosion()));
+
         entityManager.spawnMob(builder);
         entityManager.spawnMob(fiend);
         entityManager.spawnMob(taskMob);
+        entityManager.spawnMob(explosive);
     }
 
 

@@ -24,15 +24,61 @@ public enum MobType {
     FIEND((dungeonEntity) -> {
         AttributeController ac = dungeonEntity.getAttributeController();
         ac.setBaseAttribute(Attribute.SCALE, valueInRange(0.55, 0.75));
-        ac.setBaseAttribute(Attribute.MOVEMENT_SPEED, valueInRange(0.37, 0.5));
+        ac.setBaseAttribute(Attribute.MOVEMENT_SPEED, valueInRange(0.37, 0.4));
         ac.setBaseAttribute(Attribute.KNOCKBACK_RESISTANCE, valueInRange(0.05, 0.12));
 
         if (dungeonEntity.getEntity() instanceof CraftEntity craftEntity) {
             if (craftEntity.getHandle() instanceof Mob mob) {
-                mob.goalSelector.addGoal(3, new LeapAtTargetGoal(mob, 0.4F));
+                mob.goalSelector.addGoal(4, new LeapAtTargetGoal(mob, 0.4F));
             }
         }
     }, new MobName("Fiend", false)),
+
+    /*
+    attributres are all wrong:
+    knight stoo big, too much kb
+
+    fiends are 1000x to fast
+    jumping is weird
+
+    I think the bees creeper spawns dont target players, they msut so cast to NMS
+
+    jumping is wierd
+
+    oh also name tags need to auto update to 0 on death... idk why  ithink maybe change
+    event priority somehow who knows idk
+     like mobs die with 3 as thier name or 6 for instance
+
+
+i just saw a Knight KILL the bogged so wtf?
+
+how does it get threat???
+
+maybe fix by making the same team idk but???
+
+wtf???
+
+everytime mob dies ms gin console maybe prevent
+
+when you get hit with an arrow its a NPE in ENtityDmaageByEntityEvent
+
+[12:01:33 ERROR]: Could not pass event EntityDamageByEntityEvent to Dungeons v1.0
+java.lang.NullPointerException: Cannot invoke "me.Eggses.dungeons.entities.mobs.DungeonEntity.getEntityEventBehaviour()" because "mob" is null
+        at Dungeons-1.0.jar/me.Eggses.dungeons.listeners.EntityDamageEvent.onDamageEvent(EntityDamageEvent.java:46) ~[Dungeons-1.0.jar:?]
+        at co.aikar.timings.TimedEventExecutor.execute(TimedEventExecutor.java:80) ~[paper-api-1.21.10-R0.1-SNAPSHOT.jar:?]
+        at org.bukkit.plugin.RegisteredListener.callEvent(RegisteredListener.java:71) ~[paper-api-1.21.10-R0.1-SNAPSHOT.jar:?]
+        at io.papermc.paper.plugin.manager.PaperEventManager.callEvent(PaperEventManager.java:54) ~[paper-1.21.10.jar:1.21.10-115-af06383]
+        at io.papermc.paper.plugin.manager.PaperPluginManagerImpl.callEvent(PaperPluginManagerImpl.java:131) ~[paper-1.21.10.jar:1.21.10-115-af06383]
+        at org.bukkit.plugin.SimplePluginManager.callEvent(SimplePluginManager.java:628) ~[paper-api-1.21.10-R0.1-SNAPSHOT.jar:?]
+        at org.bukkit.event.Event.callEvent(Event.java:46) ~[paper-api-1.21.10-R0.1-SNAPSHOT.jar:?]
+
+
+
+
+/*
+attributers below suck
+way to much to fast,  too shit
+     */
 
     BRUISER((dungeonEntity) -> {
         AttributeController ac = dungeonEntity.getAttributeController();
