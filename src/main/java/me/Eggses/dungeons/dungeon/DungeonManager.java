@@ -41,7 +41,7 @@ public class DungeonManager {
 
 
     can now prevent item drop in that room
-            check for bundles there
+            check for bundles there and saddles dont let entry with them
 
 
     public void createDungeon(DungeonType dungeonType) {
