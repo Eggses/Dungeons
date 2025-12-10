@@ -1,8 +1,7 @@
-package me.Eggses.dungeons.listeners;
+package me.Eggses.dungeons.listenersOLD;
 
 import me.Eggses.dungeons.entities.EntityManager;
 import me.Eggses.dungeons.entities.equipment.ArmourCreator;
-import me.Eggses.dungeons.entities.equipment.ArmourEquipment;
 import me.Eggses.dungeons.entities.equipment.WeaponEquipment;
 import me.Eggses.dungeons.entities.eventbehaviour.EntityEventBehaviour;
 import me.Eggses.dungeons.entities.eventbehaviour.damage.FireImpact;

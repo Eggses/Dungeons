@@ -1,13 +1,10 @@
-package me.Eggses.dungeons.listeners;
+package me.Eggses.dungeons.listenersOLD;
 
-import me.Eggses.dungeons.Dungeons;
 import me.Eggses.dungeons.entities.EntityManager;
 import me.Eggses.dungeons.entities.mobs.DungeonEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityExplodeEvent;
-
-import java.util.Optional;
 
 public class EntityExplosionEvent implements Listener {
 

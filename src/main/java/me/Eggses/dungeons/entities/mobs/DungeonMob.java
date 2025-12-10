@@ -8,15 +8,22 @@ import me.Eggses.dungeons.entities.eventbehaviour.EntityEventBehaviour;
 import me.Eggses.dungeons.entities.equipment.EquipmentManager;
 import me.Eggses.dungeons.entities.taskbehaviour.ActiveEntityTasks;
 import me.Eggses.dungeons.utility.MessageCreator;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 
 import java.util.UUID;
 
 public class DungeonMob implements DungeonEntity {
+
+    private static final String TEAM_NAME = "DungeonEntities";
+    private static final Scoreboard SCOREBOARD = Bukkit.getScoreboardManager().getMainScoreboard();
+    private static Team TEAM = SCOREBOARD.getTeam(TEAM_NAME);
 
     private final LivingEntity entity;
 
@@ -54,6 +61,11 @@ public class DungeonMob implements DungeonEntity {
         if (attributeInstance != null) {
             entity.setHealth(attributeInstance.getValue());
         }
+        if (TEAM == null) {
+            TEAM = SCOREBOARD.registerNewTeam(TEAM_NAME);
+            TEAM.setAllowFriendlyFire(false);
+        }
+        TEAM.addEntity(entity);
 
         // Set Name
         updateName();

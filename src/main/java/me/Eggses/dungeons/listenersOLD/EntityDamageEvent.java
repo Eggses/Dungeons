@@ -1,4 +1,4 @@
-package me.Eggses.dungeons.listeners;
+package me.Eggses.dungeons.listenersOLD;
 
 import me.Eggses.dungeons.entities.EntityManager;
 import me.Eggses.dungeons.entities.mobs.DungeonEntity;
@@ -11,7 +11,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 
-import java.util.Optional;
 import java.util.UUID;
 
 public class EntityDamageEvent implements Listener {

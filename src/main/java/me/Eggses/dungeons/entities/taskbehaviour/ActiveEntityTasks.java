@@ -25,5 +25,6 @@ public class ActiveEntityTasks {
                 task.cancel();
             }
         }
+        activeTasks.clear();
     }
 }
