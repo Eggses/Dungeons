@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,20 +19,25 @@ import java.util.logging.Level;
 
 public abstract class DungeonInstance {
 
-    private static final List<String> FILES_TO_DELETE = List.of("session.lock", "uid.dat");
+    private static final Set<String> FILES_TO_IGNORE = Set.of("session.lock", "uid.dat");
 
     private final Set<BukkitTask> tasks = new HashSet<>();
+    private boolean created = false;
 
     private final JavaPlugin plugin;
     private World dungeonWorld = null;
 
+
+
+
+    set keep inventory, no natural spawning etc stuff? maybe in start dungoen method
+
     public DungeonInstance(JavaPlugin plugin, String dungeonTemplateName) {
+
         this.plugin = plugin;
 
         File serverFolder = Bukkit.getWorldContainer();
-
         createWorld(serverFolder, dungeonTemplateName);
-
     }
 
     private void createWorld(File serverFolder, String dungeonTemplateName) {
@@ -55,19 +61,13 @@ public abstract class DungeonInstance {
 
                 if (dungeonWorld != null) {
                     endDungeonCreationTasks();
-
-                    teleport players into the dungeon?
-                            or enable the portal ?
-                            ?
-                            ?
-                            ?
-                            yeah probably do that?
-
+                    startDungeon();
                     return;
                 }
 
                 if (System.currentTimeMillis() > startTime + maxAllowedTime && dungeonWorld == null) {
                     endDungeonCreationTasks();
+                    plugin.getLogger().severe("Could not start Dungeon: " + dungeonTemplateName + ".");
                 }
             }
 
@@ -98,7 +98,6 @@ public abstract class DungeonInstance {
 
         try {
             copyFolderBFS(sourceDungeonTemplate.toPath(), destinationOfDungeonInstance.toPath());
-            deleteFilesBFS(destinationOfDungeonInstance.toPath());
         } catch (IOException e) {
             plugin.getLogger().log(Level.SEVERE, "Could not copy Dungeon Template: " + dungeonTemplateName, e);
             return;
@@ -139,49 +138,68 @@ public abstract class DungeonInstance {
                     Files.createDirectories(specificDestinationPath);
                     queueOfFolders.offer(file);
                 } else {
+                    if (FILES_TO_IGNORE.contains(file.getName())) continue;
                     Files.copy(childPath, specificDestinationPath, StandardCopyOption.REPLACE_EXISTING);
                 }
             }
         }
     }
 
-    private void deleteFilesBFS(Path folderToCheck) throws IOException {
-
-        Set<String> filesToDelete = new HashSet<>(DungeonInstance.FILES_TO_DELETE);
-        if (filesToDelete.isEmpty()) return;
-
-        Queue<File> queueOfFolders = new LinkedList<>();
-        queueOfFolders.add(folderToCheck.toFile());
-
-        while (!queueOfFolders.isEmpty()) {
-
-            File folder = queueOfFolders.poll();
-            File[] files = folder.listFiles();
-            if (files == null) continue;
-
-            for (File file : files) {
-
-                if (file.isDirectory()) {
-                    queueOfFolders.add(file);
-                    continue;
-                }
-                if (filesToDelete.contains(file.getName())) {
-                    filesToDelete.remove(file.getName());
-                    Files.delete(file.toPath());
-                    if (filesToDelete.isEmpty()) return;
-                }
-            }
-        }
+    private void startDungeon() {
+        this.created = true;
+        openPortal();
+        Bukkit.getScheduler().runTaskLater(plugin, this::closePortal, 20 * 120);
     }
+
+    public abstract void openPortal();
+    public abstract void closePortal();
 
     public abstract String produceInstanceName();
 
-    public Optional<World> getDungeonWorld() {
-        return Optional.ofNullable(dungeonWorld);
+    public @Nullable World getDungeonWorld() {
+        return dungeonWorld;
     }
 
-    public boolean containsPlayer(Player player) {
+    public boolean isInDungeon(Player player) {
         if (dungeonWorld == null) return false;
         return dungeonWorld.getPlayers().contains(player);
     }
+
+    public boolean isInNormalWorldPortalRoom() {
+        return false;
+        this will be like the checking to work out
+                like if someone is in a region
+                same thing... store 2 points
+
+            return true ifplayer is inside two points
+
+                atually have a region object that stores maybe 2 locations?
+            or your cusotom one actually that just ocntains
+
+                class Region:
+        Point p1
+                Point p2
+                        World
+                                public Region(Location location).. .get the idea?
+                public boolean inside(Location location)... get the idea?
+                go with
+            if world = this.word
+                then check mroe specific
+
+                use point object...
+        becuase if you use location you store world twice...
+        and world is big...
+
+        maybe store world name not the world? as qorlds have unique names!
+        // fix this
+    }
+
+    rmeove sadles + bundles on entry:
+    maybe on teleport can do this idk?
+
+    OR dont let people take portal with those items in thier inventory!
+    thats how you do it....
+
+    and then the keysotne has a can I enter Dungeon button? click it it says Yes, all good
+            or No. due to Item: SADDLE, Item:Bundle_white or Item: Bundle_red etc.
 }

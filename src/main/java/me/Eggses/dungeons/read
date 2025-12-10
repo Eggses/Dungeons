@@ -1,0 +1,14 @@
+for dungeons, you can give out cusotm enchants as prizes?
+that way people can improve thier own armour maybe.
+
+custom enchants as rewards for this stuff is quite interesting...
+
+like Anti-Venomon reduces posion damage by 10%, then 20% etc..
+you have basically
+
+
+class AntiVenom extends Enchantment
+
+lambda = int -> something
+
+then it directly stores the event inside it and implements it...

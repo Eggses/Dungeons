@@ -1,6 +1,6 @@
 package me.Eggses.dungeons.listeners.players;
 
-import me.Eggses.dungeons.DungeonInstance;
+import me.Eggses.dungeons.dungeon.DungeonManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -16,18 +16,18 @@ public class ShieldCooldown implements Listener {
     private static final int COOLDOWN = 20 * 10;
 
     private final JavaPlugin plugin;
-    private final DungeonInstance dungeonInstance;
+    private final DungeonManager dungeonManager;
 
-    public ShieldCooldown(JavaPlugin plugin, DungeonInstance dungeonInstance) {
+    public ShieldCooldown(JavaPlugin plugin, DungeonManager dungeonInstance) {
         this.plugin = plugin;
-        this.dungeonInstance = dungeonInstance;
+        this.dungeonManager = dungeonInstance;
     }
 
     @EventHandler
     public void onEntityDamage(EntityDamageByEntityEvent event) {
 
         if (!(event.getEntity() instanceof Player player)) return;
-        if (!dungeonInstance.contains(player)) return;
+        if (!dungeonManager.isInDungeon(player)) return;
 
         if (!(event.getFinalDamage() == 0 && player.isBlocking())) return;
 

@@ -25,6 +25,13 @@ public class EntityCombat implements Listener {
         UUID uuidOfAttacker = attacker.getUniqueId();
         UUID uuidOfVictim = victim.getUniqueId();
 
+        /*
+        so handle the event, like have handlers for each type basically
+        that is what you will have to do...
+
+        this event defers to several private ones...
+         */
+
         boolean attackerIsDungeonEntity = entityManager.contains(uuidOfAttacker);
         boolean victimIsDungeonEntity = entityManager.contains(uuidOfVictim);
 
