@@ -9,6 +9,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 import java.util.logging.Level;
 
 public abstract class DungeonInstance {
@@ -16,12 +19,16 @@ public abstract class DungeonInstance {
     private static final int PORTAL_OPEN_DURATION_TICKS = 120 * 20;
 
     private final JavaPlugin plugin;
+    private final DungeonManager dungeonManager;
     private World dungeonWorld = null;
     private boolean failedToCreate = false;
+
+    private final Set<UUID> playersInWorld = new HashSet<>();
 
     public DungeonInstance(JavaPlugin plugin, DungeonManager dungeonManager, String dungeonTemplateFileName) {
 
         this.plugin = plugin;
+        this.dungeonManager = dungeonManager;
 
         DungeonCreation dungeonCreation = new DungeonCreation(
                 plugin,
@@ -35,6 +42,7 @@ public abstract class DungeonInstance {
 
     private void commenceDungeon(World world) {
         this.dungeonWorld = world;
+        dungeonManager.addDungeonInstance(this);
         addGameRules();
         openPortal();
         Bukkit.getScheduler().runTaskLater(plugin, this::closePortal, PORTAL_OPEN_DURATION_TICKS);
@@ -57,22 +65,31 @@ public abstract class DungeonInstance {
 
     public abstract void openPortal();
     public abstract void closePortal();
-
     public abstract String produceInstanceName();
 
+    // Not Optional: This should only ever be called when NOT null.
     public @Nullable World getDungeonWorld() {
         return dungeonWorld;
     }
 
-    public boolean isInDungeon(Player player) {
-        if (dungeonWorld == null) return false;
-        return dungeonWorld.getPlayers().contains(player);
+    public void addPlayer(Player player) {
+        playersInWorld.add(player.getUniqueId());
     }
 
-    /*
+    public void removePlayer(Player player) {
+        playersInWorld.remove(player.getUniqueId());
+    }
+
+    public boolean isInDungeon(Player player) {
+        if (dungeonWorld == null) return false;
+        return playersInWorld.contains(player.getUniqueId());
+    }
+
     public boolean isInNormalWorldPortalRoom() {
         return false;
+    }
 
+        /*
         set keep inventory, no natural spawning etc stuff? maybe in start dungoen method
 
 
@@ -101,7 +118,7 @@ public abstract class DungeonInstance {
 
         maybe store world name not the world? as qorlds have unique names!
         // fix this
-    }
+
 
     rmeove sadles + bundles on entry:
     maybe on teleport can do this idk?

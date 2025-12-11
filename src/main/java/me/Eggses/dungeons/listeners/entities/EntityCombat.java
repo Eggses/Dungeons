@@ -1,80 +1,38 @@
 package me.Eggses.dungeons.listeners.entities;
 
+import me.Eggses.dungeons.dungeon.DungeonInstance;
+import me.Eggses.dungeons.dungeon.DungeonManager;
 import me.Eggses.dungeons.entities.EntityManager;
-import org.bukkit.entity.*;
+import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
-import java.util.UUID;
+import java.util.Optional;
 
 public class EntityCombat implements Listener {
 
-    private final EntityManager entityManager;
+    private final DungeonManager dungeonManager;
+    private EntityManager entityManager;
 
-    public EntityCombat(EntityManager entityManager) {
-        this.entityManager = entityManager;
+    public EntityCombat(DungeonManager dungeonManager) {
+        this.dungeonManager = dungeonManager;
     }
 
     @EventHandler
-    public void onEntityDamageEntity(EntityDamageByEntityEvent event) {
+    public void onEntityCombat(EntityDamageByEntityEvent event) {
 
-        Entity attacker = event.getDamager();
-        Entity victim = event.getEntity();
-
-        UUID uuidOfAttacker = attacker.getUniqueId();
-        UUID uuidOfVictim = victim.getUniqueId();
-
-        above is ALL wrong as attacker may be an arrow which is pointless...
-
-        so handle the event, like have handlers for each type basically
-        that is what you will have to do...
-
-        this event defers to several private ones...
-
-
-
-        store dungoen stats somehow in a file... like time and if players beat specific keys.
-
-        make sure each helper handles applying the increase dmaage like for exploson etc.
-
-
-
-        boolean attackerIsDungeonEntity = entityManager.contains(uuidOfAttacker);
-        boolean victimIsDungeonEntity = entityManager.contains(uuidOfVictim);
-
-        // Both Dungeon Entities
-        // that dosnt work.. what if someone fired an arrow... then they are that...
-        // like
-        if (attackerIsDungeonEntity && victimIsDungeonEntity) {
-            event.setCancelled(true);
-            return;
-        }
-        SplashPotion
-        Projectile
-
-        if
-        // Dungeon Entity Hits Player
-        // dosnt work for ranged holy shit...
-        if (attackerIsDungeonEntity && victim instanceof Player) {
-            handleDungeonEntityAttackingPlayer(event);
-            return;
-        }
-    }
+        Optional<DungeonInstance> maybeInstance = dungeonManager.getDungeonInstance(event.getEntity().getWorld());
+        if (maybeInstance.isEmpty()) return;
 
 
 
 
 
-    private void handleDungeonEntityAttackingPlayer(EntityDamageByEntityEvent event) {
+        event.getEntity().getWorld();
+
 
     }
 
-
-    private enum AttackCause {
-
-        RANGED(),
-        MAGIC(),
-    }
 
 }
