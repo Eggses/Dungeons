@@ -4,11 +4,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class DungeonManager {
 
-    private final List<DungeonInstance> dungeonInstances = new ArrayList<>();
+    private List<DungeonInstance> dungeonInstances = new ArrayList<>();
 
     private final JavaPlugin plugin;
 
@@ -45,15 +49,15 @@ public class DungeonManager {
 
 
     public void createDungeon(DungeonType dungeonType) {
-
         switch (dungeonType) {
 
             case MALIGNANT_MARSH -> dungeonInstances.add(new MalignantMarsh(plugin));
 
-            case null, default -> {
+            default -> {
 
             }
         }
+        dungeonInstances.removeIf(DungeonInstance::getFailedToCreate);
     }
 
     public enum DungeonType {

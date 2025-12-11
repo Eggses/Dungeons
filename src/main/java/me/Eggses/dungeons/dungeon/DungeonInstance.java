@@ -1,6 +1,9 @@
 package me.Eggses.dungeons.dungeon;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -14,6 +17,7 @@ public abstract class DungeonInstance {
 
     private final JavaPlugin plugin;
     private World dungeonWorld = null;
+    private boolean failedToCreate = false;
 
     public DungeonInstance(JavaPlugin plugin, DungeonManager dungeonManager, String dungeonTemplateFileName) {
 
@@ -23,19 +27,32 @@ public abstract class DungeonInstance {
                 plugin,
                 dungeonTemplateFileName,
                 produceInstanceName(),
-                world -> {
-                    this.dungeonWorld = world;
-                    startDungeon();
-                },
-                exception -> {
-                    plugin.getLogger().log(Level.SEVERE, "Error In Creation", exception);
-                });
-        dungeonCreation.createInstance();
+                this::commenceDungeon,
+                this::errorCreatingDungeon);
+
+        dungeonCreation.attemptToCreateInstance();
     }
 
-    private void startDungeon() {
+    private void commenceDungeon(World world) {
+        this.dungeonWorld = world;
+        addGameRules();
         openPortal();
         Bukkit.getScheduler().runTaskLater(plugin, this::closePortal, PORTAL_OPEN_DURATION_TICKS);
+    }
+
+    private void errorCreatingDungeon(Exception exception) {
+        failedToCreate = true;
+        plugin.getLogger().log(Level.SEVERE, "Dungeon Failed To Generate: ", exception);
+
+        Component message = Component
+                .text("Dungeon Failed To Generate.")
+                .color(TextColor.color(255, 20, 20));
+
+        Bukkit.getOnlinePlayers().forEach(player -> player.sendMessage(message));
+    }
+
+    public boolean getFailedToCreate() {
+        return failedToCreate;
     }
 
     public abstract void openPortal();
@@ -96,4 +113,28 @@ public abstract class DungeonInstance {
             or No. due to Item: SADDLE, Item:Bundle_white or Item: Bundle_red etc.
 
      */
+
+    private void addGameRules() {
+        if (dungeonWorld == null) return;
+        dungeonWorld.setGameRule(GameRule.COMMAND_BLOCKS_ENABLED, true);
+        dungeonWorld.setGameRule(GameRule.COMMAND_BLOCK_OUTPUT, true);
+        dungeonWorld.setGameRule(GameRule.KEEP_INVENTORY, true);
+        dungeonWorld.setGameRule(GameRule.DO_WARDEN_SPAWNING, false);
+        dungeonWorld.setGameRule(GameRule.DISABLE_RAIDS, true);
+        dungeonWorld.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+        dungeonWorld.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
+        dungeonWorld.setGameRule(GameRule.DO_FIRE_TICK, false);
+        dungeonWorld.setGameRule(GameRule.DO_MOB_SPAWNING, false);
+        dungeonWorld.setGameRule(GameRule.DO_MOB_LOOT, false);
+        dungeonWorld.setGameRule(GameRule.DO_PATROL_SPAWNING, false);
+        dungeonWorld.setGameRule(GameRule.DO_TRADER_SPAWNING, false);
+        dungeonWorld.setGameRule(GameRule.MOB_GRIEFING, false);
+        dungeonWorld.setGameRule(GameRule.DO_VINES_SPREAD, false);
+        dungeonWorld.setGameRule(GameRule.SNOW_ACCUMULATION_HEIGHT, 0);
+        dungeonWorld.setGameRule(GameRule.UNIVERSAL_ANGER, true);
+        dungeonWorld.setGameRule(GameRule.RANDOM_TICK_SPEED, 0);
+        dungeonWorld.setGameRule(GameRule.DO_ENTITY_DROPS, false);
+        dungeonWorld.setGameRule(GameRule.PROJECTILES_CAN_BREAK_BLOCKS, false);
+        dungeonWorld.setGameRule(GameRule.FORGIVE_DEAD_PLAYERS, false);
+    }
 }

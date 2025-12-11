@@ -1,6 +1,7 @@
 package me.Eggses.dungeons.dungeon;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -40,7 +41,7 @@ public class DungeonCreation {
         this.onFailure = onFailure;
     }
 
-    public void createInstance() {
+    public void attemptToCreateInstance() {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, this::createWorld);
     }
 
@@ -50,21 +51,21 @@ public class DungeonCreation {
 
         File sourceTemplateFolder = new File(serverFolder, fileNameOfTemplate);
         if (!(sourceTemplateFolder.exists() && sourceTemplateFolder.isDirectory())) {
-            failure(new FileNotFoundException(
+            error(new FileNotFoundException(
                     "Dungeon Template Folder not found or not a directory: " + sourceTemplateFolder.getPath() + "."));
             return;
         }
 
         File destinationOfInstance = new File(serverFolder, fileNameOfNewInstance);
         if (destinationOfInstance.exists()) {
-            failure(new FileAlreadyExistsException(fileNameOfNewInstance));
+            error(new FileAlreadyExistsException(fileNameOfNewInstance));
             return;
         }
 
         try {
             copyFolderBFS(sourceTemplateFolder.toPath(), destinationOfInstance.toPath());
         } catch (IOException e) {
-            failure(e);
+            error(e);
             return;
         }
 
@@ -75,7 +76,7 @@ public class DungeonCreation {
             if (world != null) {
                 onCreation.accept(world);
             } else {
-                failure(new IllegalArgumentException(
+                error(new IllegalArgumentException(
                         "WorldCreator returned null for " + destinationOfInstance.getName() + "."));
             }
         });
@@ -110,7 +111,7 @@ public class DungeonCreation {
         }
     }
 
-    private void failure(Exception exception) {
+    private void error(Exception exception) {
         Bukkit.getScheduler().runTask(plugin, () -> onFailure.accept(exception));
     }
 }
