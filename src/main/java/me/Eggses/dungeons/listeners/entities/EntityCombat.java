@@ -25,12 +25,20 @@ public class EntityCombat implements Listener {
         UUID uuidOfAttacker = attacker.getUniqueId();
         UUID uuidOfVictim = victim.getUniqueId();
 
-        /*
+        above is ALL wrong as attacker may be an arrow which is pointless...
+
         so handle the event, like have handlers for each type basically
         that is what you will have to do...
 
         this event defers to several private ones...
-         */
+
+
+
+        store dungoen stats somehow in a file... like time and if players beat specific keys.
+
+        make sure each helper handles applying the increase dmaage like for exploson etc.
+
+
 
         boolean attackerIsDungeonEntity = entityManager.contains(uuidOfAttacker);
         boolean victimIsDungeonEntity = entityManager.contains(uuidOfVictim);
@@ -41,7 +49,6 @@ public class EntityCombat implements Listener {
         if (attackerIsDungeonEntity && victimIsDungeonEntity) {
             event.setCancelled(true);
             return;
-
         }
         SplashPotion
         Projectile

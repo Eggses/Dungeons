@@ -20,14 +20,12 @@ import java.util.logging.Level;
 public abstract class DungeonInstance {
 
     private static final Set<String> FILES_TO_IGNORE = Set.of("session.lock", "uid.dat");
-
     private final Set<BukkitTask> tasks = new HashSet<>();
+
     private boolean created = false;
 
     private final JavaPlugin plugin;
     private World dungeonWorld = null;
-
-
 
 
     set keep inventory, no natural spawning etc stuff? maybe in start dungoen method
