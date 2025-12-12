@@ -1,5 +1,7 @@
 package me.Eggses.dungeons.dungeon;
 
+import me.Eggses.dungeons.achache.portals.DungeonPortal;
+import me.Eggses.dungeons.configuration.DungeonLog;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
@@ -9,48 +11,58 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 
 public abstract class DungeonInstance {
 
-    private static final int PORTAL_OPEN_DURATION_TICKS = 120 * 20;
+    private static final int PORTAL_OPEN_DURATION_TICKS = 120 * 20; // Seconds * Ticks = Total Ticks
 
     private final JavaPlugin plugin;
     private final DungeonManager dungeonManager;
+    private final DungeonLog dungeonLog;
+    private final String templateFileName;
+
+    private final DungeonWorldManager dungeonWorldManager;
+
     private World dungeonWorld = null;
-    private boolean failedToCreate = false;
 
-    private final Set<UUID> playersInWorld = new HashSet<>();
+    private final DungeonPlayers dungeonPlayers = new DungeonPlayers();
 
-    public DungeonInstance(JavaPlugin plugin, DungeonManager dungeonManager, String dungeonTemplateFileName) {
+    // Flags
+    private boolean portalOpen = false;
+
+    public DungeonInstance(JavaPlugin plugin,
+                           DungeonManager dungeonManager,
+                           String dungeonTemplateFileName,
+                           DungeonLog dungeonLog) {
 
         this.plugin = plugin;
         this.dungeonManager = dungeonManager;
+        this.dungeonLog = dungeonLog;
+        this.templateFileName = dungeonTemplateFileName;
 
-        DungeonCreation dungeonCreation = new DungeonCreation(
-                plugin,
-                dungeonTemplateFileName,
-                produceInstanceName(),
-                this::commenceDungeon,
-                this::errorCreatingDungeon);
+        dungeonWorldManager = new DungeonWorldManager(plugin, dungeonTemplateFileName, produceInstanceName());
 
-        dungeonCreation.attemptToCreateInstance();
+        dungeonWorldManager.attemptToCreateInstance(this::onWorldCreated, this::errorCreatingDungeon);
     }
 
-    private void commenceDungeon(World world) {
+    private void onWorldCreated(World world) {
+
         this.dungeonWorld = world;
         dungeonManager.addDungeonInstance(this);
         addGameRules();
+
         openPortal();
-        Bukkit.getScheduler().runTaskLater(plugin, this::closePortal, PORTAL_OPEN_DURATION_TICKS);
+        portalOpen = true;
+
+        Bukkit.getScheduler().runTaskLater(plugin, this::closeDungeonPortal, PORTAL_OPEN_DURATION_TICKS);
     }
 
     private void errorCreatingDungeon(Exception exception) {
-        failedToCreate = true;
+        dungeonManager.deleteFailedToCreateInstance(this);
         plugin.getLogger().log(Level.SEVERE, "Dungeon Failed To Generate: ", exception);
+        dungeonLog.addEntry("Dungeon Generation Failure: " + templateFileName + ".");
 
         Component message = Component
                 .text("Dungeon Failed To Generate.")
@@ -59,34 +71,76 @@ public abstract class DungeonInstance {
         Bukkit.getOnlinePlayers().forEach(player -> player.sendMessage(message));
     }
 
-    public boolean getFailedToCreate() {
-        return failedToCreate;
+    private void closeDungeonPortal() {
+        closePortal();
+        portalOpen = false;
+
+        if (dungeonPlayers.isEmpty()) {
+            dungeonLog.addEntry("Dungeon was empty after Portal closed. " +
+                    "This may be a mistake unless everyone died right at the start somehow.");
+            tryCollapseDungeon();
+        }
     }
 
-    public abstract void openPortal();
-    public abstract void closePortal();
+    private void tryCollapseDungeon() {
+
+        if (!dungeonPlayers.isEmpty() || portalOpen) return;
+
+        World mainWorld = Bukkit.getWorlds().getFirst();
+
+        List<String> errors = new ArrayList<>();
+        String errorMessage = "Dungeon Set is Empty, Portal is closed, but Dungeon World contains: ";
+        for (Player player : dungeonWorld.getPlayers()) {
+            String error = errorMessage + player.getName();
+            plugin.getLogger().severe(error);
+            errors.add(error);
+
+            player.teleport(mainWorld.getSpawnLocation());
+        }
+        if (!errors.isEmpty()) dungeonLog.addEntryList(errors);
+
+        Bukkit.unloadWorld(dungeonWorld, false);
+
+        dungeonManager.removeDungeonInstance(dungeonWorld);
+
+        dungeonWorldManager.attemptToDeleteInstance(exception -> {
+            plugin.getLogger().log(Level.SEVERE, "Dungeon Failed To be Deleted: ", exception);
+            dungeonLog.addEntry("Dungeon Deletion Failure: " + templateFileName + ".");
+        });
+    }
+
     public abstract String produceInstanceName();
+
+
+    protected abstract void openPortal();
+    protected abstract void closePortal();
+
+    /*
+    say message portal open etc...
+    you do need this:
+     */
+
+
 
     // Not Optional: This should only ever be called when NOT null.
     public @Nullable World getDungeonWorld() {
         return dungeonWorld;
     }
 
-    public void addPlayer(Player player) {
-        playersInWorld.add(player.getUniqueId());
+
+    public DungeonPlayers getDungeonPlayers() {
+        return dungeonPlayers;
     }
 
-    public void removePlayer(Player player) {
-        playersInWorld.remove(player.getUniqueId());
-    }
-
+    @Deprecated
     public boolean isInDungeon(Player player) {
         if (dungeonWorld == null) return false;
-        return playersInWorld.contains(player.getUniqueId());
+        return dungeonPlayers.contains(player);
     }
 
     public boolean isInNormalWorldPortalRoom() {
         return false;
+        // will fix
     }
 
         /*
@@ -130,6 +184,19 @@ public abstract class DungeonInstance {
             or No. due to Item: SADDLE, Item:Bundle_white or Item: Bundle_red etc.
 
      */
+
+
+    protected boolean hasBannedItems(Player player) {
+
+        /*
+        THis will be handled in the movement check thing:
+        if someone has banned items... return
+        else... pull from this class or actually the sub class the location to teleprot them too.
+         */
+
+        return false;
+
+    }
 
     private void addGameRules() {
         if (dungeonWorld == null) return;

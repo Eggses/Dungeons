@@ -12,7 +12,7 @@ import java.util.Set;
 
 public class ItemUse implements Listener {
 
-    private static final Set<Material> BANNED_ITEM_INTERACTIONS = Set.of(
+    private static final Set<Material> BANNED_RIGHT_CLICK_ITEM_INTERACTIONS = Set.of(
             Material.TRIDENT,
 
             Material.ENDER_EYE,
@@ -66,7 +66,7 @@ public class ItemUse implements Listener {
         ItemStack itemHeld = event.getItem();
         if (itemHeld == null) return;
 
-        if (BANNED_ITEM_INTERACTIONS.contains(itemHeld.getType())) {
+        if (BANNED_RIGHT_CLICK_ITEM_INTERACTIONS.contains(itemHeld.getType())) {
             event.setCancelled(true);
             event.setUseItemInHand(Event.Result.DENY);
             event.setUseInteractedBlock(Event.Result.DENY);

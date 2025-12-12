@@ -27,8 +27,6 @@ public class EntityCombat implements Listener {
 
 
 
-
-
         event.getEntity().getWorld();
 
 

@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+@Deprecated
 public class EntityManager {
 
     private final Map<UUID, DungeonEntity> entities = new HashMap<>();

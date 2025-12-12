@@ -1,7 +1,6 @@
 package me.Eggses.dungeons.dungeon;
 
 import org.bukkit.Bukkit;
-import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -13,59 +12,52 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 
-public class DungeonCreation {
+public class DungeonWorldManager {
 
     private static final Set<String> FILES_TO_IGNORE = Set.of("session.lock", "uid.dat");
 
     private final JavaPlugin plugin;
     private final String fileNameOfTemplate;
     private final String fileNameOfNewInstance;
-    private final Consumer<World> onCreation;
-    private final Consumer<Exception> onFailure;
 
-    public DungeonCreation(JavaPlugin plugin,
-                           String fileNameOfTemplate,
-                           String fileNameOfNewInstance,
-                           Consumer<World> onCreation,
-                           Consumer<Exception> onFailure) {
+    public DungeonWorldManager(JavaPlugin plugin,
+                               String fileNameOfTemplate,
+                               String fileNameOfNewInstance) {
 
         this.plugin = plugin;
         this.fileNameOfTemplate = fileNameOfTemplate;
         this.fileNameOfNewInstance = fileNameOfNewInstance;
-        this.onCreation = onCreation;
-        this.onFailure = onFailure;
     }
 
-    public void attemptToCreateInstance() {
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, this::createWorld);
+    public void attemptToCreateInstance(Consumer<World> onCreation, Consumer<Exception> onFailure) {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> createWorld(onCreation, onFailure));
     }
 
-    private void createWorld() {
+    private void createWorld(Consumer<World> onCreation, Consumer<Exception> onFailure) {
 
         File serverFolder = Bukkit.getWorldContainer();
 
         File sourceTemplateFolder = new File(serverFolder, fileNameOfTemplate);
         if (!(sourceTemplateFolder.exists() && sourceTemplateFolder.isDirectory())) {
             error(new FileNotFoundException(
-                    "Dungeon Template Folder not found or not a directory: " + sourceTemplateFolder.getPath() + "."));
+                    "Dungeon Template Folder not found or not a directory: " + sourceTemplateFolder.getPath() + "."),
+                    onFailure);
             return;
         }
 
         File destinationOfInstance = new File(serverFolder, fileNameOfNewInstance);
         if (destinationOfInstance.exists()) {
-            error(new FileAlreadyExistsException(fileNameOfNewInstance));
+            error(new FileAlreadyExistsException(fileNameOfNewInstance), onFailure);
             return;
         }
 
         try {
             copyFolderBFS(sourceTemplateFolder.toPath(), destinationOfInstance.toPath());
         } catch (IOException e) {
-            error(e);
+            error(e, onFailure);
             return;
         }
 
@@ -77,7 +69,7 @@ public class DungeonCreation {
                 onCreation.accept(world);
             } else {
                 error(new IllegalArgumentException(
-                        "WorldCreator returned null for " + destinationOfInstance.getName() + "."));
+                        "WorldCreator returned null for " + destinationOfInstance.getName() + "."), onFailure);
             }
         });
     }
@@ -111,7 +103,56 @@ public class DungeonCreation {
         }
     }
 
-    private void error(Exception exception) {
+    public void attemptToDeleteInstance(Consumer<Exception> onFailure) {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> deleteInstance(onFailure));
+    }
+
+    private void deleteInstance(Consumer<Exception> onFailure) {
+
+
+        File folderToDelete = new File(fileNameOfNewInstance);
+        if (!(folderToDelete.exists() && folderToDelete.isDirectory())) {
+            error(new FileNotFoundException("Folder to delete could not be found or not a directory: "
+                    + folderToDelete.getPath()), onFailure);
+        }
+
+        try {
+            deleteFolderBFS(folderToDelete);
+        } catch (IOException e) {
+            error(e, onFailure);
+        }
+    }
+
+    private void deleteFolderBFS(File startingFolder) throws IOException {
+
+        Queue<File> folders = new LinkedList<>();
+        folders.add(startingFolder);
+
+        List<File> foldersToDelete = new ArrayList<>();
+
+        while (!folders.isEmpty()) {
+
+            File folder = folders.poll();
+            foldersToDelete.add(folder);
+            File[] files = folder.listFiles();
+            if (files == null) continue;
+
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    folders.offer(file);
+                } else {
+                    Files.delete(file.toPath());
+                }
+            }
+        }
+
+        Collections.reverse(foldersToDelete);
+        for (File folder : foldersToDelete) {
+            Files.delete(folder.toPath());
+        }
+    }
+
+    private void error(Exception exception, Consumer<Exception> onFailure) {
         Bukkit.getScheduler().runTask(plugin, () -> onFailure.accept(exception));
     }
 }

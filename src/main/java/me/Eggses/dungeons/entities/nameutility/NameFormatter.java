@@ -5,14 +5,14 @@ import me.Eggses.dungeons.utility.MessageCreator;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.EntityType;
 
-import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
 public class NameFormatter {
 
     private static final Map<Integer, String> LEVEL_COLOUR_MAP = new TreeMap<>();
-    private static final Map<EntityType, String> ENTITY_NAME_CACHE = new EnumMap<>(EntityType.class);
+    private static final Map<EntityType, String> ENTITY_NAME_CACHE = new HashMap<>();
 
     static {
         LEVEL_COLOUR_MAP.put(0, "<green>");
