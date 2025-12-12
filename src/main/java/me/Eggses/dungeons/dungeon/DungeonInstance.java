@@ -5,10 +5,11 @@ import me.Eggses.dungeons.dungeon.players.DungeonPlayers;
 import me.Eggses.dungeons.dungeon.portals.DungeonPortal;
 import me.Eggses.dungeons.dungeon.portals.PortalController;
 import me.Eggses.dungeons.dungeon.utility.BannedItems;
+import me.Eggses.dungeons.dungeon.utility.GameRules;
+import me.Eggses.dungeons.dungeon.utility.InstanceNameManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -34,6 +35,7 @@ public abstract class DungeonInstance {
                            String dungeonTemplateFileName,
                            DungeonPortal dungeonPortal,
                            BannedItems bannedItems,
+                           InstanceNameManager instanceNameManager,
                            DungeonLog dungeonLog) {
 
         this.plugin = plugin;
@@ -42,7 +44,8 @@ public abstract class DungeonInstance {
         this.portalController = new PortalController(plugin,this, dungeonPortal, bannedItems);
         this.dungeonLog = dungeonLog;
 
-        this.dungeonWorldManager = new DungeonWorldManager(plugin, dungeonTemplateFileName, produceInstanceName());
+        this.dungeonWorldManager = new DungeonWorldManager(
+                plugin, dungeonTemplateFileName, instanceNameManager.generateFolderName());
 
         this.dungeonWorldManager.attemptToCreateInstance(this::onWorldCreated, this::errorCreatingDungeon);
     }
@@ -50,7 +53,7 @@ public abstract class DungeonInstance {
     private void onWorldCreated(World world) {
         this.dungeonWorld = world;
         dungeonManager.addDungeonInstance(this);
-        addGameRules();
+        new GameRules(world).applyRules();
         portalController.openDungeonPortal();
     }
 
@@ -112,9 +115,6 @@ public abstract class DungeonInstance {
     public boolean isInPortal(Player player) {
         return portalController.isInPortal(player);
     }
-
-    public abstract String produceInstanceName();
-
 
 
     // Not Optional: This should only ever be called when NOT null.
@@ -190,41 +190,4 @@ public abstract class DungeonInstance {
             or No. due to Item: SADDLE, Item:Bundle_white or Item: Bundle_red etc.
 
      */
-
-
-    protected boolean hasBannedItems(Player player) {
-
-        /*
-        THis will be handled in the movement check thing:
-        if someone has banned items... return
-        else... pull from this class or actually the sub class the location to teleprot them too.
-         */
-
-        return false;
-
-    }
-
-    private void addGameRules() {
-        if (dungeonWorld == null) return;
-        dungeonWorld.setGameRule(GameRule.COMMAND_BLOCKS_ENABLED, true);
-        dungeonWorld.setGameRule(GameRule.COMMAND_BLOCK_OUTPUT, true);
-        dungeonWorld.setGameRule(GameRule.KEEP_INVENTORY, true);
-        dungeonWorld.setGameRule(GameRule.DO_WARDEN_SPAWNING, false);
-        dungeonWorld.setGameRule(GameRule.DISABLE_RAIDS, true);
-        dungeonWorld.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
-        dungeonWorld.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
-        dungeonWorld.setGameRule(GameRule.DO_FIRE_TICK, false);
-        dungeonWorld.setGameRule(GameRule.DO_MOB_SPAWNING, false);
-        dungeonWorld.setGameRule(GameRule.DO_MOB_LOOT, false);
-        dungeonWorld.setGameRule(GameRule.DO_PATROL_SPAWNING, false);
-        dungeonWorld.setGameRule(GameRule.DO_TRADER_SPAWNING, false);
-        dungeonWorld.setGameRule(GameRule.MOB_GRIEFING, false);
-        dungeonWorld.setGameRule(GameRule.DO_VINES_SPREAD, false);
-        dungeonWorld.setGameRule(GameRule.SNOW_ACCUMULATION_HEIGHT, 0);
-        dungeonWorld.setGameRule(GameRule.UNIVERSAL_ANGER, true);
-        dungeonWorld.setGameRule(GameRule.RANDOM_TICK_SPEED, 0);
-        dungeonWorld.setGameRule(GameRule.DO_ENTITY_DROPS, false);
-        dungeonWorld.setGameRule(GameRule.PROJECTILES_CAN_BREAK_BLOCKS, false);
-        dungeonWorld.setGameRule(GameRule.FORGIVE_DEAD_PLAYERS, false);
-    }
 }

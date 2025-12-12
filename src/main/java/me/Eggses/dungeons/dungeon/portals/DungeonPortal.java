@@ -13,5 +13,7 @@ public interface DungeonPortal {
     void openPortal();
     void closePortal();
 
-    int getOpenDurationTicks();
+    default int getOpenDurationTicks() {
+        return PORTAL_OPEN_DURATION_TICKS;
+    }
 }
