@@ -1,5 +1,6 @@
-package me.Eggses.dungeons.dungeon;
+package me.Eggses.dungeons.dungeon.baseinstance;
 
+import me.Eggses.dungeons.dungeon.DungeonInstance;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class MalignantMarsh extends DungeonInstance {

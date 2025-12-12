@@ -1,4 +1,4 @@
-package me.Eggses.dungeons.achache.portals;
+package me.Eggses.dungeons.dungeon.regions;
 
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -31,7 +31,7 @@ public class Position {
         return y;
     }
 
-    public Location toLocation(World world) {
-        return new Location(world, x, y, z);
+    public Location toLocationCenterBlock(World world) {
+        return new Location(world, x + 0.5, y, z + 0.5);
     }
 }

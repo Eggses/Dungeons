@@ -1,6 +1,7 @@
-package me.Eggses.dungeons.achache.portals;
+package me.Eggses.dungeons.dungeon.portals;
 
-import me.Eggses.dungeons.achache.BannedItems;
+import me.Eggses.dungeons.dungeon.utility.BannedItems;
+import me.Eggses.dungeons.dungeon.DungeonInstance;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -11,20 +12,20 @@ import org.jetbrains.annotations.NotNull;
 public class PortalController {
 
     private final JavaPlugin plugin;
+    private final DungeonInstance dungeonInstance;
     private final DungeonPortal dungeonPortal;
-    private final World dungeonWorld;
     private final BannedItems bannedItems;
 
     private boolean isOpen = false;
 
     public PortalController(JavaPlugin plugin,
+                            DungeonInstance dungeonInstance,
                             DungeonPortal dungeonPortal,
-                            World dungeonWorld,
                             BannedItems bannedItems) {
 
         this.plugin = plugin;
+        this.dungeonInstance = dungeonInstance;
         this.dungeonPortal = dungeonPortal;
-        this.dungeonWorld = dungeonWorld;
         this.bannedItems = bannedItems;
     }
 
@@ -32,7 +33,7 @@ public class PortalController {
         dungeonPortal.openPortal();
         isOpen = true;
 
-        Bukkit.getScheduler().runTaskLater(plugin, this::closeDungeonPortal, dungeonPortal.getOpenDurationTicks());
+        Bukkit.getScheduler().runTaskLater(plugin, dungeonInstance::closeDungeonPortal, dungeonPortal.getOpenDurationTicks());
     }
 
     public void closeDungeonPortal() {
@@ -44,15 +45,15 @@ public class PortalController {
         return isOpen;
     }
 
-    public void onEntry(Player player) {
+    public void enterDungeon(Player player, World world) {
 
         if (bannedItems.hasBannedItems(player)) return;
 
-        Location spawningLocation = dungeonPortal.getSpawningLocation().toLocation(dungeonWorld);
+        Location spawningLocation = dungeonPortal.getSpawningLocation().toLocationCenterBlock(world);
         player.teleport(spawningLocation);
     }
 
-    public boolean isInRegion(@NotNull Player player) {
+    public boolean isInPortal(@NotNull Player player) {
         return dungeonPortal.getPortalWorldRegion().within(player.getLocation());
     }
 }

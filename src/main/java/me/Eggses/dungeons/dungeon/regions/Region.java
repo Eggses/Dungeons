@@ -1,4 +1,4 @@
-package me.Eggses.dungeons.achache.portals;
+package me.Eggses.dungeons.dungeon.regions;
 
 import org.bukkit.Location;
 
@@ -21,7 +21,7 @@ public class Region {
 
         int bx = positionB.getX();
         int by = positionB.getY();
-        int bz = positionA.getZ();
+        int bz = positionB.getZ();
 
         this.minX = Math.min(ax, bx);
         this.maxX = Math.max(ax, bx);

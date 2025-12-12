@@ -1,6 +1,7 @@
 package me.Eggses.dungeons.dungeon;
 
 import me.Eggses.dungeons.configuration.DungeonLog;
+import me.Eggses.dungeons.dungeon.baseinstance.MalignantMarsh;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;

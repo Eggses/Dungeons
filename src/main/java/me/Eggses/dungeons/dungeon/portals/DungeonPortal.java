@@ -1,4 +1,7 @@
-package me.Eggses.dungeons.achache.portals;
+package me.Eggses.dungeons.dungeon.portals;
+
+import me.Eggses.dungeons.dungeon.regions.Position;
+import me.Eggses.dungeons.dungeon.regions.WorldRegion;
 
 public interface DungeonPortal {
 

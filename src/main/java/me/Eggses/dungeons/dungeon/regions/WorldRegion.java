@@ -1,4 +1,4 @@
-package me.Eggses.dungeons.achache.portals;
+package me.Eggses.dungeons.dungeon.regions;
 
 import org.bukkit.Location;
 import org.bukkit.World;

@@ -1,7 +1,10 @@
 package me.Eggses.dungeons.dungeon;
 
-import me.Eggses.dungeons.achache.portals.DungeonPortal;
 import me.Eggses.dungeons.configuration.DungeonLog;
+import me.Eggses.dungeons.dungeon.players.DungeonPlayers;
+import me.Eggses.dungeons.dungeon.portals.DungeonPortal;
+import me.Eggses.dungeons.dungeon.portals.PortalController;
+import me.Eggses.dungeons.dungeon.utility.BannedItems;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
@@ -16,47 +19,39 @@ import java.util.logging.Level;
 
 public abstract class DungeonInstance {
 
-    private static final int PORTAL_OPEN_DURATION_TICKS = 120 * 20; // Seconds * Ticks = Total Ticks
-
     private final JavaPlugin plugin;
     private final DungeonManager dungeonManager;
     private final DungeonLog dungeonLog;
     private final String templateFileName;
+    private final PortalController portalController;
 
     private final DungeonWorldManager dungeonWorldManager;
-
     private World dungeonWorld = null;
-
     private final DungeonPlayers dungeonPlayers = new DungeonPlayers();
-
-    // Flags
-    private boolean portalOpen = false;
 
     public DungeonInstance(JavaPlugin plugin,
                            DungeonManager dungeonManager,
                            String dungeonTemplateFileName,
+                           DungeonPortal dungeonPortal,
+                           BannedItems bannedItems,
                            DungeonLog dungeonLog) {
 
         this.plugin = plugin;
         this.dungeonManager = dungeonManager;
-        this.dungeonLog = dungeonLog;
         this.templateFileName = dungeonTemplateFileName;
+        this.portalController = new PortalController(plugin,this, dungeonPortal, bannedItems);
+        this.dungeonLog = dungeonLog;
 
-        dungeonWorldManager = new DungeonWorldManager(plugin, dungeonTemplateFileName, produceInstanceName());
+        this.dungeonWorldManager = new DungeonWorldManager(plugin, dungeonTemplateFileName, produceInstanceName());
 
-        dungeonWorldManager.attemptToCreateInstance(this::onWorldCreated, this::errorCreatingDungeon);
+        this.dungeonWorldManager.attemptToCreateInstance(this::onWorldCreated, this::errorCreatingDungeon);
     }
 
     private void onWorldCreated(World world) {
-
         this.dungeonWorld = world;
         dungeonManager.addDungeonInstance(this);
         addGameRules();
-
-        openPortal();
-        portalOpen = true;
-
-        Bukkit.getScheduler().runTaskLater(plugin, this::closeDungeonPortal, PORTAL_OPEN_DURATION_TICKS);
+        portalController.openDungeonPortal();
     }
 
     private void errorCreatingDungeon(Exception exception) {
@@ -71,20 +66,21 @@ public abstract class DungeonInstance {
         Bukkit.getOnlinePlayers().forEach(player -> player.sendMessage(message));
     }
 
-    private void closeDungeonPortal() {
-        closePortal();
-        portalOpen = false;
+    public void closeDungeonPortal() {
+        if (!portalController.isOpen()) return;
+
+        portalController.closeDungeonPortal();
 
         if (dungeonPlayers.isEmpty()) {
             dungeonLog.addEntry("Dungeon was empty after Portal closed. " +
                     "This may be a mistake unless everyone died right at the start somehow.");
-            tryCollapseDungeon();
+            tryEndDungeon();
         }
     }
 
-    private void tryCollapseDungeon() {
+    public void tryEndDungeon() {
 
-        if (!dungeonPlayers.isEmpty() || portalOpen) return;
+        if (!dungeonPlayers.isEmpty() || portalController.isOpen()) return;
 
         World mainWorld = Bukkit.getWorlds().getFirst();
 
@@ -109,16 +105,15 @@ public abstract class DungeonInstance {
         });
     }
 
+    public void enterDungeon(Player player) {
+        portalController.enterDungeon(player, dungeonWorld);
+    }
+
+    public boolean isInPortal(Player player) {
+        return portalController.isInPortal(player);
+    }
+
     public abstract String produceInstanceName();
-
-
-    protected abstract void openPortal();
-    protected abstract void closePortal();
-
-    /*
-    say message portal open etc...
-    you do need this:
-     */
 
 
 
@@ -127,12 +122,23 @@ public abstract class DungeonInstance {
         return dungeonWorld;
     }
 
+    /*
+    this si the approch: hide the objects: make these
+    methods that give their features and can do more
+    like te remove method.
+     */
 
-    public DungeonPlayers getDungeonPlayers() {
-        return dungeonPlayers;
+    public void addPlayer(Player player) {
+        dungeonPlayers.add(player);
     }
 
-    @Deprecated
+    public void removePlayer(Player player) {
+        dungeonPlayers.remove(player);
+        if (dungeonPlayers.isEmpty()) tryEndDungeon();
+    }
+
+
+
     public boolean isInDungeon(Player player) {
         if (dungeonWorld == null) return false;
         return dungeonPlayers.contains(player);

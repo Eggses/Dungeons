@@ -1,4 +1,4 @@
-package me.Eggses.dungeons.achache;
+package me.Eggses.dungeons.dungeon.utility;
 
 import me.Eggses.dungeons.utility.MessageCreator;
 import org.bukkit.Material;

@@ -1,5 +1,6 @@
-package me.Eggses.dungeons.dungeon;
+package me.Eggses.dungeons.dungeon.players;
 
+import me.Eggses.dungeons.dungeon.DungeonInstance;
 import org.bukkit.entity.Player;
 
 import java.util.HashSet;
@@ -10,7 +11,8 @@ public class DungeonPlayers {
 
     private final Set<UUID> playersInWorld = new HashSet<>();
 
-    public DungeonPlayers() {}
+    public DungeonPlayers() {
+    }
 
     public void add(Player player) {
         playersInWorld.add(player.getUniqueId());
