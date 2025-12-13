@@ -47,4 +47,12 @@ public class Region {
     public boolean within(Location location) {
         return within(new Position(location.getBlockX(), location.getBlockY(), location.getBlockZ()));
     }
+
+    public int getMinX() {
+        return minX;
+    }
+
+    public int getMinZ() {
+        return minZ;
+    }
 }

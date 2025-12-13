@@ -45,7 +45,18 @@ public class BannedItems {
         this.messageCreator = messageCreator;
     }
 
+
+
     public boolean hasBannedItems(Player player) {
+
+        for (ItemStack item : player.getInventory().getContents()) {
+            if (item == null) continue;
+            if (BANNED_ITEMS.contains(item.getType())) return true;
+        }
+        return false;
+    }
+
+    public void createBannedItemsMessage(Player player) {
         Set<Material> bannedMaterials = new HashSet<>();
 
         for (ItemStack item : player.getInventory().getContents()) {
@@ -55,14 +66,12 @@ public class BannedItems {
 
         if (bannedMaterials.isEmpty()) {
             player.sendMessage(messageCreator.createMessage(ALLOWED_TO_ENTER));
-            return false;
+            return;
         }
 
         String bannedItems = String.join(", ", convertMaterialSetToNames(bannedMaterials));
         bannedItems = bannedItems + ".";
         player.sendMessage(messageCreator.createMessage(DENIED_TO_ENTER + ITEM_COLOUR + bannedItems));
-
-        return true;
     }
 
     private List<String> convertMaterialSetToNames(Set<Material> bannedMaterials) {

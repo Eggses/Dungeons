@@ -2,6 +2,7 @@ package me.Eggses.dungeons.dungeon;
 
 import me.Eggses.dungeons.configuration.DungeonLog;
 import me.Eggses.dungeons.dungeon.baseinstance.MalignantMarsh;
+import me.Eggses.dungeons.dungeon.utility.InstanceNameManager;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -11,14 +12,14 @@ import java.util.*;
 public class DungeonManager {
 
     private final Map<World, DungeonInstance> dungeonInstances = new HashMap<>();
-    private final List<DungeonInstance> dungeonInstancesToCreate = new ArrayList<>();
+    private final Map<Long, DungeonInstance> instancesWithOpenPortals = new HashMap<>();
 
     private final JavaPlugin plugin;
-    private final DungeonLog dungeonLog;
+    private final InstanceNameManager instanceNameManager;
 
     public DungeonManager(JavaPlugin plugin, DungeonLog dungeonLog) {
         this.plugin = plugin;
-        this.dungeonLog = dungeonLog;
+        instanceNameManager = new InstanceNameManager();
     }
 
     public boolean isInDungeon(Player player) {
@@ -28,15 +29,44 @@ public class DungeonManager {
         return dungeonInstance.isInDungeon(player);
     }
 
-    public boolean isInNormalWorldPortalRoom(Player player) {
-        DungeonInstance dungeonInstance = dungeonInstances.get(player.getWorld());
-        if (dungeonInstance == null) return false;
+    public void handleMovementEventInWorld(Player player, long chunkKey) {
 
+        DungeonInstance dungeonInstance = instancesWithOpenPortals.get(chunkKey);
+        if (dungeonInstance == null) return;
+
+        dungeonInstance.handleMovementEventInWorld(player);
+    }
+
+    public void addToOpenPortals(DungeonInstance dungeonInstance, long portalChunkKey) {
+        instancesWithOpenPortals.put(portalChunkKey, dungeonInstance);
+    }
+
+    public void removeFromOpenPortals(long portalChunkKey) {
+        instancesWithOpenPortals.remove(portalChunkKey);
+    }
+
+    public void handleMovementEventInDungeon(Player player) {
+        DungeonInstance dungeonInstance = dungeonInstances.get(player.getWorld());
+        if (dungeonInstance == null) return;
+
+        dungeonInstance.handleMovementEventInDungeon(player);
+    }
+
+    public boolean isInNormalWorldPortalRoom(Player player) {
         /*
         THis wont work.... nothing to do with being in the wolrd...
         will always return false!
          */
-        return dungeonInstance.isInNormalWorldPortalRoom();
+
+        /*
+        Okay this is used to prevent item drop: this is a very indpeedant thing
+        from the dungeon instance... as it can exist without an instance right?
+
+        portal room + the keystone is awlays there... so this isnt related to a
+        Dungeon instance and probably should not be in this class...
+
+         */
+        return false;
     }
 
     public Optional<DungeonInstance> getDungeonInstance(World world) {
@@ -51,14 +81,15 @@ public class DungeonManager {
     }
 
     public void removeDungeonInstance(World world) {
-        dungeonInstances.remove(world);
+        DungeonInstance dungeonInstance = dungeonInstances.remove(world);
+        if (dungeonInstance == null) return;
+
+        freeFolderName(dungeonInstance.getInstanceFileName());
     }
 
-    public void deleteFailedToCreateInstance(DungeonInstance dungeonInstance) {
-        dungeonInstancesToCreate.remove(dungeonInstance);
+    public void freeFolderName(String instanceFolderName) {
+        instanceNameManager.freeFolderName(instanceFolderName);
     }
-
-
 
 
 /*
@@ -146,7 +177,7 @@ the more likley ones first...
     public void createDungeon(DungeonType dungeonType) {
         switch (dungeonType) {
 
-            case MALIGNANT_MARSH -> dungeonInstancesToCreate.add(new MalignantMarsh(plugin));
+            case MALIGNANT_MARSH -> new MalignantMarsh(plugin);
 
             default -> {
             }

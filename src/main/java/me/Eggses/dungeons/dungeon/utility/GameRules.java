@@ -1,5 +1,6 @@
 package me.Eggses.dungeons.dungeon.utility;
 
+import org.bukkit.Difficulty;
 import org.bukkit.GameRule;
 import org.bukkit.World;
 
@@ -12,6 +13,10 @@ public class GameRules {
     }
 
     public void applyRules() {
+
+        // dungeonWorld.setViewDistance();
+        dungeonWorld.setDifficulty(Difficulty.HARD);
+
         dungeonWorld.setGameRule(GameRule.COMMAND_BLOCKS_ENABLED, true);
         dungeonWorld.setGameRule(GameRule.COMMAND_BLOCK_OUTPUT, true);
         dungeonWorld.setGameRule(GameRule.KEEP_INVENTORY, true);

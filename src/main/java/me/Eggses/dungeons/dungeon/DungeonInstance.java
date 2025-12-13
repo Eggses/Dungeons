@@ -6,10 +6,11 @@ import me.Eggses.dungeons.dungeon.portals.DungeonPortal;
 import me.Eggses.dungeons.dungeon.portals.PortalController;
 import me.Eggses.dungeons.dungeon.utility.BannedItems;
 import me.Eggses.dungeons.dungeon.utility.GameRules;
-import me.Eggses.dungeons.dungeon.utility.InstanceNameManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -25,6 +26,8 @@ public abstract class DungeonInstance {
     private final DungeonLog dungeonLog;
     private final String templateFileName;
     private final PortalController portalController;
+    private final String instanceFileName;
+    private final BannedItems bannedItems;
 
     private final DungeonWorldManager dungeonWorldManager;
     private World dungeonWorld = null;
@@ -33,19 +36,21 @@ public abstract class DungeonInstance {
     public DungeonInstance(JavaPlugin plugin,
                            DungeonManager dungeonManager,
                            String dungeonTemplateFileName,
+                           String instanceFileName,
                            DungeonPortal dungeonPortal,
                            BannedItems bannedItems,
-                           InstanceNameManager instanceNameManager,
                            DungeonLog dungeonLog) {
 
         this.plugin = plugin;
         this.dungeonManager = dungeonManager;
         this.templateFileName = dungeonTemplateFileName;
-        this.portalController = new PortalController(plugin,this, dungeonPortal, bannedItems);
+        this.portalController = new PortalController(plugin,this, dungeonPortal);
         this.dungeonLog = dungeonLog;
+        this.bannedItems = bannedItems;
 
+        this.instanceFileName = instanceFileName;
         this.dungeonWorldManager = new DungeonWorldManager(
-                plugin, dungeonTemplateFileName, instanceNameManager.generateFolderName());
+                plugin, dungeonTemplateFileName, instanceFileName);
 
         this.dungeonWorldManager.attemptToCreateInstance(this::onWorldCreated, this::errorCreatingDungeon);
     }
@@ -55,10 +60,11 @@ public abstract class DungeonInstance {
         dungeonManager.addDungeonInstance(this);
         new GameRules(world).applyRules();
         portalController.openDungeonPortal();
+        dungeonManager.addToOpenPortals(this, portalController.getChunkKeyOfPortal());
     }
 
     private void errorCreatingDungeon(Exception exception) {
-        dungeonManager.deleteFailedToCreateInstance(this);
+        dungeonManager.freeFolderName(instanceFileName);
         plugin.getLogger().log(Level.SEVERE, "Dungeon Failed To Generate: ", exception);
         dungeonLog.addEntry("Dungeon Generation Failure: " + templateFileName + ".");
 
@@ -73,6 +79,7 @@ public abstract class DungeonInstance {
         if (!portalController.isOpen()) return;
 
         portalController.closeDungeonPortal();
+        dungeonManager.removeFromOpenPortals(portalController.getChunkKeyOfPortal());
 
         if (dungeonPlayers.isEmpty()) {
             dungeonLog.addEntry("Dungeon was empty after Portal closed. " +
@@ -81,7 +88,7 @@ public abstract class DungeonInstance {
         }
     }
 
-    public void tryEndDungeon() {
+    private void tryEndDungeon() {
 
         if (!dungeonPlayers.isEmpty() || portalController.isOpen()) return;
 
@@ -106,88 +113,67 @@ public abstract class DungeonInstance {
             plugin.getLogger().log(Level.SEVERE, "Dungeon Failed To be Deleted: ", exception);
             dungeonLog.addEntry("Dungeon Deletion Failure: " + templateFileName + ".");
         });
+
+        // end any repeating tasks in here:
     }
 
-    public void enterDungeon(Player player) {
-        portalController.enterDungeon(player, dungeonWorld);
-    }
-
-    public boolean isInPortal(Player player) {
-        return portalController.isInPortal(player);
-    }
-
-
-    // Not Optional: This should only ever be called when NOT null.
-    public @Nullable World getDungeonWorld() {
-        return dungeonWorld;
-    }
-
-    /*
-    this si the approch: hide the objects: make these
-    methods that give their features and can do more
-    like te remove method.
-     */
 
     public void addPlayer(Player player) {
         dungeonPlayers.add(player);
+        player.setGameMode(GameMode.ADVENTURE);
     }
 
     public void removePlayer(Player player) {
         dungeonPlayers.remove(player);
         if (dungeonPlayers.isEmpty()) tryEndDungeon();
+        player.setGameMode(GameMode.SURVIVAL);
     }
 
-
-
     public boolean isInDungeon(Player player) {
-        if (dungeonWorld == null) return false;
         return dungeonPlayers.contains(player);
     }
 
-    public boolean isInNormalWorldPortalRoom() {
-        return false;
-        // will fix
+
+    public void handleEntityDeathEvent(UUID uuid) {
+
     }
 
-        /*
-        set keep inventory, no natural spawning etc stuff? maybe in start dungoen method
+    public void handlePlayerInteractEvent(Location locationOfBlock) {
 
+    }
 
-        this will be like the checking to work out
-                like if someone is in a region
-                same thing... store 2 points
+    // PRE CONDITION: Player is in the Dungeon... DO NOT CHECK WORLD
+    public void handleMovementEventInDungeon(Player player) {
 
-            return true ifplayer is inside two points
+        if (portalController.isInPortalInDungeonWorld(player)) {
+            portalController.leaveDungeon(player);
+        }
 
-                atually have a region object that stores maybe 2 locations?
-            or your cusotom one actually that just ocntains
+        // If you are here: it means they moved somewhere else so call the movememnt linked hash map
+        // but ensure ONLY iterate if region is NOT active....
+    }
 
-                class Region:
-        Point p1
-                Point p2
-                        World
-                                public Region(Location location).. .get the idea?
-                public boolean inside(Location location)... get the idea?
-                go with
-            if world = this.word
-                then check mroe specific
-
-                use point object...
-        becuase if you use location you store world twice...
-        and world is big...
-
-        maybe store world name not the world? as qorlds have unique names!
-        // fix this
-
-
-    rmeove sadles + bundles on entry:
-    maybe on teleport can do this idk?
-
-    OR dont let people take portal with those items in thier inventory!
-    thats how you do it....
-
-    and then the keysotne has a can I enter Dungeon button? click it it says Yes, all good
-            or No. due to Item: SADDLE, Item:Bundle_white or Item: Bundle_red etc.
-
+    /*
+    be super carufl with calling stuff as  nothing in dungeon has a stable world... only coords
+    so could get weird behaviour if you ever dont pre condition confirm the world.
      */
+
+    public void handleMovementEventInWorld(Player player) {
+
+        if (!portalController.isInPortalInMainWorld(player)) return;
+
+        if (bannedItems.hasBannedItems(player)) {
+            bannedItems.createBannedItemsMessage(player);
+            return;
+        }
+        portalController.enterDungeon(player, dungeonWorld);
+    }
+
+    public @Nullable World getDungeonWorld() {
+        return dungeonWorld;
+    }
+
+    public String getInstanceFileName() {
+        return instanceFileName;
+    }
 }

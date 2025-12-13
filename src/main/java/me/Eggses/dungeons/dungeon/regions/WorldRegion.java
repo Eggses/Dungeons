@@ -17,4 +17,12 @@ public class WorldRegion {
         if (!location.getWorld().equals(world)) return false;
         return region.within(location);
     }
+
+    public Region getRegion() {
+        return region;
+    }
+
+    public World getWorld() {
+        return world;
+    }
 }
