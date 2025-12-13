@@ -10,6 +10,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Set;
+
 public class PortalController {
 
     private final JavaPlugin plugin;
@@ -49,7 +51,7 @@ public class PortalController {
     }
 
     public boolean isInPortalInMainWorld(@NotNull Player player) {
-        return dungeonPortal.getPortalWorldRegion().within(player.getLocation());
+        return dungeonPortal.getInWorldPortalWorldRegion().within(player.getLocation());
     }
 
     public void leaveDungeon(Player player) {
@@ -61,24 +63,7 @@ public class PortalController {
         return dungeonPortal.getPortalInDungeonRegion().within(player.getLocation());
     }
 
-    // PRE CONDITION: Portal is WITHIN a SINGLE chunk.
-    public long getChunkKeyOfPortal() {
-
-        Region region = dungeonPortal.getPortalWorldRegion().getRegion();
-
-        int chunkX = region.getMinX() >> 4;
-        int chunkZ = region.getMinZ() >> 4;
-
-        return Chunk.getChunkKey(chunkX, chunkZ);
-
-        /*
-        -1 / 16 = -0.0625. When doing as an int, the result is truncated to 0.
-        But, the chunk coordinate is not 0, it's meant to be -1.
-        floor(-0.0625) = -1 which is the value.
-
-        Its /2^4 = /16 which is what Chuck coordinates are.
-        However, it acts like it uses floor( / 16) which is why
-        it works.
-         */
+    public Set<Long> getChunkKeysEncompassed() {
+        return dungeonPortal.getInWorldPortalWorldRegion().getRegion().getCoveredChunkKeys();
     }
 }

@@ -34,4 +34,21 @@ public class Position {
     public Location toLocationCenterBlock(World world) {
         return new Location(world, x + 0.5, y, z + 0.5);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Position other)) return false;
+
+        return x == other.x && y == other.y && z == other.z;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 17;
+        result = 31 * result + x;
+        result = 31 * result + y;
+        result = 31 * result + z;
+        return result;
+    }
 }

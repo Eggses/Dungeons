@@ -15,12 +15,15 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.logging.Level;
 
 public abstract class DungeonInstance {
 
+    private static final Logger log = LoggerFactory.getLogger(DungeonInstance.class);
     private final JavaPlugin plugin;
     private final DungeonManager dungeonManager;
     private final DungeonLog dungeonLog;
@@ -60,7 +63,7 @@ public abstract class DungeonInstance {
         dungeonManager.addDungeonInstance(this);
         new GameRules(world).applyRules();
         portalController.openDungeonPortal();
-        dungeonManager.addToOpenPortals(this, portalController.getChunkKeyOfPortal());
+        dungeonManager.addToOpenPortals(this, portalController.getChunkKeysEncompassed());
     }
 
     private void errorCreatingDungeon(Exception exception) {
@@ -79,7 +82,7 @@ public abstract class DungeonInstance {
         if (!portalController.isOpen()) return;
 
         portalController.closeDungeonPortal();
-        dungeonManager.removeFromOpenPortals(portalController.getChunkKeyOfPortal());
+        dungeonManager.removeFromOpenPortals(portalController.getChunkKeysEncompassed());
 
         if (dungeonPlayers.isEmpty()) {
             dungeonLog.addEntry("Dungeon was empty after Portal closed. " +
@@ -145,12 +148,23 @@ public abstract class DungeonInstance {
     // PRE CONDITION: Player is in the Dungeon... DO NOT CHECK WORLD
     public void handleMovementEventInDungeon(Player player) {
 
-        if (portalController.isInPortalInDungeonWorld(player)) {
-            portalController.leaveDungeon(player);
-        }
+        /*
+        cirtical: do the region check first... beucase they check has the aiblity
+        to return early if the in progress flag inside the DungeonProgress class
+        is on... and people are less likely to every leave the dungeon so doing the
+        check isn't really that smart...
+
+        as reward for beating keys, give people teleports, maybe not
+        server guide could be thier own /dungeons menu that opens
+        up and lets them teleport to the instance.
+         */
 
         // If you are here: it means they moved somewhere else so call the movememnt linked hash map
         // but ensure ONLY iterate if region is NOT active....
+
+        if (portalController.isInPortalInDungeonWorld(player)) {
+            portalController.leaveDungeon(player);
+        }
     }
 
     /*
@@ -158,8 +172,59 @@ public abstract class DungeonInstance {
     so could get weird behaviour if you ever dont pre condition confirm the world.
      */
 
-    public void handleMovementEventInWorld(Player player) {
+    /*
+         This one, and the one aobve are maybe effected... actually not this one
+            more the code above that handles portals regions and the code in the DUngeonmanager for
+            instances iwth open portals... esneitally... you have have 1 portal in a Chunk so probably
+                have like
+                        Map<Long, DUngeon...>
 
+        and you pull by Long which is the chunk ID... its just that multiple longs can
+                point to the same instance...
+
+        for the movement code location where you have like
+
+                map<location, key> and map<Long(chunkkey), key> then map<key, dungeonRoom>
+
+                you still have boolean for active dungeon room...
+
+        mutliple rooms cna be in same chunk so ensure that the map is like...
+
+        actaully it has to be like
+
+                Long, Set<Key>... then you can have multiple THINGS in the same map basically...
+
+        I think this emthod is fine but the others ones have to change above... once you
+                pull the correct region.. you linear check through the set to work out if a player
+                is actually in the correct region... hang on might need to be
+
+
+                Map<Long, Map<Region, Set<Key>>>....
+        Becuase a Long can point to a group of regions... of of each has thier own Key...
+
+
+        key's gotten from here and the interact map which is map<location of button /lever, KEY>
+
+            can be used in the Map<Key, DungeonRoom
+
+
+                before you do this fix the protals... note 1 portal in 1 chunk/..
+
+        therefore you can just have
+
+                Map<Chunk, Instance>
+
+                        you pull the dungeon instance with a chunk... THEN do you check further...
+
+        IN BOTH CASES: THE CHUNK IS NOT A 100% KEY, IT JUST NARROWS IT DOWN SO YOU DONT NEED A LINEAR CHECK FOR
+                EVERY SINGLE MOVEMENT EVENT.
+
+
+     */
+
+
+    public void handleMovementEventInWorld(Player player) {
+        if (!portalController.isOpen()) return;
         if (!portalController.isInPortalInMainWorld(player)) return;
 
         if (bannedItems.hasBannedItems(player)) {

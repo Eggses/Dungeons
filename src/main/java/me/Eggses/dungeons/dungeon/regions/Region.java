@@ -1,6 +1,10 @@
 package me.Eggses.dungeons.dungeon.regions;
 
+import org.bukkit.Chunk;
 import org.bukkit.Location;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class Region {
 
@@ -48,11 +52,47 @@ public class Region {
         return within(new Position(location.getBlockX(), location.getBlockY(), location.getBlockZ()));
     }
 
-    public int getMinX() {
-        return minX;
+    public Set<Long> getCoveredChunkKeys() {
+
+        Set<Long> chunkKeys = new HashSet<>();
+
+        int minChunkX = minX >> 4;
+        int maxChunkX = maxX >> 4;
+
+        int minChunkZ = minZ >> 4;
+        int maxChunkZ = maxZ >> 4;
+
+        for (int x = minChunkX; x <= maxChunkX; x++) {
+            for (int z = minChunkZ; z <= maxChunkZ; z++) {
+                chunkKeys.add(Chunk.getChunkKey(x, z));
+            }
+        }
+
+        return chunkKeys;
     }
 
-    public int getMinZ() {
-        return minZ;
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (!(object instanceof Region other)) return false;
+
+        return minX == other.minX
+                && maxX == other.maxX
+                && minY == other.minY
+                && maxY == other.maxY
+                && minZ == other.minZ
+                && maxZ == other.maxZ;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 17;
+        result = 31 * result + minX;
+        result = 31 * result + maxX;
+        result = 31 * result + minY;
+        result = 31 * result + maxY;
+        result = 31 * result + minZ;
+        result = 31 * result + maxZ;
+        return result;
     }
 }

@@ -37,12 +37,18 @@ public class DungeonManager {
         dungeonInstance.handleMovementEventInWorld(player);
     }
 
-    public void addToOpenPortals(DungeonInstance dungeonInstance, long portalChunkKey) {
-        instancesWithOpenPortals.put(portalChunkKey, dungeonInstance);
+    public void addToOpenPortals(DungeonInstance dungeonInstance, Set<Long> portalChunkKeys) {
+
+        for (Long chunkKey : portalChunkKeys) {
+            instancesWithOpenPortals.put(chunkKey, dungeonInstance);
+        }
     }
 
-    public void removeFromOpenPortals(long portalChunkKey) {
-        instancesWithOpenPortals.remove(portalChunkKey);
+    public void removeFromOpenPortals(Set<Long> portalChunkKeys) {
+
+        for (Long chunkKey : portalChunkKeys) {
+            instancesWithOpenPortals.remove(chunkKey);
+        }
     }
 
     public void handleMovementEventInDungeon(Player player) {

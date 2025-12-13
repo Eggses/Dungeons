@@ -10,7 +10,7 @@ public interface DungeonPortal {
     int PORTAL_OPEN_DURATION_TICKS = 120 * 20; // Seconds * Ticks = Total Ticks
 
     // Enter Portal -> Spawn In Dungeon
-    WorldRegion getPortalWorldRegion();
+    WorldRegion getInWorldPortalWorldRegion();
     Position getSpawningLocationInsideDungeon();
 
     // Exit Portal -> Spawn in Main World.
