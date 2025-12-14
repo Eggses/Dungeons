@@ -5,3 +5,14 @@ api-version: '1.21'
 load: STARTUP
 authors: [ Eggses ]
 description: Dungeons
+
+commands:
+  dungeontrigger:
+    description: Dungeon Trigger
+    usage: /dungeontrigger <value>
+    permission: dungeons.admin.cmdblock.dungeontrigger
+
+permissions:
+  dungeons.admin.cmdblock.dungeontrigger:
+    description: Permission for /dungeontrigger <value>
+    default: op
