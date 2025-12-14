@@ -15,13 +15,19 @@ public class AreaController {
     private final Map<Position, Consumer<World>> customBlocksMap = new HashMap<>();
     private final Map<Integer, Consumer<World>> dungeonTriggerCommandMap = new HashMap<>();
 
+    private final AreaControllerBuilder areaControllerBuilder;
     private final EntityManager entityManager;
     private final World dungeonWorld;
 
     private DungeonArea activeDungeonArea = null;
     private boolean areaInProgress = false;
 
-    public AreaController(World dungeonWorld, TaskManager taskManager, MessageCreator messageCreator) {
+    public AreaController(AreaControllerBuilder areaControllerBuilder,
+                          World dungeonWorld,
+                          TaskManager taskManager,
+                          MessageCreator messageCreator) {
+
+        this.areaControllerBuilder = areaControllerBuilder;
         this.entityManager = new EntityManager(taskManager, messageCreator);
         this.dungeonWorld = dungeonWorld;
     }
@@ -70,7 +76,7 @@ public class AreaController {
         activeDungeonArea = dungeonArea;
         areaInProgress = true;
 
-        dungeonArea.onEnterFirstTime(dungeonWorld);
+        dungeonArea.onEnterFirstTime(dungeonWorld, entityManager);
         remove(dungeonArea);
     }
 
@@ -101,7 +107,14 @@ public class AreaController {
      * Map Manager
      * ========================================================= */
 
-    public void defineAllAreas(Set<DungeonArea> dungeonAreas) {
+    public void defineAllAreasAndActions() {
+        defineAllAreas(areaControllerBuilder.getDungeonAreas());
+        defineAllBlockFunctions(areaControllerBuilder.getDungeonBlockActions());
+        defineAllTriggerCommandFunctions(areaControllerBuilder.getDungeonTriggerCommandActions());
+    }
+
+    private void defineAllAreas(Set<DungeonArea> dungeonAreas) {
+
         for (DungeonArea dungeonArea : dungeonAreas) {
             defineArea(dungeonArea);
         }
@@ -118,13 +131,13 @@ public class AreaController {
         }
     }
 
-    public void defineAllBlockFunctions(List<DungeonAction<Position>> customBlockActions) {
+    public void defineAllBlockFunctions(Set<DungeonAction<Position>> customBlockActions) {
         for (DungeonAction<Position> dungeonAction : customBlockActions) {
             customBlocksMap.put(dungeonAction.getK(), dungeonAction.getAction());
         }
     }
 
-    public void defineAllTriggerCommandFunctions(List<DungeonAction<Integer>> dungeonTriggerActions) {
+    public void defineAllTriggerCommandFunctions(Set<DungeonAction<Integer>> dungeonTriggerActions) {
         for (DungeonAction<Integer> dungeonAction : dungeonTriggerActions) {
             dungeonTriggerCommandMap.put(dungeonAction.getK(), dungeonAction.getAction());
         }

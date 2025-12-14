@@ -1,6 +1,7 @@
 package me.Eggses.dungeons.dungeon.portals;
 
 import me.Eggses.dungeons.dungeon.DungeonInstance;
+import me.Eggses.dungeons.dungeon.utility.BannedItems;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -13,17 +14,21 @@ public class PortalController {
     private final JavaPlugin plugin;
     private final DungeonInstance dungeonInstance;
     private final DungeonPortal dungeonPortal;
+    private final BannedItems bannedItems;
 
     private final Set<Long> chunkKeys;
     private boolean isOpen = false;
 
     public PortalController(JavaPlugin plugin,
                             DungeonInstance dungeonInstance,
-                            DungeonPortal dungeonPortal) {
+                            DungeonPortal dungeonPortal,
+                            BannedItems bannedItems) {
 
         this.plugin = plugin;
         this.dungeonInstance = dungeonInstance;
         this.dungeonPortal = dungeonPortal;
+        this.bannedItems = bannedItems;
+
         chunkKeys = dungeonPortal.getInWorldPortalWorldRegion().getRegion().getCoveredChunkKeys();
     }
 
@@ -48,6 +53,12 @@ public class PortalController {
     }
 
     public void enterDungeon(Player player, World dungeonWorld) {
+
+        if (bannedItems.hasBannedItems(player)) {
+            bannedItems.createAndSendBannedItemsMessage(player);
+            return;
+        }
+
         Location spawningLocation = dungeonPortal.getSpawningLocationInsideDungeon().toLocationCenterBlock(dungeonWorld);
         player.teleport(spawningLocation);
     }

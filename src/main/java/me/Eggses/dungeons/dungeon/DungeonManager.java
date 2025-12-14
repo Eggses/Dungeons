@@ -127,7 +127,7 @@ public class DungeonManager {
     public void createDungeon(DungeonType dungeonType) {
         switch (dungeonType) {
 
-            case MALIGNANT_MARSH -> new MalignantMarsh(plugin);
+            case MALIGNANT_MARSH -> new MalignantMarsh();
 
             default -> {
             }

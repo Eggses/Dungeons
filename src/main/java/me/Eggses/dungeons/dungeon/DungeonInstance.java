@@ -1,12 +1,12 @@
 package me.Eggses.dungeons.dungeon;
 
 import me.Eggses.dungeons.configuration.DungeonLog;
+import me.Eggses.dungeons.dungeon.baseinstance.DungeonConfiguration;
 import me.Eggses.dungeons.dungeon.players.DungeonPlayers;
-import me.Eggses.dungeons.dungeon.portals.DungeonPortal;
 import me.Eggses.dungeons.dungeon.portals.PortalController;
 import me.Eggses.dungeons.dungeon.progress.AreaController;
+import me.Eggses.dungeons.dungeon.progress.AreaControllerBuilder;
 import me.Eggses.dungeons.dungeon.regions.Position;
-import me.Eggses.dungeons.dungeon.utility.BannedItems;
 import me.Eggses.dungeons.dungeon.utility.GameRules;
 import me.Eggses.dungeons.entities.taskbehaviour.TaskManager;
 import me.Eggses.dungeons.utility.MessageCreator;
@@ -24,52 +24,51 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 
-public abstract class DungeonInstance {
+public class DungeonInstance {
 
     private final JavaPlugin plugin;
     private final DungeonManager dungeonManager;
-    private final DungeonLog dungeonLog;
 
+    private final AreaControllerBuilder areaControllerBuilder;
     private final String templateFileName;
-
-    private final PortalController portalController;
-
-    private final String instanceFileName;
-    private final BannedItems bannedItems;
-    private final TaskManager taskManager;
-    private final MessageCreator messageCreator;
     private final Consumer<World> dungeonRules;
 
+    private final String instanceFileName;
+    private final MessageCreator messageCreator;
+    private final TaskManager taskManager;
+    private final DungeonLog dungeonLog;
+
     private final DungeonWorldManager dungeonWorldManager;
-    private World dungeonWorld = null;
-    private AreaController areaController = null;
+    private World dungeonWorld;
+    private final PortalController portalController;
+    private AreaController areaController;
     private final DungeonPlayers dungeonPlayers = new DungeonPlayers();
 
     public DungeonInstance(JavaPlugin plugin,
                            DungeonManager dungeonManager,
-                           String dungeonTemplateFileName,
+                           DungeonConfiguration dungeonConfiguration,
                            String instanceFileName,
-                           DungeonPortal dungeonPortal,
-                           BannedItems bannedItems,
-                           DungeonLog dungeonLog,
-                           TaskManager taskManager,
                            MessageCreator messageCreator,
-                           Consumer<World> dungeonRules) {
+                           TaskManager taskManager,
+                           DungeonLog dungeonLog) {
 
         this.plugin = plugin;
         this.dungeonManager = dungeonManager;
-        this.templateFileName = dungeonTemplateFileName;
-        this.portalController = new PortalController(plugin,this, dungeonPortal);
-        this.dungeonLog = dungeonLog;
-        this.bannedItems = bannedItems;
-        this.taskManager = taskManager;
-        this.messageCreator = messageCreator;
-        this.dungeonRules = dungeonRules;
-
+        this.areaControllerBuilder = dungeonConfiguration.getAreaControllerBuilder();
+        this.templateFileName = dungeonConfiguration.getTemplateName();
+        this.dungeonRules = dungeonConfiguration.getDungeonRules();
         this.instanceFileName = instanceFileName;
-        this.dungeonWorldManager = new DungeonWorldManager(
-                plugin, dungeonTemplateFileName, instanceFileName);
+        this.messageCreator = messageCreator;
+        this.taskManager = taskManager;
+        this.dungeonLog = dungeonLog;
 
+        this.portalController = new PortalController(
+                plugin,
+                this,
+                dungeonConfiguration.getDungeonPortal(),
+                dungeonConfiguration.getBannedItems());
+
+        this.dungeonWorldManager = new DungeonWorldManager(plugin, templateFileName, instanceFileName);
         this.dungeonWorldManager.attemptToCreateInstance(this::onWorldCreated, this::errorCreatingDungeon);
     }
 
@@ -78,7 +77,7 @@ public abstract class DungeonInstance {
 
         dungeonManager.addDungeonInstance(this);
 
-        areaController = new AreaController(world, taskManager, messageCreator);
+        areaController = new AreaController(areaControllerBuilder, world, taskManager, messageCreator);
 
         GameRules gameRules = new GameRules(world);
         gameRules.applyRules();
@@ -164,12 +163,6 @@ public abstract class DungeonInstance {
         if (!portalController.isOpen()) return; // Should be impossible.
         if (!portalController.isInPortalInMainWorld(destination)) return;
 
-
-
-        if (bannedItems.hasBannedItems(player)) {
-            bannedItems.createBannedItemsMessage(player);
-            return;
-        }
         portalController.enterDungeon(player, dungeonWorld);
     }
 
@@ -201,18 +194,4 @@ public abstract class DungeonInstance {
     public String getInstanceFileName() {
         return instanceFileName;
     }
-
-    /*
-    imagine when world is created... you go to add the dungoen.. you just pass the world + maybe a key...
-    and then it makes the instance... sets all these methods etc... split it.... you could also have a sperate
-            class for portals porbably.
-
-     */
 }
-
-/*
-maybe dungeon instance becomes a real class... and subclasses instead are just constants
-        that pass in behaviour as it never changes right.. can preconfigure everything?
-
-
- */

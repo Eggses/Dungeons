@@ -54,7 +54,7 @@ public class BannedItems {
         return false;
     }
 
-    public void createBannedItemsMessage(Player player) {
+    public void createAndSendBannedItemsMessage(Player player) {
         Set<Material> bannedMaterials = new HashSet<>();
 
         for (ItemStack item : player.getInventory().getContents()) {

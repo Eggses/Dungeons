@@ -1,14 +1,42 @@
 package me.Eggses.dungeons.dungeon.baseinstance;
 
-import me.Eggses.dungeons.dungeon.DungeonInstance;
-import org.bukkit.plugin.java.JavaPlugin;
+import me.Eggses.dungeons.dungeon.portals.DungeonPortal;
+import me.Eggses.dungeons.dungeon.progress.AreaControllerBuilder;
+import me.Eggses.dungeons.dungeon.utility.BannedItems;
+import org.bukkit.World;
 
-public class MalignantMarsh extends DungeonInstance {
+import java.util.function.Consumer;
 
-    private static final String DUNGEON_NAME = "malignant_marsh";
+public class MalignantMarsh implements DungeonConfiguration {
 
-    public MalignantMarsh(JavaPlugin plugin) {
+    private static final String DUNGEON_TEMPLATE_NAME = "malignant_marsh";
+
+    public MalignantMarsh() {
+
     }
 
+    @Override
+    public String getTemplateName() {
+    return DUNGEON_TEMPLATE_NAME;
+    }
 
+    @Override
+    public DungeonPortal getDungeonPortal() {
+        return null;
+    }
+
+    @Override
+    public Consumer<World> getDungeonRules() {
+        return null;
+    }
+
+    @Override
+    public AreaControllerBuilder getAreaControllerBuilder() {
+        return null;
+    }
+
+    @Override
+    public BannedItems getBannedItems() {
+        return null;
+    }
 }
