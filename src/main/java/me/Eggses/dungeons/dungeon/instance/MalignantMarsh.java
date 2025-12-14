@@ -1,4 +1,4 @@
-package me.Eggses.dungeons.dungeon.baseinstance;
+package me.Eggses.dungeons.dungeon.instance;
 
 import me.Eggses.dungeons.dungeon.portals.DungeonPortal;
 import me.Eggses.dungeons.dungeon.progress.AreaControllerBuilder;
@@ -9,15 +9,8 @@ import java.util.function.Consumer;
 
 public class MalignantMarsh implements DungeonConfiguration {
 
-    private static final String DUNGEON_TEMPLATE_NAME = "malignant_marsh";
-
     public MalignantMarsh() {
 
-    }
-
-    @Override
-    public String getTemplateName() {
-    return DUNGEON_TEMPLATE_NAME;
     }
 
     @Override

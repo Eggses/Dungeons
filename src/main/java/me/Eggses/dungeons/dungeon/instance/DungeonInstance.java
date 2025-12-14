@@ -1,66 +1,55 @@
-package me.Eggses.dungeons.dungeon;
+package me.Eggses.dungeons.dungeon.instance;
 
-import me.Eggses.dungeons.configuration.DungeonLog;
-import me.Eggses.dungeons.dungeon.baseinstance.DungeonConfiguration;
 import me.Eggses.dungeons.dungeon.players.DungeonPlayers;
 import me.Eggses.dungeons.dungeon.portals.PortalController;
 import me.Eggses.dungeons.dungeon.progress.AreaController;
 import me.Eggses.dungeons.dungeon.progress.AreaControllerBuilder;
 import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.dungeon.utility.GameRules;
+import me.Eggses.dungeons.dungeon.lifecycle.DungeonInstanceCoordinator;
 import me.Eggses.dungeons.entities.taskbehaviour.TaskManager;
 import me.Eggses.dungeons.utility.MessageCreator;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.logging.Level;
+import java.util.Set;
+import java.util.UUID;
 
 public class DungeonInstance {
 
     private final JavaPlugin plugin;
-    private final DungeonManager dungeonManager;
+    private final DungeonInstanceCoordinator dungeonInstanceCoordinator;
 
     private final AreaControllerBuilder areaControllerBuilder;
-    private final String templateFileName;
-    private final Consumer<World> dungeonRules;
 
     private final String instanceFileName;
     private final MessageCreator messageCreator;
     private final TaskManager taskManager;
-    private final DungeonLog dungeonLog;
 
-    private final DungeonWorldManager dungeonWorldManager;
-    private World dungeonWorld;
+    private final World dungeonWorld;
     private final PortalController portalController;
-    private AreaController areaController;
+    private final AreaController areaController;
     private final DungeonPlayers dungeonPlayers = new DungeonPlayers();
 
     public DungeonInstance(JavaPlugin plugin,
-                           DungeonManager dungeonManager,
+                           DungeonInstanceCoordinator dungeonInstanceCoordinator,
+                           World dungeonWorld,
                            DungeonConfiguration dungeonConfiguration,
                            String instanceFileName,
                            MessageCreator messageCreator,
-                           TaskManager taskManager,
-                           DungeonLog dungeonLog) {
+                           TaskManager taskManager) {
 
         this.plugin = plugin;
-        this.dungeonManager = dungeonManager;
+        this.dungeonInstanceCoordinator = dungeonInstanceCoordinator;
+        this.dungeonWorld = dungeonWorld;
         this.areaControllerBuilder = dungeonConfiguration.getAreaControllerBuilder();
-        this.templateFileName = dungeonConfiguration.getTemplateName();
-        this.dungeonRules = dungeonConfiguration.getDungeonRules();
         this.instanceFileName = instanceFileName;
         this.messageCreator = messageCreator;
         this.taskManager = taskManager;
-        this.dungeonLog = dungeonLog;
 
         this.portalController = new PortalController(
                 plugin,
@@ -68,49 +57,21 @@ public class DungeonInstance {
                 dungeonConfiguration.getDungeonPortal(),
                 dungeonConfiguration.getBannedItems());
 
-        this.dungeonWorldManager = new DungeonWorldManager(plugin, templateFileName, instanceFileName);
-        this.dungeonWorldManager.attemptToCreateInstance(this::onWorldCreated, this::errorCreatingDungeon);
-    }
-
-    private void onWorldCreated(World world) {
-        this.dungeonWorld = world;
-
-        dungeonManager.addDungeonInstance(this);
-
-        areaController = new AreaController(areaControllerBuilder, world, taskManager, messageCreator);
-
-        GameRules gameRules = new GameRules(world);
+        GameRules gameRules = new GameRules(dungeonWorld);
         gameRules.applyRules();
-        gameRules.applyRules(dungeonRules);
+        gameRules.applyRules(dungeonConfiguration.getDungeonRules());
+
+        areaController = new AreaController(areaControllerBuilder, dungeonWorld, taskManager, messageCreator);
 
         portalController.openDungeonPortal();
-        dungeonManager.addToOpenPortals(this, portalController.getChunkKeysEncompassed());
-    }
-
-    private void errorCreatingDungeon(Exception exception) {
-        dungeonManager.freeFolderName(instanceFileName);
-
-        plugin.getLogger().log(Level.SEVERE, "Dungeon Failed To Generate: ", exception);
-        dungeonLog.addEntry("Dungeon Generation Failure: " + templateFileName + ".");
-
-        Component message = Component
-                .text("Dungeon Failed To Generate.")
-                .color(TextColor.color(255, 20, 20));
-
-        Bukkit.getOnlinePlayers().forEach(player -> player.sendMessage(message));
+        dungeonInstanceCoordinator.openPortal(this, portalController.getChunkKeysEncompassed());
     }
 
     public void closeDungeonPortal() {
         if (!portalController.isOpen()) return;
-
         portalController.closeDungeonPortal();
-        dungeonManager.removeFromOpenPortals(portalController.getChunkKeysEncompassed());
-
-        if (dungeonPlayers.isEmpty()) {
-            dungeonLog.addEntry("Dungeon was empty after Portal closed. " +
-                    "This may be a mistake unless everyone died right at the start somehow.");
-            tryEndDungeon();
-        }
+        dungeonInstanceCoordinator.closePortal(portalController.getChunkKeysEncompassed());
+        tryEndDungeon();
     }
 
     private void tryEndDungeon() {
@@ -119,25 +80,18 @@ public class DungeonInstance {
 
         World mainWorld = Bukkit.getWorlds().getFirst();
 
-        List<String> errors = new ArrayList<>();
-        String errorMessage = "Dungeon Set is Empty, Portal is closed, but Dungeon World contains: ";
-        for (Player player : dungeonWorld.getPlayers()) {
-            String error = errorMessage + player.getName();
-            plugin.getLogger().severe(error);
-            errors.add(error);
+        StringBuilder errorMessage = new StringBuilder(
+                "Dungeon Set is Empty, Portal is closed, but Dungeon World contains: "
+        );
 
+        for (Player player : dungeonWorld.getPlayers()) {
+            errorMessage.append(player.getName()).append(" ");
             player.teleport(mainWorld.getSpawnLocation());
         }
-        if (!errors.isEmpty()) dungeonLog.addEntryList(errors);
 
-        Bukkit.unloadWorld(dungeonWorld, false);
+        plugin.getLogger().severe(errorMessage.toString());
 
-        dungeonManager.removeDungeonInstance(dungeonWorld);
-
-        dungeonWorldManager.attemptToDeleteInstance(exception -> {
-            plugin.getLogger().log(Level.SEVERE, "Dungeon Failed To be Deleted: ", exception);
-            dungeonLog.addEntry("Dungeon Deletion Failure: " + templateFileName + ".");
-        });
+        dungeonInstanceCoordinator.destroyInstance(this);
 
         // end any repeating tasks in here:
     }
@@ -187,11 +141,33 @@ public class DungeonInstance {
         areaController.handleEntityDeathEvent(uuid);
     }
 
-    public @Nullable World getDungeonWorld() {
+    public World getDungeonWorld() {
         return dungeonWorld;
     }
 
     public String getInstanceFileName() {
         return instanceFileName;
     }
+
+    public Set<Long> getPortalChunkKeys() {
+        return portalController.getChunkKeysEncompassed();
+    }
+
+    /*
+
+    okay so extensive efforts where made: this class needs to be fixed up:
+
+    also every class that used the dungoen manager needs to be changed to idk the event router... or
+    the registry or something...
+
+    as that class is gone...
+
+    also this class may not be fully fixed yet! as lots of changes...
+
+    one more thing the logic aobut the DungeonLifewCycleServices is quite complex
+    and done late so need to fix that...
+
+
+
+     */
 }

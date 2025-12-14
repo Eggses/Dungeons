@@ -1,6 +1,6 @@
 package me.Eggses.dungeons.dungeon.portals;
 
-import me.Eggses.dungeons.dungeon.DungeonInstance;
+import me.Eggses.dungeons.dungeon.instance.DungeonInstance;
 import me.Eggses.dungeons.dungeon.utility.BannedItems;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

@@ -1,5 +1,6 @@
-package me.Eggses.dungeons.dungeon;
+package me.Eggses.dungeons.dungeon.lifecycle;
 
+import me.Eggses.dungeons.dungeon.utility.InstanceNameManager;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
@@ -20,23 +21,26 @@ public class DungeonWorldManager {
     private static final Set<String> FILES_TO_IGNORE = Set.of("session.lock", "uid.dat");
 
     private final JavaPlugin plugin;
-    private final String fileNameOfTemplate;
-    private final String fileNameOfNewInstance;
+    private final InstanceNameManager instanceNameManager;
 
-    public DungeonWorldManager(JavaPlugin plugin,
-                               String fileNameOfTemplate,
-                               String fileNameOfNewInstance) {
-
+    public DungeonWorldManager(JavaPlugin plugin, InstanceNameManager instanceNameManager) {
         this.plugin = plugin;
-        this.fileNameOfTemplate = fileNameOfTemplate;
-        this.fileNameOfNewInstance = fileNameOfNewInstance;
+        this.instanceNameManager = instanceNameManager;
     }
 
-    public void attemptToCreateInstance(Consumer<World> onCreation, Consumer<Exception> onFailure) {
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> createWorld(onCreation, onFailure));
+    public void attemptToCreateInstance(String fileNameOfTemplate,
+                                        String fileNameOfNewInstance,
+                                        Consumer<World> onCreation,
+                                        Consumer<Exception> onFailure) {
+
+        Bukkit.getScheduler().runTaskAsynchronously(plugin,
+                () -> createWorld(fileNameOfTemplate, fileNameOfNewInstance, onCreation, onFailure));
     }
 
-    private void createWorld(Consumer<World> onCreation, Consumer<Exception> onFailure) {
+    private void createWorld(String fileNameOfTemplate,
+                             String fileNameOfNewInstance,
+                             Consumer<World> onCreation,
+                             Consumer<Exception> onFailure) {
 
         File serverFolder = Bukkit.getWorldContainer();
 
@@ -103,24 +107,29 @@ public class DungeonWorldManager {
         }
     }
 
-    public void attemptToDeleteInstance(Consumer<Exception> onFailure) {
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> deleteInstance(onFailure));
+    public void attemptToDeleteInstance(String fileNameOfNewInstance,
+                                        Consumer<Exception> onFailure) {
+
+        Bukkit.getScheduler().runTaskAsynchronously(plugin,
+                () -> deleteInstance(fileNameOfNewInstance, onFailure));
     }
 
-    private void deleteInstance(Consumer<Exception> onFailure) {
+    private void deleteInstance(String fileNameOfNewInstance, Consumer<Exception> onFailure) {
 
-
-        File folderToDelete = new File(fileNameOfNewInstance);
+        File folderToDelete = new File(Bukkit.getWorldContainer(), fileNameOfNewInstance);
         if (!(folderToDelete.exists() && folderToDelete.isDirectory())) {
             error(new FileNotFoundException("Folder to delete could not be found or not a directory: "
                     + folderToDelete.getPath()), onFailure);
+            return;
         }
 
         try {
             deleteFolderBFS(folderToDelete);
         } catch (IOException e) {
             error(e, onFailure);
+            return;
         }
+        instanceNameManager.freeFolderName(fileNameOfNewInstance);
     }
 
     private void deleteFolderBFS(File startingFolder) throws IOException {

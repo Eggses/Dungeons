@@ -1,6 +1,5 @@
 package me.Eggses.dungeons.listeners.players;
 
-import me.Eggses.dungeons.dungeon.DungeonManager;
 import me.Eggses.dungeons.dungeon.regions.Position;
 import org.bukkit.Material;
 import org.bukkit.World;

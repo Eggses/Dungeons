@@ -1,6 +1,5 @@
 package me.Eggses.dungeons.dungeon.players;
 
-import me.Eggses.dungeons.dungeon.DungeonInstance;
 import org.bukkit.entity.Player;
 
 import java.util.HashSet;

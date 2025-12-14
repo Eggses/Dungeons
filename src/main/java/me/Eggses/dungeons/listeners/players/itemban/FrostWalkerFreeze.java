@@ -1,6 +1,5 @@
 package me.Eggses.dungeons.listeners.players.itemban;
 
-import me.Eggses.dungeons.dungeon.DungeonManager;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
