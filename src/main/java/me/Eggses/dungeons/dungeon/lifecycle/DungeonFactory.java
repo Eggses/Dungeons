@@ -19,17 +19,16 @@ public class DungeonFactory {
 
     private final JavaPlugin plugin;
     private final DungeonRegistry dungeonRegistry;
-    private final DungeonLifecycleService dungeonLifecycleService;
+    private final DungeonInstanceCoordinator dungeonInstanceCoordinator;
     private final DungeonWorldManager dungeonWorldManager;
     private final InstanceNameManager instanceNameManager;
     private final MessageCreator messageCreator;
     private final TaskManager taskManager;
     private final DungeonLog dungeonLog;
 
-
     public DungeonFactory(JavaPlugin plugin,
                           DungeonRegistry dungeonRegistry,
-                          DungeonLifecycleService dungeonLifecycleService,
+                          DungeonInstanceCoordinator dungeonInstanceCoordinator,
                           DungeonWorldManager dungeonWorldManager,
                           InstanceNameManager instanceNameManager,
                           MessageCreator messageCreator,
@@ -38,7 +37,7 @@ public class DungeonFactory {
 
         this.plugin = plugin;
         this.dungeonRegistry = dungeonRegistry;
-        this.dungeonLifecycleService = dungeonLifecycleService;
+        this.dungeonInstanceCoordinator = dungeonInstanceCoordinator;
         this.dungeonWorldManager = dungeonWorldManager;
         this.instanceNameManager = instanceNameManager;
         this.messageCreator = messageCreator;
@@ -53,7 +52,7 @@ public class DungeonFactory {
 
         var dungeonInstance = new DungeonInstance(
                 plugin,
-                dungeonLifecycleService,
+                dungeonInstanceCoordinator,
                 world,
                 dungeonConfiguration,
                 instanceFileName,

@@ -14,4 +14,3 @@ public enum DungeonType {
         return templateName;
     }
 }
-
