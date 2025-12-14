@@ -3,9 +3,12 @@ package me.Eggses.dungeons.dungeon.utility;
 import org.bukkit.Difficulty;
 import org.bukkit.GameRule;
 import org.bukkit.World;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GameRules {
 
+    private static final Logger log = LoggerFactory.getLogger(GameRules.class);
     private final World dungeonWorld;
 
     public GameRules(World dungeonWorld) {
@@ -16,6 +19,14 @@ public class GameRules {
 
         // dungeonWorld.setViewDistance();
         dungeonWorld.setDifficulty(Difficulty.HARD);
+
+     Specific dungeons need to set thier own weather... and maybe times...
+
+        maybe have a public void Consumer<Wrodl> applyMore rules or a runnable..
+        and then just like yeah let it do things like change the worodls time.
+
+        must be callable from subclass.
+
 
         dungeonWorld.setGameRule(GameRule.COMMAND_BLOCKS_ENABLED, true);
         dungeonWorld.setGameRule(GameRule.COMMAND_BLOCK_OUTPUT, true);

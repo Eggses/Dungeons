@@ -1,9 +1,7 @@
 package me.Eggses.dungeons.dungeon.portals;
 
 import me.Eggses.dungeons.dungeon.DungeonInstance;
-import me.Eggses.dungeons.dungeon.regions.Region;
 import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -18,6 +16,7 @@ public class PortalController {
     private final DungeonInstance dungeonInstance;
     private final DungeonPortal dungeonPortal;
 
+    private final Set<Long> chunkKeys;
     private boolean isOpen = false;
 
     public PortalController(JavaPlugin plugin,
@@ -27,6 +26,7 @@ public class PortalController {
         this.plugin = plugin;
         this.dungeonInstance = dungeonInstance;
         this.dungeonPortal = dungeonPortal;
+        chunkKeys = dungeonPortal.getInWorldPortalWorldRegion().getRegion().getCoveredChunkKeys();
     }
 
     public void openDungeonPortal() {
@@ -50,8 +50,8 @@ public class PortalController {
         player.teleport(spawningLocation);
     }
 
-    public boolean isInPortalInMainWorld(@NotNull Player player) {
-        return dungeonPortal.getInWorldPortalWorldRegion().within(player.getLocation());
+    public boolean isInPortalInMainWorld(Location location) {
+        return dungeonPortal.getInWorldPortalWorldRegion().within(location);
     }
 
     public void leaveDungeon(Player player) {
@@ -59,11 +59,11 @@ public class PortalController {
         player.teleport(spawningLocation);
     }
 
-    public boolean isInPortalInDungeonWorld(Player player) {
-        return dungeonPortal.getPortalInDungeonRegion().within(player.getLocation());
+    public boolean isInPortalInDungeonWorld(Location location) {
+        return dungeonPortal.getPortalInDungeonRegion().within(location);
     }
 
     public Set<Long> getChunkKeysEncompassed() {
-        return dungeonPortal.getInWorldPortalWorldRegion().getRegion().getCoveredChunkKeys();
+        return chunkKeys;
     }
 }

@@ -4,8 +4,12 @@ import me.Eggses.dungeons.configuration.DungeonLog;
 import me.Eggses.dungeons.dungeon.players.DungeonPlayers;
 import me.Eggses.dungeons.dungeon.portals.DungeonPortal;
 import me.Eggses.dungeons.dungeon.portals.PortalController;
+import me.Eggses.dungeons.dungeon.progress.AreaController;
+import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.dungeon.utility.BannedItems;
 import me.Eggses.dungeons.dungeon.utility.GameRules;
+import me.Eggses.dungeons.entities.taskbehaviour.TaskManager;
+import me.Eggses.dungeons.utility.MessageCreator;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
@@ -31,9 +35,12 @@ public abstract class DungeonInstance {
     private final PortalController portalController;
     private final String instanceFileName;
     private final BannedItems bannedItems;
+    private final TaskManager taskManager;
+    private final MessageCreator messageCreator;
 
     private final DungeonWorldManager dungeonWorldManager;
     private World dungeonWorld = null;
+    private AreaController areaController = null;
     private final DungeonPlayers dungeonPlayers = new DungeonPlayers();
 
     public DungeonInstance(JavaPlugin plugin,
@@ -42,7 +49,9 @@ public abstract class DungeonInstance {
                            String instanceFileName,
                            DungeonPortal dungeonPortal,
                            BannedItems bannedItems,
-                           DungeonLog dungeonLog) {
+                           DungeonLog dungeonLog,
+                           TaskManager taskManager,
+                           MessageCreator messageCreator) {
 
         this.plugin = plugin;
         this.dungeonManager = dungeonManager;
@@ -50,6 +59,8 @@ public abstract class DungeonInstance {
         this.portalController = new PortalController(plugin,this, dungeonPortal);
         this.dungeonLog = dungeonLog;
         this.bannedItems = bannedItems;
+        this.taskManager = taskManager;
+        this.messageCreator = messageCreator;
 
         this.instanceFileName = instanceFileName;
         this.dungeonWorldManager = new DungeonWorldManager(
@@ -61,6 +72,7 @@ public abstract class DungeonInstance {
     private void onWorldCreated(World world) {
         this.dungeonWorld = world;
         dungeonManager.addDungeonInstance(this);
+        areaController = new AreaController(world, taskManager, messageCreator);
         new GameRules(world).applyRules();
         portalController.openDungeonPortal();
         dungeonManager.addToOpenPortals(this, portalController.getChunkKeysEncompassed());
@@ -138,36 +150,48 @@ public abstract class DungeonInstance {
 
 
     public void handleEntityDeathEvent(UUID uuid) {
-
+        areaController.handleEntityDeathEvent(uuid);
     }
 
-    public void handlePlayerInteractEvent(Location locationOfBlock) {
-
+    public void handlePlayerInteractEvent(Position positionOfBlock) {
+        areaController.handleInteractEvent(positionOfBlock);
     }
 
     // PRE CONDITION: Player is in the Dungeon... DO NOT CHECK WORLD
-    public void handleMovementEventInDungeon(Player player) {
+    public void handleMovementEventInDungeon(Player player, Location destination, long chunkKey) {
 
-        /*
-        cirtical: do the region check first... beucase they check has the aiblity
-        to return early if the in progress flag inside the DungeonProgress class
-        is on... and people are less likely to every leave the dungeon so doing the
-        check isn't really that smart...
+        areaController.handleMovementEventInDungeon(destination, chunkKey);
 
-        as reward for beating keys, give people teleports, maybe not
-        server guide could be thier own /dungeons menu that opens
-        up and lets them teleport to the instance.
-         */
-
-        // If you are here: it means they moved somewhere else so call the movememnt linked hash map
-        // but ensure ONLY iterate if region is NOT active....
-
-        if (portalController.isInPortalInDungeonWorld(player)) {
+        if (portalController.isInPortalInDungeonWorld(destination)) {
             portalController.leaveDungeon(player);
         }
     }
 
-    /*
+    public void handleMovementEventInWorld(Player player, Location destination) {
+
+        if (!portalController.isOpen()) return; // Should be impossible but critical guard.
+        if (!portalController.isInPortalInMainWorld(destination)) return;
+
+        if (bannedItems.hasBannedItems(player)) {
+            bannedItems.createBannedItemsMessage(player);
+            return;
+        }
+        portalController.enterDungeon(player, dungeonWorld);
+    }
+
+    public void handleDungeonTriggerCommand(int argumentValue) {
+        areaController.handleDungeonTriggerCommand(argumentValue);
+    }
+
+    public @Nullable World getDungeonWorld() {
+        return dungeonWorld;
+    }
+
+    public String getInstanceFileName() {
+        return instanceFileName;
+    }
+
+      /*
     be super carufl with calling stuff as  nothing in dungeon has a stable world... only coords
     so could get weird behaviour if you ever dont pre condition confirm the world.
      */
@@ -223,22 +247,5 @@ public abstract class DungeonInstance {
      */
 
 
-    public void handleMovementEventInWorld(Player player) {
-        if (!portalController.isOpen()) return;
-        if (!portalController.isInPortalInMainWorld(player)) return;
 
-        if (bannedItems.hasBannedItems(player)) {
-            bannedItems.createBannedItemsMessage(player);
-            return;
-        }
-        portalController.enterDungeon(player, dungeonWorld);
-    }
-
-    public @Nullable World getDungeonWorld() {
-        return dungeonWorld;
-    }
-
-    public String getInstanceFileName() {
-        return instanceFileName;
-    }
 }

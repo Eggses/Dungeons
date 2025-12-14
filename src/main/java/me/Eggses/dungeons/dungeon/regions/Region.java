@@ -49,7 +49,14 @@ public class Region {
     }
 
     public boolean within(Location location) {
-        return within(new Position(location.getBlockX(), location.getBlockY(), location.getBlockZ()));
+
+        int x = location.getBlockX();
+        int y = location.getBlockY();
+        int z = location.getBlockZ();
+
+        return x <= maxX && x >= minX
+                && y <= maxY && y >= minY
+                && z <= maxZ && z >= minZ;
     }
 
     public Set<Long> getCoveredChunkKeys() {
@@ -95,4 +102,22 @@ public class Region {
         result = 31 * result + maxZ;
         return result;
     }
+
+    you needed this ebcuase Map <Chunk,Map<region, set<room>>>
+    the outer chunk may have dupliate entires... you need them to be the same key
+            if you didint voerride hashcdoe and equals they would be different and break this stuff
+    is citical.
+
+
+    you need a early return as well: if someone is acitivlty fighting mobs.. have a flag in
+            dungeon progress that WILL NOT try and pull a chunk becuse there is 1 in progress
+            currently...
+
+    Then okay so comapred to the linked hash map... when players are in a region... its probably slowler
+    as more complex to check whereas linkedhashmap was instant... still probably o1 but not fully.
+
+    but when a phase is cleared and players are running to next area which is most of the dungeon...
+    this checking is a lot faster...
+
+    ensure you have an early return.
 }

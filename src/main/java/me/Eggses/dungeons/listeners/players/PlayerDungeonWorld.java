@@ -19,21 +19,6 @@ public class PlayerDungeonWorld implements Listener {
         this.dungeonManager = dungeonManager;
     }
 
-    /*
-    This does not handle rejoining in a Dungeon...
-    you need to see what happens if A you logout in world then delete that world...
-    what happens on login
-
-    then also if someone logs out in a Dungeon.. do you TP them back in? maybe if it still exists
-    though you could complex behaviour:
-
-    just kick: on login... if world is NULL or world is a Dungeon... TP them to main world?
-    but if world is NULL... is there error?
-
-    entity combat can now be handled as you can pull an instance and therefore an entity manager with a world
-    as each dungeon maintains its own map!
-     */
-
     @EventHandler
     public void onWorldChange(PlayerChangedWorldEvent event) {
 

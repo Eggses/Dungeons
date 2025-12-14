@@ -2,7 +2,7 @@ package me.Eggses.dungeons.listeners.players;
 
 import me.Eggses.dungeons.dungeon.DungeonManager;
 import org.bukkit.Bukkit;
-import org.bukkit.World;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -23,12 +23,15 @@ public class PlayerMovement implements Listener {
 
         Player player = event.getPlayer();
 
+        Location destination = event.getTo();
+        long chunkKeyOfDestination = event.getTo().getChunk().getChunkKey();
+
         if (player.getWorld().equals(Bukkit.getWorlds().getFirst())) {
-            dungeonManager.handleMovementEventInWorld(player, event.getTo().getChunk().getChunkKey());
+            dungeonManager.handleMovementEventInWorld(player, destination, chunkKeyOfDestination);
             return;
         }
 
-        // This checks if the Player is in the Dungeon - do not need to check twice.
-        dungeonManager.handleMovementEventInDungeon(player);
+        //This uses World as a key initially, not chunks; do not need to check a player is in the Dungeon World.
+        dungeonManager.handleMovementEventInDungeon(player, destination, chunkKeyOfDestination);
     }
 }

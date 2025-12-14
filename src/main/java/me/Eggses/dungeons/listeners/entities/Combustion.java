@@ -1,7 +1,6 @@
 package me.Eggses.dungeons.listeners.entities;
 
-import me.Eggses.dungeons.entities.EntityManager;
-import org.bukkit.entity.Entity;
+import me.Eggses.dungeons.dungeon.DungeonManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityCombustByBlockEvent;
@@ -10,10 +9,10 @@ import org.bukkit.event.entity.EntityCombustEvent;
 
 public class Combustion implements Listener {
 
-    private final EntityManager entityManager;
+    private final DungeonManager dungeonManager;
 
-    public Combustion(EntityManager entityManager) {
-        this.entityManager = entityManager;
+    public Combustion(DungeonManager dungeonManager) {
+        this.dungeonManager = dungeonManager;
     }
 
     /*
@@ -24,8 +23,7 @@ public class Combustion implements Listener {
     @EventHandler
     public void onCombustion(EntityCombustEvent event) {
 
-        Entity entity = event.getEntity();
-        if (!entityManager.contains(entity.getUniqueId())) return;
+        if (!dungeonManager.isDungeonWorld(event.getEntity().getWorld())) return;
 
         if (event instanceof EntityCombustByEntityEvent) return;
         if (event instanceof EntityCombustByBlockEvent) return;
