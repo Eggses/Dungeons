@@ -25,6 +25,7 @@ public class EntityCombatOLD implements Listener {
         UUID uuidOfAttacker = attacker.getUniqueId();
         UUID uuidOfVictim = victim.getUniqueId();
 
+        /*
         above is ALL wrong as attacker may be an arrow which is pointless...
 
         so handle the event, like have handlers for each type basically
@@ -59,10 +60,9 @@ public class EntityCombatOLD implements Listener {
         if (attackerIsDungeonEntity && victim instanceof Player) {
             handleDungeonEntityAttackingPlayer(event);
             return;
-        }
+
+         */
     }
-
-
 
 
 

@@ -25,7 +25,6 @@ public class DungeonManager {
         instanceNameManager = new InstanceNameManager();
     }
 
-
     /* =========================================================
      * Queries
      * ========================================================= */

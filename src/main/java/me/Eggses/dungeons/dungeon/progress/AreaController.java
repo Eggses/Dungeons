@@ -26,6 +26,10 @@ public class AreaController {
         this.dungeonWorld = dungeonWorld;
     }
 
+    /* =========================================================
+     * Event routing
+     * ========================================================= */
+
     public void handleMovementEventInDungeon(Location location, long chunkKey) {
 
         if (areaInProgress) return;
@@ -47,24 +51,20 @@ public class AreaController {
         consumer.accept(dungeonWorld);
     }
 
-    public void handleEntityDeathEvent(UUID uuid) {
-        entityManager.removeMob(uuid);
-        if (entityManager.isEmpty()) endActiveArea();
-    }
-
     public void handleDungeonTriggerCommand(Integer argumentValue) {
         Consumer<World> consumer = dungeonTriggerCommandMap.get(argumentValue);
         if (consumer == null) return;
         consumer.accept(dungeonWorld);
     }
 
-    private void endActiveArea() {
-        if (activeDungeonArea == null || !areaInProgress) return;
-
-        activeDungeonArea.onClearArea(dungeonWorld);
-        activeDungeonArea = null;
-        areaInProgress = false;
+    public void handleEntityDeathEvent(UUID uuid) {
+        entityManager.removeMob(uuid);
+        if (entityManager.isEmpty()) endActiveArea();
     }
+
+    /* =========================================================
+     * Area Manager
+     * ========================================================= */
 
     private void beginArea(DungeonArea dungeonArea) {
         activeDungeonArea = dungeonArea;
@@ -72,6 +72,15 @@ public class AreaController {
 
         dungeonArea.onEnterFirstTime(dungeonWorld);
         remove(dungeonArea);
+    }
+
+
+    private void endActiveArea() {
+        if (activeDungeonArea == null || !areaInProgress) return;
+
+        activeDungeonArea.onClearArea(dungeonWorld);
+        activeDungeonArea = null;
+        areaInProgress = false;
     }
 
     private void remove(DungeonArea dungeonArea) {
@@ -87,6 +96,10 @@ public class AreaController {
             if (dungeonAreasAtChunk.isEmpty()) dungeonAreaMap.remove(chunkKey);
         }
     }
+
+    /* =========================================================
+     * Map Manager
+     * ========================================================= */
 
     public void defineAllAreas(Set<DungeonArea> dungeonAreas) {
         for (DungeonArea dungeonArea : dungeonAreas) {
@@ -105,8 +118,15 @@ public class AreaController {
         }
     }
 
+    public void defineAllBlockFunctions(List<DungeonAction<Position>> customBlockActions) {
+        for (DungeonAction<Position> dungeonAction : customBlockActions) {
+            customBlocksMap.put(dungeonAction.getK(), dungeonAction.getAction());
+        }
+    }
 
-
-
-
+    public void defineAllTriggerCommandFunctions(List<DungeonAction<Integer>> dungeonTriggerActions) {
+        for (DungeonAction<Integer> dungeonAction : dungeonTriggerActions) {
+            dungeonTriggerCommandMap.put(dungeonAction.getK(), dungeonAction.getAction());
+        }
+    }
 }

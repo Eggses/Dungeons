@@ -19,24 +19,26 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 
 public abstract class DungeonInstance {
 
-    private static final Logger log = LoggerFactory.getLogger(DungeonInstance.class);
     private final JavaPlugin plugin;
     private final DungeonManager dungeonManager;
     private final DungeonLog dungeonLog;
+
     private final String templateFileName;
+
     private final PortalController portalController;
+
     private final String instanceFileName;
     private final BannedItems bannedItems;
     private final TaskManager taskManager;
     private final MessageCreator messageCreator;
+    private final Consumer<World> dungeonRules;
 
     private final DungeonWorldManager dungeonWorldManager;
     private World dungeonWorld = null;
@@ -51,7 +53,8 @@ public abstract class DungeonInstance {
                            BannedItems bannedItems,
                            DungeonLog dungeonLog,
                            TaskManager taskManager,
-                           MessageCreator messageCreator) {
+                           MessageCreator messageCreator,
+                           Consumer<World> dungeonRules) {
 
         this.plugin = plugin;
         this.dungeonManager = dungeonManager;
@@ -61,6 +64,7 @@ public abstract class DungeonInstance {
         this.bannedItems = bannedItems;
         this.taskManager = taskManager;
         this.messageCreator = messageCreator;
+        this.dungeonRules = dungeonRules;
 
         this.instanceFileName = instanceFileName;
         this.dungeonWorldManager = new DungeonWorldManager(
@@ -71,15 +75,22 @@ public abstract class DungeonInstance {
 
     private void onWorldCreated(World world) {
         this.dungeonWorld = world;
+
         dungeonManager.addDungeonInstance(this);
+
         areaController = new AreaController(world, taskManager, messageCreator);
-        new GameRules(world).applyRules();
+
+        GameRules gameRules = new GameRules(world);
+        gameRules.applyRules();
+        gameRules.applyRules(dungeonRules);
+
         portalController.openDungeonPortal();
         dungeonManager.addToOpenPortals(this, portalController.getChunkKeysEncompassed());
     }
 
     private void errorCreatingDungeon(Exception exception) {
         dungeonManager.freeFolderName(instanceFileName);
+
         plugin.getLogger().log(Level.SEVERE, "Dungeon Failed To Generate: ", exception);
         dungeonLog.addEntry("Dungeon Generation Failure: " + templateFileName + ".");
 
@@ -132,7 +143,6 @@ public abstract class DungeonInstance {
         // end any repeating tasks in here:
     }
 
-
     public void addPlayer(Player player) {
         dungeonPlayers.add(player);
         player.setGameMode(GameMode.ADVENTURE);
@@ -149,15 +159,20 @@ public abstract class DungeonInstance {
     }
 
 
-    public void handleEntityDeathEvent(UUID uuid) {
-        areaController.handleEntityDeathEvent(uuid);
+    public void handleMovementEventInWorld(Player player, Location destination) {
+
+        if (!portalController.isOpen()) return; // Should be impossible.
+        if (!portalController.isInPortalInMainWorld(destination)) return;
+
+
+
+        if (bannedItems.hasBannedItems(player)) {
+            bannedItems.createBannedItemsMessage(player);
+            return;
+        }
+        portalController.enterDungeon(player, dungeonWorld);
     }
 
-    public void handlePlayerInteractEvent(Position positionOfBlock) {
-        areaController.handleInteractEvent(positionOfBlock);
-    }
-
-    // PRE CONDITION: Player is in the Dungeon... DO NOT CHECK WORLD
     public void handleMovementEventInDungeon(Player player, Location destination, long chunkKey) {
 
         areaController.handleMovementEventInDungeon(destination, chunkKey);
@@ -167,20 +182,16 @@ public abstract class DungeonInstance {
         }
     }
 
-    public void handleMovementEventInWorld(Player player, Location destination) {
-
-        if (!portalController.isOpen()) return; // Should be impossible but critical guard.
-        if (!portalController.isInPortalInMainWorld(destination)) return;
-
-        if (bannedItems.hasBannedItems(player)) {
-            bannedItems.createBannedItemsMessage(player);
-            return;
-        }
-        portalController.enterDungeon(player, dungeonWorld);
+    public void handlePlayerInteractEvent(Position positionOfBlock) {
+        areaController.handleInteractEvent(positionOfBlock);
     }
 
     public void handleDungeonTriggerCommand(int argumentValue) {
         areaController.handleDungeonTriggerCommand(argumentValue);
+    }
+
+    public void handleEntityDeathEvent(UUID uuid) {
+        areaController.handleEntityDeathEvent(uuid);
     }
 
     public @Nullable World getDungeonWorld() {
@@ -191,61 +202,17 @@ public abstract class DungeonInstance {
         return instanceFileName;
     }
 
-      /*
-    be super carufl with calling stuff as  nothing in dungeon has a stable world... only coords
-    so could get weird behaviour if you ever dont pre condition confirm the world.
-     */
-
     /*
-         This one, and the one aobve are maybe effected... actually not this one
-            more the code above that handles portals regions and the code in the DUngeonmanager for
-            instances iwth open portals... esneitally... you have have 1 portal in a Chunk so probably
-                have like
-                        Map<Long, DUngeon...>
-
-        and you pull by Long which is the chunk ID... its just that multiple longs can
-                point to the same instance...
-
-        for the movement code location where you have like
-
-                map<location, key> and map<Long(chunkkey), key> then map<key, dungeonRoom>
-
-                you still have boolean for active dungeon room...
-
-        mutliple rooms cna be in same chunk so ensure that the map is like...
-
-        actaully it has to be like
-
-                Long, Set<Key>... then you can have multiple THINGS in the same map basically...
-
-        I think this emthod is fine but the others ones have to change above... once you
-                pull the correct region.. you linear check through the set to work out if a player
-                is actually in the correct region... hang on might need to be
-
-
-                Map<Long, Map<Region, Set<Key>>>....
-        Becuase a Long can point to a group of regions... of of each has thier own Key...
-
-
-        key's gotten from here and the interact map which is map<location of button /lever, KEY>
-
-            can be used in the Map<Key, DungeonRoom
-
-
-                before you do this fix the protals... note 1 portal in 1 chunk/..
-
-        therefore you can just have
-
-                Map<Chunk, Instance>
-
-                        you pull the dungeon instance with a chunk... THEN do you check further...
-
-        IN BOTH CASES: THE CHUNK IS NOT A 100% KEY, IT JUST NARROWS IT DOWN SO YOU DONT NEED A LINEAR CHECK FOR
-                EVERY SINGLE MOVEMENT EVENT.
-
+    imagine when world is created... you go to add the dungoen.. you just pass the world + maybe a key...
+    and then it makes the instance... sets all these methods etc... split it.... you could also have a sperate
+            class for portals porbably.
 
      */
-
-
-
 }
+
+/*
+maybe dungeon instance becomes a real class... and subclasses instead are just constants
+        that pass in behaviour as it never changes right.. can preconfigure everything?
+
+
+ */

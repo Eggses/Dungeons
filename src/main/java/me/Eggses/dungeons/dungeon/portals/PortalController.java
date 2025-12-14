@@ -6,8 +6,6 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Set;
 
 public class PortalController {
@@ -45,22 +43,22 @@ public class PortalController {
         return isOpen;
     }
 
+    public boolean isInPortalInMainWorld(Location location) {
+        return dungeonPortal.getInWorldPortalWorldRegion().within(location);
+    }
+
     public void enterDungeon(Player player, World dungeonWorld) {
         Location spawningLocation = dungeonPortal.getSpawningLocationInsideDungeon().toLocationCenterBlock(dungeonWorld);
         player.teleport(spawningLocation);
     }
 
-    public boolean isInPortalInMainWorld(Location location) {
-        return dungeonPortal.getInWorldPortalWorldRegion().within(location);
+    public boolean isInPortalInDungeonWorld(Location location) {
+        return dungeonPortal.getPortalInDungeonRegion().within(location);
     }
 
     public void leaveDungeon(Player player) {
         Location spawningLocation = dungeonPortal.getExitLocationInMainWorld();
         player.teleport(spawningLocation);
-    }
-
-    public boolean isInPortalInDungeonWorld(Location location) {
-        return dungeonPortal.getPortalInDungeonRegion().within(location);
     }
 
     public Set<Long> getChunkKeysEncompassed() {

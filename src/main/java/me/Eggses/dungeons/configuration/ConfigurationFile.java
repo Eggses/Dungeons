@@ -47,6 +47,4 @@ public class ConfigurationFile {
     public FileConfiguration getCustomFile() {
         return customFile;
     }
-
-    store player stats in a config somewhere that would be cool!
 }

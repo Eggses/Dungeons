@@ -6,6 +6,8 @@ import org.bukkit.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.function.Consumer;
+
 public class GameRules {
 
     private static final Logger log = LoggerFactory.getLogger(GameRules.class);
@@ -13,20 +15,12 @@ public class GameRules {
 
     public GameRules(World dungeonWorld) {
         this.dungeonWorld = dungeonWorld;
+        applyRules();
     }
 
     public void applyRules() {
 
-        // dungeonWorld.setViewDistance();
         dungeonWorld.setDifficulty(Difficulty.HARD);
-
-     Specific dungeons need to set thier own weather... and maybe times...
-
-        maybe have a public void Consumer<Wrodl> applyMore rules or a runnable..
-        and then just like yeah let it do things like change the worodls time.
-
-        must be callable from subclass.
-
 
         dungeonWorld.setGameRule(GameRule.COMMAND_BLOCKS_ENABLED, true);
         dungeonWorld.setGameRule(GameRule.COMMAND_BLOCK_OUTPUT, true);
@@ -48,5 +42,10 @@ public class GameRules {
         dungeonWorld.setGameRule(GameRule.DO_ENTITY_DROPS, false);
         dungeonWorld.setGameRule(GameRule.PROJECTILES_CAN_BREAK_BLOCKS, false);
         dungeonWorld.setGameRule(GameRule.FORGIVE_DEAD_PLAYERS, false);
+    }
+
+    public void applyRules(Consumer<World> rules) {
+        // dungeonWorld.setViewDistance();
+        rules.accept(dungeonWorld);
     }
 }

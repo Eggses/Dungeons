@@ -45,8 +45,6 @@ public class BannedItems {
         this.messageCreator = messageCreator;
     }
 
-
-
     public boolean hasBannedItems(Player player) {
 
         for (ItemStack item : player.getInventory().getContents()) {
