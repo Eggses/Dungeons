@@ -1,5 +1,6 @@
 package me.Eggses.dungeons.listeners.players.itemban;
 
+import me.Eggses.dungeons.dungeon.lifecycle.DungeonRegistry;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -7,17 +8,17 @@ import org.bukkit.event.entity.EntityToggleGlideEvent;
 
 public class ElytraGlide implements Listener {
 
-    private final DungeonManager dungeonManager;
+    private final DungeonRegistry dungeonRegistry;
 
-    public ElytraGlide(DungeonManager dungeonManager) {
-        this.dungeonManager = dungeonManager;
+    public ElytraGlide(DungeonRegistry dungeonRegistry) {
+        this.dungeonRegistry = dungeonRegistry;
     }
 
     @EventHandler
     public void onGlide(EntityToggleGlideEvent event) {
 
         if (!(event.getEntity() instanceof Player player)) return;
-        if (!dungeonManager.isInDungeon(player)) return;
+        if (!dungeonRegistry.isInDungeon(player)) return;
 
         if (event.isGliding()) {
             event.setCancelled(true);

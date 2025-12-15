@@ -1,5 +1,6 @@
 package me.Eggses.dungeons.listeners.entities;
 
+import me.Eggses.dungeons.dungeon.lifecycle.DungeonEventRouter;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
@@ -8,10 +9,10 @@ import org.bukkit.event.entity.EntityDeathEvent;
 
 public class EntityDeath implements Listener {
 
-    private final DungeonManager dungeonManager;
+    private final DungeonEventRouter dungeonEventRouter;
 
-    public EntityDeath(DungeonManager dungeonManager) {
-        this.dungeonManager = dungeonManager;
+    public EntityDeath(DungeonEventRouter dungeonEventRouter) {
+        this.dungeonEventRouter = dungeonEventRouter;
     }
 
     @EventHandler
@@ -21,6 +22,6 @@ public class EntityDeath implements Listener {
         World world = entity.getWorld();
 
         // This handles checking if it is in the World.
-        dungeonManager.handleEntityDeathEventInDungeon(world, entity.getUniqueId());
+        dungeonEventRouter.handleEntityDeathEventInDungeon(world, entity.getUniqueId());
     }
 }

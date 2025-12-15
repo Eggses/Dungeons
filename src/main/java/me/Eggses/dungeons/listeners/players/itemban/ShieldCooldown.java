@@ -1,5 +1,6 @@
 package me.Eggses.dungeons.listeners.players.itemban;
 
+import me.Eggses.dungeons.dungeon.lifecycle.DungeonRegistry;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -15,18 +16,18 @@ public class ShieldCooldown implements Listener {
     private static final int COOLDOWN = 20 * 10;
 
     private final JavaPlugin plugin;
-    private final DungeonManager dungeonManager;
+    private final DungeonRegistry dungeonRegistry;
 
-    public ShieldCooldown(JavaPlugin plugin, DungeonManager dungeonInstance) {
+    public ShieldCooldown(JavaPlugin plugin, DungeonRegistry dungeonRegistry) {
         this.plugin = plugin;
-        this.dungeonManager = dungeonInstance;
+        this.dungeonRegistry = dungeonRegistry;
     }
 
     @EventHandler
     public void onEntityDamage(EntityDamageByEntityEvent event) {
 
         if (!(event.getEntity() instanceof Player player)) return;
-        if (!dungeonManager.isInDungeon(player)) return;
+        if (!dungeonRegistry.isInDungeon(player)) return;
 
         if (!(event.getFinalDamage() == 0 && player.isBlocking())) return;
 

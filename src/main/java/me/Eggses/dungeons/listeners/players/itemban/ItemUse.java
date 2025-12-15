@@ -1,5 +1,6 @@
 package me.Eggses.dungeons.listeners.players.itemban;
 
+import me.Eggses.dungeons.dungeon.lifecycle.DungeonRegistry;
 import org.bukkit.Material;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -50,16 +51,16 @@ public class ItemUse implements Listener {
             Material.COMMAND_BLOCK_MINECART
     );
 
-    private final DungeonManager dungeonManager;
+    private final DungeonRegistry dungeonRegistry;
 
-    public ItemUse(DungeonManager dungeonManager) {
-        this.dungeonManager = dungeonManager;
+    public ItemUse(DungeonRegistry dungeonRegistry) {
+        this.dungeonRegistry = dungeonRegistry;
     }
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
 
-        if (!dungeonManager.isInDungeon(event.getPlayer())) return;
+        if (!dungeonRegistry.isInDungeon(event.getPlayer())) return;
         if (!event.getAction().isRightClick()) return;
 
         ItemStack itemHeld = event.getItem();

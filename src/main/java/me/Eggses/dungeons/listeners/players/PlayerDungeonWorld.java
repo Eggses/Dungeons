@@ -1,6 +1,6 @@
 package me.Eggses.dungeons.listeners.players;
 
-import me.Eggses.dungeons.dungeon.instance.DungeonInstance;
+import me.Eggses.dungeons.dungeon.lifecycle.DungeonEventRouter;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -8,14 +8,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import java.util.Optional;
-
 public class PlayerDungeonWorld implements Listener {
 
-    private final DungeonManager dungeonManager;
+    private final DungeonEventRouter dungeonEventRouter;
 
-    public PlayerDungeonWorld(DungeonManager dungeonManager) {
-        this.dungeonManager = dungeonManager;
+    public PlayerDungeonWorld(DungeonEventRouter dungeonEventRouter) {
+        this.dungeonEventRouter = dungeonEventRouter;
     }
 
     @EventHandler
@@ -26,21 +24,11 @@ public class PlayerDungeonWorld implements Listener {
         World originalWorld = event.getFrom();
         World currentWorld = player.getWorld();
 
-        // Enter Dungeon
-        Optional<DungeonInstance> enteredInstance = dungeonManager.getDungeonInstance(currentWorld);
-        enteredInstance.ifPresent(dungeonInstance -> dungeonInstance.addPlayer(player));
-
-        // Leave Dungeon
-        Optional<DungeonInstance> leftInstance = dungeonManager.getDungeonInstance(originalWorld);
-        leftInstance.ifPresent(dungeonInstance -> dungeonInstance.removePlayer(player));
+        dungeonEventRouter.handlePlayerChangeWorldEvent(player, originalWorld, currentWorld);
     }
 
     @EventHandler
     public void onLogout(PlayerQuitEvent event) {
-        Player player = event.getPlayer();
-        World world = player.getWorld();
-
-        Optional<DungeonInstance> maybeDungeon = dungeonManager.getDungeonInstance(world);
-        maybeDungeon.ifPresent(dungeonInstance -> dungeonInstance.removePlayer(player));
+        dungeonEventRouter.handlePlayerExitGameEvent(event.getPlayer());
     }
 }

@@ -9,12 +9,12 @@ import org.bukkit.entity.Player;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-public class EventRouter {
+public class DungeonEventRouter {
 
     private final DungeonRegistry dungeonRegistry;
     private final DungeonOpenPortalRegistry dungeonOpenPortalRegistry;
 
-    public EventRouter(DungeonRegistry dungeonRegistry, DungeonOpenPortalRegistry dungeonOpenPortalRegistry) {
+    public DungeonEventRouter(DungeonRegistry dungeonRegistry, DungeonOpenPortalRegistry dungeonOpenPortalRegistry) {
         this.dungeonRegistry = dungeonRegistry;
         this.dungeonOpenPortalRegistry = dungeonOpenPortalRegistry;
     }
@@ -43,6 +43,15 @@ public class EventRouter {
 
     public void handleEntityDeathEventInDungeon(World world, UUID uuid) {
         runIfInstanceExists(world, (instance) -> instance.handleEntityDeathEvent(uuid));
+    }
+
+    public void handlePlayerChangeWorldEvent(Player player, World worldLeft, World worldEntered) {
+        runIfInstanceExists(worldLeft, (instance) -> instance.removePlayer(player));
+        runIfInstanceExists(worldEntered, (instance) -> instance.addPlayer(player));
+    }
+
+    public void handlePlayerExitGameEvent(Player player) {
+        runIfInstanceExists(player.getWorld(), (instance) -> instance.removePlayer(player));
     }
 
     private void runIfInstanceExists(World world, Consumer<DungeonInstance> action) {

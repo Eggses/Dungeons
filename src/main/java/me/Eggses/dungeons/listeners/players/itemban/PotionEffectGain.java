@@ -1,5 +1,6 @@
 package me.Eggses.dungeons.listeners.players.itemban;
 
+import me.Eggses.dungeons.dungeon.lifecycle.DungeonRegistry;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,17 +23,17 @@ public class PotionEffectGain implements Listener {
             PotionEffectType.INVISIBILITY
     );
 
-    private final DungeonManager dungeonManager;
+    private final DungeonRegistry dungeonRegistry;
 
-    public PotionEffectGain(DungeonManager dungeonManager) {
-        this.dungeonManager = dungeonManager;
+    public PotionEffectGain(DungeonRegistry dungeonRegistry) {
+        this.dungeonRegistry = dungeonRegistry;
     }
 
     @EventHandler
     public void onPotionEffect(EntityPotionEffectEvent event) {
 
         if (!(event.getEntity() instanceof Player player)) return;
-        if (!dungeonManager.isInDungeon(player)) return;
+        if (!dungeonRegistry.isInDungeon(player)) return;
 
         PotionEffect effect = event.getNewEffect();
         if (effect == null) return;

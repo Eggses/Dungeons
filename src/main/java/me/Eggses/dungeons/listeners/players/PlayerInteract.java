@@ -1,5 +1,6 @@
 package me.Eggses.dungeons.listeners.players;
 
+import me.Eggses.dungeons.dungeon.lifecycle.DungeonEventRouter;
 import me.Eggses.dungeons.dungeon.regions.Position;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -11,10 +12,10 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 public class PlayerInteract implements Listener {
 
-    private final DungeonManager dungeonManager;
+    private final DungeonEventRouter dungeonEventRouter;
 
-    public PlayerInteract(DungeonManager dungeonManager) {
-        this.dungeonManager = dungeonManager;
+    public PlayerInteract(DungeonEventRouter dungeonEventRouter) {
+        this.dungeonEventRouter = dungeonEventRouter;
     }
 
     @EventHandler
@@ -32,14 +33,14 @@ public class PlayerInteract implements Listener {
 
         if (action == Action.RIGHT_CLICK_BLOCK) {
             if (type == Material.LEVER || type.name().endsWith("_BUTTON")) {
-                dungeonManager.handleInteractEventInDungeon(world, positionOfBlock);
+                dungeonEventRouter.handleInteractEventInDungeon(world, positionOfBlock);
             }
             return;
         }
 
         if (action == Action.PHYSICAL) {
             if (type.name().endsWith("_PRESSURE_PLATE")) {
-                dungeonManager.handleInteractEventInDungeon(world, positionOfBlock);
+                dungeonEventRouter.handleInteractEventInDungeon(world, positionOfBlock);
             }
         }
     }

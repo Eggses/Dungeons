@@ -24,8 +24,6 @@ public class DungeonInstance {
     private final JavaPlugin plugin;
     private final DungeonInstanceCoordinator dungeonInstanceCoordinator;
 
-    private final AreaControllerBuilder areaControllerBuilder;
-
     private final String instanceFileName;
     private final MessageCreator messageCreator;
     private final TaskManager taskManager;
@@ -46,7 +44,6 @@ public class DungeonInstance {
         this.plugin = plugin;
         this.dungeonInstanceCoordinator = dungeonInstanceCoordinator;
         this.dungeonWorld = dungeonWorld;
-        this.areaControllerBuilder = dungeonConfiguration.getAreaControllerBuilder();
         this.instanceFileName = instanceFileName;
         this.messageCreator = messageCreator;
         this.taskManager = taskManager;
@@ -61,7 +58,7 @@ public class DungeonInstance {
         gameRules.applyRules();
         gameRules.applyRules(dungeonConfiguration.getDungeonRules());
 
-        areaController = new AreaController(areaControllerBuilder, dungeonWorld, taskManager, messageCreator);
+        areaController = new AreaController(dungeonConfiguration.getAreaControllerBuilder(), dungeonWorld, taskManager, messageCreator);
 
         portalController.openDungeonPortal();
         dungeonInstanceCoordinator.openPortal(this, portalController.getChunkKeysEncompassed());
@@ -152,22 +149,4 @@ public class DungeonInstance {
     public Set<Long> getPortalChunkKeys() {
         return portalController.getChunkKeysEncompassed();
     }
-
-    /*
-
-    okay so extensive efforts where made: this class needs to be fixed up:
-
-    also every class that used the dungoen manager needs to be changed to idk the event router... or
-    the registry or something...
-
-    as that class is gone...
-
-    also this class may not be fully fixed yet! as lots of changes...
-
-    one more thing the logic aobut the DungeonLifewCycleServices is quite complex
-    and done late so need to fix that...
-
-
-
-     */
 }

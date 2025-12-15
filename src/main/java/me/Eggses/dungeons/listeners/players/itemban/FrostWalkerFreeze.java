@@ -1,5 +1,6 @@
 package me.Eggses.dungeons.listeners.players.itemban;
 
+import me.Eggses.dungeons.dungeon.lifecycle.DungeonRegistry;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -10,17 +11,17 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class FrostWalkerFreeze implements Listener {
 
-    private final DungeonManager dungeonManager;
+    private final DungeonRegistry dungeonRegistry;
 
-    public FrostWalkerFreeze(DungeonManager dungeonManager) {
-        this.dungeonManager = dungeonManager;
+    public FrostWalkerFreeze(DungeonRegistry dungeonRegistry) {
+        this.dungeonRegistry = dungeonRegistry;
     }
 
     @EventHandler
     public void onFrostWalker(EntityBlockFormEvent event) {
 
         if (!(event.getEntity() instanceof Player player)) return;
-        if (!dungeonManager.isInDungeon(player)) return;
+        if (!dungeonRegistry.isInDungeon(player)) return;
 
         ItemStack boots = player.getInventory().getBoots();
         if (boots == null) return;

@@ -1,14 +1,15 @@
 package me.Eggses.dungeons.commands;
 
+import me.Eggses.dungeons.dungeon.lifecycle.DungeonEventRouter;
 import org.bukkit.command.*;
 import org.jetbrains.annotations.NotNull;
 
 public class DungeonTrigger implements CommandExecutor {
 
-    private final DungeonManager dungeonManager;
+    private final DungeonEventRouter dungeonEventRouter;
 
-    public DungeonTrigger(DungeonManager dungeonManager) {
-        this.dungeonManager = dungeonManager;
+    public DungeonTrigger(DungeonEventRouter dungeonEventRouter) {
+        this.dungeonEventRouter = dungeonEventRouter;
     }
 
     @Override
@@ -28,7 +29,7 @@ public class DungeonTrigger implements CommandExecutor {
             return true;
         }
 
-        dungeonManager.handleDungeonTriggerCommand(blockCommandSender.getBlock().getWorld(), valueAsInt);
+        dungeonEventRouter.handleDungeonTriggerCommand(blockCommandSender.getBlock().getWorld(), valueAsInt);
         return true;
     }
 }
