@@ -91,7 +91,7 @@ public class ShieldCooldown implements Listener {
 
         private enum Hand {
             MAIN_HAND(),
-            OFF_HAND();
+            OFF_HAND()
         }
     }
 }

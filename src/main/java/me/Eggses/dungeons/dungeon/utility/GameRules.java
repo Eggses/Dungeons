@@ -3,14 +3,9 @@ package me.Eggses.dungeons.dungeon.utility;
 import org.bukkit.Difficulty;
 import org.bukkit.GameRule;
 import org.bukkit.World;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.function.Consumer;
 
 public class GameRules {
 
-    private static final Logger log = LoggerFactory.getLogger(GameRules.class);
     private final World dungeonWorld;
 
     public GameRules(World dungeonWorld) {
@@ -42,10 +37,5 @@ public class GameRules {
         dungeonWorld.setGameRule(GameRule.DO_ENTITY_DROPS, false);
         dungeonWorld.setGameRule(GameRule.PROJECTILES_CAN_BREAK_BLOCKS, false);
         dungeonWorld.setGameRule(GameRule.FORGIVE_DEAD_PLAYERS, false);
-    }
-
-    public void applyRules(Consumer<World> rules) {
-        // dungeonWorld.setViewDistance();
-        rules.accept(dungeonWorld);
     }
 }

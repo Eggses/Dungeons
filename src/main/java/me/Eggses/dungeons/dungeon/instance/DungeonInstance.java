@@ -3,7 +3,6 @@ package me.Eggses.dungeons.dungeon.instance;
 import me.Eggses.dungeons.dungeon.players.DungeonPlayers;
 import me.Eggses.dungeons.dungeon.portals.PortalController;
 import me.Eggses.dungeons.dungeon.progress.AreaController;
-import me.Eggses.dungeons.dungeon.progress.AreaControllerBuilder;
 import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.dungeon.utility.GameRules;
 import me.Eggses.dungeons.dungeon.lifecycle.DungeonInstanceCoordinator;
@@ -23,15 +22,12 @@ public class DungeonInstance {
 
     private final JavaPlugin plugin;
     private final DungeonInstanceCoordinator dungeonInstanceCoordinator;
-
-    private final String instanceFileName;
-    private final MessageCreator messageCreator;
-    private final TaskManager taskManager;
-
     private final World dungeonWorld;
-    private final PortalController portalController;
+    private final String instanceFileName;
+
     private final AreaController areaController;
-    private final DungeonPlayers dungeonPlayers = new DungeonPlayers();
+    private final PortalController portalController;
+    private final DungeonPlayers dungeonPlayers;
 
     public DungeonInstance(JavaPlugin plugin,
                            DungeonInstanceCoordinator dungeonInstanceCoordinator,
@@ -45,27 +41,19 @@ public class DungeonInstance {
         this.dungeonInstanceCoordinator = dungeonInstanceCoordinator;
         this.dungeonWorld = dungeonWorld;
         this.instanceFileName = instanceFileName;
-        this.messageCreator = messageCreator;
-        this.taskManager = taskManager;
 
-        this.portalController = new PortalController(
-                plugin,
-                this,
-                dungeonConfiguration.getDungeonPortal(),
-                dungeonConfiguration.getBannedItems());
+        this.areaController = new AreaController(dungeonConfiguration.getAreaControllerBuilder(), dungeonWorld, taskManager, messageCreator);
+        this.portalController = new PortalController(plugin, this, dungeonConfiguration.getDungeonPortal(), dungeonConfiguration.getBannedItems());
+        this.dungeonPlayers = new DungeonPlayers();
 
-        GameRules gameRules = new GameRules(dungeonWorld);
-        gameRules.applyRules();
-        gameRules.applyRules(dungeonConfiguration.getDungeonRules());
-
-        areaController = new AreaController(dungeonConfiguration.getAreaControllerBuilder(), dungeonWorld, taskManager, messageCreator);
+        new GameRules(dungeonWorld).applyRules();
+        dungeonConfiguration.getDungeonRules().accept(dungeonWorld);
 
         portalController.openDungeonPortal();
         dungeonInstanceCoordinator.openPortal(this, portalController.getChunkKeysEncompassed());
     }
 
     public void closeDungeonPortal() {
-        if (!portalController.isOpen()) return;
         portalController.closeDungeonPortal();
         dungeonInstanceCoordinator.closePortal(portalController.getChunkKeysEncompassed());
         tryEndDungeon();
@@ -107,7 +95,6 @@ public class DungeonInstance {
     public boolean isInDungeon(Player player) {
         return dungeonPlayers.contains(player);
     }
-
 
     public void handleMovementEventInWorld(Player player, Location destination) {
 
