@@ -1,34 +1,20 @@
 package me.Eggses.dungeons.listeners.entities;
 
-import me.Eggses.dungeons.dungeon.instance.DungeonInstance;
-import me.Eggses.dungeons.entities.EntityManager;
+import me.Eggses.dungeons.dungeon.lifecycle.DungeonEventRouter;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
-import java.util.Optional;
-
 public class EntityCombat implements Listener {
 
-    private final DungeonManager dungeonManager;
-    private EntityManager entityManager;
+    private final DungeonEventRouter dungeonEventRouter;
 
-    public EntityCombat(DungeonManager dungeonManager) {
-        this.dungeonManager = dungeonManager;
+    public EntityCombat(DungeonEventRouter dungeonEventRouter) {
+        this.dungeonEventRouter = dungeonEventRouter;
     }
 
     @EventHandler
-    public void onEntityCombat(EntityDamageByEntityEvent event) {
-
-        Optional<DungeonInstance> maybeInstance = dungeonManager.getDungeonInstance(event.getEntity().getWorld());
-        if (maybeInstance.isEmpty()) return;
-
-
-
-        event.getEntity().getWorld();
-
-
+    public void onEntityHitEntity(EntityDamageByEntityEvent event) {
+        dungeonEventRouter.handleEntityDamageEntityEvent(event.getEntity().getWorld(), event);
     }
-
-
 }

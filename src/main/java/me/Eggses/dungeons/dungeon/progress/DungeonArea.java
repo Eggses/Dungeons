@@ -1,5 +1,6 @@
 package me.Eggses.dungeons.dungeon.progress;
 
+import me.Eggses.dungeons.dungeon.entities.EntityManager;
 import me.Eggses.dungeons.dungeon.regions.Region;
 import org.bukkit.World;
 
@@ -12,7 +13,10 @@ public class DungeonArea {
     private final BiConsumer<World, EntityManager> onEnterFirstTime;
     private final Consumer<World> onClearArea;
 
-    public DungeonArea(Region entryRegion, BiConsumer<World, EntityManager> onEnterFirstTime, Consumer<World> onClearArea) {
+    public DungeonArea(Region entryRegion,
+                       BiConsumer<World, EntityManager> onEnterFirstTime,
+                       Consumer<World> onClearArea) {
+
         this.entryRegion = entryRegion;
         this.onEnterFirstTime = onEnterFirstTime;
         this.onClearArea = onClearArea;

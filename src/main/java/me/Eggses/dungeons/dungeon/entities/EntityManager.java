@@ -1,4 +1,4 @@
-package me.Eggses.dungeons.dungeon.progress;
+package me.Eggses.dungeons.dungeon.entities;
 
 import me.Eggses.dungeons.entities.mobs.DungeonEntity;
 import me.Eggses.dungeons.entities.mobs.DungeonMob;
@@ -48,5 +48,11 @@ public class EntityManager {
         if (dungeonEntity == null) return;
 
         dungeonEntity.endTasks();
+    }
+
+    public void terminateAllTasks() {
+        for (DungeonEntity dungeonEntity : entities.values()) {
+            dungeonEntity.endTasks();
+        }
     }
 }

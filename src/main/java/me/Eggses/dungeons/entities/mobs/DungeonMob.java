@@ -112,8 +112,9 @@ public class DungeonMob implements DungeonEntity {
         return mobName;
     }
 
-    @Override
+    @Override @Deprecated
     public void updateName() {
+        // this is the wrong health!!! helath event doesnt apply damage
         int health = (int) entity.getHealth();
         entity.customName(nameFormatter.createName(health));
     }

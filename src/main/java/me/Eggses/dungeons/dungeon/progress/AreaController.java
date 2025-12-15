@@ -1,10 +1,12 @@
 package me.Eggses.dungeons.dungeon.progress;
 
+import me.Eggses.dungeons.dungeon.entities.EntityManager;
 import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.entities.taskbehaviour.TaskManager;
 import me.Eggses.dungeons.utility.MessageCreator;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -67,6 +69,33 @@ public class AreaController {
         entityManager.removeMob(uuid);
         if (entityManager.isEmpty()) endActiveArea();
     }
+
+    public void handleEntityDamageEntityEvent(EntityDamageByEntityEvent event) {
+        switch (event.getCause()) {
+            case ENTITY_ATTACK, ENTITY_SWEEP_ATTACK -> handleMeleeDamage(event);
+            case PROJECTILE -> handleProjectileDamage(event);
+            case ENTITY_EXPLOSION -> handleEntityExplosionDamage(event);
+            case MAGIC -> handleMagicDamage(event);
+            default -> {}
+        }
+    }
+
+    private void handleMeleeDamage(EntityDamageByEntityEvent event) {
+        // TODO
+    }
+
+    private void handleProjectileDamage(EntityDamageByEntityEvent event) {
+        // TODO
+    }
+
+    private void handleEntityExplosionDamage(EntityDamageByEntityEvent event) {
+        // TODO
+    }
+
+    private void handleMagicDamage(EntityDamageByEntityEvent event) {
+        // TODO
+    }
+
 
     /* =========================================================
      * Area Manager
@@ -141,5 +170,9 @@ public class AreaController {
         for (DungeonAction<Integer> dungeonAction : dungeonTriggerActions) {
             dungeonTriggerCommandMap.put(dungeonAction.getK(), dungeonAction.getAction());
         }
+    }
+
+    public void terminateAllTasks() {
+        entityManager.terminateAllTasks();
     }
 }

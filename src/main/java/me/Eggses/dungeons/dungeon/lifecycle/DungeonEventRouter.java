@@ -5,6 +5,7 @@ import me.Eggses.dungeons.dungeon.regions.Position;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -52,6 +53,10 @@ public class DungeonEventRouter {
 
     public void handlePlayerExitGameEvent(Player player) {
         runIfInstanceExists(player.getWorld(), (instance) -> instance.removePlayer(player));
+    }
+
+    public void handleEntityDamageEntityEvent(World world, EntityDamageByEntityEvent event) {
+        runIfInstanceExists(world, (instance) -> instance.handleEntityDamageEntityEvent(event));
     }
 
     private void runIfInstanceExists(World world, Consumer<DungeonInstance> action) {
