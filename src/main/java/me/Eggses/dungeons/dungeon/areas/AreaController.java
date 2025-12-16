@@ -1,7 +1,6 @@
 package me.Eggses.dungeons.dungeon.areas;
 
 import me.Eggses.dungeons.dungeon.graveyard.Graveyard;
-import me.Eggses.dungeons.dungeon.graveyard.GraveyardDefinition;
 import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.dungeon.areas.utility.AreaControllerBuilder;
 import me.Eggses.dungeons.dungeon.areas.utility.DungeonArea;
@@ -9,7 +8,6 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -28,12 +26,12 @@ public class AreaController {
     private boolean areaInProgress = false;
 
     public AreaController(EntityManager entityManager,
+                          Graveyard graveyard,
                           World dungeonWorld,
-                          AreaControllerBuilder areaControllerBuilder,
-                          List<GraveyardDefinition> graveyardDefinitions) {
+                          AreaControllerBuilder areaControllerBuilder) {
 
         this.entityManager = entityManager;
-        this.graveyard = new Graveyard(graveyardDefinitions);
+        this.graveyard = graveyard;
         this.dungeonWorld = dungeonWorld;
         this.dungeonAreasMap = areaControllerBuilder.getDungeonAreasMap();
         this.blockInteractionMap = areaControllerBuilder.getBlockInteractionMap();

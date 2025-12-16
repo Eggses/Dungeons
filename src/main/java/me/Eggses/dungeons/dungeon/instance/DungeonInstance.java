@@ -3,6 +3,7 @@ package me.Eggses.dungeons.dungeon.instance;
 import me.Eggses.dungeons.dungeon.areas.AreaController;
 import me.Eggses.dungeons.dungeon.areas.EntityManager;
 import me.Eggses.dungeons.dungeon.areas.EventHandler;
+import me.Eggses.dungeons.dungeon.graveyard.Graveyard;
 import me.Eggses.dungeons.dungeon.instance.configurations.DungeonConfiguration;
 import me.Eggses.dungeons.dungeon.players.DungeonPlayers;
 import me.Eggses.dungeons.dungeon.portals.PortalController;
@@ -49,7 +50,8 @@ public class DungeonInstance {
         this.instanceFileName = instanceFileName;
 
         var entityManager = new EntityManager(taskManager, messageCreator);
-        this.areaController = new AreaController(entityManager, dungeonWorld, dungeonConfiguration.getAreaControllerBuilder(), dungeonConfiguration.getGraveyardDefinitionList());
+        var graveyard = new Graveyard(dungeonConfiguration.getGraveyardDefinitionList());
+        this.areaController = new AreaController(entityManager, graveyard, dungeonWorld, dungeonConfiguration.getAreaControllerBuilder());
         this.eventHandler = new EventHandler(areaController, entityManager);
         this.portalController = new PortalController(plugin, this, dungeonConfiguration.getDungeonPortal(), dungeonConfiguration.getBannedItems());
         this.dungeonPlayers = new DungeonPlayers();
