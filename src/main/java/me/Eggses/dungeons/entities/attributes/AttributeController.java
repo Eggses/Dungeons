@@ -53,6 +53,8 @@ public class AttributeController {
             damageFormulaBuilder(RANGED_DAMAGE_PERCENTAGE_INCREASE);
     private static final BiFunction<DungeonEntity, Double, Double> MAGIC_DAMAGE_FORMULA =
             damageFormulaBuilder(MAGIC_DAMAGE_PERCENTAGE_INCREASE);
+    private static final BiFunction<DungeonEntity, Double, Double> IDENTITY_DAMAGE_FORMULA =
+            (dungeonEntity, damage) -> damage;
 
     public static BiFunction<DungeonEntity, Double, Double> getExplosionDamageFormula() {
         return EXPLOSION_DAMAGE_FORMULA;
@@ -64,6 +66,10 @@ public class AttributeController {
 
     public static BiFunction<DungeonEntity, Double, Double> getMagicDamageFormula() {
         return MAGIC_DAMAGE_FORMULA;
+    }
+
+    public static BiFunction<DungeonEntity, Double, Double> getIdentityDamageFormula() {
+        return IDENTITY_DAMAGE_FORMULA;
     }
 
     private static final TriFunction<AttributeInstance, Double, Integer, Double> PERCENTAGE_INCREASE_FORMULA =

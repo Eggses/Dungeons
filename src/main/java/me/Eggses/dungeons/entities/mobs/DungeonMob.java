@@ -68,7 +68,7 @@ public class DungeonMob implements DungeonEntity {
         TEAM.addEntity(entity);
 
         // Set Name
-        updateName();
+        updateHealthDisplay(0.0);
 
         // Start Tasks
         activeEntityTasks.addAndRunTasks(mobBuilder.getEntityTaskBehaviour(), this, taskManager);
@@ -93,7 +93,7 @@ public class DungeonMob implements DungeonEntity {
     }
 
     @Override
-    public EntityEventBehaviour getEntityEventBehaviour() {
+    public EntityEventBehaviour getEntityEventHandler() {
         return entityEventBehaviour;
     }
 
@@ -112,10 +112,9 @@ public class DungeonMob implements DungeonEntity {
         return mobName;
     }
 
-    @Override @Deprecated
-    public void updateName() {
-        // this is the wrong health!!! helath event doesnt apply damage
-        int health = (int) entity.getHealth();
+    @Override
+    public void updateHealthDisplay(double damageToBeTaken) {
+        int health = (int) (entity.getHealth() - damageToBeTaken);
         entity.customName(nameFormatter.createName(health));
     }
 }

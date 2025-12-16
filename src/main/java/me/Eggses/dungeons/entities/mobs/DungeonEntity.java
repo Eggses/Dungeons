@@ -13,12 +13,11 @@ public interface DungeonEntity {
     UUID getUUID();
     LivingEntity getEntity();
     void endTasks();
-    EntityEventBehaviour getEntityEventBehaviour();
+    EntityEventBehaviour getEntityEventHandler();
     AttributeController getAttributeController();
 
     // More Methods
     int getDungeonLevel();
     MobName getMobName();
-    void updateName();
-
+    void updateHealthDisplay(double damageToBeTaken);
 }
