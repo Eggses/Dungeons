@@ -1,6 +1,6 @@
-package me.Eggses.dungeons.dungeon.progress;
+package me.Eggses.dungeons.dungeon.areas.utility;
 
-import me.Eggses.dungeons.dungeon.entities.EntityManager;
+import me.Eggses.dungeons.dungeon.areas.EntityManager;
 import me.Eggses.dungeons.dungeon.regions.Region;
 import org.bukkit.World;
 

@@ -1,9 +1,10 @@
-package me.Eggses.dungeons.dungeon.progress;
+package me.Eggses.dungeons.dungeon.areas.utility;
 
 import org.bukkit.World;
 
 import java.util.function.Consumer;
 
+@SuppressWarnings("ClassCanBeRecord")
 public class DungeonAction<K> {
 
     private final K k;

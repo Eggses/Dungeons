@@ -1,6 +1,8 @@
 package me.Eggses.dungeons.entities.mobs;
 
+import me.Eggses.dungeons.entities.eventbehaviour.EventBehaviour;
 import me.Eggses.dungeons.entities.nameutility.MobName;
+import me.Eggses.dungeons.entities.taskbehaviour.EntityTask;
 import me.Eggses.dungeons.entities.taskbehaviour.EntityTaskBehaviour;
 import me.Eggses.dungeons.entities.eventbehaviour.EntityEventBehaviour;
 import me.Eggses.dungeons.entities.equipment.ArmourEquipment;
@@ -17,8 +19,8 @@ public class MobBuilder {
     private int dungeonLevel = 1;
     private WeaponEquipment weaponEquipment = new WeaponEquipment();
     private ArmourEquipment armourEquipment = new ArmourEquipment();
-    private EntityEventBehaviour entityEventBehaviour = new EntityEventBehaviour();
-    private EntityTaskBehaviour entityTaskBehaviour = new EntityTaskBehaviour();
+    private final EntityEventBehaviour entityEventBehaviour = new EntityEventBehaviour();
+    private final EntityTaskBehaviour entityTaskBehaviour = new EntityTaskBehaviour();
     private Consumer<DungeonEntity> spawnFinalizer = (entity) -> {};
     private int count = 1;
     private MobName mobName = new MobName();
@@ -55,13 +57,13 @@ public class MobBuilder {
         return this;
     }
 
-    public MobBuilder entityEventBehaviour(EntityEventBehaviour entityEventBehaviour) {
-        this.entityEventBehaviour = entityEventBehaviour;
+    public MobBuilder eventBehaviour(EventBehaviour<?> eventBehaviour) {
+        this.entityEventBehaviour.addEventBehaviour(eventBehaviour);
         return this;
     }
 
-    public MobBuilder entityTaskBehaviour(EntityTaskBehaviour entityTaskBehaviour) {
-        this.entityTaskBehaviour = entityTaskBehaviour;
+    public MobBuilder entityTask(EntityTask entityTask) {
+        this.entityTaskBehaviour.addEntityTask(entityTask);
         return this;
     }
 

@@ -39,6 +39,15 @@ public enum MobType {
     }, new MobName("Fiend", false)),
 
     /*
+    Zombie has same goals as spider then it works normally dont add have to fully fix goals
+
+    Ghost -> charged creeper with same goals as zombie (forest dungeon) can lower render distance
+    at specific points...
+
+    !!!
+     */
+
+    /*
     attributres are all wrong:
     knight stoo big, too much kb
 

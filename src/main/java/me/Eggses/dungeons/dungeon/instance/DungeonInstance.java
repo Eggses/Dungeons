@@ -1,8 +1,11 @@
 package me.Eggses.dungeons.dungeon.instance;
 
+import me.Eggses.dungeons.dungeon.areas.AreaController;
+import me.Eggses.dungeons.dungeon.areas.EntityManager;
+import me.Eggses.dungeons.dungeon.areas.EventHandler;
+import me.Eggses.dungeons.dungeon.instance.configurations.DungeonConfiguration;
 import me.Eggses.dungeons.dungeon.players.DungeonPlayers;
 import me.Eggses.dungeons.dungeon.portals.PortalController;
-import me.Eggses.dungeons.dungeon.progress.AreaController;
 import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.dungeon.utility.GameRules;
 import me.Eggses.dungeons.dungeon.lifecycle.DungeonInstanceCoordinator;
@@ -27,6 +30,7 @@ public class DungeonInstance {
     private final String instanceFileName;
 
     private final AreaController areaController;
+    private final EventHandler eventHandler;
     private final PortalController portalController;
     private final DungeonPlayers dungeonPlayers;
 
@@ -43,7 +47,9 @@ public class DungeonInstance {
         this.dungeonWorld = dungeonWorld;
         this.instanceFileName = instanceFileName;
 
-        this.areaController = new AreaController(dungeonConfiguration.getAreaControllerBuilder(), dungeonWorld, taskManager, messageCreator);
+        var entityManager = new EntityManager(taskManager, messageCreator);
+        this.areaController = new AreaController(entityManager, dungeonWorld, dungeonConfiguration.getAreaControllerBuilder());
+        this.eventHandler = new EventHandler(areaController, entityManager);
         this.portalController = new PortalController(plugin, this, dungeonConfiguration.getDungeonPortal(), dungeonConfiguration.getBannedItems());
         this.dungeonPlayers = new DungeonPlayers();
 
@@ -77,7 +83,7 @@ public class DungeonInstance {
 
         plugin.getLogger().severe(errorMessage.toString());
 
-        areaController.terminateAllTasks();
+        areaController.endAllTasks();
         dungeonInstanceCoordinator.destroyInstance(this);
     }
 
@@ -106,7 +112,7 @@ public class DungeonInstance {
 
     public void handleMovementEventInDungeon(Player player, Location destination, long chunkKey) {
 
-        areaController.handleMovementEventInDungeon(destination, chunkKey);
+        eventHandler.handleMovementEventInDungeon(destination, chunkKey);
 
         if (portalController.isInPortalInDungeonWorld(destination)) {
             portalController.leaveDungeon(player);
@@ -114,19 +120,19 @@ public class DungeonInstance {
     }
 
     public void handlePlayerInteractEvent(Position positionOfBlock) {
-        areaController.handleInteractEvent(positionOfBlock);
+        eventHandler.handleInteractEvent(positionOfBlock);
     }
 
     public void handleDungeonTriggerCommand(int argumentValue) {
-        areaController.handleDungeonTriggerCommand(argumentValue);
+        eventHandler.handleDungeonTriggerCommand(argumentValue);
     }
 
     public void handleEntityDeathEvent(UUID uuid) {
-        areaController.handleEntityDeathEvent(uuid);
+        eventHandler.handleEntityDeathEvent(uuid);
     }
 
     public void handleEntityDamageEntityEvent(EntityDamageByEntityEvent event) {
-        areaController.handleEntityDamageEntityEvent(event);
+        eventHandler.handleEntityDamageEntityEvent(event);
     }
 
     public World getDungeonWorld() {
@@ -140,7 +146,4 @@ public class DungeonInstance {
     public Set<Long> getPortalChunkKeys() {
         return portalController.getChunkKeysEncompassed();
     }
-
-
-
 }

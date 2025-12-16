@@ -1,7 +1,7 @@
-package me.Eggses.dungeons.dungeon.instance;
+package me.Eggses.dungeons.dungeon.instance.configurations;
 
+import me.Eggses.dungeons.dungeon.areas.utility.AreaControllerBuilder;
 import me.Eggses.dungeons.dungeon.portals.DungeonPortal;
-import me.Eggses.dungeons.dungeon.progress.AreaControllerBuilder;
 import me.Eggses.dungeons.dungeon.utility.BannedItems;
 import org.bukkit.World;
 

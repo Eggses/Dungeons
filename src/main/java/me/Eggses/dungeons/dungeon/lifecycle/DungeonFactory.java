@@ -2,8 +2,8 @@ package me.Eggses.dungeons.dungeon.lifecycle;
 
 import me.Eggses.dungeons.configuration.DungeonLog;
 import me.Eggses.dungeons.dungeon.instance.DungeonInstance;
-import me.Eggses.dungeons.dungeon.instance.DungeonConfiguration;
-import me.Eggses.dungeons.dungeon.instance.MalignantMarsh;
+import me.Eggses.dungeons.dungeon.instance.configurations.DungeonConfiguration;
+import me.Eggses.dungeons.dungeon.instance.configurations.MalignantMarsh;
 import me.Eggses.dungeons.dungeon.utility.InstanceNameManager;
 import me.Eggses.dungeons.entities.taskbehaviour.TaskManager;
 import me.Eggses.dungeons.utility.MessageCreator;

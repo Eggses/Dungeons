@@ -18,7 +18,6 @@ public class DungeonTrigger implements CommandExecutor {
                              @NotNull String s,
                              @NotNull String @NotNull [] args) {
 
-
         if (!(sender instanceof BlockCommandSender blockCommandSender)) return true;
         if (args.length != 1) return true;
 
@@ -29,6 +28,7 @@ public class DungeonTrigger implements CommandExecutor {
             return true;
         }
 
+        // While not an Event, this command is treated as an Event as its purpose is the same.
         dungeonEventRouter.handleDungeonTriggerCommand(blockCommandSender.getBlock().getWorld(), valueAsInt);
         return true;
     }
