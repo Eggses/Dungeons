@@ -14,7 +14,7 @@ public class Login implements Listener {
     public void onJoin(PlayerJoinEvent event) {
 
         Player player = event.getPlayer();
-        if (player.getName().startsWith("dungeon_instance_")) {
+        if (event.getPlayer().getWorld().getName().startsWith("dungeon_instance_")) {
             World mainWorld = Bukkit.getWorlds().getFirst();
             player.teleport(mainWorld.getSpawnLocation());
         }

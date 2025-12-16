@@ -17,6 +17,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Set;
@@ -48,7 +49,7 @@ public class DungeonInstance {
         this.instanceFileName = instanceFileName;
 
         var entityManager = new EntityManager(taskManager, messageCreator);
-        this.areaController = new AreaController(entityManager, dungeonWorld, dungeonConfiguration.getAreaControllerBuilder());
+        this.areaController = new AreaController(entityManager, dungeonWorld, dungeonConfiguration.getAreaControllerBuilder(), dungeonConfiguration.getGraveyardDefinitionList());
         this.eventHandler = new EventHandler(areaController, entityManager);
         this.portalController = new PortalController(plugin, this, dungeonConfiguration.getDungeonPortal(), dungeonConfiguration.getBannedItems());
         this.dungeonPlayers = new DungeonPlayers();
@@ -133,6 +134,10 @@ public class DungeonInstance {
 
     public void handleEntityDamageEntityEvent(EntityDamageByEntityEvent event) {
         eventHandler.handleEntityDamageEntityEvent(event);
+    }
+
+    public void handlePlayerRespawnEvent(PlayerRespawnEvent playerRespawnEvent) {
+        eventHandler.handlePlayerRespawnEvent(playerRespawnEvent);
     }
 
     public World getDungeonWorld() {

@@ -1,11 +1,15 @@
 package me.Eggses.dungeons.dungeon.areas;
 
+import me.Eggses.dungeons.dungeon.graveyard.Graveyard;
+import me.Eggses.dungeons.dungeon.graveyard.GraveyardDefinition;
 import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.dungeon.areas.utility.AreaControllerBuilder;
 import me.Eggses.dungeons.dungeon.areas.utility.DungeonArea;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.event.player.PlayerRespawnEvent;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -14,6 +18,7 @@ import java.util.function.Consumer;
 public class AreaController {
 
     private final EntityManager entityManager;
+    private final Graveyard graveyard;
     private final World dungeonWorld;
     private final Map<Long, Set<DungeonArea>> dungeonAreasMap;
     private final Map<Position, Consumer<World>> blockInteractionMap;
@@ -24,9 +29,11 @@ public class AreaController {
 
     public AreaController(EntityManager entityManager,
                           World dungeonWorld,
-                          AreaControllerBuilder areaControllerBuilder) {
+                          AreaControllerBuilder areaControllerBuilder,
+                          List<GraveyardDefinition> graveyardDefinitions) {
 
         this.entityManager = entityManager;
+        this.graveyard = new Graveyard(graveyardDefinitions);
         this.dungeonWorld = dungeonWorld;
         this.dungeonAreasMap = areaControllerBuilder.getDungeonAreasMap();
         this.blockInteractionMap = areaControllerBuilder.getBlockInteractionMap();
@@ -69,6 +76,10 @@ public class AreaController {
         tryEndActiveDungeonArea();
     }
 
+    public void handlePlayerRespawnEvent(PlayerRespawnEvent event) {
+        event.setRespawnLocation(graveyard.getActiveGraveyardLocation(dungeonWorld));
+    }
+
     private void startDungeonArea(DungeonArea dungeonArea) {
         dungeonAreaInProgress = dungeonArea;
         areaInProgress = true;
@@ -94,7 +105,7 @@ public class AreaController {
     private void tryEndActiveDungeonArea() {
         if (!entityManager.isEmpty() || !areaInProgress) return;
 
-        dungeonAreaInProgress.onClearArea(dungeonWorld);
+        dungeonAreaInProgress.onClearArea(dungeonWorld, graveyard);
         dungeonAreaInProgress = null;
         areaInProgress = false;
     }

@@ -6,6 +6,7 @@ import me.Eggses.dungeons.entities.mobs.DungeonEntity;
 import org.bukkit.Location;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.projectiles.ProjectileSource;
 
 import java.util.UUID;
@@ -35,6 +36,10 @@ public class EventHandler {
 
     public void handleEntityDeathEvent(UUID uuid) {
         areaController.handleEntityDeathEvent(uuid);
+    }
+
+    public void handlePlayerRespawnEvent(PlayerRespawnEvent event) {
+        areaController.handlePlayerRespawnEvent(event);
     }
 
     public void handleEntityDamageEntityEvent(EntityDamageByEntityEvent event) {

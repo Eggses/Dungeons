@@ -1,10 +1,12 @@
 package me.Eggses.dungeons.dungeon.instance.configurations;
 
+import me.Eggses.dungeons.dungeon.graveyard.GraveyardDefinition;
 import me.Eggses.dungeons.dungeon.portals.DungeonPortal;
 import me.Eggses.dungeons.dungeon.areas.utility.AreaControllerBuilder;
 import me.Eggses.dungeons.dungeon.utility.BannedItems;
 import org.bukkit.World;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 public class MalignantMarsh implements DungeonConfiguration {
@@ -31,5 +33,10 @@ public class MalignantMarsh implements DungeonConfiguration {
     @Override
     public BannedItems getBannedItems() {
         return null;
+    }
+
+    @Override
+    public List<GraveyardDefinition> getGraveyardDefinitionList() {
+        return List.of();
     }
 }

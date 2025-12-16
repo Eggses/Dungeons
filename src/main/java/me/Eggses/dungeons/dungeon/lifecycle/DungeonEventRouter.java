@@ -6,6 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -57,6 +58,10 @@ public class DungeonEventRouter {
 
     public void handleEntityDamageEntityEvent(World world, EntityDamageByEntityEvent event) {
         runIfInstanceExists(world, (instance) -> instance.handleEntityDamageEntityEvent(event));
+    }
+
+    public void handlePlayerRespawnEvent(World worldDiedIn, PlayerRespawnEvent event) {
+        runIfInstanceExists(worldDiedIn, instance -> instance.handlePlayerRespawnEvent(event));
     }
 
     private void runIfInstanceExists(World world, Consumer<DungeonInstance> action) {
