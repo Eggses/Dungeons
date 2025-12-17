@@ -17,6 +17,7 @@ public class Graveyard {
         for (GraveyardDefinition graveyardDefinition : graveyardDefinitions) {
             graveyards.put(graveyardDefinition.getGraveyardNumber(), graveyardDefinition.getGraveyardLocation());
         }
+        setActiveGraveyard(1);
     }
 
     public void setActiveGraveyard(int graveyardNumber) {
