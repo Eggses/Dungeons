@@ -11,8 +11,9 @@ import java.util.function.Consumer;
 
 public interface DungeonConfiguration {
     DungeonPortal getDungeonPortal();
-    Consumer<World> getDungeonRules();
     AreaControllerBuilder getAreaControllerBuilder();
-    BannedItems getBannedItems();
     List<GraveyardDefinition> getGraveyardDefinitionList();
+    Consumer<World> getDungeonRules();
+    BannedItems getBannedItems();
+    String getTemplateName();
 }

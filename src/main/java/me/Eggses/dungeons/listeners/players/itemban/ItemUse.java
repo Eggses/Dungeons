@@ -48,7 +48,9 @@ public class ItemUse implements Listener {
             Material.FURNACE_MINECART,
             Material.HOPPER_MINECART,
             Material.TNT_MINECART,
-            Material.COMMAND_BLOCK_MINECART
+            Material.COMMAND_BLOCK_MINECART,
+
+            Material.ENCHANTED_GOLDEN_APPLE
     );
 
     private final DungeonRegistry dungeonRegistry;

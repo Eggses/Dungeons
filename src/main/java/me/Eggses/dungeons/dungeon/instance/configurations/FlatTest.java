@@ -1,21 +1,17 @@
 package me.Eggses.dungeons.dungeon.instance.configurations;
 
+import me.Eggses.dungeons.dungeon.areas.utility.AreaControllerBuilder;
 import me.Eggses.dungeons.dungeon.graveyard.GraveyardDefinition;
 import me.Eggses.dungeons.dungeon.portals.DungeonPortal;
-import me.Eggses.dungeons.dungeon.areas.utility.AreaControllerBuilder;
 import me.Eggses.dungeons.dungeon.utility.BannedItems;
 import org.bukkit.World;
 
 import java.util.List;
 import java.util.function.Consumer;
 
-public class MalignantMarsh implements DungeonConfiguration {
+public class FlatTest implements DungeonConfiguration {
 
-    private static final String TEMPLATE_NAME = "malignant_marsh";
-
-    public MalignantMarsh() {
-
-    }
+    private static final String TEMPLATE_NAME = "dungeon_test";
 
     @Override
     public DungeonPortal getDungeonPortal() {

@@ -6,6 +6,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 
 public class ItemDrop implements Listener {
 
+    /*
     private final DungeonManager dungeonManager;
 
     public ItemDrop(DungeonManager dungeonManager) {
@@ -19,4 +20,6 @@ public class ItemDrop implements Listener {
             event.setCancelled(true);
         }
     }
+
+     */
 }

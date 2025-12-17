@@ -3,6 +3,7 @@ package me.Eggses.dungeons.dungeon.lifecycle;
 import me.Eggses.dungeons.configuration.DungeonLog;
 import me.Eggses.dungeons.dungeon.instance.DungeonInstance;
 import me.Eggses.dungeons.dungeon.instance.configurations.DungeonConfiguration;
+import me.Eggses.dungeons.dungeon.instance.configurations.FlatTest;
 import me.Eggses.dungeons.dungeon.instance.configurations.MalignantMarsh;
 import me.Eggses.dungeons.dungeon.utility.InstanceNameManager;
 import me.Eggses.dungeons.entities.taskbehaviour.TaskManager;
@@ -80,7 +81,7 @@ public class DungeonFactory {
     public void createDungeon(DungeonType dungeonType) {
 
         DungeonConfiguration configuration = getDungeonConfiguration(dungeonType);
-        String templateFileName = dungeonType.getTemplateName();
+        String templateFileName = configuration.getTemplateName();
         String instanceFileName = instanceNameManager.generateFolderName();
 
         dungeonWorldManager.attemptToCreateInstance(templateFileName, instanceFileName,
@@ -91,7 +92,9 @@ public class DungeonFactory {
 
     private DungeonConfiguration getDungeonConfiguration(DungeonType dungeonType) {
         return switch (dungeonType) {
+            case TEST_DELETE -> new FlatTest();
             case MALIGNANT_MARSH -> new MalignantMarsh();
+
         };
     }
 }

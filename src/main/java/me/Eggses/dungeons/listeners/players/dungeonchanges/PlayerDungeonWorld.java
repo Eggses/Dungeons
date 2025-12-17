@@ -1,4 +1,4 @@
-package me.Eggses.dungeons.listeners.players;
+package me.Eggses.dungeons.listeners.players.dungeonchanges;
 
 import me.Eggses.dungeons.dungeon.lifecycle.DungeonEventRouter;
 import org.bukkit.World;
