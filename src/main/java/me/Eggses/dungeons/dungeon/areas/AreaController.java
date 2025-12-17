@@ -56,7 +56,7 @@ public class AreaController {
     public void handleInteractEvent(Position positionOfBlock) {
         if (areaInProgress) return;
 
-        Consumer<World> consumer = blockInteractionMap.get(positionOfBlock);
+        Consumer<World> consumer = blockInteractionMap.remove(positionOfBlock);
         if (consumer == null) return;
         consumer.accept(dungeonWorld);
     }
@@ -64,7 +64,7 @@ public class AreaController {
     public void handleDungeonTriggerCommand(Integer argumentValue) {
         if (areaInProgress) return;
 
-        Consumer<World> consumer = dungeonTriggerCommandMap.get(argumentValue);
+        Consumer<World> consumer = dungeonTriggerCommandMap.remove(argumentValue);
         if (consumer == null) return;
         consumer.accept(dungeonWorld);
     }
