@@ -1,5 +1,6 @@
 package me.Eggses.dungeons;
 
+import me.Eggses.dungeons.commands.DungeonTrigger;
 import me.Eggses.dungeons.configuration.DungeonLog;
 import me.Eggses.dungeons.dungeon.lifecycle.*;
 import me.Eggses.dungeons.dungeon.utility.InstanceNameManager;
@@ -15,6 +16,8 @@ import me.Eggses.dungeons.listeners.players.dungeonchanges.PlayerMovement;
 import me.Eggses.dungeons.listeners.players.itemban.*;
 import me.Eggses.dungeons.utility.MessageCreator;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.Objects;
 
 public final class Dungeons extends JavaPlugin {
 
@@ -59,7 +62,9 @@ public final class Dungeons extends JavaPlugin {
         pluginManager.registerEvents(new PlayerInteract(dungeonEventRouter), this);
         pluginManager.registerEvents(new PlayerMovement(dungeonEventRouter), this);
 
-        getServer().getPluginManager();
+        Objects.requireNonNull(getCommand("dungeontrigger")).setExecutor(new DungeonTrigger(dungeonEventRouter));
+
+
 
         dungeonFactory.createDungeon(DungeonType.TEST_DELETE);
     }
