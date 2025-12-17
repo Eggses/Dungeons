@@ -114,7 +114,7 @@ public class DungeonMob implements DungeonEntity {
 
     @Override
     public void updateHealthDisplay(double damageToBeTaken) {
-        int health = (int) (entity.getHealth() - damageToBeTaken);
+        int health = (int) (Math.max(0, entity.getHealth() - damageToBeTaken));
         entity.customName(nameFormatter.createName(health));
     }
 }
