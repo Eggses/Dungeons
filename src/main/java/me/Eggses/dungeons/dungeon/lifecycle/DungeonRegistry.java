@@ -1,13 +1,11 @@
 package me.Eggses.dungeons.dungeon.lifecycle;
 
 import me.Eggses.dungeons.dungeon.instance.DungeonInstance;
-import me.Eggses.dungeons.entities.mobs.DungeonEntity;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public class DungeonRegistry {
 
