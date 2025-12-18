@@ -16,6 +16,7 @@ import me.Eggses.dungeons.listeners.players.dungeonchanges.PlayerInteract;
 import me.Eggses.dungeons.listeners.players.dungeonchanges.PlayerMovement;
 import me.Eggses.dungeons.listeners.players.itemban.*;
 import me.Eggses.dungeons.utility.MessageCreator;
+import me.Eggses.dungeons.utility.SoundPlayer;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;
@@ -35,8 +36,9 @@ public final class Dungeons extends JavaPlugin {
     TaskManager taskManager = new TaskManager(this);
     MessageCreator messageCreator = new MessageCreator();
     BannedItems bannedItems = new BannedItems(messageCreator);
+    SoundPlayer soundPlayer = new SoundPlayer();
 
-    DungeonFactory dungeonFactory = new DungeonFactory(this, dungeonRegistry, dungeonInstanceCoordinator, dungeonWorldManager, instanceNameManager, messageCreator, taskManager, dungeonLog, bannedItems);
+    DungeonFactory dungeonFactory = new DungeonFactory(this, dungeonRegistry, dungeonInstanceCoordinator, dungeonWorldManager, instanceNameManager,taskManager, messageCreator, soundPlayer, dungeonLog, bannedItems);
 
     @Override
     public void onEnable() {
@@ -66,9 +68,7 @@ public final class Dungeons extends JavaPlugin {
 
         Objects.requireNonNull(getCommand("dungeontrigger")).setExecutor(new DungeonTrigger(dungeonEventRouter));
 
-
-
-        dungeonFactory.createDungeon(DungeonType.TEST_DELETE);
+        dungeonFactory.createDungeon(DungeonType.FLAT_TEST);
     }
 
     @Override

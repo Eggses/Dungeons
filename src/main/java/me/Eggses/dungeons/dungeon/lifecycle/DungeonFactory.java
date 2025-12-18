@@ -2,13 +2,14 @@ package me.Eggses.dungeons.dungeon.lifecycle;
 
 import me.Eggses.dungeons.dungeon.files.DungeonLog;
 import me.Eggses.dungeons.dungeon.instance.DungeonInstance;
-import me.Eggses.dungeons.dungeon.instance.configurations.DungeonConfiguration;
+import me.Eggses.dungeons.dungeon.instance.configurations.DungeonTemplate;
 import me.Eggses.dungeons.dungeon.instance.configurations.FlatTest;
 import me.Eggses.dungeons.dungeon.instance.configurations.MalignantMarsh;
 import me.Eggses.dungeons.dungeon.utility.BannedItems;
 import me.Eggses.dungeons.dungeon.utility.InstanceNameManager;
 import me.Eggses.dungeons.entities.taskbehaviour.TaskManager;
 import me.Eggses.dungeons.utility.MessageCreator;
+import me.Eggses.dungeons.utility.SoundPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
@@ -24,8 +25,9 @@ public class DungeonFactory {
     private final DungeonInstanceCoordinator dungeonInstanceCoordinator;
     private final DungeonWorldManager dungeonWorldManager;
     private final InstanceNameManager instanceNameManager;
-    private final MessageCreator messageCreator;
     private final TaskManager taskManager;
+    private final MessageCreator messageCreator;
+    private final SoundPlayer soundPlayer;
     private final DungeonLog dungeonLog;
     private final BannedItems bannedItems;
 
@@ -34,8 +36,9 @@ public class DungeonFactory {
                           DungeonInstanceCoordinator dungeonInstanceCoordinator,
                           DungeonWorldManager dungeonWorldManager,
                           InstanceNameManager instanceNameManager,
-                          MessageCreator messageCreator,
                           TaskManager taskManager,
+                          MessageCreator messageCreator,
+                          SoundPlayer soundPlayer,
                           DungeonLog dungeonLog,
                           BannedItems bannedItems) {
 
@@ -44,21 +47,22 @@ public class DungeonFactory {
         this.dungeonInstanceCoordinator = dungeonInstanceCoordinator;
         this.dungeonWorldManager = dungeonWorldManager;
         this.instanceNameManager = instanceNameManager;
-        this.messageCreator = messageCreator;
         this.taskManager = taskManager;
+        this.messageCreator = messageCreator;
+        this.soundPlayer = soundPlayer;
         this.dungeonLog = dungeonLog;
         this.bannedItems = bannedItems;
     }
 
     private void createDungeonInstance(World world,
-                                       DungeonConfiguration dungeonConfiguration,
+                                       DungeonTemplate dungeonTemplate,
                                        String instanceFileName) {
 
         var dungeonInstance = new DungeonInstance(
                 plugin,
                 dungeonInstanceCoordinator,
                 world,
-                dungeonConfiguration,
+                dungeonTemplate,
                 instanceFileName,
                 messageCreator,
                 taskManager,
@@ -81,24 +85,22 @@ public class DungeonFactory {
         Bukkit.getOnlinePlayers().forEach(player -> player.sendMessage(message));
     }
 
-
     public void createDungeon(DungeonType dungeonType) {
 
-        DungeonConfiguration configuration = getDungeonConfiguration(dungeonType);
-        String templateFileName = configuration.getTemplateFolderName();
+        DungeonTemplate template = getDungeonTemplate(dungeonType);
+        String templateFileName = template.getTemplateFolderName();
         String instanceFileName = instanceNameManager.generateFolderName();
 
         dungeonWorldManager.attemptToCreateInstance(templateFileName, instanceFileName,
-                (world) -> createDungeonInstance(world, configuration, instanceFileName),
+                (world) -> createDungeonInstance(world, template, instanceFileName),
                 (exception) -> failToCreateDungeonInstance(exception, templateFileName, instanceFileName)
         );
     }
 
-    private DungeonConfiguration getDungeonConfiguration(DungeonType dungeonType) {
+    private DungeonTemplate getDungeonTemplate(DungeonType dungeonType) {
         return switch (dungeonType) {
-            case TEST_DELETE -> new FlatTest();
+            case FLAT_TEST -> new FlatTest(plugin, messageCreator, soundPlayer);
             case MALIGNANT_MARSH -> new MalignantMarsh();
-
         };
     }
 }

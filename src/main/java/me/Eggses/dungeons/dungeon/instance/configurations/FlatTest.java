@@ -1,44 +1,33 @@
 package me.Eggses.dungeons.dungeon.instance.configurations;
 
 import me.Eggses.dungeons.dungeon.areas.utility.AreaControllerBuilder;
+import me.Eggses.dungeons.dungeon.files.DungeonFileReader;
 import me.Eggses.dungeons.dungeon.portals.DungeonPortal;
-import me.Eggses.dungeons.dungeon.utility.BannedItems;
-import org.bukkit.World;
+import me.Eggses.dungeons.utility.MessageCreator;
+import me.Eggses.dungeons.utility.SoundPlayer;
+import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.List;
-import java.util.function.Consumer;
+public class FlatTest implements DungeonTemplate {
 
-public class FlatTest implements DungeonConfiguration {
+    private static final String CONFIG_FILE_NAME = "flat_test.yml";
+    private final DungeonFileReader dungeonFileReader;
 
-    private static final String TEMPLATE_NAME = "dungeon_test";
-
-    @Override
-    public DungeonPortal getDungeonPortal() {
-        return null;
-    }
-
-    @Override
-    public AreaControllerBuilder getAreaControllerBuilder() {
-        return null;
-    }
-
-    @Override
-    public List<GraveyardDefinition> getGraveyardDefinitionList() {
-        return List.of();
-    }
-
-    @Override
-    public Consumer<World> getDungeonRules() {
-        return null;
-    }
-
-    @Override
-    public BannedItems getBannedItems() {
-        return null;
+    public FlatTest(JavaPlugin plugin, MessageCreator messageCreator, SoundPlayer soundPlayer) {
+        this.dungeonFileReader = new DungeonFileReader(plugin, CONFIG_FILE_NAME, messageCreator, soundPlayer);
     }
 
     @Override
     public String getTemplateFolderName() {
-        return TEMPLATE_NAME;
+        return dungeonFileReader.readTemplateFileName();
+    }
+
+    @Override
+    public DungeonPortal getDungeonPortal() {
+        return dungeonFileReader.readDungeonPortal();
+    }
+
+    @Override
+    public AreaControllerBuilder getAreaControllerBuilder() {
+        return dungeonFileReader.readDungeonAreas();
     }
 }

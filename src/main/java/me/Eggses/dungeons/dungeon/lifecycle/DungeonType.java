@@ -1,6 +1,6 @@
 package me.Eggses.dungeons.dungeon.lifecycle;
 
 public enum DungeonType {
-    TEST_DELETE(),
+    FLAT_TEST(),
     MALIGNANT_MARSH()
 }

@@ -4,7 +4,7 @@ import me.Eggses.dungeons.dungeon.areas.AreaController;
 import me.Eggses.dungeons.dungeon.areas.EntityManager;
 import me.Eggses.dungeons.dungeon.areas.EventHandler;
 import me.Eggses.dungeons.dungeon.graveyard.Graveyard;
-import me.Eggses.dungeons.dungeon.instance.configurations.DungeonConfiguration;
+import me.Eggses.dungeons.dungeon.instance.configurations.DungeonTemplate;
 import me.Eggses.dungeons.dungeon.players.DungeonPlayers;
 import me.Eggses.dungeons.dungeon.portals.PortalController;
 import me.Eggses.dungeons.dungeon.regions.Position;
@@ -40,7 +40,7 @@ public class DungeonInstance {
     public DungeonInstance(JavaPlugin plugin,
                            DungeonInstanceCoordinator dungeonInstanceCoordinator,
                            World dungeonWorld,
-                           DungeonConfiguration dungeonConfiguration,
+                           DungeonTemplate dungeonTemplate,
                            String instanceFileName,
                            MessageCreator messageCreator,
                            TaskManager taskManager,
@@ -52,13 +52,13 @@ public class DungeonInstance {
         this.instanceFileName = instanceFileName;
 
         var entityManager = new EntityManager(dungeonWorld, taskManager, messageCreator);
-        this.areaController = new AreaController(entityManager, new Graveyard(), dungeonWorld, dungeonConfiguration.getAreaControllerBuilder());
+        this.areaController = new AreaController(entityManager, new Graveyard(), dungeonWorld, dungeonTemplate.getAreaControllerBuilder());
         this.eventHandler = new EventHandler(areaController, entityManager);
-        this.portalController = new PortalController(plugin, this, dungeonConfiguration.getDungeonPortal(), bannedItems);
+        this.portalController = new PortalController(plugin, this, dungeonTemplate.getDungeonPortal(), bannedItems);
         this.dungeonPlayers = new DungeonPlayers();
 
         new GameRules(dungeonWorld).applyRules();
-        dungeonConfiguration.getDungeonRules().accept(dungeonWorld);
+        dungeonTemplate.getDungeonRules().accept(dungeonWorld);
 
         portalController.openDungeonPortal();
         dungeonInstanceCoordinator.openPortal(this, portalController.getChunkKeysEncompassed());

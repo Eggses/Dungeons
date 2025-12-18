@@ -25,7 +25,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.*;
 import java.util.function.Consumer;
 
-public class DungeonAreaReader {
+public class DungeonFileReader {
 
     private static final Consumer<DungeonContext> EMPTY_CONSUMER = dungeonContext -> {};
 
@@ -34,15 +34,16 @@ public class DungeonAreaReader {
     private final MessageCreator messageCreator;
     private final SoundPlayer soundPlayer;
 
-    public DungeonAreaReader(JavaPlugin plugin,
-                             ConfigurationFile configurationFile,
+    public DungeonFileReader(JavaPlugin plugin,
+                             String fileName,
                              MessageCreator messageCreator,
                              SoundPlayer soundPlayer) {
 
         this.plugin = plugin;
-        this.configurationFile = configurationFile;
         this.messageCreator = messageCreator;
         this.soundPlayer = soundPlayer;
+
+        this.configurationFile = new ConfigurationFile(plugin, fileName);
     }
 
     public String readTemplateFileName() {
@@ -53,23 +54,40 @@ public class DungeonAreaReader {
 
     public DungeonPortal readDungeonPortal() {
 
-        ConfigurationSection portalConfig =
-                configurationFile.getCustomFile().getConfigurationSection("dungeon_portal");
-        if (portalConfig == null) return null;
+        String errorMessage = "Could Not Create Dungeon Portal in " + configurationFile.getFileName();
+        ConfigurationSection portalConfig
+                = configurationFile.getCustomFile().getConfigurationSection("dungeon_portal"
+        );
 
+        if (portalConfig == null) {
+            plugin.getLogger().severe(errorMessage);
+            return null;
+        }
         String worldWithPortal = portalConfig.getString("world_with_portal");
-        if (worldWithPortal == null) return null;
-
+        if (worldWithPortal == null) {
+            plugin.getLogger().severe(errorMessage);
+            return null;
+        }
         Region entryPortalRegion = stringToRegion(portalConfig.getString("entry_portal_region"));
-        if (entryPortalRegion == null) return null;
-
+        if (entryPortalRegion == null) {
+            plugin.getLogger().severe(errorMessage);
+            return null;
+        }
         Region exitPortalRegion = stringToRegion(portalConfig.getString("exit_portal_region"));
-        if (exitPortalRegion == null) return null;
-
+        if (exitPortalRegion == null) {
+            plugin.getLogger().severe(errorMessage);
+            return null;
+        }
         Position exitPosition = unformattedStringToPosition(portalConfig.getString("world_exit_location"));
-        if (exitPosition == null) return null;
+        if (exitPosition == null) {
+            plugin.getLogger().severe(errorMessage);
+            return null;
+        }
         Position dungeonSpawnPosition = unformattedStringToPosition(portalConfig.getString("dungeon_spawn_position"));
-        if (dungeonSpawnPosition == null) return null;
+        if (dungeonSpawnPosition == null) {
+            plugin.getLogger().severe(errorMessage);
+            return null;
+        }
 
         int openDurationSeconds = portalConfig.getInt("open_duration_seconds");
 
@@ -93,7 +111,7 @@ public class DungeonAreaReader {
 
         ConfigurationSection areas = configurationFile.getCustomFile().getConfigurationSection("dungeon_areas");
         if (areas == null) {
-            logDungeonAreaReadingError(null);
+            logDungeonReadingError("Error Getting dungeon_areas in " + configurationFile.getFileName());
             return areaControllerBuilder;
         }
 
@@ -101,13 +119,13 @@ public class DungeonAreaReader {
 
             ConfigurationSection dungeonArea = areas.getConfigurationSection(areaName);
             if (dungeonArea == null) {
-                logDungeonAreaReadingError(areaName);
+                logDungeonReadingError("Error Creating Area: " + areaName + ". Area Skipped");
                 continue;
             }
 
             Region entryBounds = stringToRegion(dungeonArea.getString("entry_bounds"));
             if (entryBounds == null) {
-                logDungeonAreaReadingError(areaName);
+                logDungeonReadingError("Error Creating Area: " + areaName + ". Area Skipped");
                 continue;
             }
 
@@ -136,10 +154,7 @@ public class DungeonAreaReader {
         return areaControllerBuilder;
     }
 
-    private void logDungeonAreaReadingError(String areaName) {
-        String errorMessage = "Error in Reading File: " + configurationFile.getFileName() + ".";
-        if (areaName != null) errorMessage = errorMessage + "Dungeon Area With Error: " + areaName + ".";
-
+    private void logDungeonReadingError(String errorMessage) {
         plugin.getLogger().severe(errorMessage);
     }
 
@@ -237,8 +252,8 @@ public class DungeonAreaReader {
                     var action = resolvePlaySoundCommand(command);
                     if (action != null) consumersToRun.add(action);
                 }
-                default -> plugin.getLogger().warning(
-                        "Unknown command '" + commandName + "' in " + configurationFile.getFileName()
+                default -> logDungeonReadingError(
+                        "Unknown command " + commandName + " in " + configurationFile.getFileName()
                 );
             }
         }

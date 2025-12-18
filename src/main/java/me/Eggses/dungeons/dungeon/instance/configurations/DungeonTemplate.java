@@ -6,8 +6,15 @@ import org.bukkit.World;
 
 import java.util.function.Consumer;
 
-public interface DungeonConfiguration {
+public interface DungeonTemplate {
+
+    Consumer<World> EMPTY_CONSUMER = (world) -> {};
+
+    String getTemplateFolderName();
     DungeonPortal getDungeonPortal();
     AreaControllerBuilder getAreaControllerBuilder();
-    Consumer<World> getDungeonRules();
+
+    default Consumer<World> getDungeonRules() {
+        return EMPTY_CONSUMER;
+    }
 }
