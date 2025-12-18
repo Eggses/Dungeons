@@ -1,4 +1,4 @@
-package me.Eggses.dungeons.entities.attributes;
+package me.Eggses.dungeons.utility;
 
 public interface TriFunction<T, U, V, R> {
     R apply(T t, U u, V v);

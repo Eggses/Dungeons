@@ -1,6 +1,5 @@
 package me.Eggses.dungeons.dungeon.instance.configurations;
 
-import me.Eggses.dungeons.dungeon.graveyard.GraveyardDefinition;
 import me.Eggses.dungeons.dungeon.portals.DungeonPortal;
 import me.Eggses.dungeons.dungeon.areas.utility.AreaControllerBuilder;
 import me.Eggses.dungeons.dungeon.utility.BannedItems;

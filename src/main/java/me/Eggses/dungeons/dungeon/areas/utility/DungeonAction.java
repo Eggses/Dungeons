@@ -1,17 +1,16 @@
 package me.Eggses.dungeons.dungeon.areas.utility;
 
-import me.Eggses.dungeons.dungeon.files.reading.TriConsumer;
-import me.Eggses.dungeons.dungeon.areas.EntityManager;
-import me.Eggses.dungeons.dungeon.graveyard.Graveyard;
-import org.bukkit.World;
+import me.Eggses.dungeons.dungeon.utility.DungeonContext;
+
+import java.util.function.Consumer;
 
 @SuppressWarnings("ClassCanBeRecord")
 public class DungeonAction<K> {
 
     private final K k;
-    private final TriConsumer<World, EntityManager, Graveyard> action;
+    private final Consumer<DungeonContext> action;
 
-    public DungeonAction(K k, TriConsumer<World, EntityManager, Graveyard> action) {
+    public DungeonAction(K k, Consumer<DungeonContext> action) {
         this.k = k;
         this.action = action;
     }
@@ -20,7 +19,7 @@ public class DungeonAction<K> {
         return k;
     }
 
-    public TriConsumer<World, EntityManager, Graveyard> getAction() {
+    public Consumer<DungeonContext> getAction() {
         return action;
     }
 }

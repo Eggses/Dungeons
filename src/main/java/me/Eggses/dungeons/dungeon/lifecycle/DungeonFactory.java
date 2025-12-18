@@ -1,6 +1,6 @@
 package me.Eggses.dungeons.dungeon.lifecycle;
 
-import me.Eggses.dungeons.dungeon.files.misc.DungeonLog;
+import me.Eggses.dungeons.dungeon.files.DungeonLog;
 import me.Eggses.dungeons.dungeon.instance.DungeonInstance;
 import me.Eggses.dungeons.dungeon.instance.configurations.DungeonConfiguration;
 import me.Eggses.dungeons.dungeon.instance.configurations.FlatTest;

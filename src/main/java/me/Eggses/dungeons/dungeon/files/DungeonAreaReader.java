@@ -1,18 +1,24 @@
-package me.Eggses.dungeons.dungeon.files.reading;
+package me.Eggses.dungeons.dungeon.files;
 
 import me.Eggses.dungeons.configuration.ConfigurationFile;
-import me.Eggses.dungeons.dungeon.areas.EntityManager;
 import me.Eggses.dungeons.dungeon.areas.utility.AreaControllerBuilder;
 import me.Eggses.dungeons.dungeon.areas.utility.DungeonAction;
 import me.Eggses.dungeons.dungeon.areas.utility.DungeonArea;
 import me.Eggses.dungeons.dungeon.graveyard.Graveyard;
+import me.Eggses.dungeons.dungeon.portals.DungeonPortal;
 import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.dungeon.regions.Region;
+import me.Eggses.dungeons.dungeon.utility.DungeonContext;
 import me.Eggses.dungeons.entities.equipment.ArmourCreator;
 import me.Eggses.dungeons.entities.equipment.ArmourEquipment;
 import me.Eggses.dungeons.entities.equipment.WeaponEquipment;
 import me.Eggses.dungeons.entities.mobs.MobBuilder;
 import me.Eggses.dungeons.entities.mobs.MobType;
+import me.Eggses.dungeons.utility.MessageCreator;
+import me.Eggses.dungeons.utility.SoundPlayer;
+import net.kyori.adventure.sound.Sound;
+import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
@@ -20,6 +26,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -28,15 +35,60 @@ public class DungeonAreaReader {
 
     private final JavaPlugin plugin;
     private final ConfigurationFile configurationFile;
-    private final DungeonFileReader dungeonFileReader;
+    private final MessageCreator messageCreator;
+    private final SoundPlayer soundPlayer;
 
     public DungeonAreaReader(JavaPlugin plugin,
                              ConfigurationFile configurationFile,
-                             DungeonFileReader dungeonFileReader) {
+                             MessageCreator messageCreator,
+                             SoundPlayer soundPlayer) {
 
         this.plugin = plugin;
         this.configurationFile = configurationFile;
-        this.dungeonFileReader = dungeonFileReader;
+        this.messageCreator = messageCreator;
+        this.soundPlayer = soundPlayer;
+    }
+
+    public String readTemplateFileName() {
+        String templateName = configurationFile.getCustomFile().getString("dungeon_template_name");
+        if (templateName == null) throw new IllegalArgumentException("Template File not Defined");
+        return templateName;
+    }
+
+    public DungeonPortal readDungeonPortal() {
+
+        ConfigurationSection portalConfig =
+                configurationFile.getCustomFile().getConfigurationSection("dungeon_portal");
+        if (portalConfig == null) return null;
+
+        String worldWithPortal = portalConfig.getString("world_with_portal");
+        if (worldWithPortal == null) return null;
+
+        Region entryPortalRegion = stringToRegion(portalConfig.getString("entry_portal_region"));
+        if (entryPortalRegion == null) return null;
+
+        Region exitPortalRegion = stringToRegion(portalConfig.getString("exit_portal_region"));
+        if (exitPortalRegion == null) return null;
+
+        Position exitPosition = unformattedStringToPosition(portalConfig.getString("world_exit_location"));
+        if (exitPosition == null) return null;
+        Position dungeonSpawnPosition = unformattedStringToPosition(portalConfig.getString("dungeon_spawn_position"));
+        if (dungeonSpawnPosition == null) return null;
+
+        int openDurationSeconds = portalConfig.getInt("open_duration_seconds");
+
+        List<Consumer<DungeonContext>> onOpenList = resolveCommandList(portalConfig.getStringList("on_open"));
+        List<Consumer<DungeonContext>> onCloseList = resolveCommandList(portalConfig.getStringList("on_close"));
+
+        return new DungeonPortal(
+                worldWithPortal,
+                entryPortalRegion,
+                dungeonSpawnPosition,
+                exitPortalRegion,
+                exitPosition,
+                openDurationSeconds,
+                compressList(onOpenList),
+                compressList(onCloseList));
     }
 
     public AreaControllerBuilder readDungeonAreas() {
@@ -57,16 +109,16 @@ public class DungeonAreaReader {
                 continue;
             }
 
-            Region entryBounds = dungeonFileReader.stringToRegion(dungeonArea.getString("entry_bounds"));
+            Region entryBounds = stringToRegion(dungeonArea.getString("entry_bounds"));
             if (entryBounds == null) {
                 logDungeonAreaReadingError(areaName);
                 continue;
             }
 
-            List<TriConsumer<World, EntityManager, Graveyard>> onEntryConsumers
+            List<Consumer<DungeonContext>> onEntryConsumers
                     = resolveCommandList(dungeonArea.getStringList("on_entry"));
 
-            List<TriConsumer<World, EntityManager, Graveyard>> onClearConsumers
+            List<Consumer<DungeonContext>> onClearConsumers
                     = resolveCommandList(dungeonArea.getStringList("on_clear"));
 
 
@@ -104,17 +156,17 @@ public class DungeonAreaReader {
 
             Object pos = map.get("pos");
             if (!(pos instanceof String posString)) continue;
-            Position position = dungeonFileReader.stringToPosition(posString);
+            Position position = stringToPosition(posString);
             if (position == null) continue;
 
             Object commandsObj = map.get("commands");
             if (!(commandsObj instanceof List<?> rawList)) continue;
             List<String> commands = unknownToStringList(rawList);
 
-            List<TriConsumer<World, EntityManager, Graveyard>> triConsumersToRun = resolveCommandList(commands);
-            TriConsumer<World, EntityManager, Graveyard> triConsumer = compressList(triConsumersToRun);
+            List<Consumer<DungeonContext>> consumers = resolveCommandList(commands);
+            Consumer<DungeonContext> compressed = compressList(consumers);
 
-            dungeonActions.add(new DungeonAction<>(position, triConsumer));
+            dungeonActions.add(new DungeonAction<>(position, compressed));
         }
         return dungeonActions;
     }
@@ -133,10 +185,10 @@ public class DungeonAreaReader {
             if (!(commandsObj instanceof List<?> rawList)) continue;
             List<String> commands = unknownToStringList(rawList);
 
-            List<TriConsumer<World, EntityManager, Graveyard>> triConsumersToRun = resolveCommandList(commands);
-            TriConsumer<World, EntityManager, Graveyard> triConsumer = compressList(triConsumersToRun);
+            List<Consumer<DungeonContext>> consumers = resolveCommandList(commands);
+            Consumer<DungeonContext> compressed = compressList(consumers);
 
-            dungeonActions.add(new DungeonAction<>(idString, triConsumer));
+            dungeonActions.add(new DungeonAction<>(idString, compressed));
         }
         return dungeonActions;
     }
@@ -151,12 +203,12 @@ public class DungeonAreaReader {
         return list;
     }
 
-    private List<TriConsumer<World, EntityManager, Graveyard>> resolveCommandList(List<String> commands) {
+    private List<Consumer<DungeonContext>> resolveCommandList(List<String> commands) {
 
-        List<TriConsumer<World, EntityManager, Graveyard>> triConsumersToRun = new ArrayList<>();
+        List<Consumer<DungeonContext>> consumersToRun = new ArrayList<>();
         List<MobBuilder> mobsToBuildInSection = new ArrayList<>();
 
-        if (commands == null) return triConsumersToRun;
+        if (commands == null) return consumersToRun;
 
         for (String command : commands) {
 
@@ -176,33 +228,50 @@ public class DungeonAreaReader {
                 case "FILL" -> {
                     var action = resolveFillCommand(command);
                     if (action != null) {
-                        triConsumersToRun.add(
-                                (world, entityManager, graveyard) -> action.accept(world)
-                        );
+                        consumersToRun.add(dungeonContext -> {
+                            var world = dungeonContext.getWorld();
+                            if (world != null) action.accept(world);
+                        });
                     }
                 }
                 case "GRAVEYARD" -> {
                     var action = resolveGraveyardCommand(command);
                     if (action != null) {
-                        triConsumersToRun.add(
-                                (world, entityManager, graveyard) -> action.accept(graveyard)
-                        );
+                        consumersToRun.add(dungeonContext -> {
+                            var graveyard = dungeonContext.getGraveyard();
+                            if (graveyard != null) action.accept(graveyard);
+                        });
                     }
+                }
+                case "MESSAGE" -> {
+                    var runnable = resolveMessageCommand(command);
+                    if (runnable != null) {
+                        consumersToRun.add(dungeonContext -> runnable.run());
+                    }
+                }
+                case "SOUND" -> {
+                    var runnable = resolvePlaySoundCommand(command);
+                    if (runnable != null) consumersToRun.add(dungeonContext -> runnable.run());
                 }
             }
         }
 
         if (!mobsToBuildInSection.isEmpty()) {
-            triConsumersToRun.add((world, entityManager, graveyard)
-                    -> entityManager.spawnMobList(List.copyOf(mobsToBuildInSection)));
+
+            List<MobBuilder> copy = List.copyOf(mobsToBuildInSection);
+
+            consumersToRun.add(dungeonContext -> {
+                var entityManager = dungeonContext.getEntityManager();
+                if (entityManager != null) entityManager.spawnMobList(copy);
+            });
         }
 
-        return triConsumersToRun;
+        return consumersToRun;
     }
 
     private MobBuilder resolveMobCommand(String mobCommand) {
 
-        Map<String, String> valueMap = dungeonFileReader.createValueMap(mobCommand);
+        Map<String, String> valueMap = createValueMap(mobCommand);
 
         String type = valueMap.get("type");
         if (type == null) return null;
@@ -213,7 +282,7 @@ public class DungeonAreaReader {
             return null;
         }
 
-        Position position = dungeonFileReader.stringToPosition(valueMap.get("pos"));
+        Position position = stringToPosition(valueMap.get("pos"));
         if (position == null) return null;
 
         MobType preset = MobType.getMobType(valueMap.get("preset"));
@@ -235,10 +304,10 @@ public class DungeonAreaReader {
 
     private Consumer<Graveyard> resolveGraveyardCommand(String graveyardCommand) {
 
-        Map<String, String> valueMap = dungeonFileReader.createValueMap(graveyardCommand);
+        Map<String, String> valueMap = createValueMap(graveyardCommand);
 
         String posString = valueMap.get("pos");
-        Position position = dungeonFileReader.stringToPosition(posString);
+        Position position = stringToPosition(posString);
         if (position == null) return null;
 
         return graveyard -> graveyard.setActiveGraveyard(position);
@@ -246,13 +315,13 @@ public class DungeonAreaReader {
 
     private Consumer<World> resolveFillCommand(String fillCommand) {
 
-        Map<String, String> valueMap = dungeonFileReader.createValueMap(fillCommand);
+        Map<String, String> valueMap = createValueMap(fillCommand);
 
         Material material = Material.matchMaterial(valueMap.get("block"));
         if (material == null) return null;
 
-        Position pos1 = dungeonFileReader.stringToPosition(valueMap.get("pos1"));
-        Position pos2 = dungeonFileReader.stringToPosition(valueMap.get("pos2"));
+        Position pos1 = stringToPosition(valueMap.get("pos1"));
+        Position pos2 = stringToPosition(valueMap.get("pos2"));
         if (pos1 == null || pos2 == null) return null;
 
         Region region = new Region(pos1, pos2);
@@ -268,6 +337,25 @@ public class DungeonAreaReader {
         };
     }
 
+    private Runnable resolveMessageCommand(String text) {
+
+        if (text == null) return null;
+        Map<String, String> valuesMap = createValueMap(text);
+        Component message = messageCreator.createMessage(valuesMap.get("message"));
+
+        return () -> Bukkit.getOnlinePlayers().forEach(p -> p.sendMessage(message));
+    }
+
+    private Runnable resolvePlaySoundCommand(String soundToPlay) {
+
+        if (soundToPlay == null) return null;
+        Map<String, String> valuesMap = createValueMap(soundToPlay);
+        Sound sound = soundPlayer.createSound(valuesMap.get("sound"));
+
+        return () -> soundPlayer.playSound(sound, Bukkit.getOnlinePlayers());
+    }
+
+
     private Integer stringToInteger(String number) {
         if (number == null) return null;
         try {
@@ -277,15 +365,68 @@ public class DungeonAreaReader {
         }
     }
 
-    private TriConsumer<World, EntityManager, Graveyard> compressList(
-            List<TriConsumer<World, EntityManager, Graveyard>> consumers) {
+    private Consumer<DungeonContext> compressList(List<Consumer<DungeonContext>> consumers) {
 
         if (consumers == null || consumers.isEmpty()) {
-            return (w, em, g) -> {};
+            return dungeonContext -> {};
         }
 
-        List<TriConsumer<World, EntityManager, Graveyard>> copy = List.copyOf(consumers);
+        List<Consumer<DungeonContext>> copy = List.copyOf(consumers);
 
-        return (w, em, g) -> copy.forEach(c -> c.accept(w, em, g));
+        return dungeonContext ->
+                copy.forEach(consumer -> consumer.accept(dungeonContext));
+    }
+
+    private Map<String, String> createValueMap(String command) {
+
+        String[] arguments = command.split("\\s+");
+
+        Map<String, String> valuesMap = new HashMap<>();
+
+        for (String argument : arguments) {
+
+            int indexOfEquals = argument.indexOf('=');
+            if (indexOfEquals == -1) continue;
+
+            String key = argument.substring(0, indexOfEquals);
+            String value = argument.substring(indexOfEquals + 1);
+
+            valuesMap.put(key, value);
+        }
+        return valuesMap;
+    }
+
+    private Region stringToRegion(String entryBounds) {
+
+        Map<String, String> valuesMap = createValueMap(entryBounds);
+
+        Position pos1 = stringToPosition(valuesMap.get("pos1"));
+        Position pos2 = stringToPosition(valuesMap.get("pos2"));
+        if (pos1 == null || pos2 == null) return null;
+
+        return new Region(pos1, pos2);
+    }
+
+    private Position stringToPosition(String position) {
+        if (position == null) return null;
+
+        String[] coordinates = position.split(",");
+        if (coordinates.length != 3) return null;
+
+        try {
+            int x = Integer.parseInt(coordinates[0]);
+            int y = Integer.parseInt(coordinates[1]);
+            int z = Integer.parseInt(coordinates[2]);
+
+            return new Position(x, y, z);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    private Position unformattedStringToPosition(String position) {
+        if (position == null) return null;
+        Map<String, String> valuesMap = createValueMap(position);
+        return stringToPosition(valuesMap.get("pos"));
     }
 }

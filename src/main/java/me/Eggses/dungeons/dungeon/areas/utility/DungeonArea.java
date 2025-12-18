@@ -1,21 +1,19 @@
 package me.Eggses.dungeons.dungeon.areas.utility;
 
-import me.Eggses.dungeons.dungeon.files.reading.TriConsumer;
-import me.Eggses.dungeons.dungeon.areas.EntityManager;
-import me.Eggses.dungeons.dungeon.graveyard.Graveyard;
 import me.Eggses.dungeons.dungeon.regions.Region;
-import org.bukkit.World;
+import me.Eggses.dungeons.dungeon.utility.DungeonContext;
 
+import java.util.function.Consumer;
 
 public class DungeonArea {
 
     private final Region entryRegion;
-    private final TriConsumer<World, EntityManager, Graveyard> onEnterFirstTime;
-    private final TriConsumer<World, EntityManager, Graveyard> onClearArea;
+    private final Consumer<DungeonContext> onEnterFirstTime;
+    private final Consumer<DungeonContext> onClearArea;
 
     public DungeonArea(Region entryRegion,
-                       TriConsumer<World, EntityManager, Graveyard> onEnterFirstTime,
-                       TriConsumer<World, EntityManager, Graveyard> onClearArea) {
+                       Consumer<DungeonContext> onEnterFirstTime,
+                       Consumer<DungeonContext> onClearArea) {
 
         this.entryRegion = entryRegion;
         this.onEnterFirstTime = onEnterFirstTime;
@@ -26,11 +24,11 @@ public class DungeonArea {
         return entryRegion;
     }
 
-    public void onEnterFirstTime(World world, EntityManager entityManager, Graveyard graveyard) {
-        onEnterFirstTime.accept(world, entityManager, graveyard);
+    public void onEnterFirstTime(DungeonContext dungeonContext) {
+        onEnterFirstTime.accept(dungeonContext);
     }
 
-    public void onClearArea(World world, EntityManager entityManager, Graveyard graveyard) {
-        onClearArea.accept(world, entityManager, graveyard);
+    public void onClearArea(DungeonContext dungeonContext) {
+        onClearArea.accept(dungeonContext);
     }
 }

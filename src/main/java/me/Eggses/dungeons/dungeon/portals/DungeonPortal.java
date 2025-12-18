@@ -3,9 +3,12 @@ package me.Eggses.dungeons.dungeon.portals;
 import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.dungeon.regions.Region;
 import me.Eggses.dungeons.dungeon.regions.WorldRegion;
+import me.Eggses.dungeons.dungeon.utility.DungeonContext;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+
+import java.util.function.Consumer;
 
 public class DungeonPortal {
 
@@ -19,8 +22,8 @@ public class DungeonPortal {
 
     private final int openDurationSeconds;
 
-    private final Runnable onOpen;
-    private final Runnable onClose;
+    private final Consumer<DungeonContext> onOpen;
+    private final Consumer<DungeonContext> onClose;
 
     public DungeonPortal(String worldWithPortal,
                          Region entryPortalRegion,
@@ -28,8 +31,8 @@ public class DungeonPortal {
                          Region exitPortalRegion,
                          Position worldExitLocation,
                          int openDurationSeconds,
-                         Runnable onOpen,
-                         Runnable onClose) {
+                         Consumer<DungeonContext> onOpen,
+                         Consumer<DungeonContext> onClose) {
 
         this.entryPortalRegion = entryPortalRegion;
         this.dungeonSpawnPosition = dungeonSpawnPosition;
@@ -68,11 +71,11 @@ public class DungeonPortal {
     }
 
     public void openPortal() {
-        if (onOpen != null) onOpen.run();
+        if (onOpen != null) onOpen.accept(new DungeonContext());
     }
 
     public void closePortal() {
-        if (onClose != null) onClose.run();
+        if (onClose != null) onClose.accept(new DungeonContext());
     }
 
     public int getOpenDurationTicks() {

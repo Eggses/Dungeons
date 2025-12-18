@@ -1,17 +1,15 @@
 package me.Eggses.dungeons.dungeon.areas.utility;
-import me.Eggses.dungeons.dungeon.files.reading.TriConsumer;
-import me.Eggses.dungeons.dungeon.areas.EntityManager;
-import me.Eggses.dungeons.dungeon.graveyard.Graveyard;
 import me.Eggses.dungeons.dungeon.regions.Position;
-import org.bukkit.World;
+import me.Eggses.dungeons.dungeon.utility.DungeonContext;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 public class AreaControllerBuilder {
 
     private final Map<Long, Set<DungeonArea>> dungeonAreasMap = new HashMap<>();
-    private final Map<Position, TriConsumer<World, EntityManager, Graveyard>> blockInteractionMap = new HashMap<>();
-    private final Map<String, TriConsumer<World, EntityManager, Graveyard>> dungeonTriggerCommandMap = new HashMap<>();
+    private final Map<Position, Consumer<DungeonContext>> blockInteractionMap = new HashMap<>();
+    private final Map<String, Consumer<DungeonContext>> dungeonTriggerCommandMap = new HashMap<>();
 
     public void addDungeonArea(DungeonArea dungeonArea) {
 
@@ -39,11 +37,11 @@ public class AreaControllerBuilder {
         return dungeonAreasMap;
     }
 
-    public Map<Position, TriConsumer<World, EntityManager, Graveyard>> getBlockInteractionMap() {
+    public Map<Position, Consumer<DungeonContext>> getBlockInteractionMap() {
         return blockInteractionMap;
     }
 
-    public Map<String, TriConsumer<World, EntityManager, Graveyard>> getDungeonTriggerCommandMap() {
+    public Map<String, Consumer<DungeonContext>> getDungeonTriggerCommandMap() {
         return dungeonTriggerCommandMap;
     }
 }

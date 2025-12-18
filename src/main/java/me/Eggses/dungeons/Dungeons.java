@@ -1,7 +1,7 @@
 package me.Eggses.dungeons;
 
 import me.Eggses.dungeons.commands.DungeonTrigger;
-import me.Eggses.dungeons.dungeon.files.misc.DungeonLog;
+import me.Eggses.dungeons.dungeon.files.DungeonLog;
 import me.Eggses.dungeons.dungeon.lifecycle.*;
 import me.Eggses.dungeons.dungeon.utility.BannedItems;
 import me.Eggses.dungeons.dungeon.utility.InstanceNameManager;
