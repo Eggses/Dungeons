@@ -1,0 +1,58 @@
+dungeon_areas:
+
+  courtyard:
+    entry_bounds:
+      pos1: "12,64,-40"
+      pos2: "40,85,-10"
+
+    on_entry:
+      - "FILL pos1=18,64,-28 pos2=18,66,-28 block=AIR"
+      - "GRAVEYARD pos=30,64,-12"
+      - "MOB type=ZOMBIE level=10 pos=20,64,-25 armour=IRON_SPIRE_GOLD_2 weapon=IRON_SWORD_SHIELD count=3"
+      - "MOB type=SKELETON level=10 pos=24,64,-22 weapon=BOW armour=CHAIN_PLAIN_4 count=4"
+
+    on_clear:
+      - "GRAVEYARD pos=22,64,-35"
+      - "FILL pos1=29,64,-12 pos2=31,66,-12 block=AIR"
+
+    interactions:
+      - pos: "16,64,-30"
+        commands:
+          - "FILL pos1=10,64,-20 pos2=12,66,-20 block=AIR"
+
+      - pos: "28,64,-18"
+        commands:
+          - "GRAVEYARD pos=18,64,-18"
+
+    triggers:
+      - id: 1
+        commands:
+          - "MOB type=ZOMBIE level=12 pos=6,64,-5 armour=CHAIN_PLAIN_4 weapon=IRON_AXE count=2"
+          - "MOB type=SKELETON level=12 pos=7,64,-6 weapon=BOW count=2"
+
+      - id: 2
+        commands:
+          - "FILL pos1=9,64,-5 pos2=12,66,-5 block=AIR"
+
+
+  graveyard_approach:
+    entry_bounds:
+      pos1: "42,63,-20"
+      pos2: "78,86,12"
+
+    on_entry:
+      - "GRAVEYARD pos=60,64,-5"
+      - "MOB type=ZOMBIE level=11 pos=55,64,-2 armour=CHAIN_PLAIN_4 weapon=STONE_SWORD count=2"
+
+    on_clear:
+      - "FILL pos1=58,64,-6 pos2=60,66,-6 block=AIR"
+
+    interactions:
+      - pos: "58,64,-6"
+        commands:
+          - "GRAVEYARD pos=57,64,-6"
+
+    triggers:
+      - id: 1
+        commands:
+          - "MOB type=ZOMBIE level=14 pos=61,64,-4 armour=IRON_SPIRE_GOLD_2 weapon=IRON_SWORD count=1"

@@ -30,8 +30,8 @@ public class EventHandler {
         areaController.handleInteractEvent(positionOfBlock);
     }
 
-    public void handleDungeonTriggerCommand(Integer argumentValue) {
-        areaController.handleDungeonTriggerCommand(argumentValue);
+    public void handleDungeonTriggerCommand(String argument) {
+        areaController.handleDungeonTriggerCommand(argument);
     }
 
     public void handleEntityDeathEvent(UUID uuid) {

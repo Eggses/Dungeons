@@ -39,8 +39,8 @@ public class DungeonEventRouter {
         runIfInstanceExists(world, (instance) -> instance.handlePlayerInteractEvent(positionOfBlock));
     }
 
-    public void handleDungeonTriggerCommand(World world, int argumentValue) {
-        runIfInstanceExists(world, (instance) -> instance.handleDungeonTriggerCommand(argumentValue));
+    public void handleDungeonTriggerCommand(World world, String argument) {
+        runIfInstanceExists(world, (instance) -> instance.handleDungeonTriggerCommand(argument));
     }
 
     public void handleEntityDeathEventInDungeon(World world, UUID uuid) {

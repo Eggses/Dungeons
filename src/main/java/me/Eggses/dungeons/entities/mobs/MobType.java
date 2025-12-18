@@ -2,6 +2,7 @@ package me.Eggses.dungeons.entities.mobs;
 
 import me.Eggses.dungeons.entities.attributes.AttributeController;
 import me.Eggses.dungeons.entities.nameutility.MobName;
+import me.Eggses.dungeons.entities.taskbehaviour.EntityTaskBehaviour;
 import me.Eggses.dungeons.utility.NMS;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.LeapAtTargetGoal;
@@ -20,7 +21,7 @@ public enum MobType {
         ac.setBaseAttribute(Attribute.MOVEMENT_SPEED, 0.25);
         ac.setBaseAttribute(Attribute.KNOCKBACK_RESISTANCE, 0.3);
         ac.setBaseAttribute(Attribute.ATTACK_KNOCKBACK, 1.5);
-    }, new MobName("Knight", false)),
+    }, new EntityTaskBehaviour(), new MobName("Knight", false)),
 
     FIEND((dungeonEntity) -> {
         AttributeController ac = dungeonEntity.getAttributeController();
@@ -34,9 +35,24 @@ public enum MobType {
         if (dungeonEntity.getEntity() instanceof CraftEntity craftEntity) {
             if (craftEntity.getHandle() instanceof Mob mob) {
                 mob.goalSelector.addGoal(3, new LeapAtTargetGoal(mob, 0.4F));
+
+                // clear its Goals,, find spider goals... copy those
+                // and mayeb the targeting goals
+                // and just yeah bing
+
+                /*
+                for illusioer you have to do the same....
+
+                to allow for mobs to set thier own entity event TASKs!! consider illujsioers tasks..
+                expose it somehow so that it overrides hte mob builder one...
+
+                maybe a method on dungeon entity returns it,... and rather than being set
+                in consutror to active tasks you manually call it idk.....
+
+                 */
             }
         }
-    }, new MobName("Fiend", false)),
+    }, new EntityTaskBehaviour(), new MobName("Fiend", false)),
 
     /*
     Zombie has same goals as spider then it works normally dont add have to fully fix goals
@@ -107,7 +123,7 @@ way to much to fast,  too shit
         AttributeController ac = dungeonEntity.getAttributeController();
         ac.setBaseAttribute(Attribute.SCALE, 1.04);
         ac.setBaseAttribute(Attribute.MOVEMENT_SPEED, 0.3);
-    }, new MobName("Bruiser", false)),
+    }, new EntityTaskBehaviour(), new MobName("Bruiser", false)),
 
     ENCHANTER((dungeonEntity) -> {
         AttributeController ac = dungeonEntity.getAttributeController();
@@ -118,7 +134,7 @@ way to much to fast,  too shit
        and follow other mobs
         */
 
-    }, new MobName("Enchanter", true)),
+    }, new EntityTaskBehaviour(), new MobName("Enchanter", true)),
 
     WEB_THROWER((dungeonEntity) -> {
 
@@ -132,13 +148,15 @@ way to much to fast,  too shit
         */
 
 
-    }, new MobName("Thrower", false));
+    }, new EntityTaskBehaviour(), new MobName("Thrower", false));
 
     private final Consumer<DungeonEntity> spawnFinalizer;
+    private final EntityTaskBehaviour entityTaskBehaviour;
     private final MobName mobName;
 
-    MobType(Consumer<DungeonEntity> spawnFinalizer, MobName mobName) {
+    MobType(Consumer<DungeonEntity> spawnFinalizer, EntityTaskBehaviour entityTaskBehaviour, MobName mobName) {
         this.spawnFinalizer = spawnFinalizer;
+        this.entityTaskBehaviour = entityTaskBehaviour;
         this.mobName = mobName;
     }
 
@@ -146,7 +164,20 @@ way to much to fast,  too shit
         return spawnFinalizer;
     }
 
+    public EntityTaskBehaviour getEntityTaskBehaviour() {
+        return entityTaskBehaviour;
+    }
+
     public MobName getMobName() {
         return mobName;
+    }
+
+    public static MobType getMobType(String mobType) {
+        if (mobType == null) return null;
+        try {
+            return MobType.valueOf(mobType);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
     }
 }

@@ -21,15 +21,9 @@ public class DungeonTrigger implements CommandExecutor {
         if (!(sender instanceof BlockCommandSender blockCommandSender)) return true;
         if (args.length != 1) return true;
 
-        int valueAsInt;
-        try {
-            valueAsInt = Integer.parseInt(args[0]);
-        } catch (NumberFormatException e) {
-            return true;
-        }
 
         // While not an Event, this command is treated as an Event as its purpose is the same.
-        dungeonEventRouter.handleDungeonTriggerCommand(blockCommandSender.getBlock().getWorld(), valueAsInt);
+        dungeonEventRouter.handleDungeonTriggerCommand(blockCommandSender.getBlock().getWorld(), args[0]);
         return true;
     }
 }

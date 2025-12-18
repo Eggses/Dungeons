@@ -35,6 +35,10 @@ public class Position {
         return new Location(world, x + 0.5, y, z + 0.5);
     }
 
+    public Location toLocation(World world) {
+        return new Location(world, x, y, z);
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;

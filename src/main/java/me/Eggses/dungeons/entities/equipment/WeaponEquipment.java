@@ -33,4 +33,24 @@ public class WeaponEquipment {
         if (material == null) return null;
         return new ItemStack(material, 1);
     }
+
+    public static WeaponEquipment createWeaponsFromString(String weaponConfiguration) {
+
+        if (weaponConfiguration == null) return new WeaponEquipment();
+        weaponConfiguration = weaponConfiguration.trim();
+
+        String[] weaponConfig = weaponConfiguration.toUpperCase().split(",");
+
+        Material mainHandMaterial = getMaterial(weaponConfig[0]);
+        Material offhandMaterial = null;
+
+        if (weaponConfig.length == 2) offhandMaterial = getMaterial(weaponConfig[1]);
+
+        return new WeaponEquipment(mainHandMaterial, offhandMaterial);
+    }
+
+    private static Material getMaterial(String material) {
+        if (material == null) return null;
+        return Material.matchMaterial(material);
+    }
 }

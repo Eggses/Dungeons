@@ -1,20 +1,19 @@
 package me.Eggses.dungeons.dungeon.areas.utility;
+import me.Eggses.dungeons.configuration.TriConsumer;
+import me.Eggses.dungeons.dungeon.areas.EntityManager;
+import me.Eggses.dungeons.dungeon.graveyard.Graveyard;
 import me.Eggses.dungeons.dungeon.regions.Position;
 import org.bukkit.World;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Consumer;
+import java.util.*;
 
 public class AreaControllerBuilder {
 
     private final Map<Long, Set<DungeonArea>> dungeonAreasMap = new HashMap<>();
-    private final Map<Position, Consumer<World>> blockInteractionMap = new HashMap<>();
-    private final Map<Integer, Consumer<World>> dungeonTriggerCommandMap = new HashMap<>();
+    private final Map<Position, TriConsumer<World, EntityManager, Graveyard>> blockInteractionMap = new HashMap<>();
+    private final Map<String, TriConsumer<World, EntityManager, Graveyard>> dungeonTriggerCommandMap = new HashMap<>();
 
-    public AreaControllerBuilder dungeonArea(DungeonArea dungeonArea) {
+    public void addDungeonArea(DungeonArea dungeonArea) {
 
         Set<Long> encompassedChunkKeys = dungeonArea.getEntryRegion().getCoveredChunkKeys();
 
@@ -24,28 +23,27 @@ public class AreaControllerBuilder {
             Set<DungeonArea> dungeonAreas = dungeonAreasMap.get(chunkKey);
             dungeonAreas.add(dungeonArea);
         }
-        return this;
     }
 
-    public AreaControllerBuilder blockInteraction(DungeonAction<Position> blockInteraction) {
-        blockInteractionMap.put(blockInteraction.getK(), blockInteraction.getAction());
-        return this;
+    public void addBlockInteractionList(List<DungeonAction<Position>> blockInteractionList) {
+        blockInteractionList.forEach(action
+                -> blockInteractionMap.put(action.getK(), action.getAction()));
     }
 
-    public AreaControllerBuilder dungeonTriggerCommand(DungeonAction<Integer> dungeonTriggerCommand) {
-        dungeonTriggerCommandMap.put(dungeonTriggerCommand.getK(), dungeonTriggerCommand.getAction());
-        return this;
+    public void addDungeonTriggerCommandList(List<DungeonAction<String>> dungeonTriggerCommandList) {
+        dungeonTriggerCommandList.forEach(action
+                -> dungeonTriggerCommandMap.put(action.getK(), action.getAction()));
     }
 
     public Map<Long, Set<DungeonArea>> getDungeonAreasMap() {
         return dungeonAreasMap;
     }
 
-    public Map<Position, Consumer<World>> getBlockInteractionMap() {
+    public Map<Position, TriConsumer<World, EntityManager, Graveyard>> getBlockInteractionMap() {
         return blockInteractionMap;
     }
 
-    public Map<Integer, Consumer<World>> getDungeonTriggerCommandMap() {
+    public Map<String, TriConsumer<World, EntityManager, Graveyard>> getDungeonTriggerCommandMap() {
         return dungeonTriggerCommandMap;
     }
 }

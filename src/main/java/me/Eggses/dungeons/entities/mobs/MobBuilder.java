@@ -1,5 +1,6 @@
 package me.Eggses.dungeons.entities.mobs;
 
+import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.entities.eventbehaviour.EventBehaviour;
 import me.Eggses.dungeons.entities.nameutility.MobName;
 import me.Eggses.dungeons.entities.taskbehaviour.EntityTask;
@@ -7,38 +8,37 @@ import me.Eggses.dungeons.entities.taskbehaviour.EntityTaskBehaviour;
 import me.Eggses.dungeons.entities.eventbehaviour.EntityEventBehaviour;
 import me.Eggses.dungeons.entities.equipment.ArmourEquipment;
 import me.Eggses.dungeons.entities.equipment.WeaponEquipment;
-import org.bukkit.Location;
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.EntityType;
 
 import java.util.function.Consumer;
 
 public class MobBuilder {
 
-    private Class<? extends LivingEntity> entityType;
-    private Location location;
+    private EntityType entityType;
+    private Position position;
     private int dungeonLevel = 1;
     private WeaponEquipment weaponEquipment = new WeaponEquipment();
     private ArmourEquipment armourEquipment = new ArmourEquipment();
     private final EntityEventBehaviour entityEventBehaviour = new EntityEventBehaviour();
-    private final EntityTaskBehaviour entityTaskBehaviour = new EntityTaskBehaviour();
+    private EntityTaskBehaviour entityTaskBehaviour = new EntityTaskBehaviour();
     private Consumer<DungeonEntity> spawnFinalizer = (entity) -> {};
     private int count = 1;
     private MobName mobName = new MobName();
 
-    public MobBuilder(Class<? extends LivingEntity> entityType, Location location) {
+    public MobBuilder(EntityType entityType, Position position) {
         this.entityType = entityType;
-        this.location = location;
+        this.position = position;
     }
 
     // Builders
 
-    public MobBuilder entityType(Class<? extends LivingEntity> entityType) {
+    public MobBuilder entityType(EntityType entityType) {
         this.entityType = entityType;
         return this;
     }
 
-    public MobBuilder location(Location location) {
-        this.location = location;
+    public MobBuilder position(Position position) {
+        this.position = position;
         return this;
     }
 
@@ -82,20 +82,22 @@ public class MobBuilder {
         return this;
     }
 
-    public MobBuilder mobNameAndSpawnFinalizer(MobType mobType) {
+    public MobBuilder mobNameSpawnFinalizerTaskBehaviour(MobType mobType) {
+        if (mobType == null) return this;
         this.mobName = mobType.getMobName();
         this.spawnFinalizer = mobType.getSpawnFinalizer();
+        this.entityTaskBehaviour = mobType.getEntityTaskBehaviour();
         return this;
     }
 
     // Getters
 
-    public Class<? extends LivingEntity> getEntityType() {
+    public EntityType getEntityType() {
         return entityType;
     }
 
-    public Location getLocation() {
-        return location;
+    public Position getPosition() {
+        return position;
     }
 
     public int getDungeonLevel() {

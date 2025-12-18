@@ -49,7 +49,7 @@ public class DungeonInstance {
         this.dungeonWorld = dungeonWorld;
         this.instanceFileName = instanceFileName;
 
-        var entityManager = new EntityManager(taskManager, messageCreator);
+        var entityManager = new EntityManager(dungeonWorld, taskManager, messageCreator);
         var graveyard = new Graveyard(dungeonConfiguration.getGraveyardDefinitionList());
         this.areaController = new AreaController(entityManager, graveyard, dungeonWorld, dungeonConfiguration.getAreaControllerBuilder());
         this.eventHandler = new EventHandler(areaController, entityManager);
@@ -126,8 +126,8 @@ public class DungeonInstance {
         eventHandler.handleInteractEvent(positionOfBlock);
     }
 
-    public void handleDungeonTriggerCommand(int argumentValue) {
-        eventHandler.handleDungeonTriggerCommand(argumentValue);
+    public void handleDungeonTriggerCommand(String argument) {
+        eventHandler.handleDungeonTriggerCommand(argument);
     }
 
     public void handleEntityDeathEvent(UUID uuid) {

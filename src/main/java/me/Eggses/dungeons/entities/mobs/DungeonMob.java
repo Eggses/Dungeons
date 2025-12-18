@@ -1,5 +1,6 @@
 package me.Eggses.dungeons.entities.mobs;
 
+import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.entities.attributes.AttributeController;
 import me.Eggses.dungeons.entities.nameutility.MobName;
 import me.Eggses.dungeons.entities.taskbehaviour.TaskManager;
@@ -9,10 +10,10 @@ import me.Eggses.dungeons.entities.equipment.EquipmentManager;
 import me.Eggses.dungeons.entities.taskbehaviour.ActiveEntityTasks;
 import me.Eggses.dungeons.utility.MessageCreator;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
@@ -35,12 +36,14 @@ public class DungeonMob implements DungeonEntity {
     private final AttributeController attributeController = new AttributeController(this);
     private final ActiveEntityTasks activeEntityTasks = new ActiveEntityTasks();
 
-    public DungeonMob(MobBuilder mobBuilder, TaskManager taskManager, MessageCreator messageCreator) {
+    public DungeonMob(MobBuilder mobBuilder, World world,TaskManager taskManager, MessageCreator messageCreator) {
 
         // Spawn Entity
-        Location location = mobBuilder.getLocation();
-        World world = location.getWorld();
-        entity = world.spawn(location, mobBuilder.getEntityType());
+        Position position = mobBuilder.getPosition();
+
+        Entity entitySpawned = world.spawnEntity(position.toLocation(world), mobBuilder.getEntityType());
+        if (!(entitySpawned instanceof LivingEntity livingEntity)) throw new IllegalArgumentException("Tried to Spawn a Non-Living Mob!");
+        this.entity = livingEntity;
 
         // Set Instance Fields
         this.dungeonLevel = mobBuilder.getDungeonLevel();

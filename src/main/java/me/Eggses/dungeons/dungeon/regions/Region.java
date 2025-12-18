@@ -78,6 +78,30 @@ public class Region {
         return chunkKeys;
     }
 
+    public int getMinX() {
+        return minX;
+    }
+
+    public int getMinY() {
+        return minY;
+    }
+
+    public int getMinZ() {
+        return minZ;
+    }
+
+    public int getMaxX() {
+        return maxX;
+    }
+
+    public int getMaxY() {
+        return maxY;
+    }
+
+    public int getMaxZ() {
+        return maxZ;
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;

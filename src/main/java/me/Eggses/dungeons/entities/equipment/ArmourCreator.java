@@ -18,17 +18,21 @@ public class ArmourCreator {
     private final TrimPattern trimPattern;
     private final TrimMaterial trimMaterial;
 
-    public ArmourCreator(ArmorMaterial armorMaterial,
+    public ArmourCreator(ArmourSetMaterial armorSetMaterial,
                          TrimPattern trimPattern,
                          TrimMaterial trimMaterial) {
 
         this.trimPattern = trimPattern;
         this.trimMaterial = trimMaterial;
 
-        helmet = createArmourPiece(armorMaterial.getHelmetMaterial());
-        chestplate = createArmourPiece(armorMaterial.getChestplateMaterial());
-        leggings = createArmourPiece(armorMaterial.getLeggingsMaterial());
-        boots = createArmourPiece((armorMaterial.getBootsMaterial()));
+        helmet = createArmourPiece(armorSetMaterial.getHelmetMaterial());
+        chestplate = createArmourPiece(armorSetMaterial.getChestplateMaterial());
+        leggings = createArmourPiece(armorSetMaterial.getLeggingsMaterial());
+        boots = createArmourPiece((armorSetMaterial.getBootsMaterial()));
+    }
+
+    public ArmourCreator(ArmourSetMaterial armourSetMaterial) {
+        this(armourSetMaterial, null, null);
     }
 
     public ArmourEquipment generateFullSet() {
@@ -63,7 +67,49 @@ public class ArmourCreator {
         return armourPiece;
     }
 
-    public enum ArmorMaterial {
+    public ArmourEquipment generateSet(int style) {
+        return switch (style) {
+            case 1 -> generateHelmetOnly();
+            case 2 -> generateTopHalfOfSet();
+            case 4 -> generateFullSet();
+            default -> new ArmourEquipment();
+        };
+    }
+
+    public static ArmourEquipment createArmourFromString(String armourConfiguration) {
+
+        if (armourConfiguration == null) return new ArmourEquipment();
+
+        armourConfiguration = armourConfiguration.trim();
+        String[] armourConfig = armourConfiguration.toUpperCase().split("_");
+        if (armourConfig.length < 2) return new ArmourEquipment();
+
+        ArmourSetMaterial armourSetMaterial = ArmourSetMaterial.getArmourSetMaterial(armourConfig[0]);
+        if (armourSetMaterial == null) return new ArmourEquipment();
+
+        int coverage;
+        try {
+            coverage = Integer.parseInt(armourConfig[armourConfig.length - 1]);
+        } catch (NumberFormatException e) {
+            return new ArmourEquipment();
+        }
+        if (coverage != 1 && coverage != 2 && coverage != 4) return new ArmourEquipment();
+
+        if (armourConfig.length == 2) {
+            ArmourCreator armourCreator = new ArmourCreator(armourSetMaterial);
+            return armourCreator.generateSet(coverage);
+        }
+        if (armourConfig.length == 4) {
+            TrimPattern trimPattern = ArmourTrimPattern.getTrimPattern(armourConfig[1]);
+            TrimMaterial trimMaterial = ArmourTrimMaterial.getTrimMaterial(armourConfig[2]);
+            if (trimPattern == null || trimMaterial == null) return new ArmourEquipment();
+            ArmourCreator armourCreator = new ArmourCreator(armourSetMaterial, trimPattern, trimMaterial);
+            return armourCreator.generateSet(coverage);
+        }
+        return new ArmourEquipment();
+    }
+
+    public enum ArmourSetMaterial {
         LEATHER(
                 Material.LEATHER_HELMET,
                 Material.LEATHER_CHESTPLATE,
@@ -112,7 +158,7 @@ public class ArmourCreator {
         private final Material leggingsMaterial;
         private final Material bootsMaterial;
 
-        ArmorMaterial(Material helmetMaterial,
+        ArmourSetMaterial(Material helmetMaterial,
                       Material chestplateMaterial,
                       Material leggingsMaterial,
                       Material bootsMaterial) {
@@ -122,20 +168,104 @@ public class ArmourCreator {
             this.bootsMaterial = bootsMaterial;
         }
 
-        public Material getHelmetMaterial() {
+        private Material getHelmetMaterial() {
             return helmetMaterial;
         }
 
-        public Material getChestplateMaterial() {
+        private Material getChestplateMaterial() {
             return chestplateMaterial;
         }
 
-        public Material getLeggingsMaterial() {
+        private Material getLeggingsMaterial() {
             return leggingsMaterial;
         }
 
-        public Material getBootsMaterial() {
+        private Material getBootsMaterial() {
             return bootsMaterial;
+        }
+
+        private static ArmourSetMaterial getArmourSetMaterial(String armourMaterial) {
+            if (armourMaterial == null) return null;
+            try {
+                return ArmourSetMaterial.valueOf(armourMaterial);
+            } catch (IllegalArgumentException e) {
+                return null;
+            }
+        }
+    }
+
+    private enum ArmourTrimPattern {
+
+        BOLT(TrimPattern.BOLT),
+        COAST(TrimPattern.COAST),
+        DUNE(TrimPattern.DUNE),
+        EYE(TrimPattern.EYE),
+        FLOW(TrimPattern.FLOW),
+        HOST(TrimPattern.HOST),
+        RAISER(TrimPattern.RAISER),
+        RIB(TrimPattern.RIB),
+        SENTRY(TrimPattern.SENTRY),
+        SHAPER(TrimPattern.SHAPER),
+        SILENCE(TrimPattern.SILENCE),
+        SNOUT(TrimPattern.SNOUT),
+        SPIRE(TrimPattern.SPIRE),
+        TIDE(TrimPattern.TIDE),
+        VEX(TrimPattern.VEX),
+        WARD(TrimPattern.WARD),
+        WAYFINDER(TrimPattern.WAYFINDER),
+        WILD(TrimPattern.WILD);
+
+        private final TrimPattern trimPattern;
+
+        ArmourTrimPattern(TrimPattern trimPattern) {
+            this.trimPattern = trimPattern;
+        }
+
+        private TrimPattern getTrimPattern() {
+            return trimPattern;
+        }
+
+        private static TrimPattern getTrimPattern(String pattern) {
+            if (pattern == null) return null;
+            try {
+                return ArmourTrimPattern.valueOf(pattern).getTrimPattern();
+            } catch (IllegalArgumentException e) {
+                return null;
+            }
+        }
+    }
+
+    private enum ArmourTrimMaterial {
+
+        AMETHYST(TrimMaterial.AMETHYST),
+        COPPER(TrimMaterial.COPPER),
+        DIAMOND(TrimMaterial.DIAMOND),
+        EMERALD(TrimMaterial.EMERALD),
+        GOLD(TrimMaterial.GOLD),
+        IRON(TrimMaterial.IRON),
+        LAPIS(TrimMaterial.LAPIS),
+        NETHERITE(TrimMaterial.NETHERITE),
+        QUARTZ(TrimMaterial.QUARTZ),
+        REDSTONE(TrimMaterial.REDSTONE),
+        RESIN(TrimMaterial.RESIN);
+
+        private final TrimMaterial trimMaterial;
+
+        ArmourTrimMaterial(TrimMaterial trimMaterial) {
+            this.trimMaterial = trimMaterial;
+        }
+
+        private TrimMaterial getTrimMaterial() {
+            return trimMaterial;
+        }
+
+        private static TrimMaterial getTrimMaterial(String material) {
+            if (material == null) return null;
+            try {
+                return ArmourTrimMaterial.valueOf(material).getTrimMaterial();
+            } catch (IllegalArgumentException e) {
+                return null;
+            }
         }
     }
 }

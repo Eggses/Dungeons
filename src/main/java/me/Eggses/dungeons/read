@@ -12,3 +12,241 @@ class AntiVenom extends Enchantment
 lambda = int -> something
 
 then it directly stores the event inside it and implements it...
+
+
+package me.Eggses.dungeons.configuration;
+
+import me.Eggses.dungeons.dungeon.areas.EntityManager;
+import me.Eggses.dungeons.dungeon.areas.utility.AreaControllerBuilder;
+import me.Eggses.dungeons.dungeon.areas.utility.DungeonAction;
+import me.Eggses.dungeons.dungeon.graveyard.Graveyard;
+import me.Eggses.dungeons.dungeon.regions.Position;
+import me.Eggses.dungeons.dungeon.regions.Region;
+import me.Eggses.dungeons.entities.equipment.ArmourCreator;
+import me.Eggses.dungeons.entities.equipment.ArmourEquipment;
+import me.Eggses.dungeons.entities.equipment.WeaponEquipment;
+import me.Eggses.dungeons.entities.mobs.MobBuilder;
+import me.Eggses.dungeons.entities.mobs.MobType;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Mob;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.*;
+import java.util.function.Consumer;
+
+public class DungeonFileReader {
+
+    private final ConfigurationFile configurationFile;
+
+    public DungeonFileReader(JavaPlugin plugin, String fileName) {
+        configurationFile = new ConfigurationFile(plugin, fileName);
+    }
+
+    private List<TriConsumer<World, EntityManager, Graveyard>> resolveCommandList(List<String> commands) {
+
+        List<TriConsumer<World, EntityManager, Graveyard>> triConsumersToRun = new ArrayList<>();
+
+        List<MobBuilder> mobsToBuildInSection = new ArrayList<>();
+
+        for (String command : commands) {
+
+            if (command == null) continue;
+            command = command.trim();
+            if (command.isBlank()) continue;
+
+            int indexOfFirstSpace = command.indexOf(' ');
+            String commandName = command.substring(0, indexOfFirstSpace);
+            command = command.substring(indexOfFirstSpace + 1);
+
+            switch (commandName) {
+
+            }
+
+
+        }
+
+        triConsumersToRun.add((world, entityManager, graveyard)
+                -> entityManager.spawnMobList(List.copyOf(mobsToBuildInSection)));
+
+        return triConsumersToRun;
+    }
+
+
+
+    public void readFile() {
+
+        ConfigurationSection areas = configurationFile.getCustomFile().getConfigurationSection("dungeon_areas");
+        if (areas == null) return;
+
+        for (String areaName : areas.getKeys(false)) {
+
+            ConfigurationSection dungeonArea = areas.getConfigurationSection(areaName);
+            if (dungeonArea == null) continue;
+
+            Region entryBounds = handleEntryBounds(dungeonArea);
+            if (entryBounds == null) continue;
+
+
+            List<String> onEntry = dungeonArea.getStringList("on_entry");
+
+            List<String> onClear = dungeonArea.getStringList("on_clear");
+
+
+
+
+
+        }
+    }
+
+
+    private List<MobBuilder> resolveMobCommand(String mobCommand, List<MobBuilder> mobsToBuild) {
+
+        if (mobCommand == null) return null;
+        mobCommand = mobCommand.trim();
+
+        int indexOfMob = mobCommand.indexOf("MOB");
+        if (indexOfMob == -1) return null;
+        mobCommand = mobCommand.substring(indexOfMob);
+
+        Map<String, String> valueMap = createValueMap(mobCommand);
+
+        String type = valueMap.get("type");
+        if (type == null) return null;
+        EntityType entityType;
+        try {
+            entityType = EntityType.valueOf(type.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+
+        Position position = stringToPosition(valueMap.get("pos"));
+        if (position == null) return null;
+
+        MobType preset = MobType.getMobType(valueMap.get("preset"));
+
+        int level = stringToInteger(valueMap.get("level"));
+        int count = stringToInteger(valueMap.get("count"));
+
+        WeaponEquipment weaponEquipment = WeaponEquipment.createWeaponsFromString(valueMap.get("weapon"));
+        ArmourEquipment armourEquipment = ArmourCreator.createArmourFromString(valueMap.get("armour"));
+
+        mobsToBuild.add(new MobBuilder(entityType, position)
+                .armourEquipment(armourEquipment)
+                .weaponEquipment(weaponEquipment)
+                .dungeonLevel(level)
+                .count(count)
+                .mobNameSpawnFinalizerTaskBehaviour(preset));
+        return mobsToBuild;
+    }
+
+
+
+    private TriConsumer<World, EntityManager, Graveyard> resolveGraveyardCommand(String graveyardCommand) {
+
+        if (graveyardCommand == null) return null;
+        graveyardCommand = graveyardCommand.trim();
+
+        int indexOfGraveyard = graveyardCommand.indexOf("GRAVEYARD");
+        if (indexOfGraveyard == -1) return null;
+        graveyardCommand = graveyardCommand.substring(indexOfGraveyard);
+
+        Map<String, String> valueMap = createValueMap(graveyardCommand);
+
+        String posString = valueMap.get("pos");
+        Position position = stringToPosition(posString);
+        if (position == null) return null;
+
+        return (world, entityManager, graveyard) -> graveyard.setActiveGraveyard(position);
+    }
+
+    private TriConsumer<World, EntityManager, Graveyard> resolveFillCommand(String fillCommand) {
+
+        if (fillCommand == null) return null;
+        fillCommand = fillCommand.trim();
+
+        int indexOfFill = fillCommand.indexOf("FILL");
+        if (indexOfFill == -1) return null;
+        fillCommand = fillCommand.substring(indexOfFill);
+
+        Map<String, String> valueMap = createValueMap(fillCommand);
+
+        Material material = Material.matchMaterial(valueMap.get("block"));
+        if (material == null) return null;
+
+        Position pos1 = stringToPosition(valueMap.get("pos1"));
+        Position pos2 = stringToPosition(valueMap.get("pos2"));
+        if (pos1 == null || pos2 == null) return null;
+
+        Region region = new Region(pos1, pos2);
+
+        return (world, entityManager, graveyard) -> {
+            for (int x1 = region.getMinX(); x1 <= region.getMaxX(); x1++) {
+                for (int y1 = region.getMinY(); y1 <= region.getMaxY(); y1++) {
+                    for (int z1 = region.getMinZ(); z1 <= region.getMaxZ(); z1++) {
+                        world.getBlockAt(x1, y1, z1).setType(material, false);
+                    }
+                }
+            }
+        };
+    }
+
+    private Region handleEntryBounds(ConfigurationSection dungeonArea) {
+
+        ConfigurationSection entryBounds = dungeonArea.getConfigurationSection("entry_bounds");
+        if (entryBounds == null) return null;
+
+        Position pos1 = stringToPosition(entryBounds.getString("pos1"));
+        Position pos2 = stringToPosition(entryBounds.getString("pos2"));
+        if (pos1 == null || pos2 == null) return null;
+
+        return new Region(pos1, pos2);
+    }
+
+    private Map<String, String> createValueMap(String command) {
+
+        String[] arguments = command.split("\\s+");
+
+        Map<String, String> valuesMap = new HashMap<>();
+
+        for (String argument : arguments) {
+
+            int indexOfEquals = argument.indexOf('=');
+            if (indexOfEquals == -1) continue;
+
+            String key = argument.substring(0, indexOfEquals);
+            String value = argument.substring(indexOfEquals + 1);
+
+            valuesMap.put(key, value);
+        }
+        return valuesMap;
+    }
+
+    private Position stringToPosition(String position) {
+        if (position == null) return null;
+
+        String[] coordinates = position.split(",");
+        if (coordinates.length != 3) return null;
+
+        try {
+            int x = Integer.parseInt(coordinates[0]);
+            int y = Integer.parseInt(coordinates[1]);
+            int z = Integer.parseInt(coordinates[2]);
+
+            return new Position(x, y, z);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    private int stringToInteger(String number) {
+        if (number == null) return 1;
+        try {
+            return Integer.parseInt(number);
+        } catch (NumberFormatException e) {
+            return 1;
+        }
+    }
+}

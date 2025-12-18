@@ -47,4 +47,8 @@ public class ConfigurationFile {
     public FileConfiguration getCustomFile() {
         return customFile;
     }
+
+    public String getFileName() {
+        return file.getName();
+    }
 }

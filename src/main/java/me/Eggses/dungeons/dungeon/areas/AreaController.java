@@ -1,5 +1,6 @@
 package me.Eggses.dungeons.dungeon.areas;
 
+import me.Eggses.dungeons.configuration.TriConsumer;
 import me.Eggses.dungeons.dungeon.graveyard.Graveyard;
 import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.dungeon.areas.utility.AreaControllerBuilder;
@@ -11,7 +12,6 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Consumer;
 
 public class AreaController {
 
@@ -19,8 +19,8 @@ public class AreaController {
     private final Graveyard graveyard;
     private final World dungeonWorld;
     private final Map<Long, Set<DungeonArea>> dungeonAreasMap;
-    private final Map<Position, Consumer<World>> blockInteractionMap;
-    private final Map<Integer, Consumer<World>> dungeonTriggerCommandMap;
+    private final Map<Position, TriConsumer<World, EntityManager, Graveyard>> blockInteractionMap;
+    private final Map<String, TriConsumer<World, EntityManager, Graveyard>> dungeonTriggerCommandMap;
 
     private DungeonArea dungeonAreaInProgress;
     private boolean areaInProgress = false;
@@ -56,17 +56,17 @@ public class AreaController {
     public void handleInteractEvent(Position positionOfBlock) {
         if (areaInProgress) return;
 
-        Consumer<World> consumer = blockInteractionMap.remove(positionOfBlock);
-        if (consumer == null) return;
-        consumer.accept(dungeonWorld);
+        TriConsumer<World, EntityManager, Graveyard> triConsumer = blockInteractionMap.remove(positionOfBlock);
+        if (triConsumer == null) return;
+        triConsumer.accept(dungeonWorld, entityManager, graveyard);
     }
 
-    public void handleDungeonTriggerCommand(Integer argumentValue) {
+    public void handleDungeonTriggerCommand(String argument) {
         if (areaInProgress) return;
 
-        Consumer<World> consumer = dungeonTriggerCommandMap.remove(argumentValue);
-        if (consumer == null) return;
-        consumer.accept(dungeonWorld);
+        TriConsumer<World, EntityManager, Graveyard> triConsumer = dungeonTriggerCommandMap.remove(argument);
+        if (triConsumer == null) return;
+        triConsumer.accept(dungeonWorld, entityManager, graveyard);
     }
 
     public void handleEntityDeathEvent(UUID uuid) {
@@ -82,7 +82,7 @@ public class AreaController {
         dungeonAreaInProgress = dungeonArea;
         areaInProgress = true;
 
-        dungeonArea.onEnterFirstTime(dungeonWorld, entityManager);
+        dungeonArea.onEnterFirstTime(dungeonWorld, entityManager, graveyard);
         removeDungeonAreaFromMap(dungeonArea);
     }
 
@@ -103,7 +103,7 @@ public class AreaController {
     private void tryEndActiveDungeonArea() {
         if (!entityManager.isEmpty() || !areaInProgress) return;
 
-        dungeonAreaInProgress.onClearArea(dungeonWorld, graveyard);
+        dungeonAreaInProgress.onClearArea(dungeonWorld, entityManager, graveyard);
         dungeonAreaInProgress = null;
         areaInProgress = false;
     }

@@ -5,6 +5,7 @@ import me.Eggses.dungeons.entities.mobs.DungeonMob;
 import me.Eggses.dungeons.entities.mobs.MobBuilder;
 import me.Eggses.dungeons.entities.taskbehaviour.TaskManager;
 import me.Eggses.dungeons.utility.MessageCreator;
+import org.bukkit.World;
 
 import java.util.HashMap;
 import java.util.List;
@@ -15,10 +16,12 @@ public class EntityManager {
 
     private final Map<UUID, DungeonEntity> dungeonEntities = new HashMap<>();
 
+    private final World dungeonWorld;
     private final TaskManager taskManager;
     private final MessageCreator messageCreator;
 
-    public EntityManager(TaskManager taskManager, MessageCreator messageCreator) {
+    public EntityManager(World dungeonWorld, TaskManager taskManager, MessageCreator messageCreator) {
+        this.dungeonWorld = dungeonWorld;
         this.taskManager = taskManager;
         this.messageCreator = messageCreator;
     }
@@ -41,8 +44,12 @@ public class EntityManager {
 
     public void spawnMob(MobBuilder mobBuilder) {
         for (int i = 0; i < mobBuilder.getCount(); i++) {
-            addMob(new DungeonMob(mobBuilder, taskManager, messageCreator));
+            addMob(new DungeonMob(mobBuilder, dungeonWorld, taskManager, messageCreator));
         }
+    }
+
+    public void spawnMobList(List<MobBuilder> mobBuilders) {
+        mobBuilders.forEach(this::spawnMob);
     }
 
     private void addMob(DungeonEntity dungeonEntity) {
