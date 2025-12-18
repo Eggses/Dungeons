@@ -25,6 +25,14 @@ public class DungeonPortal {
     private final Consumer<DungeonContext> onOpen;
     private final Consumer<DungeonContext> onClose;
 
+    private static final DungeonContext CONTEXT =
+            new DungeonContext(
+                    null,
+                    null,
+                    null,
+                    Bukkit::getOnlinePlayers
+            );
+
     public DungeonPortal(String worldWithPortal,
                          Region entryPortalRegion,
                          Position dungeonSpawnPosition,
@@ -71,11 +79,11 @@ public class DungeonPortal {
     }
 
     public void openPortal() {
-        if (onOpen != null) onOpen.accept(new DungeonContext());
+        if (onOpen != null) onOpen.accept(CONTEXT);
     }
 
     public void closePortal() {
-        if (onClose != null) onClose.accept(new DungeonContext());
+        if (onClose != null) onClose.accept(CONTEXT);
     }
 
     public int getOpenDurationTicks() {

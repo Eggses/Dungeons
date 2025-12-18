@@ -39,7 +39,7 @@ public class AreaController {
         this.dungeonAreasMap = areaControllerBuilder.getDungeonAreasMap();
         this.blockInteractionMap = areaControllerBuilder.getBlockInteractionMap();
         this.dungeonTriggerCommandMap = areaControllerBuilder.getDungeonTriggerCommandMap();
-        this.dungeonContext = new DungeonContext(dungeonWorld, entityManager, graveyard);
+        this.dungeonContext = new DungeonContext(dungeonWorld, entityManager, graveyard, dungeonWorld::getPlayers);
     }
 
     public void handlePlayerMoveEvent(Location location, long chunkKey) {

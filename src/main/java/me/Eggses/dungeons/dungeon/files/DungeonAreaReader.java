@@ -4,7 +4,6 @@ import me.Eggses.dungeons.configuration.ConfigurationFile;
 import me.Eggses.dungeons.dungeon.areas.utility.AreaControllerBuilder;
 import me.Eggses.dungeons.dungeon.areas.utility.DungeonAction;
 import me.Eggses.dungeons.dungeon.areas.utility.DungeonArea;
-import me.Eggses.dungeons.dungeon.graveyard.Graveyard;
 import me.Eggses.dungeons.dungeon.portals.DungeonPortal;
 import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.dungeon.regions.Region;
@@ -18,20 +17,17 @@ import me.Eggses.dungeons.utility.MessageCreator;
 import me.Eggses.dungeons.utility.SoundPlayer;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class DungeonAreaReader {
+
+    private static final Consumer<DungeonContext> EMPTY_CONSUMER = dungeonContext -> {};
 
     private final JavaPlugin plugin;
     private final ConfigurationFile configurationFile;
@@ -227,32 +223,23 @@ public class DungeonAreaReader {
                 }
                 case "FILL" -> {
                     var action = resolveFillCommand(command);
-                    if (action != null) {
-                        consumersToRun.add(dungeonContext -> {
-                            var world = dungeonContext.getWorld();
-                            if (world != null) action.accept(world);
-                        });
-                    }
+                    if (action != null) consumersToRun.add(action);
                 }
                 case "GRAVEYARD" -> {
                     var action = resolveGraveyardCommand(command);
-                    if (action != null) {
-                        consumersToRun.add(dungeonContext -> {
-                            var graveyard = dungeonContext.getGraveyard();
-                            if (graveyard != null) action.accept(graveyard);
-                        });
-                    }
+                    if (action != null) consumersToRun.add(action);
                 }
                 case "MESSAGE" -> {
-                    var runnable = resolveMessageCommand(command);
-                    if (runnable != null) {
-                        consumersToRun.add(dungeonContext -> runnable.run());
-                    }
+                    var action = resolveMessageCommand(command);
+                    if (action != null) consumersToRun.add(action);
                 }
                 case "SOUND" -> {
-                    var runnable = resolvePlaySoundCommand(command);
-                    if (runnable != null) consumersToRun.add(dungeonContext -> runnable.run());
+                    var action = resolvePlaySoundCommand(command);
+                    if (action != null) consumersToRun.add(action);
                 }
+                default -> plugin.getLogger().warning(
+                        "Unknown command '" + commandName + "' in " + configurationFile.getFileName()
+                );
             }
         }
 
@@ -302,7 +289,7 @@ public class DungeonAreaReader {
                 .mobNameSpawnFinalizerTaskBehaviour(preset);
     }
 
-    private Consumer<Graveyard> resolveGraveyardCommand(String graveyardCommand) {
+    private Consumer<DungeonContext> resolveGraveyardCommand(String graveyardCommand) {
 
         Map<String, String> valueMap = createValueMap(graveyardCommand);
 
@@ -310,10 +297,15 @@ public class DungeonAreaReader {
         Position position = stringToPosition(posString);
         if (position == null) return null;
 
-        return graveyard -> graveyard.setActiveGraveyard(position);
+        return dungeonContext -> {
+            var graveyard = dungeonContext.getGraveyard();
+            if (graveyard == null) return;
+
+            graveyard.setActiveGraveyard(position);
+        };
     }
 
-    private Consumer<World> resolveFillCommand(String fillCommand) {
+    private Consumer<DungeonContext> resolveFillCommand(String fillCommand) {
 
         Map<String, String> valueMap = createValueMap(fillCommand);
 
@@ -326,7 +318,11 @@ public class DungeonAreaReader {
 
         Region region = new Region(pos1, pos2);
 
-        return world -> {
+        return dungeonContext -> {
+
+            var world = dungeonContext.getWorld();
+            if (world == null) return;
+
             for (int x1 = region.getMinX(); x1 <= region.getMaxX(); x1++) {
                 for (int y1 = region.getMinY(); y1 <= region.getMaxY(); y1++) {
                     for (int z1 = region.getMinZ(); z1 <= region.getMaxZ(); z1++) {
@@ -337,24 +333,40 @@ public class DungeonAreaReader {
         };
     }
 
-    private Runnable resolveMessageCommand(String text) {
+    private Consumer<DungeonContext> resolveMessageCommand(String text) {
 
         if (text == null) return null;
         Map<String, String> valuesMap = createValueMap(text);
-        Component message = messageCreator.createMessage(valuesMap.get("message"));
 
-        return () -> Bukkit.getOnlinePlayers().forEach(p -> p.sendMessage(message));
+        String msg = valuesMap.get("message");
+        if (msg == null) return null;
+        Component message = messageCreator.createMessage(msg);
+
+        return dungeonContext -> {
+            var supplier = dungeonContext.getPlayers();
+            if (supplier == null) return;
+
+            supplier.get().forEach(player -> player.sendMessage(message));
+        };
     }
 
-    private Runnable resolvePlaySoundCommand(String soundToPlay) {
+    private Consumer<DungeonContext> resolvePlaySoundCommand(String soundToPlay) {
 
         if (soundToPlay == null) return null;
         Map<String, String> valuesMap = createValueMap(soundToPlay);
-        Sound sound = soundPlayer.createSound(valuesMap.get("sound"));
 
-        return () -> soundPlayer.playSound(sound, Bukkit.getOnlinePlayers());
+        String soundValue = valuesMap.get("sound");
+        if (soundValue == null) return null;
+
+        Sound sound = soundPlayer.createSound(soundValue);
+
+        return dungeonContext -> {
+            var supplier = dungeonContext.getPlayers();
+            if (supplier == null) return;
+
+            soundPlayer.playSound(sound, supplier.get());
+        };
     }
-
 
     private Integer stringToInteger(String number) {
         if (number == null) return null;
@@ -368,7 +380,7 @@ public class DungeonAreaReader {
     private Consumer<DungeonContext> compressList(List<Consumer<DungeonContext>> consumers) {
 
         if (consumers == null || consumers.isEmpty()) {
-            return dungeonContext -> {};
+            return EMPTY_CONSUMER;
         }
 
         List<Consumer<DungeonContext>> copy = List.copyOf(consumers);
@@ -397,6 +409,8 @@ public class DungeonAreaReader {
     }
 
     private Region stringToRegion(String entryBounds) {
+
+        if (entryBounds == null) return null;
 
         Map<String, String> valuesMap = createValueMap(entryBounds);
 
