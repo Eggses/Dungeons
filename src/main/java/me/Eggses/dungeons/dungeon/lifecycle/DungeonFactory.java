@@ -100,7 +100,7 @@ public class DungeonFactory {
     private DungeonTemplate getDungeonTemplate(DungeonType dungeonType) {
         return switch (dungeonType) {
             case FLAT_TEST -> new FlatTest(plugin, messageCreator, soundPlayer);
-            case MALIGNANT_MARSH -> new MalignantMarsh();
+            case MALIGNANT_MARSH -> new MalignantMarsh(plugin, messageCreator, soundPlayer);
         };
     }
 }

@@ -1,20 +1,41 @@
 package me.Eggses.dungeons.dungeon.instance.configurations;
 
 import me.Eggses.dungeons.dungeon.areas.utility.AreaControllerBuilder;
+import me.Eggses.dungeons.dungeon.files.DungeonFileReader;
 import me.Eggses.dungeons.dungeon.portals.DungeonPortal;
+import me.Eggses.dungeons.utility.MessageCreator;
+import me.Eggses.dungeons.utility.SoundPlayer;
 import org.bukkit.World;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.function.Consumer;
 
-public interface DungeonTemplate {
+public abstract class DungeonTemplate {
 
-    Consumer<World> EMPTY_CONSUMER = (world) -> {};
+    private static final Consumer<World> EMPTY_CONSUMER = (world) -> {};
+    private final DungeonFileReader dungeonFileReader;
 
-    String getTemplateFolderName();
-    DungeonPortal getDungeonPortal();
-    AreaControllerBuilder getAreaControllerBuilder();
+    protected DungeonTemplate(JavaPlugin plugin,
+                              String configFileName,
+                              MessageCreator messageCreator,
+                              SoundPlayer soundPlayer) {
 
-    default Consumer<World> getDungeonRules() {
+        this.dungeonFileReader = new DungeonFileReader(plugin, configFileName, messageCreator, soundPlayer);
+    }
+
+    public String getTemplateFolderName() {
+        return dungeonFileReader.readTemplateFileName();
+    }
+
+    public DungeonPortal getDungeonPortal() {
+        return dungeonFileReader.readDungeonPortal();
+    }
+
+    public AreaControllerBuilder getAreaControllerBuilder() {
+        return dungeonFileReader.readDungeonAreas();
+    }
+
+    public Consumer<World> getDungeonRules() {
         return EMPTY_CONSUMER;
     }
 }

@@ -1,22 +1,14 @@
 package me.Eggses.dungeons.dungeon.instance.configurations;
 
-import me.Eggses.dungeons.dungeon.portals.DungeonPortal;
-import me.Eggses.dungeons.dungeon.areas.utility.AreaControllerBuilder;
+import me.Eggses.dungeons.utility.MessageCreator;
+import me.Eggses.dungeons.utility.SoundPlayer;
+import org.bukkit.plugin.java.JavaPlugin;
 
-public class MalignantMarsh implements DungeonTemplate {
+public class MalignantMarsh extends DungeonTemplate {
 
-    @Override
-    public String getTemplateFolderName() {
-        return "";
-    }
+    private static final String CONFIG_FILE_NAME = "malignant_marsh.yml";
 
-    @Override
-    public DungeonPortal getDungeonPortal() {
-        return null;
-    }
-
-    @Override
-    public AreaControllerBuilder getAreaControllerBuilder() {
-        return null;
+    public MalignantMarsh(JavaPlugin plugin, MessageCreator messageCreator, SoundPlayer soundPlayer) {
+        super(plugin, CONFIG_FILE_NAME, messageCreator, soundPlayer);
     }
 }
