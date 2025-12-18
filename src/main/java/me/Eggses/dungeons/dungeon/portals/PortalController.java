@@ -40,7 +40,6 @@ public class PortalController {
     }
 
     public void closeDungeonPortal() {
-        if (!isOpen) return;
         dungeonPortal.closePortal();
         isOpen = false;
     }

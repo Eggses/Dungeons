@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -41,22 +42,36 @@ public class DungeonLifecycleService implements DungeonInstanceCoordinator {
     }
 
     @Override
-    public void destroyInstance(DungeonInstance dungeonInstance) {
-
+    public void destroyInstanceRuntime(DungeonInstance dungeonInstance) {
         World world = dungeonInstance.getDungeonWorld();
-        String instanceFileName = dungeonInstance.getInstanceFileName();
-
         Bukkit.unloadWorld(world, false);
 
         dungeonOpenPortalRegistry.removeFromOpenPortals(dungeonInstance.getPortalChunkKeys());
         dungeonRegistry.removeDungeonInstance(world);
+    }
+
+    @Override
+    public void destroyWorld(String fileName) {
 
         dungeonWorldManager.attemptToDeleteInstance(
-                instanceFileName,
+                fileName,
                 e -> {
-                    plugin.getLogger().log(Level.SEVERE, "Could not delete instance " + instanceFileName, e);
-                    dungeonLog.addEntry("Could not delete instance " + instanceFileName);
+                    plugin.getLogger().log(Level.SEVERE, "Could not delete instance " + fileName, e);
+                    dungeonLog.addError("Could not delete instance " + fileName);
                 }
         );
+    }
+
+    @Override
+    public void endAllInstances(boolean destroyWorldFolder) {
+        dungeonRegistry.getDungeonInstances().forEach(
+                dungeonInstance -> dungeonInstance.forceEndDungeonInstance(destroyWorldFolder));
+    }
+
+
+    @Override
+    public void destroyLeftAllInstanceWorlds() {
+        List<String> fileNames = dungeonLog.getActiveNameList();
+        fileNames.forEach(this::destroyWorld);
     }
 }

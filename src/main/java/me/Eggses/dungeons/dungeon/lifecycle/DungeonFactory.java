@@ -76,7 +76,7 @@ public class DungeonFactory {
         instanceNameManager.freeFolderName(instanceFileName);
 
         plugin.getLogger().log(Level.SEVERE, "Dungeon Failed To Generate: ", e);
-        dungeonLog.addEntry("Dungeon Generation Failure: " + templateFileName + ".");
+        dungeonLog.addError("Dungeon Generation Failure: " + templateFileName + ".");
 
         Component message = Component
                 .text("Dungeon Failed To Generate.")

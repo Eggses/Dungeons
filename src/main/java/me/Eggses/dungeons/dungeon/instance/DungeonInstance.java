@@ -71,25 +71,33 @@ public class DungeonInstance {
     }
 
     private void tryEndDungeon() {
-
         if (!dungeonPlayers.isEmpty() || portalController.isOpen()) return;
+        endInstanceRuntime();
+        dungeonInstanceCoordinator.destroyWorld(instanceFileName);
+    }
 
+    public void forceEndDungeonInstance(boolean destroyWorldFolder) {
+        portalController.closeDungeonPortal();
+        dungeonInstanceCoordinator.closePortal(portalController.getChunkKeysEncompassed());
+        endInstanceRuntime();
+        if (destroyWorldFolder) dungeonInstanceCoordinator.destroyWorld(instanceFileName);
+    }
+
+    private void endInstanceRuntime() {
         World mainWorld = Bukkit.getWorld("world");
         if (mainWorld == null) mainWorld = Bukkit.getWorlds().getFirst();
 
-        StringBuilder errorMessage = new StringBuilder(
-                "Dungeon Set is Empty, Portal is closed, but Dungeon World contains: "
-        );
+        StringBuilder errorMessage = new StringBuilder("Dungeon Ended with the following players: ");
 
         for (Player player : dungeonWorld.getPlayers()) {
-            errorMessage.append(player.getName()).append(" ");
+            errorMessage.append(player.getName()).append(", ");
             player.teleport(mainWorld.getSpawnLocation());
         }
 
         plugin.getLogger().severe(errorMessage.toString());
 
         areaController.endAllTasks();
-        dungeonInstanceCoordinator.destroyInstance(this);
+        dungeonInstanceCoordinator.destroyInstanceRuntime(this);
     }
 
     public void addPlayer(Player player) {
@@ -146,10 +154,6 @@ public class DungeonInstance {
 
     public World getDungeonWorld() {
         return dungeonWorld;
-    }
-
-    public String getInstanceFileName() {
-        return instanceFileName;
     }
 
     public Set<Long> getPortalChunkKeys() {

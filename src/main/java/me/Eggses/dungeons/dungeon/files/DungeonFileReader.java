@@ -102,7 +102,8 @@ public class DungeonFileReader {
                 exitPosition,
                 openDurationSeconds,
                 compressList(onOpenList),
-                compressList(onCloseList));
+                compressList(onCloseList)
+        );
     }
 
     public AreaControllerBuilder readDungeonAreas() {

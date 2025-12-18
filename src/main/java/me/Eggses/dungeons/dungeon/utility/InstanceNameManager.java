@@ -1,48 +1,38 @@
 package me.Eggses.dungeons.dungeon.utility;
 
+import me.Eggses.dungeons.dungeon.files.DungeonLog;
+
 import java.util.*;
 
 public class InstanceNameManager {
 
     private static final String FOLDER_NAME = "dungeon_instance_";
-    private static final int INDEX_OF_INSTANCE_COUNT = 2;
 
-    private final List<String> folderNames = new ArrayList<>();
+    private final Set<String> folderNames = new HashSet<>();
 
-    public InstanceNameManager() {
+    private final DungeonLog dungeonLog;
+
+    public InstanceNameManager(DungeonLog dungeonLog) {
+       this.dungeonLog = dungeonLog;
+       folderNames.addAll(dungeonLog.getActiveNameList());
     }
 
     public String generateFolderName() {
 
-        Set<Integer> valuesUsed = new TreeSet<>();
-
-        for (String folderName : folderNames) {
-            String[] parts = folderName.split("_");
-            if (parts.length <= INDEX_OF_INSTANCE_COUNT) continue;
-
-            String numberAsString = parts[INDEX_OF_INSTANCE_COUNT];
-
-            try {
-                valuesUsed.add(Integer.parseInt(numberAsString));
-            } catch (NumberFormatException ignored) {
-
-            }
-        }
-
         int next = 1;
-        for (int value : valuesUsed) {
-            if (next == value) {
-                next++;
-            }
+        String name;
+        while (folderNames.contains(name = FOLDER_NAME + next)) {
+            next++;
         }
 
-        String name = FOLDER_NAME + next;
         folderNames.add(name);
+        dungeonLog.addActiveName(name);
         return name;
     }
 
     public void freeFolderName(String folderName) {
         folderNames.remove(folderName);
+        dungeonLog.removeActiveName(folderName);
     }
 
     public static String getInstancePrefix() {

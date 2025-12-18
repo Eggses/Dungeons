@@ -28,9 +28,9 @@ public final class Dungeons extends JavaPlugin {
     DungeonOpenPortalRegistry dungeonOpenPortalRegistry = new DungeonOpenPortalRegistry();
     DungeonEventRouter dungeonEventRouter = new DungeonEventRouter(dungeonRegistry, dungeonOpenPortalRegistry);
 
-    InstanceNameManager instanceNameManager = new InstanceNameManager();
-    DungeonWorldManager dungeonWorldManager = new DungeonWorldManager(this, instanceNameManager);
     DungeonLog dungeonLog = new DungeonLog(this);
+    InstanceNameManager instanceNameManager = new InstanceNameManager(dungeonLog);
+    DungeonWorldManager dungeonWorldManager = new DungeonWorldManager(this, instanceNameManager);
     DungeonInstanceCoordinator dungeonInstanceCoordinator = new DungeonLifecycleService(this, dungeonRegistry, dungeonOpenPortalRegistry, dungeonWorldManager, dungeonLog);
 
     TaskManager taskManager = new TaskManager(this);
@@ -68,18 +68,14 @@ public final class Dungeons extends JavaPlugin {
 
         Objects.requireNonNull(getCommand("dungeontrigger")).setExecutor(new DungeonTrigger(dungeonEventRouter));
 
+
+        dungeonInstanceCoordinator.destroyLeftAllInstanceWorlds();
+
         dungeonFactory.createDungeon(DungeonType.FLAT_TEST);
     }
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
-
-        /*
-        maybe some how go through: and delete every instance that is open?
-        like iterate over the set of instances and call thier delete methods...
-
-        also when you delete an instance delete its entry in the name manaager
-         */
+        dungeonInstanceCoordinator.endAllInstances(false);
     }
 }

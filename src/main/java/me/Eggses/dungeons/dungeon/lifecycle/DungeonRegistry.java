@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class DungeonRegistry {
 
@@ -37,5 +38,9 @@ public class DungeonRegistry {
 
     public DungeonInstance getDungeonInstance(World world) {
         return dungeonInstances.get(world);
+    }
+
+    public Set<DungeonInstance> getDungeonInstances() {
+        return Set.copyOf(dungeonInstances.values());
     }
 }
