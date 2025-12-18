@@ -29,7 +29,7 @@ public class PortalController {
         this.dungeonPortal = dungeonPortal;
         this.bannedItems = bannedItems;
 
-        chunkKeys = dungeonPortal.getInWorldPortalWorldRegion().getRegion().getCoveredChunkKeys();
+        this.chunkKeys = dungeonPortal.getEntryPortalWorldRegion().getRegion().getCoveredChunkKeys();
     }
 
     public void openDungeonPortal() {
@@ -50,7 +50,7 @@ public class PortalController {
     }
 
     public boolean isInPortalInMainWorld(Location location) {
-        return dungeonPortal.getInWorldPortalWorldRegion().within(location);
+        return dungeonPortal.getEntryPortalWorldRegion().within(location);
     }
 
     public void enterDungeon(Player player, World dungeonWorld) {
@@ -60,16 +60,16 @@ public class PortalController {
             return;
         }
 
-        Location spawningLocation = dungeonPortal.getSpawningLocationInsideDungeon().toLocationCenterBlock(dungeonWorld);
+        Location spawningLocation = dungeonPortal.getDungeonSpawnPosition().toLocationCenterBlock(dungeonWorld);
         player.teleport(spawningLocation);
     }
 
     public boolean isInPortalInDungeonWorld(Location location) {
-        return dungeonPortal.getPortalInDungeonRegion().within(location);
+        return dungeonPortal.getExitPortalRegion().within(location);
     }
 
     public void leaveDungeon(Player player) {
-        Location spawningLocation = dungeonPortal.getExitLocationInMainWorld();
+        Location spawningLocation = dungeonPortal.getWorldExitLocation();
         player.teleport(spawningLocation);
     }
 

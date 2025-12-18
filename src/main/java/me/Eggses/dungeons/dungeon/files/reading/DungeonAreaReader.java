@@ -1,5 +1,6 @@
-package me.Eggses.dungeons.configuration;
+package me.Eggses.dungeons.dungeon.files.reading;
 
+import me.Eggses.dungeons.configuration.ConfigurationFile;
 import me.Eggses.dungeons.dungeon.areas.EntityManager;
 import me.Eggses.dungeons.dungeon.areas.utility.AreaControllerBuilder;
 import me.Eggses.dungeons.dungeon.areas.utility.DungeonAction;
@@ -19,28 +20,32 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class DungeonFileReader {
+public class DungeonAreaReader {
 
     private final JavaPlugin plugin;
     private final ConfigurationFile configurationFile;
+    private final DungeonFileReader dungeonFileReader;
 
-    public DungeonFileReader(JavaPlugin plugin, String fileName) {
+    public DungeonAreaReader(JavaPlugin plugin,
+                             ConfigurationFile configurationFile,
+                             DungeonFileReader dungeonFileReader) {
+
         this.plugin = plugin;
-        configurationFile = new ConfigurationFile(plugin, fileName);
+        this.configurationFile = configurationFile;
+        this.dungeonFileReader = dungeonFileReader;
     }
 
-    public AreaControllerBuilder readFile() {
+    public AreaControllerBuilder readDungeonAreas() {
 
         AreaControllerBuilder areaControllerBuilder = new AreaControllerBuilder();
 
         ConfigurationSection areas = configurationFile.getCustomFile().getConfigurationSection("dungeon_areas");
         if (areas == null) {
-            logDungeonAreaReadingError();
+            logDungeonAreaReadingError(null);
             return areaControllerBuilder;
         }
 
@@ -48,13 +53,13 @@ public class DungeonFileReader {
 
             ConfigurationSection dungeonArea = areas.getConfigurationSection(areaName);
             if (dungeonArea == null) {
-                logDungeonAreaReadingError();
+                logDungeonAreaReadingError(areaName);
                 continue;
             }
 
-            Region entryBounds = handleEntryBounds(dungeonArea);
+            Region entryBounds = dungeonFileReader.stringToRegion(dungeonArea.getString("entry_bounds"));
             if (entryBounds == null) {
-                logDungeonAreaReadingError();
+                logDungeonAreaReadingError(areaName);
                 continue;
             }
 
@@ -83,8 +88,11 @@ public class DungeonFileReader {
         return areaControllerBuilder;
     }
 
-    private void logDungeonAreaReadingError() {
-        plugin.getLogger().severe("Error in Reading File: " + configurationFile.getFileName());
+    private void logDungeonAreaReadingError(String areaName) {
+        String errorMessage = "Error in Reading File: " + configurationFile.getFileName() + ".";
+        if (areaName != null) errorMessage = errorMessage + "Dungeon Area With Error: " + areaName + ".";
+
+        plugin.getLogger().severe(errorMessage);
     }
 
     private List<DungeonAction<Position>> handleDungeonInteractions(List<Map<?, ?>> interactionsMap) {
@@ -96,7 +104,7 @@ public class DungeonFileReader {
 
             Object pos = map.get("pos");
             if (!(pos instanceof String posString)) continue;
-            Position position = stringToPosition(posString);
+            Position position = dungeonFileReader.stringToPosition(posString);
             if (position == null) continue;
 
             Object commandsObj = map.get("commands");
@@ -194,7 +202,7 @@ public class DungeonFileReader {
 
     private MobBuilder resolveMobCommand(String mobCommand) {
 
-        Map<String, String> valueMap = createValueMap(mobCommand);
+        Map<String, String> valueMap = dungeonFileReader.createValueMap(mobCommand);
 
         String type = valueMap.get("type");
         if (type == null) return null;
@@ -205,7 +213,7 @@ public class DungeonFileReader {
             return null;
         }
 
-        Position position = stringToPosition(valueMap.get("pos"));
+        Position position = dungeonFileReader.stringToPosition(valueMap.get("pos"));
         if (position == null) return null;
 
         MobType preset = MobType.getMobType(valueMap.get("preset"));
@@ -227,10 +235,10 @@ public class DungeonFileReader {
 
     private Consumer<Graveyard> resolveGraveyardCommand(String graveyardCommand) {
 
-        Map<String, String> valueMap = createValueMap(graveyardCommand);
+        Map<String, String> valueMap = dungeonFileReader.createValueMap(graveyardCommand);
 
         String posString = valueMap.get("pos");
-        Position position = stringToPosition(posString);
+        Position position = dungeonFileReader.stringToPosition(posString);
         if (position == null) return null;
 
         return graveyard -> graveyard.setActiveGraveyard(position);
@@ -238,13 +246,13 @@ public class DungeonFileReader {
 
     private Consumer<World> resolveFillCommand(String fillCommand) {
 
-        Map<String, String> valueMap = createValueMap(fillCommand);
+        Map<String, String> valueMap = dungeonFileReader.createValueMap(fillCommand);
 
         Material material = Material.matchMaterial(valueMap.get("block"));
         if (material == null) return null;
 
-        Position pos1 = stringToPosition(valueMap.get("pos1"));
-        Position pos2 = stringToPosition(valueMap.get("pos2"));
+        Position pos1 = dungeonFileReader.stringToPosition(valueMap.get("pos1"));
+        Position pos2 = dungeonFileReader.stringToPosition(valueMap.get("pos2"));
         if (pos1 == null || pos2 == null) return null;
 
         Region region = new Region(pos1, pos2);
@@ -258,54 +266,6 @@ public class DungeonFileReader {
                 }
             }
         };
-    }
-
-    private Region handleEntryBounds(ConfigurationSection dungeonArea) {
-
-        ConfigurationSection entryBounds = dungeonArea.getConfigurationSection("entry_bounds");
-        if (entryBounds == null) return null;
-
-        Position pos1 = stringToPosition(entryBounds.getString("pos1"));
-        Position pos2 = stringToPosition(entryBounds.getString("pos2"));
-        if (pos1 == null || pos2 == null) return null;
-
-        return new Region(pos1, pos2);
-    }
-
-    private Map<String, String> createValueMap(String command) {
-
-        String[] arguments = command.split("\\s+");
-
-        Map<String, String> valuesMap = new HashMap<>();
-
-        for (String argument : arguments) {
-
-            int indexOfEquals = argument.indexOf('=');
-            if (indexOfEquals == -1) continue;
-
-            String key = argument.substring(0, indexOfEquals);
-            String value = argument.substring(indexOfEquals + 1);
-
-            valuesMap.put(key, value);
-        }
-        return valuesMap;
-    }
-
-    private Position stringToPosition(String position) {
-        if (position == null) return null;
-
-        String[] coordinates = position.split(",");
-        if (coordinates.length != 3) return null;
-
-        try {
-            int x = Integer.parseInt(coordinates[0]);
-            int y = Integer.parseInt(coordinates[1]);
-            int z = Integer.parseInt(coordinates[2]);
-
-            return new Position(x, y, z);
-        } catch (NumberFormatException e) {
-            return null;
-        }
     }
 
     private Integer stringToInteger(String number) {

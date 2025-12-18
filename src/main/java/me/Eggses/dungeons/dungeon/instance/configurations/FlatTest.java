@@ -39,7 +39,7 @@ public class FlatTest implements DungeonConfiguration {
     }
 
     @Override
-    public String getTemplateName() {
+    public String getTemplateFolderName() {
         return TEMPLATE_NAME;
     }
 }

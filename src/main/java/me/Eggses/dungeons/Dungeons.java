@@ -1,8 +1,9 @@
 package me.Eggses.dungeons;
 
 import me.Eggses.dungeons.commands.DungeonTrigger;
-import me.Eggses.dungeons.configuration.DungeonLog;
+import me.Eggses.dungeons.dungeon.files.misc.DungeonLog;
 import me.Eggses.dungeons.dungeon.lifecycle.*;
+import me.Eggses.dungeons.dungeon.utility.BannedItems;
 import me.Eggses.dungeons.dungeon.utility.InstanceNameManager;
 import me.Eggses.dungeons.entities.taskbehaviour.TaskManager;
 import me.Eggses.dungeons.listeners.entities.Combustion;
@@ -33,8 +34,9 @@ public final class Dungeons extends JavaPlugin {
 
     TaskManager taskManager = new TaskManager(this);
     MessageCreator messageCreator = new MessageCreator();
+    BannedItems bannedItems = new BannedItems(messageCreator);
 
-    DungeonFactory dungeonFactory = new DungeonFactory(this, dungeonRegistry, dungeonInstanceCoordinator, dungeonWorldManager, instanceNameManager, messageCreator, taskManager, dungeonLog);
+    DungeonFactory dungeonFactory = new DungeonFactory(this, dungeonRegistry, dungeonInstanceCoordinator, dungeonWorldManager, instanceNameManager, messageCreator, taskManager, dungeonLog, bannedItems);
 
     @Override
     public void onEnable() {

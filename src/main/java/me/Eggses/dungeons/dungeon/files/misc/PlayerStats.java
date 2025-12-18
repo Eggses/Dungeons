@@ -1,4 +1,4 @@
-package me.Eggses.dungeons.configuration;
+package me.Eggses.dungeons.dungeon.files.misc;
 
 public class PlayerStats {
 

@@ -9,8 +9,12 @@ public class WorldRegion {
     private final World world;
 
     public WorldRegion(Location locationA, Location locationB) {
-        this.world = locationA.getWorld();
-        this.region = new Region(new Position(locationA), new Position(locationB));
+        this(locationA.getWorld(), new Region(new Position(locationA), new Position(locationB)));
+    }
+
+    public WorldRegion(World world, Region region) {
+        this.world = world;
+        this.region = region;
     }
 
     public boolean within(Location location) {

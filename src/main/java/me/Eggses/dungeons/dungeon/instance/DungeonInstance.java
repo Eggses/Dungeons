@@ -8,6 +8,7 @@ import me.Eggses.dungeons.dungeon.instance.configurations.DungeonConfiguration;
 import me.Eggses.dungeons.dungeon.players.DungeonPlayers;
 import me.Eggses.dungeons.dungeon.portals.PortalController;
 import me.Eggses.dungeons.dungeon.regions.Position;
+import me.Eggses.dungeons.dungeon.utility.BannedItems;
 import me.Eggses.dungeons.dungeon.utility.GameRules;
 import me.Eggses.dungeons.dungeon.lifecycle.DungeonInstanceCoordinator;
 import me.Eggses.dungeons.entities.taskbehaviour.TaskManager;
@@ -42,7 +43,8 @@ public class DungeonInstance {
                            DungeonConfiguration dungeonConfiguration,
                            String instanceFileName,
                            MessageCreator messageCreator,
-                           TaskManager taskManager) {
+                           TaskManager taskManager,
+                           BannedItems bannedItems) {
 
         this.plugin = plugin;
         this.dungeonInstanceCoordinator = dungeonInstanceCoordinator;
@@ -50,10 +52,9 @@ public class DungeonInstance {
         this.instanceFileName = instanceFileName;
 
         var entityManager = new EntityManager(dungeonWorld, taskManager, messageCreator);
-        var graveyard = new Graveyard(dungeonConfiguration.getGraveyardDefinitionList());
-        this.areaController = new AreaController(entityManager, graveyard, dungeonWorld, dungeonConfiguration.getAreaControllerBuilder());
+        this.areaController = new AreaController(entityManager, new Graveyard(), dungeonWorld, dungeonConfiguration.getAreaControllerBuilder());
         this.eventHandler = new EventHandler(areaController, entityManager);
-        this.portalController = new PortalController(plugin, this, dungeonConfiguration.getDungeonPortal(), dungeonConfiguration.getBannedItems());
+        this.portalController = new PortalController(plugin, this, dungeonConfiguration.getDungeonPortal(), bannedItems);
         this.dungeonPlayers = new DungeonPlayers();
 
         new GameRules(dungeonWorld).applyRules();
@@ -73,7 +74,8 @@ public class DungeonInstance {
 
         if (!dungeonPlayers.isEmpty() || portalController.isOpen()) return;
 
-        World mainWorld = Bukkit.getWorlds().getFirst();
+        World mainWorld = Bukkit.getWorld("world");
+        if (mainWorld == null) mainWorld = Bukkit.getWorlds().getFirst();
 
         StringBuilder errorMessage = new StringBuilder(
                 "Dungeon Set is Empty, Portal is closed, but Dungeon World contains: "

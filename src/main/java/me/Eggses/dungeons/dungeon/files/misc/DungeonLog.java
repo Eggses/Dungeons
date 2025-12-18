@@ -1,5 +1,6 @@
-package me.Eggses.dungeons.configuration;
+package me.Eggses.dungeons.dungeon.files.misc;
 
+import me.Eggses.dungeons.configuration.ConfigurationFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;

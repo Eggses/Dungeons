@@ -1,5 +1,5 @@
 package me.Eggses.dungeons.dungeon.areas.utility;
-import me.Eggses.dungeons.configuration.TriConsumer;
+import me.Eggses.dungeons.dungeon.files.reading.TriConsumer;
 import me.Eggses.dungeons.dungeon.areas.EntityManager;
 import me.Eggses.dungeons.dungeon.graveyard.Graveyard;
 import me.Eggses.dungeons.dungeon.regions.Position;

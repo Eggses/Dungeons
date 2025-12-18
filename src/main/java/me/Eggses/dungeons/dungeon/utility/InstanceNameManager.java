@@ -44,4 +44,8 @@ public class InstanceNameManager {
     public void freeFolderName(String folderName) {
         folderNames.remove(folderName);
     }
+
+    public static String getInstancePrefix() {
+        return FOLDER_NAME;
+    }
 }

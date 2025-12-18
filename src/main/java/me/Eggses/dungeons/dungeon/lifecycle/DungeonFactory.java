@@ -1,10 +1,11 @@
 package me.Eggses.dungeons.dungeon.lifecycle;
 
-import me.Eggses.dungeons.configuration.DungeonLog;
+import me.Eggses.dungeons.dungeon.files.misc.DungeonLog;
 import me.Eggses.dungeons.dungeon.instance.DungeonInstance;
 import me.Eggses.dungeons.dungeon.instance.configurations.DungeonConfiguration;
 import me.Eggses.dungeons.dungeon.instance.configurations.FlatTest;
 import me.Eggses.dungeons.dungeon.instance.configurations.MalignantMarsh;
+import me.Eggses.dungeons.dungeon.utility.BannedItems;
 import me.Eggses.dungeons.dungeon.utility.InstanceNameManager;
 import me.Eggses.dungeons.entities.taskbehaviour.TaskManager;
 import me.Eggses.dungeons.utility.MessageCreator;
@@ -26,6 +27,7 @@ public class DungeonFactory {
     private final MessageCreator messageCreator;
     private final TaskManager taskManager;
     private final DungeonLog dungeonLog;
+    private final BannedItems bannedItems;
 
     public DungeonFactory(JavaPlugin plugin,
                           DungeonRegistry dungeonRegistry,
@@ -34,7 +36,8 @@ public class DungeonFactory {
                           InstanceNameManager instanceNameManager,
                           MessageCreator messageCreator,
                           TaskManager taskManager,
-                          DungeonLog dungeonLog) {
+                          DungeonLog dungeonLog,
+                          BannedItems bannedItems) {
 
         this.plugin = plugin;
         this.dungeonRegistry = dungeonRegistry;
@@ -44,7 +47,7 @@ public class DungeonFactory {
         this.messageCreator = messageCreator;
         this.taskManager = taskManager;
         this.dungeonLog = dungeonLog;
-
+        this.bannedItems = bannedItems;
     }
 
     private void createDungeonInstance(World world,
@@ -58,7 +61,8 @@ public class DungeonFactory {
                 dungeonConfiguration,
                 instanceFileName,
                 messageCreator,
-                taskManager
+                taskManager,
+                bannedItems
         );
         dungeonRegistry.addDungeonInstance(dungeonInstance);
     }
@@ -81,7 +85,7 @@ public class DungeonFactory {
     public void createDungeon(DungeonType dungeonType) {
 
         DungeonConfiguration configuration = getDungeonConfiguration(dungeonType);
-        String templateFileName = configuration.getTemplateName();
+        String templateFileName = configuration.getTemplateFolderName();
         String instanceFileName = instanceNameManager.generateFolderName();
 
         dungeonWorldManager.attemptToCreateInstance(templateFileName, instanceFileName,

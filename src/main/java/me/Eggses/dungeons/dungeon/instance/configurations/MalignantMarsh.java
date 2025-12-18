@@ -11,25 +11,27 @@ import java.util.function.Consumer;
 
 public class MalignantMarsh implements DungeonConfiguration {
 
-    private static final String TEMPLATE_NAME = "malignant_marsh";
+    private static final String TEMPLATE_FOLDER_NAME = "malignant_marsh"; // stored in file now...
 
     public MalignantMarsh() {
-
     }
 
     @Override
     public DungeonPortal getDungeonPortal() {
         return null;
+        // file makes this?
     }
 
     @Override
     public AreaControllerBuilder getAreaControllerBuilder() {
+        // file makes this... defer to file..
         return null;
     }
 
     @Override
     public List<GraveyardDefinition> getGraveyardDefinitionList() {
         return List.of();
+        // think this pointless.graveyards get auto set now no longer running a list.
     }
 
     @Override
@@ -40,10 +42,11 @@ public class MalignantMarsh implements DungeonConfiguration {
     @Override
     public BannedItems getBannedItems() {
         return null;
+        // probably do not need this...
     }
 
     @Override
-    public String getTemplateName() {
-        return TEMPLATE_NAME;
+    public String getTemplateFolderName() {
+        return TEMPLATE_FOLDER_NAME;
     }
 }

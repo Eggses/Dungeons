@@ -1,9 +1,29 @@
+dungeon_template_name: "flat_test"
+
+
+dungeon_portal:
+
+  world_with_portal: "world"
+
+  entry_portal_region: "pos1=12,64,-40 pos2=40,85,-10"
+  dungeon_spawn_position: "pos=50,51,-20"
+
+  exit_portal_region: "pos1=12,64,-40 pos2=40,85,-10"
+  world_exit_location: "pos=50,51,-20"
+
+  open_duration_seconds: 120
+
+  on_open:
+    - "SOUND sound=GOAT_HORN_0"
+    - "MESSAGE message=<red>Hello</red>"
+
+  on_close:
+    - "MESSAGE message=<red>Hello</red>"
+
 dungeon_areas:
 
   courtyard:
-    entry_bounds:
-      pos1: "12,64,-40"
-      pos2: "40,85,-10"
+    entry_bounds: "pos1=12,64,-40 pos2=40,85,-10"
 
     on_entry:
       - "FILL pos1=18,64,-28 pos2=18,66,-28 block=AIR"
@@ -36,9 +56,7 @@ dungeon_areas:
 
 
   graveyard_approach:
-    entry_bounds:
-      pos1: "42,63,-20"
-      pos2: "78,86,12"
+    entry_bounds: "pos1:=42,63,-20 pos2=78,86,12"
 
     on_entry:
       - "GRAVEYARD pos=60,64,-5"

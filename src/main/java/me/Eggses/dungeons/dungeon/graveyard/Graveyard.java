@@ -8,10 +8,6 @@ public class Graveyard {
 
     private Position activeGraveyard;
 
-    public Graveyard() {
-
-    }
-
     public void setActiveGraveyard(Position position) {
         activeGraveyard = position;
     }

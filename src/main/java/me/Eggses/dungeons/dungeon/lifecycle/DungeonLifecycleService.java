@@ -1,6 +1,6 @@
 package me.Eggses.dungeons.dungeon.lifecycle;
 
-import me.Eggses.dungeons.configuration.DungeonLog;
+import me.Eggses.dungeons.dungeon.files.misc.DungeonLog;
 import me.Eggses.dungeons.dungeon.instance.DungeonInstance;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
