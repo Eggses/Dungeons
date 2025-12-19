@@ -1,6 +1,6 @@
 package me.Eggses.dungeons;
 
-import me.Eggses.dungeons.commands.DungeonTrigger;
+import me.Eggses.dungeons.commands.DungeonsBaseCommand;
 import me.Eggses.dungeons.dungeon.files.DungeonLog;
 import me.Eggses.dungeons.dungeon.lifecycle.*;
 import me.Eggses.dungeons.dungeon.utility.BannedItems;
@@ -22,7 +22,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.Objects;
 
 public final class Dungeons extends JavaPlugin {
-
 
     DungeonRegistry dungeonRegistry = new DungeonRegistry();
     DungeonOpenPortalRegistry dungeonOpenPortalRegistry = new DungeonOpenPortalRegistry();
@@ -66,8 +65,9 @@ public final class Dungeons extends JavaPlugin {
         pluginManager.registerEvents(new PlayerInteract(dungeonEventRouter), this);
         pluginManager.registerEvents(new PlayerMovement(dungeonEventRouter), this);
 
-        Objects.requireNonNull(getCommand("dungeontrigger")).setExecutor(new DungeonTrigger(dungeonEventRouter));
-
+        var dungeonsBaseCommand = new DungeonsBaseCommand(dungeonRegistry, dungeonEventRouter, messageCreator);
+        Objects.requireNonNull(getCommand("dungeons")).setExecutor(dungeonsBaseCommand);
+        Objects.requireNonNull(getCommand("dungeons")).setTabCompleter(dungeonsBaseCommand);
 
         dungeonInstanceCoordinator.destroyLeftAllInstanceWorlds();
 
@@ -76,6 +76,6 @@ public final class Dungeons extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        dungeonInstanceCoordinator.endAllInstances(false);
+        dungeonRegistry.endAllInstances(false);
     }
 }

@@ -63,13 +63,6 @@ public class DungeonLifecycleService implements DungeonInstanceCoordinator {
     }
 
     @Override
-    public void endAllInstances(boolean destroyWorldFolder) {
-        dungeonRegistry.getDungeonInstances().forEach(
-                dungeonInstance -> dungeonInstance.forceEndDungeonInstance(destroyWorldFolder));
-    }
-
-
-    @Override
     public void destroyLeftAllInstanceWorlds() {
         List<String> fileNames = dungeonLog.getActiveNameList();
         fileNames.forEach(this::destroyWorld);

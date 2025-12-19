@@ -1,6 +1,7 @@
 package me.Eggses.dungeons.dungeon.lifecycle;
 
 import me.Eggses.dungeons.dungeon.instance.DungeonInstance;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
@@ -40,7 +41,24 @@ public class DungeonRegistry {
         return dungeonInstances.get(world);
     }
 
-    public Set<DungeonInstance> getDungeonInstances() {
-        return Set.copyOf(dungeonInstances.values());
+    public Set<World> getDungeonWorlds() {
+        return Set.copyOf(dungeonInstances.keySet());
+    }
+
+    public DungeonInstance getDungeonWithWorldName(String worldName) {
+        World world = Bukkit.getWorld(worldName);
+        if (world == null) return null;
+
+        return getDungeonInstance(world);
+    }
+
+    public void endDungeonInstance(DungeonInstance dungeonInstance, boolean destroyWorldFolder) {
+        dungeonInstance.forceEndDungeonInstance(destroyWorldFolder);
+    }
+
+    public void endAllInstances(boolean destroyWorldFolder) {
+        for (DungeonInstance dungeonInstance : Set.copyOf(dungeonInstances.values())) {
+            endDungeonInstance(dungeonInstance, destroyWorldFolder);
+        }
     }
 }

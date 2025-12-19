@@ -22,6 +22,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -87,14 +89,19 @@ public class DungeonInstance {
         World mainWorld = Bukkit.getWorld("world");
         if (mainWorld == null) mainWorld = Bukkit.getWorlds().getFirst();
 
-        StringBuilder errorMessage = new StringBuilder("Dungeon Ended with the following players: ");
+        List<String> players = new ArrayList<>();
 
         for (Player player : dungeonWorld.getPlayers()) {
-            errorMessage.append(player.getName()).append(", ");
+            players.add(player.getName());
             player.teleport(mainWorld.getSpawnLocation());
         }
 
-        plugin.getLogger().severe(errorMessage.toString());
+        if (!players.isEmpty()) {
+            String error = "Dungeon Ended with the following Players: ";
+            String playerList = String.join(", ", players);
+
+            plugin.getLogger().severe(error + playerList);
+        }
 
         areaController.endAllTasks();
         dungeonInstanceCoordinator.destroyInstanceRuntime(this);

@@ -7,7 +7,6 @@ import java.util.*;
 public class InstanceNameManager {
 
     private static final String FOLDER_NAME = "dungeon_instance_";
-
     private final Set<String> folderNames = new HashSet<>();
 
     private final DungeonLog dungeonLog;
@@ -17,7 +16,7 @@ public class InstanceNameManager {
        folderNames.addAll(dungeonLog.getActiveNameList());
     }
 
-    public String generateFolderName() {
+    public synchronized String generateFolderName() {
 
         int next = 1;
         String name;
@@ -30,7 +29,7 @@ public class InstanceNameManager {
         return name;
     }
 
-    public void freeFolderName(String folderName) {
+    public synchronized void freeFolderName(String folderName) {
         folderNames.remove(folderName);
         dungeonLog.removeActiveName(folderName);
     }

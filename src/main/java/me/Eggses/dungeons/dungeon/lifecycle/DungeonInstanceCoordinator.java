@@ -8,7 +8,5 @@ public interface DungeonInstanceCoordinator {
     void closePortal(Set<Long> portalChunkKeys);
     void destroyInstanceRuntime(DungeonInstance dungeonInstance);
     void destroyWorld(String folderName);
-
-    void endAllInstances(boolean destroyWorldFolder);
     void destroyLeftAllInstanceWorlds();
 }

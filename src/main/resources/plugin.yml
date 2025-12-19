@@ -7,12 +7,18 @@ authors: [ Eggses ]
 description: Dungeons
 
 commands:
-  dungeontrigger:
-    description: Dungeon Trigger
-    usage: /dungeontrigger <value>
-    permission: dungeons.admin.cmdblock.dungeontrigger
+  dungeons:
+    description: Dungeon Base Command
+    usage: /dungeons
+    permission: dungeons.commands
 
 permissions:
-  dungeons.admin.cmdblock.dungeontrigger:
-    description: Permission for /dungeontrigger <value>
+  dungeons.commands:
+    description: Permission for /dungeons
+    default: op
+  dungeons.commands.admin.cmdblock.trigger:
+    description: Permission for /dungeons trigger <value>
+    default: op
+  dungeons.commands.admin.destroy:
+    description: Permission for /dungeons destroy <ALL | World_Name>
     default: op
