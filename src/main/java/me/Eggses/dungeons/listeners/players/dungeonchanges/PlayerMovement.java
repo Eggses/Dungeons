@@ -1,9 +1,7 @@
 package me.Eggses.dungeons.listeners.players.dungeonchanges;
 
 import me.Eggses.dungeons.dungeon.lifecycle.DungeonEventRouter;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -12,13 +10,9 @@ import org.bukkit.event.player.PlayerMoveEvent;
 public class PlayerMovement implements Listener {
 
     private final DungeonEventRouter dungeonEventRouter;
-    private final World mainWorld;
 
     public PlayerMovement(DungeonEventRouter dungeonEventRouter) {
         this.dungeonEventRouter = dungeonEventRouter;
-        World mainWorld = Bukkit.getWorld("world");
-        if (mainWorld == null) mainWorld = Bukkit.getWorlds().getFirst();
-        this.mainWorld = mainWorld;
     }
 
     @EventHandler
@@ -27,16 +21,9 @@ public class PlayerMovement implements Listener {
         if (!event.hasExplicitlyChangedBlock()) return;
 
         Player player = event.getPlayer();
-
         Location destination = event.getTo();
         long chunkKeyOfDestination = event.getTo().getChunk().getChunkKey();
 
-        if (player.getWorld().equals(mainWorld)) {
-            dungeonEventRouter.handleMovementEventInWorld(player, destination, chunkKeyOfDestination);
-            return;
-        }
-
-        //This uses World as a key initially, not chunks; do not need to check a player is in the Dungeon World.
-        dungeonEventRouter.handleMovementEventInDungeon(player, destination, chunkKeyOfDestination);
+        dungeonEventRouter.handleMovementEvent(player, destination, chunkKeyOfDestination);
     }
 }

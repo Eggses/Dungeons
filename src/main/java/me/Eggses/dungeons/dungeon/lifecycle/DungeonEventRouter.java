@@ -1,14 +1,11 @@
 package me.Eggses.dungeons.dungeon.lifecycle;
 
 import me.Eggses.dungeons.dungeon.instance.DungeonInstance;
-import me.Eggses.dungeons.dungeon.regions.Position;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.Event;
 
-import java.util.UUID;
 import java.util.function.Consumer;
 
 public class DungeonEventRouter {
@@ -21,30 +18,22 @@ public class DungeonEventRouter {
         this.dungeonOpenPortalRegistry = dungeonOpenPortalRegistry;
     }
 
-    public void handleMovementEventInWorld(Player player, Location destination, long chunkKey) {
+    public void handleMovementEvent(Player player, Location destination, long chunkKey) {
+        boolean ran = runIfInstanceExists(destination.getWorld(),
+                (instance) -> instance.handleMovementEventInDungeon(player, destination, chunkKey));
+        if (ran) return;
 
         DungeonInstance dungeonInstance = dungeonOpenPortalRegistry.getDungeonInstance(chunkKey);
         if (dungeonInstance == null) return;
-
-        dungeonInstance.handleMovementEventInWorld(player, destination);
+        dungeonInstance.handleMovementEventOutsideDungeon(player, destination);
     }
 
-    public void handleMovementEventInDungeon(Player player, Location destination, long chunkKey) {
-        runIfInstanceExists(destination.getWorld(),
-                (instance) ->
-                        instance.handleMovementEventInDungeon(player, destination, chunkKey));
-    }
-
-    public void handleInteractEventInDungeon(World world, Position positionOfBlock) {
-        runIfInstanceExists(world, (instance) -> instance.handlePlayerInteractEvent(positionOfBlock));
+    public void handleEvent(World world, Event event) {
+        runIfInstanceExists(world, (instance -> instance.handleEvent(event)));
     }
 
     public void handleDungeonTriggerCommand(World world, String argument) {
         runIfInstanceExists(world, (instance) -> instance.handleDungeonTriggerCommand(argument));
-    }
-
-    public void handleEntityDeathEventInDungeon(World world, UUID uuid) {
-        runIfInstanceExists(world, (instance) -> instance.handleEntityDeathEvent(uuid));
     }
 
     public void handlePlayerChangeWorldEvent(Player player, World worldLeft, World worldEntered) {
@@ -52,22 +41,11 @@ public class DungeonEventRouter {
         runIfInstanceExists(worldEntered, (instance) -> instance.addPlayer(player));
     }
 
-    public void handlePlayerExitGameEvent(Player player) {
-        runIfInstanceExists(player.getWorld(), (instance) -> instance.removePlayer(player));
-    }
-
-    public void handleEntityDamageEntityEvent(World world, EntityDamageByEntityEvent event) {
-        runIfInstanceExists(world, (instance) -> instance.handleEntityDamageEntityEvent(event));
-    }
-
-    public void handlePlayerRespawnEvent(World worldDiedIn, PlayerRespawnEvent event) {
-        runIfInstanceExists(worldDiedIn, instance -> instance.handlePlayerRespawnEvent(event));
-    }
-
-    private void runIfInstanceExists(World world, Consumer<DungeonInstance> action) {
+    private boolean runIfInstanceExists(World world, Consumer<DungeonInstance> action) {
         DungeonInstance dungeonInstance = dungeonRegistry.getDungeonInstance(world);
-        if (dungeonInstance == null) return;
+        if (dungeonInstance == null) return false;
 
         action.accept(dungeonInstance);
+        return true;
     }
 }

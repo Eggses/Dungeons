@@ -2,7 +2,7 @@ package me.Eggses.dungeons.dungeon.instance;
 
 import me.Eggses.dungeons.dungeon.areas.AreaController;
 import me.Eggses.dungeons.dungeon.areas.EntityManager;
-import me.Eggses.dungeons.dungeon.areas.EventHandler;
+import me.Eggses.dungeons.dungeon.areas.EntityAbilityEventHandler;
 import me.Eggses.dungeons.dungeon.graveyard.Graveyard;
 import me.Eggses.dungeons.dungeon.instance.configurations.DungeonTemplate;
 import me.Eggses.dungeons.dungeon.players.DungeonPlayers;
@@ -13,19 +13,22 @@ import me.Eggses.dungeons.dungeon.utility.GameRules;
 import me.Eggses.dungeons.dungeon.lifecycle.DungeonInstanceCoordinator;
 import me.Eggses.dungeons.entities.tasks.TaskManager;
 import me.Eggses.dungeons.utility.MessageCreator;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 public class DungeonInstance {
 
@@ -35,7 +38,7 @@ public class DungeonInstance {
     private final String instanceFileName;
 
     private final AreaController areaController;
-    private final EventHandler eventHandler;
+    private final EntityAbilityEventHandler entityAbilityEventHandler;
     private final PortalController portalController;
     private final DungeonPlayers dungeonPlayers;
 
@@ -55,7 +58,7 @@ public class DungeonInstance {
 
         var entityManager = new EntityManager(dungeonWorld, taskManager, messageCreator);
         this.areaController = new AreaController(entityManager, new Graveyard(), dungeonWorld, dungeonTemplate.getAreaControllerBuilder());
-        this.eventHandler = new EventHandler(areaController, entityManager);
+        this.entityAbilityEventHandler = new EntityAbilityEventHandler(entityManager);
         this.portalController = new PortalController(plugin, this, dungeonTemplate.getDungeonPortal(), bannedItems);
         this.dungeonPlayers = new DungeonPlayers();
 
@@ -122,41 +125,55 @@ public class DungeonInstance {
         return dungeonPlayers.contains(player);
     }
 
-    public void handleMovementEventInWorld(Player player, Location destination) {
+    public void handleMovementEventOutsideDungeon(Player player, Location destination) {
 
-        if (!portalController.isOpen()) return; // Should be impossible.
-        if (!portalController.isInPortalInMainWorld(destination)) return;
+        if (!portalController.isOpen()) return;
 
-        portalController.enterDungeon(player, dungeonWorld);
+        if (portalController.isInPortalOutsideDungeon(destination)) {
+            portalController.enterDungeon(player, dungeonWorld);
+        }
     }
 
     public void handleMovementEventInDungeon(Player player, Location destination, long chunkKey) {
 
-        eventHandler.handleMovementEventInDungeon(destination, chunkKey);
+        areaController.handlePlayerMoveEvent(destination, chunkKey);
 
         if (portalController.isInPortalInDungeonWorld(destination)) {
             portalController.leaveDungeon(player);
         }
     }
 
-    public void handlePlayerInteractEvent(Position positionOfBlock) {
-        eventHandler.handleInteractEvent(positionOfBlock);
+    public void handleEvent(Event event) {
+        switch (event) {
+            case EntityDamageByEntityEvent e -> entityAbilityEventHandler.handleEntityDamageEntityEvent(e);
+            case EntityExplodeEvent e -> entityAbilityEventHandler.handleEntityExplodeEvent(e);
+            case EntityDeathEvent e -> areaController.handleEntityDeathEvent(e.getEntity().getUniqueId());
+            case PlayerRespawnEvent e -> areaController.handlePlayerRespawnEvent(e);
+            case PlayerInteractEvent e -> this.handlePlayerInteractEvent(e);
+            case PlayerQuitEvent e -> this.removePlayer(e.getPlayer());
+            default -> {}
+        }
     }
 
     public void handleDungeonTriggerCommand(String argument) {
-        eventHandler.handleDungeonTriggerCommand(argument);
+        areaController.handleDungeonTriggerCommand(argument);
     }
 
-    public void handleEntityDeathEvent(UUID uuid) {
-        eventHandler.handleEntityDeathEvent(uuid);
-    }
+    private void handlePlayerInteractEvent(PlayerInteractEvent event) {
 
-    public void handleEntityDamageEntityEvent(EntityDamageByEntityEvent event) {
-        eventHandler.handleEntityDamageEntityEvent(event);
-    }
+        Block block = event.getClickedBlock();
+        if (block == null) return;
 
-    public void handlePlayerRespawnEvent(PlayerRespawnEvent playerRespawnEvent) {
-        eventHandler.handlePlayerRespawnEvent(playerRespawnEvent);
+        Action action = event.getAction();
+        Material type = block.getType();
+        String name = type.name();
+
+        boolean trigger = (action == Action.RIGHT_CLICK_BLOCK && (type == Material.LEVER || name.endsWith("_BUTTON")))
+                || (action == Action.PHYSICAL && name.endsWith("_PRESSURE_PLATE"));
+
+        if (!trigger) return;
+
+        areaController.handleInteractEvent(new Position(block.getX(), block.getY(), block.getZ()));
     }
 
     public World getDungeonWorld() {

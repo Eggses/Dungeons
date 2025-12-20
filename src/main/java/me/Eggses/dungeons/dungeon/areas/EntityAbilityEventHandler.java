@@ -1,45 +1,26 @@
 package me.Eggses.dungeons.dungeon.areas;
 
-import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.entities.attributes.AttributeController;
 import me.Eggses.dungeons.entities.mobs.DungeonEntity;
-import org.bukkit.Location;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.projectiles.ProjectileSource;
 
 import java.util.UUID;
 import java.util.function.BiFunction;
 
-public class EventHandler {
+public class EntityAbilityEventHandler {
 
-    private final AreaController areaController;
     private final EntityManager entityManager;
 
-    public EventHandler(AreaController areaController, EntityManager entityManager) {
-        this.areaController = areaController;
+    public EntityAbilityEventHandler(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
-    public void handleMovementEventInDungeon(Location location, long chunkKey) {
-        areaController.handlePlayerMoveEvent(location, chunkKey);
-    }
-
-    public void handleInteractEvent(Position positionOfBlock) {
-        areaController.handleInteractEvent(positionOfBlock);
-    }
-
-    public void handleDungeonTriggerCommand(String argument) {
-        areaController.handleDungeonTriggerCommand(argument);
-    }
-
-    public void handleEntityDeathEvent(UUID uuid) {
-        areaController.handleEntityDeathEvent(uuid);
-    }
-
-    public void handlePlayerRespawnEvent(PlayerRespawnEvent event) {
-        areaController.handlePlayerRespawnEvent(event);
+    public void handleEntityExplodeEvent(EntityExplodeEvent event) {
+        DungeonEntity dungeonEntity = entityManager.getDungeonEntity(event.getEntity().getUniqueId());
+        if (dungeonEntity != null) dungeonEntity.getEntityEventHandler().handleExplosionEvent(dungeonEntity, event);
     }
 
     public void handleEntityDamageEntityEvent(EntityDamageByEntityEvent event) {

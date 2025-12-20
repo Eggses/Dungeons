@@ -57,10 +57,10 @@ public class AreaController {
         }
     }
 
-    public void handleInteractEvent(Position positionOfBlock) {
+    public void handleInteractEvent(Position position) {
         if (areaInProgress) return;
 
-        Consumer<DungeonContext> consumer = blockInteractionMap.remove(positionOfBlock);
+        Consumer<DungeonContext> consumer = blockInteractionMap.remove(position);
         if (consumer == null) return;
         consumer.accept(dungeonContext);
     }

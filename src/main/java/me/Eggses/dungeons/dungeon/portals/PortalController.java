@@ -48,7 +48,7 @@ public class PortalController {
         return isOpen;
     }
 
-    public boolean isInPortalInMainWorld(Location location) {
+    public boolean isInPortalOutsideDungeon(Location location) {
         return dungeonPortal.getEntryPortalWorldRegion().within(location);
     }
 

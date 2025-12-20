@@ -32,7 +32,8 @@ public class DeathController implements Listener {
         World dungeonWorld = worldsPlayerDiedIn.remove(player.getUniqueId());
         if (dungeonWorld == null) return;
 
-        dungeonEventRouter.handlePlayerRespawnEvent(dungeonWorld, event);
+        // Where Dungeon World is the World that they died in.
+        dungeonEventRouter.handleEvent(dungeonWorld, event);
     }
 
     @EventHandler
