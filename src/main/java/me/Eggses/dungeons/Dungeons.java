@@ -25,19 +25,31 @@ public final class Dungeons extends JavaPlugin {
 
     DungeonRegistry dungeonRegistry = new DungeonRegistry();
     DungeonOpenPortalRegistry dungeonOpenPortalRegistry = new DungeonOpenPortalRegistry();
-    DungeonEventRouter dungeonEventRouter = new DungeonEventRouter(dungeonRegistry, dungeonOpenPortalRegistry);
 
     DungeonLog dungeonLog = new DungeonLog(this);
     InstanceNameManager instanceNameManager = new InstanceNameManager(dungeonLog);
+
     DungeonWorldManager dungeonWorldManager = new DungeonWorldManager(this, instanceNameManager);
-    DungeonInstanceCoordinator dungeonInstanceCoordinator = new DungeonLifecycleService(this, dungeonRegistry, dungeonOpenPortalRegistry, dungeonWorldManager, dungeonLog);
+    DungeonInstanceCoordinator dungeonInstanceCoordinator = new DungeonLifecycleService(
+            this, dungeonRegistry, dungeonOpenPortalRegistry, dungeonWorldManager, dungeonLog
+    );
 
-    TaskManager taskManager = new TaskManager(this);
+    DungeonEventRouter dungeonEventRouter = new DungeonEventRouter(dungeonRegistry, dungeonOpenPortalRegistry);
+
     MessageCreator messageCreator = new MessageCreator();
-    BannedItems bannedItems = new BannedItems(messageCreator);
-    SoundPlayer soundPlayer = new SoundPlayer();
 
-    DungeonFactory dungeonFactory = new DungeonFactory(this, dungeonRegistry, dungeonInstanceCoordinator, dungeonWorldManager, instanceNameManager,taskManager, messageCreator, soundPlayer, dungeonLog, bannedItems);
+    DungeonFactory dungeonFactory = new DungeonFactory(
+            this,
+            dungeonRegistry,
+            dungeonInstanceCoordinator,
+            dungeonWorldManager,
+            instanceNameManager,
+            new TaskManager(this),
+            messageCreator,
+            new SoundPlayer(),
+            dungeonLog,
+            new BannedItems(messageCreator)
+    );
 
     @Override
     public void onEnable() {
