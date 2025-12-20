@@ -2,7 +2,7 @@ package me.Eggses.dungeons.listeners.players.itemban;
 
 import me.Eggses.dungeons.dungeon.lifecycle.DungeonRegistry;
 import org.bukkit.Material;
-import org.bukkit.event.Event;
+import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -14,6 +14,8 @@ public class ItemUse implements Listener {
 
     private static final Set<Material> BANNED_RIGHT_CLICK_ITEM_INTERACTIONS = Set.of(
             Material.TRIDENT,
+            Material.BOW,
+            Material.CROSSBOW,
 
             Material.ENDER_EYE,
 
@@ -53,6 +55,10 @@ public class ItemUse implements Listener {
             Material.ENCHANTED_GOLDEN_APPLE
     );
 
+    private static final Set<Material> BANNED_RIGHT_CLICK_BLOCK_INTERACTIONS = Set.of(
+            Material.DECORATED_POT
+    );
+
     private final DungeonRegistry dungeonRegistry;
 
     public ItemUse(DungeonRegistry dungeonRegistry) {
@@ -65,13 +71,15 @@ public class ItemUse implements Listener {
         if (!dungeonRegistry.isInDungeon(event.getPlayer())) return;
         if (!event.getAction().isRightClick()) return;
 
-        ItemStack itemHeld = event.getItem();
-        if (itemHeld == null) return;
-
-        if (BANNED_RIGHT_CLICK_ITEM_INTERACTIONS.contains(itemHeld.getType())) {
+        Block clicked = event.getClickedBlock();
+        if (clicked != null && BANNED_RIGHT_CLICK_BLOCK_INTERACTIONS.contains(clicked.getType())) {
             event.setCancelled(true);
-            event.setUseItemInHand(Event.Result.DENY);
-            event.setUseInteractedBlock(Event.Result.DENY);
+            return;
+        }
+
+        ItemStack itemHeld = event.getItem();
+        if (itemHeld != null && BANNED_RIGHT_CLICK_ITEM_INTERACTIONS.contains(itemHeld.getType())) {
+            event.setCancelled(true);
         }
     }
 }
