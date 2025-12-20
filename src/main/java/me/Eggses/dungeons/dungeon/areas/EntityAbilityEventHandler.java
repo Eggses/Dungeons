@@ -20,7 +20,7 @@ public class EntityAbilityEventHandler {
 
     public void handleEntityExplodeEvent(EntityExplodeEvent event) {
         DungeonEntity dungeonEntity = entityManager.getDungeonEntity(event.getEntity().getUniqueId());
-        if (dungeonEntity != null) dungeonEntity.getEntityEventHandler().handleExplosionEvent(dungeonEntity, event);
+        if (dungeonEntity != null) dungeonEntity.getEntityEventHandler().handleEvent(dungeonEntity, event);
     }
 
     public void handleEntityDamageEntityEvent(EntityDamageByEntityEvent event) {
@@ -47,14 +47,14 @@ public class EntityAbilityEventHandler {
                 default -> AttributeController.getIdentityDamageFormula();
             };
             event.setDamage(damageFormula.apply(dungeonAttacker, event.getDamage()));
-            dungeonAttacker.getEntityEventHandler().handleEntityDamageEntityEvent(dungeonAttacker, event);
+            dungeonAttacker.getEntityEventHandler().handleEvent(dungeonAttacker, event);
             return;
         }
 
         DungeonEntity dungeonVictim = entityManager.getDungeonEntity(victimUUID);
         if (dungeonVictim != null) {
             dungeonVictim.updateHealthDisplay(event.getFinalDamage());
-            dungeonVictim.getEntityEventHandler().handleEntityDamageEntityEvent(dungeonVictim, event);
+            dungeonVictim.getEntityEventHandler().handleEvent(dungeonVictim, event);
         }
     }
 

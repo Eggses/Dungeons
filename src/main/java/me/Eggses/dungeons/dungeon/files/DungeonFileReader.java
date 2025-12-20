@@ -302,7 +302,7 @@ public class DungeonFileReader {
                 .weaponEquipment(weaponEquipment)
                 .dungeonLevel(level)
                 .count(count)
-                .mobNameSpawnFinalizerTaskBehaviour(preset);
+                .applyPreset(preset);
     }
 
     private Consumer<DungeonContext> resolveGraveyardCommand(String graveyardCommand) {

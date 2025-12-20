@@ -1,5 +1,7 @@
 package me.Eggses.dungeons.entities.mobs;
 
+import me.Eggses.dungeons.entities.eventbehaviour.damage.EntityDamageEntityBehaviour;
+import me.Eggses.dungeons.entities.eventbehaviour.damage.FrostImpact;
 import me.Eggses.dungeons.entities.nameutility.MobName;
 import me.Eggses.dungeons.entities.tasks.EntityTask;
 import me.Eggses.dungeons.utility.NMS;
@@ -13,6 +15,7 @@ import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Illusioner;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -22,7 +25,7 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Consumer;
 
-@NMS
+@NMS("Used to change goals of mobs.")
 public enum MobType {
 
     KNIGHT(mobBuilder -> {
@@ -156,6 +159,11 @@ public enum MobType {
 
     POISON_COW(mobBuilder -> {
 
+        /*
+        this AI is probably quite universal.. maybe add a lambda for it... that accepts a COnsumer<Pathfindermob>
+        and applies general AI for a typical enemy... add a static lambda in the enum below.
+         */
+
         // base health 20
         // base attack same as zombie
         // clear all
@@ -164,7 +172,7 @@ public enum MobType {
         // done.
     }),
     VILLAGER(mobBuilder -> {
-        // immortal bassiclay
+        // immortal bassicla
     }),
     BEEHIVE_CREEPER( mobBuilder -> {
         // behive on head

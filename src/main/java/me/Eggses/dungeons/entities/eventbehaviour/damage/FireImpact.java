@@ -7,6 +7,7 @@ public class FireImpact implements EntityDamageEntityBehaviour {
 
     @Override
     public void handleEvent(DungeonEntity dungeonEntity, EntityDamageByEntityEvent event) {
+        // wont work called when it is the victum too.
         event.getEntity().setFireTicks(20 * 5);
     }
 }

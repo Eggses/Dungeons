@@ -9,6 +9,7 @@ import me.Eggses.dungeons.entities.eventbehaviour.EntityEventBehaviour;
 import me.Eggses.dungeons.entities.equipment.ArmourEquipment;
 import me.Eggses.dungeons.entities.equipment.WeaponEquipment;
 import org.bukkit.entity.EntityType;
+import org.bukkit.event.Event;
 
 import java.util.function.Consumer;
 
@@ -20,7 +21,7 @@ public class MobBuilder {
     private WeaponEquipment weaponEquipment = new WeaponEquipment();
     private ArmourEquipment armourEquipment = new ArmourEquipment();
     private final EntityEventBehaviour entityEventBehaviour = new EntityEventBehaviour();
-    private EntityTaskBehaviour entityTaskBehaviour = new EntityTaskBehaviour();
+    private final EntityTaskBehaviour entityTaskBehaviour = new EntityTaskBehaviour();
     private Consumer<DungeonEntity> spawnChanges = (entity) -> {};
     private int count = 1;
     private MobName mobName = new MobName();
@@ -57,8 +58,8 @@ public class MobBuilder {
         return this;
     }
 
-    public MobBuilder eventBehaviour(EventBehaviour<?> eventBehaviour) {
-        this.entityEventBehaviour.addEventBehaviour(eventBehaviour);
+    public <E extends Event> MobBuilder eventBehaviour(Class<E> eventClass, EventBehaviour<E> eventBehaviour) {
+        this.entityEventBehaviour.addEventBehaviour(eventClass, eventBehaviour);
         return this;
     }
 

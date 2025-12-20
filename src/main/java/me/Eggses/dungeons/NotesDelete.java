@@ -1,8 +1,22 @@
-package me.Eggses.dungeons.listeners.entities;
+package me.Eggses.dungeons;
 
-public class read {
+public class NotesDelete {
+
+
+
 
     /*
+    item ban used to do:
+                event.setUseItemInHand(Event.Result.DENY);
+            event.setUseInteractedBlock(Event.Result.DENY);
+
+     see if tridents are still blocked along with pots...
+     */
+
+
+
+
+        /*
     isntead of flaming skeeltons
             put code here that ignites all
             arrows when
@@ -13,4 +27,5 @@ public class read {
 
 
      */
+
 }
