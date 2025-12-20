@@ -7,7 +7,7 @@ import me.Eggses.dungeons.dungeon.instance.configurations.FlatTest;
 import me.Eggses.dungeons.dungeon.instance.configurations.MalignantMarsh;
 import me.Eggses.dungeons.dungeon.utility.BannedItems;
 import me.Eggses.dungeons.dungeon.utility.InstanceNameManager;
-import me.Eggses.dungeons.entities.taskbehaviour.TaskManager;
+import me.Eggses.dungeons.entities.tasks.TaskManager;
 import me.Eggses.dungeons.utility.MessageCreator;
 import me.Eggses.dungeons.utility.SoundPlayer;
 import net.kyori.adventure.text.Component;

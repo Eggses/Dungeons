@@ -13,7 +13,6 @@ public class AttributeController {
 
     private static final double BASE_HEALTH_PERCENTAGE_INCREASE = 0.10;
     private static final double MELEE_DAMAGE_PERCENTAGE_INCREASE = 0.045;
-    private static final double MOVEMENT_SPEED_PERCENTAGE_INCREASE = 0.003;
 
     private static final double ARMOUR_PER_LEVEL = 0.12;
     private static final double ARMOUR_TOUGHNESS_PER_LEVEL = 0.06;
@@ -28,7 +27,6 @@ public class AttributeController {
     static {
         PERCENTAGE_INCREASE_ATTRIBUTE_MAP.put(Attribute.MAX_HEALTH, BASE_HEALTH_PERCENTAGE_INCREASE);
         PERCENTAGE_INCREASE_ATTRIBUTE_MAP.put(Attribute.ATTACK_DAMAGE, MELEE_DAMAGE_PERCENTAGE_INCREASE);
-        PERCENTAGE_INCREASE_ATTRIBUTE_MAP.put(Attribute.MOVEMENT_SPEED, MOVEMENT_SPEED_PERCENTAGE_INCREASE);
 
         ADDITIVE_INCREASE_ATTRIBUTE_MAP.put(Attribute.ARMOR, ARMOUR_PER_LEVEL);
         ADDITIVE_INCREASE_ATTRIBUTE_MAP.put(Attribute.ARMOR_TOUGHNESS, ARMOUR_TOUGHNESS_PER_LEVEL);

@@ -3,11 +3,11 @@ package me.Eggses.dungeons.entities.mobs;
 import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.entities.attributes.AttributeController;
 import me.Eggses.dungeons.entities.nameutility.MobName;
-import me.Eggses.dungeons.entities.taskbehaviour.TaskManager;
+import me.Eggses.dungeons.entities.tasks.TaskManager;
 import me.Eggses.dungeons.entities.nameutility.NameFormatter;
 import me.Eggses.dungeons.entities.eventbehaviour.EntityEventBehaviour;
 import me.Eggses.dungeons.entities.equipment.EquipmentManager;
-import me.Eggses.dungeons.entities.taskbehaviour.ActiveEntityTasks;
+import me.Eggses.dungeons.entities.tasks.ActiveEntityTasks;
 import me.Eggses.dungeons.utility.MessageCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -55,6 +55,9 @@ public class DungeonMob implements DungeonEntity {
         EquipmentManager equipmentManager = new EquipmentManager(this);
         equipmentManager.setEquipment(mobBuilder.getWeaponEquipment(), mobBuilder.getArmourEquipment());
 
+        // Spawn Changes
+        mobBuilder.getSpawnChanges().accept(this);
+
         // Apply Attributes
         attributeController.applyAttributes();
 
@@ -75,9 +78,6 @@ public class DungeonMob implements DungeonEntity {
 
         // Start Tasks
         activeEntityTasks.addAndRunTasks(mobBuilder.getEntityTaskBehaviour(), this, taskManager);
-
-        // Finally
-        mobBuilder.getSpawnFinalizer().accept(this);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package me.Eggses.dungeons.entities.taskbehaviour;
+package me.Eggses.dungeons.entities.tasks;
 
 import me.Eggses.dungeons.entities.mobs.DungeonEntity;
 import org.bukkit.scheduler.BukkitTask;

@@ -13,10 +13,12 @@ public class EntityEventBehaviour {
 
     private final List<EventBehaviour<?>> entityEventBehaviours = new ArrayList<>();
 
-    public EntityEventBehaviour addEventBehaviour(EventBehaviour<?> eventBehaviour) {
+    public void addEventBehaviour(EventBehaviour<?> eventBehaviour) {
         entityEventBehaviours.add(eventBehaviour);
-        return this;
     }
+
+    // what if you pull this object form mobs rather than pasisng through 100 instancs...
+    // one generic method that accepts hte thing... wait but then how you know.w.. ah...
 
     public void handleEntityDamageEntityEvent(DungeonEntity dungeonEntity, EntityDamageByEntityEvent event) {
         for (EventBehaviour<?> eventBehaviour : entityEventBehaviours) {

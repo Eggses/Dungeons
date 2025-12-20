@@ -1,4 +1,4 @@
-package me.Eggses.dungeons.entities.taskbehaviour;
+package me.Eggses.dungeons.entities.tasks;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;

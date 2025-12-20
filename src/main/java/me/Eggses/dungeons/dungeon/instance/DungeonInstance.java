@@ -11,7 +11,7 @@ import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.dungeon.utility.BannedItems;
 import me.Eggses.dungeons.dungeon.utility.GameRules;
 import me.Eggses.dungeons.dungeon.lifecycle.DungeonInstanceCoordinator;
-import me.Eggses.dungeons.entities.taskbehaviour.TaskManager;
+import me.Eggses.dungeons.entities.tasks.TaskManager;
 import me.Eggses.dungeons.utility.MessageCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;

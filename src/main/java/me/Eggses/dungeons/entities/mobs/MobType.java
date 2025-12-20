@@ -1,7 +1,7 @@
 package me.Eggses.dungeons.entities.mobs;
 
 import me.Eggses.dungeons.entities.nameutility.MobName;
-import me.Eggses.dungeons.entities.taskbehaviour.EntityTaskBehaviour;
+import me.Eggses.dungeons.entities.tasks.EntityTask;
 import me.Eggses.dungeons.utility.NMS;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.*;
@@ -10,94 +10,177 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.craftbukkit.entity.CraftEntity;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Illusioner;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Consumer;
 
 @NMS
 public enum MobType {
 
-    KNIGHT((dungeonEntity) -> {
-        var ac = dungeonEntity.getAttributeController();
-        ac.setBaseAttribute(Attribute.SCALE, 1.1);
-        ac.setBaseAttribute(Attribute.MOVEMENT_SPEED, 0.25);
-        ac.setBaseAttribute(Attribute.KNOCKBACK_RESISTANCE, 0.3);
-        ac.setBaseAttribute(Attribute.ATTACK_KNOCKBACK, 1.5);
+    KNIGHT(mobBuilder -> {
 
-    }, new EntityTaskBehaviour(), new MobName("Knight", false)),
+        mobBuilder.mobName(new MobName("Knight", false));
 
-    FIEND((dungeonEntity) -> {
-        var ac = dungeonEntity.getAttributeController();
+        mobBuilder.spawnChanges((dungeonEntity -> {
+            var ac = dungeonEntity.getAttributeController();
+            ac.setBaseAttribute(Attribute.SCALE, 1.1);
+            ac.setBaseAttribute(Attribute.MOVEMENT_SPEED, 0.25);
+            ac.setBaseAttribute(Attribute.KNOCKBACK_RESISTANCE, 0.3);
+            ac.setBaseAttribute(Attribute.ATTACK_KNOCKBACK, 1.5);
+        }));
+    }),
 
-        ac.setBaseAttribute(Attribute.SCALE, 0.7);
-        ac.setBaseAttribute(Attribute.MOVEMENT_SPEED, 0.4);
+    FIEND(mobBuilder -> {
 
-        PathfinderMob pathfinderMob = toPathFinderMobWithClearedGoal(dungeonEntity.getEntity());
-        if (pathfinderMob == null) return;
+        mobBuilder.mobName(new MobName("Fiend", false));
 
-        pathfinderMob.goalSelector.addGoal(1, new FloatGoal(pathfinderMob));
-        pathfinderMob.goalSelector.addGoal(3, new LeapAtTargetGoal(pathfinderMob, 0.4f));
-        pathfinderMob.goalSelector.addGoal(4, new MeleeAttackGoal(pathfinderMob, 1.2, true));
-        pathfinderMob.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(pathfinderMob, 0.8));
-        pathfinderMob.goalSelector.addGoal(6, new LookAtPlayerGoal(pathfinderMob, Player.class, 8.0f));
-        pathfinderMob.goalSelector.addGoal(6, new RandomLookAroundGoal(pathfinderMob));
+        mobBuilder.spawnChanges(dungeonEntity -> {
+            var ac = dungeonEntity.getAttributeController();
 
-        pathfinderMob.targetSelector.addGoal(1, new HurtByTargetGoal(pathfinderMob));
-        pathfinderMob.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(pathfinderMob, Player.class, true));
+            ac.setBaseAttribute(Attribute.SCALE, 0.7);
+            ac.setBaseAttribute(Attribute.MOVEMENT_SPEED, 0.4);
 
-    }, new EntityTaskBehaviour(), new MobName("Fiend", false)),
+            PathfinderMob pathfinderMob = toPathFinderMobWithClearedGoal(dungeonEntity.getEntity());
+            if (pathfinderMob == null) return;
 
-    BRUISER((dungeonEntity) -> {
-        var ac = dungeonEntity.getAttributeController();
-        ac.setBaseAttribute(Attribute.SCALE, 1.04);
-        ac.setBaseAttribute(Attribute.MOVEMENT_SPEED, 0.3);
-    }, new EntityTaskBehaviour(), new MobName("Bruiser", false)),
+            pathfinderMob.goalSelector.addGoal(1, new FloatGoal(pathfinderMob));
+            pathfinderMob.goalSelector.addGoal(3, new LeapAtTargetGoal(pathfinderMob, 0.4f));
+            pathfinderMob.goalSelector.addGoal(4, new MeleeAttackGoal(pathfinderMob, 1.2, true));
+            pathfinderMob.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(pathfinderMob, 0.8));
+            pathfinderMob.goalSelector.addGoal(6, new LookAtPlayerGoal(pathfinderMob, Player.class, 8.0f));
+            pathfinderMob.goalSelector.addGoal(6, new RandomLookAroundGoal(pathfinderMob));
 
-    ENCHANTER((dungeonEntity) -> {
-        var ac = dungeonEntity.getAttributeController();
-        ac.setBaseAttribute(Attribute.SCALE, 1.1);
+            pathfinderMob.targetSelector.addGoal(1, new HurtByTargetGoal(pathfinderMob));
+            pathfinderMob.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(pathfinderMob, Player.class, true));
+        });
+    }),
 
-        PathfinderMob pathfinderMob = toPathFinderMobWithClearedGoal(dungeonEntity.getEntity());
-        if (pathfinderMob == null) return;
+    BRUISER(mobBuilder -> {
 
-        float avoidDistance = 8.0f;
-        double fleeWalkSpeed = 1.0;
-        double fleeSprintSpeed = 1.15;
+        mobBuilder.mobName(new MobName("Bruiser", false));
 
-        double followSpeed = 1.0;
-        float followStartDistance = 18.0f;
-        float followStopDistance  = 8.0f;
+        mobBuilder.spawnChanges(dungeonEntity -> {
+            var ac = dungeonEntity.getAttributeController();
+            ac.setBaseAttribute(Attribute.SCALE, 1.04);
+            ac.setBaseAttribute(Attribute.MOVEMENT_SPEED, 0.3);
+        });
+    }),
 
-        pathfinderMob.goalSelector.addGoal(1, new FloatGoal(pathfinderMob));
-        pathfinderMob.goalSelector.addGoal(2, new AvoidEntityGoal<>(pathfinderMob, Player.class, avoidDistance, fleeWalkSpeed, fleeSprintSpeed));
-        pathfinderMob.goalSelector.addGoal(3, new FollowMobGoal(pathfinderMob, followSpeed, followStartDistance, followStopDistance));
-        pathfinderMob.goalSelector.addGoal(6, new WaterAvoidingRandomStrollGoal(pathfinderMob, 0.8D));
-        pathfinderMob.goalSelector.addGoal(7, new LookAtPlayerGoal(pathfinderMob, Player.class, 8.0F));
-        pathfinderMob.goalSelector.addGoal(7, new RandomLookAroundGoal(pathfinderMob));
+    ENCHANTER(mobBuilder -> {
 
-    }, new EntityTaskBehaviour(), new MobName("Enchanter", true)),
+        final double BUFF_RANGE = 12.0;
+        final float FOLLOW_START_DISTANCE = (float) BUFF_RANGE;
+        final float FOLLOW_STOP_DISTANCE  = 8.0f;
+
+        final int MAX_BUFF_EFFECTS = 2;
+        final int MAX_BUFF_AMPLIFIER = 1; // 0 = Effect Level 1, 1 = Effect Level 2 etc.
+        final int REPEATING_PERIOD = 20 * 5;
+        final int BUFF_DURATION = 20 * 5;
+        final int MAX_BUFF_TARGETS = 5;
+
+        final List<PotionEffectType> ENCHANTER_EFFECTS = List.of(
+                PotionEffectType.SPEED,
+                PotionEffectType.STRENGTH,
+                PotionEffectType.RESISTANCE
+        );
+
+        mobBuilder.mobName(new MobName("Enchanter", true));
+
+        mobBuilder.spawnChanges(dungeonEntity -> {
+            var ac = dungeonEntity.getAttributeController();
+            ac.setBaseAttribute(Attribute.SCALE, 1.1);
+            ac.setBaseAttribute(Attribute.MAX_HEALTH, 30.0);
+
+            PathfinderMob pathfinderMob = toPathFinderMobWithClearedGoal(dungeonEntity.getEntity());
+            if (pathfinderMob == null) return;
+
+            float avoidDistance = 8.0f;
+            double fleeWalkSpeed = 1.0;
+            double fleeSprintSpeed = 1.15;
+
+            double followSpeed = 1.0;
+
+            pathfinderMob.goalSelector.addGoal(1, new FloatGoal(pathfinderMob));
+            pathfinderMob.goalSelector.addGoal(2, new AvoidEntityGoal<>(pathfinderMob, Player.class, avoidDistance, fleeWalkSpeed, fleeSprintSpeed));
+            pathfinderMob.goalSelector.addGoal(3, new FollowMobGoal(pathfinderMob, followSpeed, FOLLOW_START_DISTANCE, FOLLOW_STOP_DISTANCE));
+            pathfinderMob.goalSelector.addGoal(6, new WaterAvoidingRandomStrollGoal(pathfinderMob, 0.8D));
+            pathfinderMob.goalSelector.addGoal(7, new LookAtPlayerGoal(pathfinderMob, Player.class, 8.0F));
+            pathfinderMob.goalSelector.addGoal(7, new RandomLookAroundGoal(pathfinderMob));
+        });
+
+        mobBuilder.entityTask(EntityTask.repeating((dungeonEntity, taskManager) -> {
+
+            LivingEntity enchanter = dungeonEntity.getEntity();
+            if (enchanter == null || enchanter.isDead()) return;
+
+            List<Entity> nearbyEntities = enchanter.getNearbyEntities(BUFF_RANGE, BUFF_RANGE, BUFF_RANGE);
+            List<LivingEntity> buffTargets = nearbyEntities.stream()
+                    .filter(entity -> entity instanceof LivingEntity)
+                    .map(entity -> (LivingEntity) entity)
+                    .filter(livingEntity -> !(livingEntity instanceof Player))
+                    .filter(livingEntity -> !(livingEntity instanceof Illusioner))
+                    .filter(livingEntity -> !livingEntity.getUniqueId().equals(enchanter.getUniqueId()))
+                    .limit(MAX_BUFF_TARGETS)
+                    .toList();
+
+            for (LivingEntity buffTarget : buffTargets) {
+
+                List<PotionEffectType> effects = new ArrayList<>(ENCHANTER_EFFECTS);
+                Collections.shuffle(effects);
+
+                int buffs = ThreadLocalRandom.current().nextInt(1, MAX_BUFF_EFFECTS + 1);
+                for (int i = 0; i < buffs; i++) {
+
+                    int amplifier = ThreadLocalRandom.current().nextInt(0, MAX_BUFF_AMPLIFIER + 1);
+
+                    buffTarget.addPotionEffect(new PotionEffect(
+                            effects.get(i),
+                            BUFF_DURATION,
+                            amplifier,
+                            false,
+                            true,
+                            true
+                    ));
+                }
+            }
+        }, 0, REPEATING_PERIOD));
+    }),
+
+    POISON_COW(mobBuilder -> {
+
+        // base health 20
+        // base attack same as zombie
+        // clear all
+        // set its AI to that of a zombie
+        // give it a on hit apply posion event...
+        // done.
+    }),
+    VILLAGER(mobBuilder -> {
+        // immortal bassiclay
+    }),
+    BEEHIVE_CREEPER( mobBuilder -> {
+        // behive on head
+        // spwan bees on death event or epxlosion idc.
+    })
+
     ;
 
-    private final Consumer<DungeonEntity> spawnFinalizer;
-    private final EntityTaskBehaviour entityTaskBehaviour;
-    private final MobName mobName;
+    private final Consumer<MobBuilder> mobBuilderConsumer;
 
-    MobType(Consumer<DungeonEntity> spawnFinalizer, EntityTaskBehaviour entityTaskBehaviour, MobName mobName) {
-        this.spawnFinalizer = spawnFinalizer;
-        this.entityTaskBehaviour = entityTaskBehaviour;
-        this.mobName = mobName;
+    MobType(Consumer<MobBuilder> mobBuilderConsumer) {
+        this.mobBuilderConsumer = mobBuilderConsumer;
     }
 
-    public Consumer<DungeonEntity> getSpawnFinalizer() {
-        return spawnFinalizer;
-    }
-
-    public EntityTaskBehaviour getEntityTaskBehaviour() {
-        return entityTaskBehaviour;
-    }
-
-    public MobName getMobName() {
-        return mobName;
+    public Consumer<MobBuilder> getMobBuilder() {
+        return mobBuilderConsumer;
     }
 
     private static PathfinderMob toPathFinderMobWithClearedGoal(LivingEntity livingEntity) {

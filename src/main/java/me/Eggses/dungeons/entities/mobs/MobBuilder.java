@@ -3,8 +3,8 @@ package me.Eggses.dungeons.entities.mobs;
 import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.entities.eventbehaviour.EventBehaviour;
 import me.Eggses.dungeons.entities.nameutility.MobName;
-import me.Eggses.dungeons.entities.taskbehaviour.EntityTask;
-import me.Eggses.dungeons.entities.taskbehaviour.EntityTaskBehaviour;
+import me.Eggses.dungeons.entities.tasks.EntityTask;
+import me.Eggses.dungeons.entities.tasks.EntityTaskBehaviour;
 import me.Eggses.dungeons.entities.eventbehaviour.EntityEventBehaviour;
 import me.Eggses.dungeons.entities.equipment.ArmourEquipment;
 import me.Eggses.dungeons.entities.equipment.WeaponEquipment;
@@ -21,7 +21,7 @@ public class MobBuilder {
     private ArmourEquipment armourEquipment = new ArmourEquipment();
     private final EntityEventBehaviour entityEventBehaviour = new EntityEventBehaviour();
     private EntityTaskBehaviour entityTaskBehaviour = new EntityTaskBehaviour();
-    private Consumer<DungeonEntity> spawnFinalizer = (entity) -> {};
+    private Consumer<DungeonEntity> spawnChanges = (entity) -> {};
     private int count = 1;
     private MobName mobName = new MobName();
 
@@ -67,8 +67,8 @@ public class MobBuilder {
         return this;
     }
 
-    public MobBuilder spawnFinalizer(Consumer<DungeonEntity> spawnFinalizer) {
-        this.spawnFinalizer = spawnFinalizer;
+    public MobBuilder spawnChanges(Consumer<DungeonEntity> spawnChanges) {
+        this.spawnChanges = spawnChanges;
         return this;
     }
 
@@ -82,11 +82,11 @@ public class MobBuilder {
         return this;
     }
 
-    public MobBuilder mobNameSpawnFinalizerTaskBehaviour(MobType mobType) {
+    public MobBuilder applyPreset(MobType mobType) {
         if (mobType == null) return this;
-        this.mobName = mobType.getMobName();
-        this.spawnFinalizer = mobType.getSpawnFinalizer();
-        this.entityTaskBehaviour = mobType.getEntityTaskBehaviour();
+        Consumer<MobBuilder> mobBuilderConsumer = mobType.getMobBuilder();
+        if (mobBuilderConsumer == null) return this;
+        mobBuilderConsumer.accept(this);
         return this;
     }
 
@@ -116,8 +116,8 @@ public class MobBuilder {
         return entityEventBehaviour;
     }
 
-    public Consumer<DungeonEntity> getSpawnFinalizer() {
-        return spawnFinalizer;
+    public Consumer<DungeonEntity> getSpawnChanges() {
+        return spawnChanges;
     }
 
     public EntityTaskBehaviour getEntityTaskBehaviour() {
