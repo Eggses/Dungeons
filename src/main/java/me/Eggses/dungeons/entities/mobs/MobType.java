@@ -1,7 +1,5 @@
 package me.Eggses.dungeons.entities.mobs;
 
-import me.Eggses.dungeons.entities.eventbehaviour.damage.EntityDamageEntityBehaviour;
-import me.Eggses.dungeons.entities.eventbehaviour.damage.FrostImpact;
 import me.Eggses.dungeons.entities.nameutility.MobName;
 import me.Eggses.dungeons.entities.tasks.EntityTask;
 import me.Eggses.dungeons.utility.NMS;
@@ -15,7 +13,6 @@ import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Illusioner;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 

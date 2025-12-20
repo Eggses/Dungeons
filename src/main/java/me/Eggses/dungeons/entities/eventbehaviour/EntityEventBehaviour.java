@@ -19,7 +19,7 @@ public class EntityEventBehaviour {
         eventBehaviours.add(eventBehaviour);
     }
 
-    public <E extends Event> void handleEvent(DungeonEntity dungeonEntity, E event ) {
+    public <E extends Event> void handleEvent(DungeonEntity dungeonEntity, E event) {
 
         List<EventBehaviour<? extends Event>> eventBehaviours = entityEventBehaviours.get(event.getClass());
         if (eventBehaviours == null) return;
