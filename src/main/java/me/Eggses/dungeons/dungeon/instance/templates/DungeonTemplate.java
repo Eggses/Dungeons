@@ -28,9 +28,8 @@ public abstract class DungeonTemplate {
         return dungeonFileReader.readTemplateFileName();
     }
 
-    // TOODO FIx this to read a file.
     public Position getDefaultGraveyardPosition() {
-        return new Position(1, 2, 3);
+        return dungeonFileReader.readDefaultGraveyard();
     }
 
     public DungeonPortal getDungeonPortal() {

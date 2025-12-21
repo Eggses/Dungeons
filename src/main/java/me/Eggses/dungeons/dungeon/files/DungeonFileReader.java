@@ -52,6 +52,11 @@ public class DungeonFileReader {
         return templateName;
     }
 
+    public Position readDefaultGraveyard() {
+        String pos = configurationFile.getCustomFile().getString("default_graveyard");
+        return stringToPosition(pos);
+    }
+
     public DungeonPortal readDungeonPortal() {
 
         String errorMessage = "Could Not Create Dungeon Portal in " + configurationFile.getFileName();
