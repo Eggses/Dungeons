@@ -57,7 +57,7 @@ public class DestroyDungeon implements SubCommand {
             return;
         }
 
-        dungeonInstance.forceEndDungeonInstance(true);
+        dungeonRegistry.endDungeonInstance(dungeonInstance, true);
         sender.sendMessage(messageCreator.createMessage(Messages.DUNGEON_DESTROY_REQUESTED.getMessage()));
     }
 
