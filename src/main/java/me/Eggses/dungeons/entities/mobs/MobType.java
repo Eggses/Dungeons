@@ -1,6 +1,5 @@
 package me.Eggses.dungeons.entities.mobs;
 
-import me.Eggses.dungeons.entities.equipment.ArmourEquipment;
 import me.Eggses.dungeons.entities.eventbehaviour.damage.PoisonImpact;
 import me.Eggses.dungeons.entities.eventbehaviour.damage.RegenerateOnDamage;
 import me.Eggses.dungeons.entities.eventbehaviour.explosion.BeeExplosion;
@@ -16,13 +15,11 @@ import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
-import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -197,8 +194,6 @@ public enum MobType {
     BEEHIVE_CREEPER( mobBuilder -> {
 
         mobBuilder.mobName(new MobName("Beehive Creeper", true));
-
-        // TODO: Cannot wear gear but this should work...
         mobBuilder.eventBehaviour(EntityExplodeEvent.class, new BeeExplosion());
         mobBuilder.eventBehaviour(EntityExplodeEvent.class, new SlownessExplosion());
     }),

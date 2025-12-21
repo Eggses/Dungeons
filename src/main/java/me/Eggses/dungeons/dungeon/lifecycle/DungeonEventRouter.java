@@ -7,9 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.*;
 
 import java.util.function.Consumer;
 
@@ -27,13 +25,17 @@ public class DungeonEventRouter {
      * Core Dungeon Area Control Events
      * ========================================================= */
 
-    public void handleMovementEvent(Player player, Location destination, long chunkKey) {
+    public void handleMovementEvent(PlayerMoveEvent event) {
+
+        Player player = event.getPlayer();
+        Location destination = event.getTo();
+        long chunkKeyOfDestination = event.getTo().getChunk().getChunkKey();
 
         boolean ran = runIfInstanceExists(destination.getWorld(),
-                (instance) -> instance.getInstanceEventHandler().handleMovementEventInDungeon(player, destination, chunkKey));
+                (instance) -> instance.getInstanceEventHandler().handleMovementEventInDungeon(player, destination, chunkKeyOfDestination));
         if (ran) return;
 
-        DungeonInstance dungeonInstance = dungeonOpenPortalRegistry.getDungeonInstance(chunkKey);
+        DungeonInstance dungeonInstance = dungeonOpenPortalRegistry.getDungeonInstance(chunkKeyOfDestination);
         if (dungeonInstance == null) return;
         dungeonInstance.getInstanceEventHandler().handleMovementEventOutsideDungeon(player, destination);
     }
@@ -62,9 +64,15 @@ public class DungeonEventRouter {
     }
 
 
-    public void handlePlayerChangeWorldEvent(Player player, World worldLeft, World worldEntered) {
-        runIfInstanceExists(worldLeft, (instance) -> instance.removePlayer(player));
-        runIfInstanceExists(worldEntered, (instance) -> instance.addPlayer(player));
+    public void handlePlayerChangeWorldEvent(PlayerChangedWorldEvent event) {
+
+        Player player = event.getPlayer();
+
+        World originalWorld = event.getFrom();
+        World currentWorld = player.getWorld();
+
+        runIfInstanceExists(originalWorld, (instance) -> instance.removePlayer(player));
+        runIfInstanceExists(currentWorld, (instance) -> instance.addPlayer(player));
     }
 
     /* =========================================================
