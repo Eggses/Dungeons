@@ -1,76 +1,80 @@
 dungeon_template_name: "flat_test"
 
-
 dungeon_portal:
-
   world_with_portal: "world"
 
-  entry_portal_region: "pos1=12,64,-40 pos2=40,85,-10"
-  dungeon_spawn_position: "pos=50,51,-20"
+  # Region format: pos1=x,y,z pos2=x,y,z
+  entry_portal_region: "pos1=12,64,-40 pos2=40,85,-10" todo
 
-  exit_portal_region: "pos1=12,64,-40 pos2=40,85,-10"
-  world_exit_location: "pos=50,51,-20"
+  # Position format: pos=x,y,z
+  dungeon_spawn_position: "pos=-16,60,2"
 
-  open_duration_seconds: 120
+  exit_portal_region: "pos1=-15,-60,0 pos2=-17,-58,0"
+  world_exit_location: "pos=50,51,-20" TODO
+
+  open_duration_seconds: 30
 
   on_open:
     - "SOUND sound=GOAT_HORN_0"
-    - "MESSAGE message=<red>Hello</red>"
+    - "MESSAGE message=<green>Dungeon portal has stablised for 120 seconds!</green>"
 
   on_close:
-    - "MESSAGE message=<red>Hello</red>"
+    - "SOUND sound=GOAT_HORN_0"
+    - "MESSAGE message=<red>Dungeon portal closed</red>"
 
 dungeon_areas:
 
-  courtyard:
-    entry_bounds: "pos1=12,64,-40 pos2=40,85,-10"
+  room1:
+    entry_bounds: "pos1=-16,-60,-3 pos2=-17,-58,-3"
 
     on_entry:
-      - "FILL pos1=18,64,-28 pos2=18,66,-28 block=AIR"
-      - "GRAVEYARD pos=30,64,-12"
-      - "MOB type=ZOMBIE level=10 pos=20,64,-25 armour=IRON_SPIRE_GOLD_2 weapon=IRON_SWORD_SHIELD count=3"
-      - "MOB type=SKELETON level=10 pos=24,64,-22 weapon=BOW armour=CHAIN_PLAIN_4 count=4"
+      - "MESSAGE message=<yellow>Entering room1</yellow>"
+      - "SOUND sound=GOAT_HORN_0"
+      - "MOB type=ZOMBIE pos=30,52,-5 level=3 count=3 preset=DEFAULT"
+      - "MOB type=SKELETON pos=34,52,-6 level=3 count=2 preset=DEFAULT"
 
     on_clear:
-      - "GRAVEYARD pos=22,64,-35"
-      - "FILL pos1=29,64,-12 pos2=31,66,-12 block=AIR"
+      - "MESSAGE message=<green>Courtyard cleared</green>"
+      - "FILL block=AIR pos1=20,51,-10 pos2=25,55,-5"
+      - "GRAVEYARD pos=28,52,-2"
 
     interactions:
-      - pos: "16,64,-30"
+      - pos: "22,52,-8"
         commands:
-          - "FILL pos1=10,64,-20 pos2=12,66,-20 block=AIR"
-
-      - pos: "28,64,-18"
-        commands:
-          - "GRAVEYARD pos=18,64,-18"
+          - "MESSAGE message=<aqua>You pressed the courtyard switch</aqua>"
+          - "SOUND sound=GOAT_HORN_0"
+          - "FILL block=REDSTONE_BLOCK pos1=22,52,-8 pos2=22,52,-8"
 
     triggers:
-      - id: 1
+      - id: "courtyard_gate_open"
         commands:
-          - "MOB type=ZOMBIE level=12 pos=6,64,-5 armour=CHAIN_PLAIN_4 weapon=IRON_AXE count=2"
-          - "MOB type=SKELETON level=12 pos=7,64,-6 weapon=BOW count=2"
+          - "MESSAGE message=<gold>The courtyard gate opens</gold>"
+          - "FILL block=AIR pos1=40,51,0 pos2=42,56,0"
 
-      - id: 2
-        commands:
-          - "FILL pos1=9,64,-5 pos2=12,66,-5 block=AIR"
-
-
-  graveyard_approach:
-    entry_bounds: "pos1=42,63,-20 pos2=78,86,12"
+  graveyard:
+    entry_bounds: "pos1=85,50,-30 pos2=140,90,30"
 
     on_entry:
-      - "GRAVEYARD pos=60,64,-5"
-      - "MOB type=ZOMBIE level=11 pos=55,64,-2 armour=CHAIN_PLAIN_4 weapon=STONE_SWORD count=2"
+      - "MESSAGE message=<gray>Entering the graveyard</gray>"
+      - "GRAVEYARD pos=100,52,0"
+      - "MOB type=ZOMBIE pos=95,52,3 level=4 count=4 preset=DEFAULT"
+      - "MOB type=SPIDER pos=102,52,-4 level=4 count=2 preset=DEFAULT"
 
     on_clear:
-      - "FILL pos1=58,64,-6 pos2=60,66,-6 block=AIR"
+      - "MESSAGE message=<green>Graveyard cleared</green>"
+      - "SOUND sound=GOAT_HORN_0"
+      - "FILL block=TORCH pos1=98,52,0 pos2=98,52,0"
 
     interactions:
-      - pos: "58,64,-6"
+      - pos: "110,52,5"
         commands:
-          - "GRAVEYARD pos=57,64,-6"
+          - "MESSAGE message=<light_purple>You disturbed an ancient grave</light_purple>"
+          - "SOUND sound=GOAT_HORN_0"
+          - "MOB type=ZOMBIE pos=112,52,5 level=5 count=2 preset=DEFAULT"
 
     triggers:
-      - id: 1
+      - id: "graveyard_boss_spawn"
         commands:
-          - "MOB type=ZOMBIE level=14 pos=61,64,-4 armour=IRON_SPIRE_GOLD_2 weapon=IRON_SWORD count=1"
+          - "MESSAGE message=<red>Something awakens beneath the ground</red>"
+          - "SOUND sound=GOAT_HORN_0"
+          - "MOB type=WITHER_SKELETON pos=120,52,0 level=8 count=1 preset=DEFAULT"

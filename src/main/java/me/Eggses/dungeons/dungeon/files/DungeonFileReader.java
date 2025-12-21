@@ -352,10 +352,11 @@ public class DungeonFileReader {
     private Consumer<DungeonContext> resolveMessageCommand(String text) {
 
         if (text == null) return null;
-        Map<String, String> valuesMap = createValueMap(text);
 
-        String msg = valuesMap.get("message");
-        if (msg == null) return null;
+        int indexOfEquals = text.indexOf('=');
+        if (indexOfEquals == -1) return null;
+        String msg = text.substring(indexOfEquals + 1);
+
         Component message = messageCreator.createMessage(msg);
 
         return dungeonContext -> {
