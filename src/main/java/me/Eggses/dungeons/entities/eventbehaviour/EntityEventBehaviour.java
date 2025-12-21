@@ -1,4 +1,5 @@
 package me.Eggses.dungeons.entities.eventbehaviour;
+
 import me.Eggses.dungeons.entities.mobs.DungeonEntity;
 import org.bukkit.event.Event;
 
@@ -19,7 +20,7 @@ public class EntityEventBehaviour {
         eventBehaviours.add(eventBehaviour);
     }
 
-    public <E extends Event> void handleEvent(DungeonEntity dungeonEntity, E event) {
+    public <E extends Event> void handleEvent(DungeonEntity dungeonEntity, E event, EventContext eventContext) {
 
         List<EventBehaviour<? extends Event>> eventBehaviours = entityEventBehaviours.get(event.getClass());
         if (eventBehaviours == null) return;
@@ -28,7 +29,7 @@ public class EntityEventBehaviour {
             @SuppressWarnings("unchecked")
             EventBehaviour<E> trueEventBehaviour = (EventBehaviour<E>) eventBehaviour;
 
-            trueEventBehaviour.handleEvent(dungeonEntity, event);
+            trueEventBehaviour.handleEvent(dungeonEntity, event, eventContext);
         }
     }
 }

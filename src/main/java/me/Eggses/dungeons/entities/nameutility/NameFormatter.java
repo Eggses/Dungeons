@@ -14,6 +14,11 @@ public class NameFormatter {
     private static final Map<Integer, String> LEVEL_COLOUR_MAP = new TreeMap<>();
     private static final Map<EntityType, String> ENTITY_NAME_CACHE = new HashMap<>();
 
+    private static final String LEVEL_PREFIX = "<white>ʟᴠʟ</white>";
+    private static final String SEPARATOR = "<dark_gray> ⟡ </dark_gray";
+    private static final String HEALTH_PREFIX = "<red>";
+    private static final String HEALTH_SUFFIX = "<white>ʜᴘ</white>";
+
     static {
         LEVEL_COLOUR_MAP.put(0, "<green>");
         LEVEL_COLOUR_MAP.put(10, "<blue>");
@@ -26,57 +31,51 @@ public class NameFormatter {
     private final DungeonEntity dungeonEntity;
     private final MessageCreator messageCreator;
 
-    private Component existingName = null;
+    private final Component levelAndName;
 
     public NameFormatter(DungeonEntity dungeonEntity, MessageCreator messageCreator) {
         this.dungeonEntity = dungeonEntity;
         this.messageCreator = messageCreator;
+
+        levelAndName = messageCreator.createMessage(createLevelPart() + SEPARATOR + createNamePart() + SEPARATOR);
     }
 
-    public Component createName(int health) {
-
-        Component healthValue = messageCreator.createMessage("<red>" + health + "<dark_gray>hp");
-
-        if (existingName == null) {
-            existingName = createLevelPart(dungeonEntity.getDungeonLevel()).append(createNamePart());
-        }
-
-        return existingName.append(healthValue);
+    public Component updateHealth(int health) {
+        Component healthDisplay = messageCreator.createMessage(HEALTH_PREFIX + health + HEALTH_SUFFIX);
+        return levelAndName.append(healthDisplay);
     }
 
-    private Component createLevelPart(int dungeonLevel) {
+    private String createLevelPart() {
 
         String colour = LEVEL_COLOUR_MAP.get(0);
+        int dungeonLevel = dungeonEntity.getDungeonLevel();
 
-        for (Map.Entry<Integer, String> entry : LEVEL_COLOUR_MAP.entrySet()) {
-            int level = entry.getKey();
-            if (dungeonLevel < level) break;
+        for(Map.Entry<Integer, String> entry : LEVEL_COLOUR_MAP.entrySet()) {
+            if (dungeonLevel < entry.getKey()) break;
             colour = entry.getValue();
         }
-
-        String levelName = "<dark_gray>Lvl</dark_gray>" + colour + dungeonLevel + " ";
-
-        return messageCreator.createMessage(levelName);
+        return LEVEL_PREFIX + colour + dungeonLevel;
     }
 
-    private Component createNamePart() {
+    private String createNamePart() {
 
-        String name;
         MobName mobName = dungeonEntity.getMobName();
+        String entityName;
+        String name = mobName.getName();
 
         if (mobName.isOverrideName()) {
-            name = mobName.getName() + " ";
+            entityName = name;
         } else {
-
             EntityType entityType = dungeonEntity.getEntity().getType();
-            name = ENTITY_NAME_CACHE.get(entityType);
 
-            if (name == null) {
-                name = createNameFromEnum(entityType);
-                ENTITY_NAME_CACHE.put(entityType, name);
+            entityName = ENTITY_NAME_CACHE.get(entityType);
+            if (entityName == null) {
+                entityName = createNameFromEnum(entityType);
+                ENTITY_NAME_CACHE.put(entityType, entityName);
             }
+            entityName = entityName + name;
         }
-        return messageCreator.createMessage("<white>" + name);
+        return entityName;
     }
 
     private String createNameFromEnum(EntityType entityType) {

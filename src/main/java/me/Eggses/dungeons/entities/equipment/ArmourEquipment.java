@@ -16,6 +16,10 @@ public class ArmourEquipment {
         this.boots = boots;
     }
 
+    public ArmourEquipment(ItemStack helmet) {
+        this(helmet, null, null, null);
+    }
+
     public ArmourEquipment() {
         this(null, null, null, null);
     }

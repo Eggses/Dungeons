@@ -64,9 +64,8 @@ public class DungeonMob implements DungeonEntity {
         // Update Mob
         entity.setPersistent(true);
         AttributeInstance attributeInstance = entity.getAttribute(Attribute.MAX_HEALTH);
-        if (attributeInstance != null) {
-            entity.setHealth(attributeInstance.getValue());
-        }
+        if (attributeInstance != null) entity.setHealth(attributeInstance.getValue());
+
         if (TEAM == null) {
             TEAM = SCOREBOARD.registerNewTeam(TEAM_NAME);
             TEAM.setAllowFriendlyFire(false);
@@ -118,6 +117,6 @@ public class DungeonMob implements DungeonEntity {
     @Override
     public void updateHealthDisplay(double damageToBeTaken) {
         int health = (int) (Math.max(0, entity.getHealth() - damageToBeTaken));
-        entity.customName(nameFormatter.createName(health));
+        entity.customName(nameFormatter.updateHealth(health));
     }
 }

@@ -1,4 +1,4 @@
-package me.Eggses.dungeons.listeners.players.itemban;
+package me.Eggses.dungeons.listeners.players.bans;
 
 import me.Eggses.dungeons.dungeon.lifecycle.DungeonRegistry;
 import org.bukkit.Bukkit;

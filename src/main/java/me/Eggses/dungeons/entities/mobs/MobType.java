@@ -1,5 +1,10 @@
 package me.Eggses.dungeons.entities.mobs;
 
+import me.Eggses.dungeons.entities.equipment.ArmourEquipment;
+import me.Eggses.dungeons.entities.eventbehaviour.damage.PoisonImpact;
+import me.Eggses.dungeons.entities.eventbehaviour.damage.RegenerateOnDamage;
+import me.Eggses.dungeons.entities.eventbehaviour.explosion.BeeExplosion;
+import me.Eggses.dungeons.entities.eventbehaviour.explosion.SlownessExplosion;
 import me.Eggses.dungeons.entities.nameutility.MobName;
 import me.Eggses.dungeons.entities.tasks.EntityTask;
 import me.Eggses.dungeons.utility.NMS;
@@ -8,11 +13,15 @@ import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
+import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Illusioner;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -111,8 +120,8 @@ public enum MobType {
             pathfinderMob.goalSelector.addGoal(1, new FloatGoal(pathfinderMob));
             pathfinderMob.goalSelector.addGoal(2, new AvoidEntityGoal<>(pathfinderMob, Player.class, avoidDistance, fleeWalkSpeed, fleeSprintSpeed));
             pathfinderMob.goalSelector.addGoal(3, new FollowMobGoal(pathfinderMob, followSpeed, FOLLOW_START_DISTANCE, FOLLOW_STOP_DISTANCE));
-            pathfinderMob.goalSelector.addGoal(6, new WaterAvoidingRandomStrollGoal(pathfinderMob, 0.8D));
-            pathfinderMob.goalSelector.addGoal(7, new LookAtPlayerGoal(pathfinderMob, Player.class, 8.0F));
+            pathfinderMob.goalSelector.addGoal(6, new WaterAvoidingRandomStrollGoal(pathfinderMob, 0.8));
+            pathfinderMob.goalSelector.addGoal(7, new LookAtPlayerGoal(pathfinderMob, Player.class, 8.0f));
             pathfinderMob.goalSelector.addGoal(7, new RandomLookAroundGoal(pathfinderMob));
         });
 
@@ -154,26 +163,37 @@ public enum MobType {
         }, 0, REPEATING_PERIOD));
     }),
 
-    POISON_COW(mobBuilder -> {
+    NOXIOUS_CULTIVATOR(mobBuilder -> {
+        mobBuilder.spawnChanges(dungeonEntity -> {
 
-        /*
-        this AI is probably quite universal.. maybe add a lambda for it... that accepts a COnsumer<Pathfindermob>
-        and applies general AI for a typical enemy... add a static lambda in the enum below.
-         */
+            toZombieStyleAttributes(dungeonEntity);
 
-        // base health 20
-        // base attack same as zombie
-        // clear all
-        // set its AI to that of a zombie
-        // give it a on hit apply posion event...
-        // done.
+            PathfinderMob pathfinderMob = toPathFinderMobWithClearedGoal(dungeonEntity.getEntity());
+            if (pathfinderMob == null) return;
+
+            toZombieStyleMeleeGoals(pathfinderMob);
+        });
+        mobBuilder.mobName(new MobName("Noxious Cultivator", true));
+        mobBuilder.eventBehaviour(EntityDamageByEntityEvent.class, new PoisonImpact());
     }),
     VILLAGER(mobBuilder -> {
-        // immortal bassicla
+
+        mobBuilder.spawnChanges(dungeonEntity -> {
+            var ac = dungeonEntity.getAttributeController();
+            ac.setBaseAttribute(Attribute.MAX_HEALTH, 2000.0);
+
+        });
+        mobBuilder.eventBehaviour(EntityDamageByEntityEvent.class, new RegenerateOnDamage());
     }),
     BEEHIVE_CREEPER( mobBuilder -> {
-        // behive on head
-        // spwan bees on death event or epxlosion idc.
+
+        mobBuilder.mobName(new MobName("Honey Creeper", true));
+
+        ItemStack helmet = new ItemStack(Material.BEE_NEST, 1);
+        mobBuilder.armourEquipment(new ArmourEquipment(helmet));
+
+        mobBuilder.eventBehaviour(EntityExplodeEvent.class, new BeeExplosion());
+        mobBuilder.eventBehaviour(EntityExplodeEvent.class, new SlownessExplosion());
     })
 
     ;
@@ -197,6 +217,22 @@ public enum MobType {
         pathfinderMob.targetSelector.removeAllGoals(goal -> true);
 
         return pathfinderMob;
+    }
+
+    private static void toZombieStyleMeleeGoals(PathfinderMob pathfinderMob) {
+        pathfinderMob.goalSelector.addGoal(1, new FloatGoal(pathfinderMob));
+        pathfinderMob.goalSelector.addGoal(2, new MeleeAttackGoal(pathfinderMob, 1.0, false));
+        pathfinderMob.goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(pathfinderMob, 1.0));
+        pathfinderMob.goalSelector.addGoal(8, new LookAtPlayerGoal(pathfinderMob, Player.class, 8.0f));
+        pathfinderMob.goalSelector.addGoal(8, new RandomLookAroundGoal(pathfinderMob));
+
+        pathfinderMob.targetSelector.addGoal(1, new HurtByTargetGoal(pathfinderMob));
+        pathfinderMob.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(pathfinderMob, Player.class, true));
+    }
+
+    private static void toZombieStyleAttributes(DungeonEntity dungeonEntity) {
+        dungeonEntity.getAttributeController().setBaseAttribute(Attribute.ATTACK_DAMAGE, 4.0);
+        dungeonEntity.getAttributeController().setBaseAttribute(Attribute.MAX_HEALTH, 20.0);
     }
 
     public static MobType getMobType(String mobType) {

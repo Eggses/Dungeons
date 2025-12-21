@@ -14,7 +14,7 @@ import me.Eggses.dungeons.listeners.players.dungeonchanges.DeathController;
 import me.Eggses.dungeons.listeners.players.dungeonchanges.PlayerDungeonWorld;
 import me.Eggses.dungeons.listeners.players.dungeonchanges.PlayerInteract;
 import me.Eggses.dungeons.listeners.players.dungeonchanges.PlayerMovement;
-import me.Eggses.dungeons.listeners.players.itemban.*;
+import me.Eggses.dungeons.listeners.players.bans.*;
 import me.Eggses.dungeons.utility.MessageCreator;
 import me.Eggses.dungeons.utility.SoundPlayer;
 import org.bukkit.plugin.java.JavaPlugin;

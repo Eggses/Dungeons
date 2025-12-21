@@ -10,7 +10,6 @@ import java.util.*;
 public class BannedItems {
 
     private static final Set<Material> BANNED_ITEMS = Set.of(
-
             Material.SADDLE,
             Material.FEATHER,
 

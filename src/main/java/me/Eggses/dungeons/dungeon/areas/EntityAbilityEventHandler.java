@@ -1,6 +1,7 @@
 package me.Eggses.dungeons.dungeon.areas;
 
 import me.Eggses.dungeons.entities.attributes.AttributeController;
+import me.Eggses.dungeons.entities.eventbehaviour.EventContext;
 import me.Eggses.dungeons.entities.mobs.DungeonEntity;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -20,7 +21,7 @@ public class EntityAbilityEventHandler {
 
     public void handleEntityExplodeEvent(EntityExplodeEvent event) {
         DungeonEntity dungeonEntity = entityManager.getDungeonEntity(event.getEntity().getUniqueId());
-        if (dungeonEntity != null) dungeonEntity.getEntityEventHandler().handleEvent(dungeonEntity, event);
+        if (dungeonEntity != null) dungeonEntity.getEntityEventHandler().handleEvent(dungeonEntity, event, EventContext.EMPTY);
     }
 
     public void handleEntityDamageEntityEvent(EntityDamageByEntityEvent event) {
@@ -47,14 +48,14 @@ public class EntityAbilityEventHandler {
                 default -> AttributeController.getIdentityDamageFormula();
             };
             event.setDamage(damageFormula.apply(dungeonAttacker, event.getDamage()));
-            dungeonAttacker.getEntityEventHandler().handleEvent(dungeonAttacker, event);
+            dungeonAttacker.getEntityEventHandler().handleEvent(dungeonAttacker, event, new EventContext(attacker));
             return;
         }
 
         DungeonEntity dungeonVictim = entityManager.getDungeonEntity(victimUUID);
         if (dungeonVictim != null) {
             dungeonVictim.updateHealthDisplay(event.getFinalDamage());
-            dungeonVictim.getEntityEventHandler().handleEvent(dungeonVictim, event);
+            dungeonVictim.getEntityEventHandler().handleEvent(dungeonVictim, event, new EventContext(attacker));
         }
     }
 

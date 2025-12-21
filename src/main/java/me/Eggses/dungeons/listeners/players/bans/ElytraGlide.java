@@ -1,26 +1,27 @@
-package me.Eggses.dungeons.listeners.players.itemban;
+package me.Eggses.dungeons.listeners.players.bans;
 
 import me.Eggses.dungeons.dungeon.lifecycle.DungeonRegistry;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityResurrectEvent;
+import org.bukkit.event.entity.EntityToggleGlideEvent;
 
-public class TotemUse implements Listener {
+public class ElytraGlide implements Listener {
 
     private final DungeonRegistry dungeonRegistry;
 
-    public TotemUse(DungeonRegistry dungeonRegistry) {
+    public ElytraGlide(DungeonRegistry dungeonRegistry) {
         this.dungeonRegistry = dungeonRegistry;
     }
 
     @EventHandler
-    public void onTotemUse(EntityResurrectEvent event) {
+    public void onGlide(EntityToggleGlideEvent event) {
 
         if (!(event.getEntity() instanceof Player player)) return;
         if (!dungeonRegistry.isInDungeon(player)) return;
 
-        event.setCancelled(true);
-
+        if (event.isGliding()) {
+            event.setCancelled(true);
+        }
     }
 }

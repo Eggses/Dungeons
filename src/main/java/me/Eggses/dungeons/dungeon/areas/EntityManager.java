@@ -38,10 +38,6 @@ public class EntityManager {
         return dungeonEntities.get(uuid);
     }
 
-    public void spawnMobs(List<MobBuilder> mobsToSpawn) {
-        mobsToSpawn.forEach(this::spawnMob);
-    }
-
     public void spawnMob(MobBuilder mobBuilder) {
         for (int i = 0; i < mobBuilder.getCount(); i++) {
             addMob(new DungeonMob(mobBuilder, dungeonWorld, taskManager, messageCreator));

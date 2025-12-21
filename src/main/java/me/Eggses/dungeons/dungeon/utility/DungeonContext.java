@@ -12,6 +12,12 @@ import java.util.function.Supplier;
 @SuppressWarnings("ClassCanBeRecord")
 public class DungeonContext {
 
+    public static final DungeonContext EMPTY = new DungeonContext(
+            null,
+            null,
+            null,
+            null);
+
     private final @Nullable World world;
     private final @Nullable EntityManager entityManager;
     private final @Nullable Graveyard graveyard;

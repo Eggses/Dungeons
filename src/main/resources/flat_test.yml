@@ -56,7 +56,7 @@ dungeon_areas:
 
 
   graveyard_approach:
-    entry_bounds: "pos1:=42,63,-20 pos2=78,86,12"
+    entry_bounds: "pos1=42,63,-20 pos2=78,86,12"
 
     on_entry:
       - "GRAVEYARD pos=60,64,-5"
