@@ -15,7 +15,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -166,9 +166,8 @@ public class InstanceEventHandler {
         }
     }
 
-    public void handleEntityExplodeEvent(EntityExplodeEvent event) {
+    public void handleExplosionPrimeEvent(ExplosionPrimeEvent event) {
         passEventToMobIfExists(event.getEntity(), event, EventContext.EMPTY);
-        System.out.println("Code for explosion called in the intsnace listener");
     }
 
     public <E extends Event> void passEventToMobIfExists(Entity entity, E event, EventContext eventContext) {

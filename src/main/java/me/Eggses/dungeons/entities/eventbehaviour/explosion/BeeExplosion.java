@@ -6,21 +6,21 @@ import me.Eggses.dungeons.entities.mobs.DungeonEntity;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Bee;
-import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.ExplosionPrimeEvent;
 
-public class BeeExplosion implements EventBehaviour<EntityExplodeEvent> {
+public class BeeExplosion implements EventBehaviour<ExplosionPrimeEvent> {
 
     private static final int BEES_TO_SPAWN = 3;
 
     @Override
-    public void handleEvent(DungeonEntity dungeonEntity, EntityExplodeEvent event, EventContext eventContext) {
+    public void handleEvent(DungeonEntity dungeonEntity, ExplosionPrimeEvent event, EventContext eventContext) {
 
-        Location location = event.getLocation();
+        Location location = event.getEntity().getLocation();
         World world = location.getWorld();
 
         for (int i = 0; i < BEES_TO_SPAWN; i++) {
             Bee bee = world.spawn(location, Bee.class);
-            bee.setAnger(6000);
+            bee.setAnger(600000);
         }
     }
 }

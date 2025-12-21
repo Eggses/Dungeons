@@ -6,7 +6,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.event.player.*;
 
 import java.util.function.Consumer;
@@ -89,11 +89,9 @@ public class DungeonEventRouter {
         runIfInstanceExists(world, (instance) -> instance.getInstanceEventHandler().handleEntityDamageByEntityEvent(event));
     }
 
-    public void handleEntityExplodeEvent(EntityExplodeEvent event) {
-        World world = event.getLocation().getWorld();
-        runIfInstanceExists(world, (instance) -> instance.getInstanceEventHandler().handleEntityExplodeEvent(event));
-
-        System.out.println("Code for explosion called in Router -> its passed the run if instance exists thing");
+    public void handleExplosionPrimeEvent(ExplosionPrimeEvent event) {
+        World world = event.getEntity().getWorld();
+        runIfInstanceExists(world, (instance) -> instance.getInstanceEventHandler().handleExplosionPrimeEvent(event));
     }
 
     private boolean runIfInstanceExists(World world, Consumer<DungeonInstance> action) {

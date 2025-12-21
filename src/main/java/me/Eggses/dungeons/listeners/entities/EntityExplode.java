@@ -3,7 +3,7 @@ package me.Eggses.dungeons.listeners.entities;
 import me.Eggses.dungeons.dungeon.lifecycle.DungeonEventRouter;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.ExplosionPrimeEvent;
 
 public class EntityExplode implements Listener {
 
@@ -14,9 +14,7 @@ public class EntityExplode implements Listener {
     }
 
     @EventHandler
-    public void onEntityExplode(EntityExplodeEvent event) {
-        dungeonEventRouter.handleEntityExplodeEvent(event);
-
-        System.out.println("Code for explosion called in Listener");
+    public void onEntityExplode(ExplosionPrimeEvent event) {
+        dungeonEventRouter.handleExplosionPrimeEvent(event);
     }
 }

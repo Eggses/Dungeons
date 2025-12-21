@@ -19,7 +19,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -194,8 +194,8 @@ public enum MobType {
     BEEHIVE_CREEPER( mobBuilder -> {
 
         mobBuilder.mobName(new MobName("Beehive Creeper", true));
-        mobBuilder.eventBehaviour(EntityExplodeEvent.class, new BeeExplosion());
-        mobBuilder.eventBehaviour(EntityExplodeEvent.class, new SlownessExplosion());
+        mobBuilder.eventBehaviour(ExplosionPrimeEvent.class, new BeeExplosion());
+        mobBuilder.eventBehaviour(ExplosionPrimeEvent.class, new SlownessExplosion());
     }),
 
     ;
