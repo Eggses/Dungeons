@@ -1,4 +1,4 @@
-package me.Eggses.dungeons.dungeon.instance.configurations;
+package me.Eggses.dungeons.dungeon.instance.templates;
 
 import me.Eggses.dungeons.utility.MessageCreator;
 import me.Eggses.dungeons.utility.SoundPlayer;

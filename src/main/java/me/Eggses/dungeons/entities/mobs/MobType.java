@@ -198,14 +198,15 @@ public enum MobType {
 
         mobBuilder.mobName(new MobName("Beehive Creeper", true));
 
-        // dosnt put on head
-        // abiltities do not work at all
+        // also i set mob to adult after scale it might mess things up but should be okay...
+        // dosnt put on head --> creepers cannot have a helmet
+        // abiltities do not work at all yeah i think code isnt being called sadly...
         ItemStack helmet = new ItemStack(Material.BEE_NEST, 1);
         mobBuilder.armourEquipment(new ArmourEquipment(helmet));
 
         mobBuilder.eventBehaviour(EntityExplodeEvent.class, new BeeExplosion());
         mobBuilder.eventBehaviour(EntityExplodeEvent.class, new SlownessExplosion());
-    })
+    }),
 
     ;
 

@@ -15,6 +15,6 @@ public class EntityDeath implements Listener {
 
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event) {
-        dungeonEventRouter.handleEvent(event.getEntity().getWorld(), event);
+        dungeonEventRouter.handleEntityDeathEvent(event);
     }
 }

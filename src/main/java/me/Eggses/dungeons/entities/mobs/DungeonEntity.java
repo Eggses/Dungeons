@@ -1,10 +1,11 @@
 package me.Eggses.dungeons.entities.mobs;
 
 import me.Eggses.dungeons.entities.attributes.AttributeController;
-import me.Eggses.dungeons.entities.eventbehaviour.EntityEventBehaviour;
+import me.Eggses.dungeons.entities.eventbehaviour.EventContext;
 import me.Eggses.dungeons.entities.nameutility.MobName;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.Event;
 
 import java.util.UUID;
 
@@ -14,7 +15,7 @@ public interface DungeonEntity {
     UUID getUUID();
     LivingEntity getEntity();
     void endTasks();
-    EntityEventBehaviour getEntityEventHandler();
+    <E extends Event> void handleEvent(DungeonEntity dungeonEntity, E event, EventContext eventContext);
     AttributeController getAttributeController();
 
     // More Methods

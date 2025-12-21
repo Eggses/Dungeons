@@ -2,9 +2,9 @@ package me.Eggses.dungeons.dungeon.lifecycle;
 
 import me.Eggses.dungeons.dungeon.files.DungeonLog;
 import me.Eggses.dungeons.dungeon.instance.DungeonInstance;
-import me.Eggses.dungeons.dungeon.instance.configurations.DungeonTemplate;
-import me.Eggses.dungeons.dungeon.instance.configurations.FlatTest;
-import me.Eggses.dungeons.dungeon.instance.configurations.MalignantMarsh;
+import me.Eggses.dungeons.dungeon.instance.templates.DungeonTemplate;
+import me.Eggses.dungeons.dungeon.instance.templates.FlatTest;
+import me.Eggses.dungeons.dungeon.instance.templates.MalignantMarsh;
 import me.Eggses.dungeons.dungeon.utility.BannedItems;
 import me.Eggses.dungeons.dungeon.utility.InstanceNameManager;
 import me.Eggses.dungeons.entities.tasks.TaskManager;

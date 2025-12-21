@@ -1,8 +1,9 @@
-package me.Eggses.dungeons.dungeon.instance.configurations;
+package me.Eggses.dungeons.dungeon.instance.templates;
 
 import me.Eggses.dungeons.dungeon.areas.utility.AreaControllerBuilder;
 import me.Eggses.dungeons.dungeon.files.DungeonFileReader;
 import me.Eggses.dungeons.dungeon.portals.DungeonPortal;
+import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.utility.MessageCreator;
 import me.Eggses.dungeons.utility.SoundPlayer;
 import org.bukkit.World;
@@ -25,6 +26,11 @@ public abstract class DungeonTemplate {
 
     public String getTemplateFolderName() {
         return dungeonFileReader.readTemplateFileName();
+    }
+
+    // TOODO FIx this to read a file.
+    public Position getDefaultGraveyardPosition() {
+        return new Position(1, 2, 3);
     }
 
     public DungeonPortal getDungeonPortal() {

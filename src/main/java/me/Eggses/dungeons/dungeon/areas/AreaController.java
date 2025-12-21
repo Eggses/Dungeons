@@ -7,7 +7,6 @@ import me.Eggses.dungeons.dungeon.areas.utility.DungeonArea;
 import me.Eggses.dungeons.dungeon.utility.DungeonContext;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.event.player.PlayerRespawnEvent;
 
 import java.util.Map;
 import java.util.Set;
@@ -42,7 +41,7 @@ public class AreaController {
         this.dungeonContext = new DungeonContext(dungeonWorld, entityManager, graveyard, dungeonWorld::getPlayers);
     }
 
-    public void handlePlayerMoveEvent(Location location, long chunkKey) {
+    public void handlePlayerMovement(Location to, long chunkKey) {
 
         if (areaInProgress) return;
 
@@ -50,14 +49,14 @@ public class AreaController {
         if (dungeonAreasAtChunk == null) return;
 
         for (DungeonArea dungeonArea : dungeonAreasAtChunk) {
-            if (dungeonArea.getEntryRegion().within(location)) {
+            if (dungeonArea.getEntryRegion().within(to)) {
                 startDungeonArea(dungeonArea);
                 return;
             }
         }
     }
 
-    public void handleInteractEvent(Position position) {
+    public void handleBlockInteraction(Position position) {
         if (areaInProgress) return;
 
         Consumer<DungeonContext> consumer = blockInteractionMap.remove(position);
@@ -73,13 +72,13 @@ public class AreaController {
         consumer.accept(dungeonContext);
     }
 
-    public void handleEntityDeathEvent(UUID uuid) {
+    public void handleEntityDeath(UUID uuid) {
         entityManager.removeMob(uuid);
         tryEndActiveDungeonArea();
     }
 
-    public void handlePlayerRespawnEvent(PlayerRespawnEvent event) {
-        event.setRespawnLocation(graveyard.getActiveGraveyardLocation(dungeonWorld));
+    public Location getGraveyardRespawnLocation() {
+        return graveyard.getActiveGraveyardLocation(dungeonWorld);
     }
 
     private void startDungeonArea(DungeonArea dungeonArea) {

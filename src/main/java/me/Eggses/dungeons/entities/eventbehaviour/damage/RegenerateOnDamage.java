@@ -13,6 +13,7 @@ public class RegenerateOnDamage implements EventBehaviour<EntityDamageByEntityEv
     private static final int EFFECT_DURATION = 20 * 3;
     private static final int EFFECT_AMPLIFIER = 49;
 
+    //TODO nametag will not get updated as it runs on health loss not gain.
     private static final PotionEffect POTION_EFFECT = new PotionEffect(
             PotionEffectType.REGENERATION,
             EFFECT_DURATION,

@@ -15,6 +15,6 @@ public class PlayerInteract implements Listener {
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
-        dungeonEventRouter.handleEvent(event.getPlayer().getWorld(), event);
+        dungeonEventRouter.handlePlayerInteractEvent(event);
     }
 }

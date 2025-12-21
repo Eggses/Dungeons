@@ -29,6 +29,6 @@ public class PlayerDungeonWorld implements Listener {
 
     @EventHandler
     public void onLogout(PlayerQuitEvent event) {
-        dungeonEventRouter.handleEvent(event.getPlayer().getWorld(), event);
+        dungeonEventRouter.handlePlayerQuitEvent(event);
     }
 }

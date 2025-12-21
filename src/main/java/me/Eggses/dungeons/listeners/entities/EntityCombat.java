@@ -15,6 +15,6 @@ public class EntityCombat implements Listener {
 
     @EventHandler
     public void onEntityHitEntity(EntityDamageByEntityEvent event) {
-        dungeonEventRouter.handleEvent(event.getEntity().getWorld(), event);
+        dungeonEventRouter.handleEntityDamageByEntityEvent(event);
     }
 }

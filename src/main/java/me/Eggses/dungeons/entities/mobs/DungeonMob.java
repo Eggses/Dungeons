@@ -2,6 +2,7 @@ package me.Eggses.dungeons.entities.mobs;
 
 import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.entities.attributes.AttributeController;
+import me.Eggses.dungeons.entities.eventbehaviour.EventContext;
 import me.Eggses.dungeons.entities.nameutility.MobName;
 import me.Eggses.dungeons.entities.tasks.TaskManager;
 import me.Eggses.dungeons.entities.nameutility.NameFormatter;
@@ -15,6 +16,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.Event;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
@@ -96,8 +98,8 @@ public class DungeonMob implements DungeonEntity {
     }
 
     @Override
-    public EntityEventBehaviour getEntityEventHandler() {
-        return entityEventBehaviour;
+    public <E extends Event> void handleEvent(DungeonEntity dungeonEntity, E event, EventContext eventContext) {
+        entityEventBehaviour.handleEvent(dungeonEntity, event, eventContext);
     }
 
     @Override
