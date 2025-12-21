@@ -2,6 +2,7 @@ package me.Eggses.dungeons.entities.eventbehaviour;
 
 import me.Eggses.dungeons.entities.mobs.DungeonEntity;
 import org.bukkit.event.Event;
+import org.bukkit.event.entity.EntityExplodeEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +25,11 @@ public class EntityEventBehaviour {
 
         List<EventBehaviour<? extends Event>> eventBehaviours = entityEventBehaviours.get(event.getClass());
         if (eventBehaviours == null) return;
+
+        if (event.getClass() == EntityExplodeEvent.class) {
+            System.out.println("We called handle event in the entity event behaviour and the class is the explode event");
+            System.out.println("The List of Event behaviours is this long: " + eventBehaviours.size());
+        }
 
         for (EventBehaviour<? extends Event> eventBehaviour : eventBehaviours) {
             @SuppressWarnings("unchecked")

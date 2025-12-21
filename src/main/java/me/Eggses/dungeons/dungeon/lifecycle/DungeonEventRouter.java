@@ -92,6 +92,8 @@ public class DungeonEventRouter {
     public void handleEntityExplodeEvent(EntityExplodeEvent event) {
         World world = event.getLocation().getWorld();
         runIfInstanceExists(world, (instance) -> instance.getInstanceEventHandler().handleEntityExplodeEvent(event));
+
+        System.out.println("Code for explosion called in Router -> its passed the run if instance exists thing");
     }
 
     private boolean runIfInstanceExists(World world, Consumer<DungeonInstance> action) {

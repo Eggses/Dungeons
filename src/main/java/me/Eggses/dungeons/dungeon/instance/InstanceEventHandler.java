@@ -168,6 +168,7 @@ public class InstanceEventHandler {
 
     public void handleEntityExplodeEvent(EntityExplodeEvent event) {
         passEventToMobIfExists(event.getEntity(), event, EventContext.EMPTY);
+        System.out.println("Code for explosion called in the intsnace listener");
     }
 
     public <E extends Event> void passEventToMobIfExists(Entity entity, E event, EventContext eventContext) {
