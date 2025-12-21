@@ -7,10 +7,7 @@ import me.Eggses.dungeons.entities.tasks.TaskManager;
 import me.Eggses.dungeons.utility.MessageCreator;
 import org.bukkit.World;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class EntityManager {
 
@@ -60,6 +57,10 @@ public class EntityManager {
     }
 
     public void removeAll() {
-        dungeonEntities.keySet().forEach(this::removeMob);
+
+        Set<UUID> keys = Set.copyOf(dungeonEntities.keySet());
+        for (UUID uuid : keys) {
+            removeMob(uuid);
+        }
     }
 }

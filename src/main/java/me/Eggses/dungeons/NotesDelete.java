@@ -2,6 +2,11 @@ package me.Eggses.dungeons;
 
 public class NotesDelete {
 
+    /*
+    playing disconeecting causes the dungeon to throw a fail to delete error... maybe in this case just
+    like do the non file delete?
+     */
+
 
 
 

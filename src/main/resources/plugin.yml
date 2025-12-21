@@ -17,7 +17,7 @@ permissions:
     description: Permission for /dungeons
     default: op
   dungeons.commands.admin.cmdblock.trigger:
-    description: Permission for /dungeons trigger <value>
+    description: Permission for /dungeons trigger [arg1]
     default: op
   dungeons.commands.admin.destroy:
     description: Permission for /dungeons destroy <ALL | World_Name>

@@ -47,8 +47,8 @@ public class DungeonMob implements DungeonEntity {
 
         // Set Instance Fields
         this.dungeonLevel = mobBuilder.getDungeonLevel();
-        this.nameFormatter = new NameFormatter(this, messageCreator);
         this.mobName = mobBuilder.getMobName();
+        this.nameFormatter = new NameFormatter(this, messageCreator);
         this.entityEventBehaviour = mobBuilder.getEntityEventBehaviour();
 
         // Apply Armour
@@ -74,6 +74,7 @@ public class DungeonMob implements DungeonEntity {
 
         // Set Name
         updateHealthDisplay(0.0);
+        entity.setCustomNameVisible(true);
 
         // Start Tasks
         activeEntityTasks.addAndRunTasks(mobBuilder.getEntityTaskBehaviour(), this, taskManager);

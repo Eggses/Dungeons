@@ -4,19 +4,19 @@ dungeon_portal:
   world_with_portal: "world"
 
   # Region format: pos1=x,y,z pos2=x,y,z
-  entry_portal_region: "pos1=12,64,-40 pos2=40,85,-10" todo
+  entry_portal_region: "pos1=117,155,-42 pos2=117,157,-43"
 
-  # Position format: pos=x,y,z
-  dungeon_spawn_position: "pos=-16,60,2"
+
+  dungeon_spawn_position: "pos=-16,-60,2"
 
   exit_portal_region: "pos1=-15,-60,0 pos2=-17,-58,0"
-  world_exit_location: "pos=50,51,-20" TODO
+  world_exit_location: "pos=123,155,-43"
 
   open_duration_seconds: 30
 
   on_open:
     - "SOUND sound=GOAT_HORN_0"
-    - "MESSAGE message=<green>Dungeon portal has stablised for 120 seconds!</green>"
+    - "MESSAGE message=<green>Dungeon portal has stablised for 30 seconds!</green>"
 
   on_close:
     - "SOUND sound=GOAT_HORN_0"
@@ -28,53 +28,47 @@ dungeon_areas:
     entry_bounds: "pos1=-16,-60,-3 pos2=-17,-58,-3"
 
     on_entry:
+      - "GRAVEYARD pos=-42,-60,16"
       - "MESSAGE message=<yellow>Entering room1</yellow>"
-      - "SOUND sound=GOAT_HORN_0"
-      - "MOB type=ZOMBIE pos=30,52,-5 level=3 count=3 preset=DEFAULT"
-      - "MOB type=SKELETON pos=34,52,-6 level=3 count=2 preset=DEFAULT"
+      - "SOUND sound=ITEM_GOAT_HORN_SOUND_0"
+      - "MOB type=MOOSHROOM pos=-12,-60,-39 level=5 count=1 preset=NOXIOUS_CULTIVATOR"
+
+# - "MOB type=ZOMBIE pos=-25,-60,-10 level=2 count=2"
+# - "MOB type=SKELETON pos=-25,-60,-10 level=22 count=2 preset=KNIGHT"
+# - "MOB type=ILLUSIONER pos=-25,-60,-10 level=10 count=1 preset=ENCHANTER"
 
     on_clear:
-      - "MESSAGE message=<green>Courtyard cleared</green>"
-      - "FILL block=AIR pos1=20,51,-10 pos2=25,55,-5"
-      - "GRAVEYARD pos=28,52,-2"
-
+      - "MESSAGE message=<green>Room cleared</green>"
+      - "FILL block=AIR pos1=-15,-60,-27 pos2=-14,-59,-27"
     interactions:
-      - pos: "22,52,-8"
+      - pos: "-11,-59,-16"
         commands:
-          - "MESSAGE message=<aqua>You pressed the courtyard switch</aqua>"
-          - "SOUND sound=GOAT_HORN_0"
-          - "FILL block=REDSTONE_BLOCK pos1=22,52,-8 pos2=22,52,-8"
+          - "MESSAGE message=<gold>button press</gold>"
+          - "MOB type=ZOMBIE pos=21,-60,-13 level=5 count=1 preset=FIEND"
 
-    triggers:
-      - id: "courtyard_gate_open"
-        commands:
-          - "MESSAGE message=<gold>The courtyard gate opens</gold>"
-          - "FILL block=AIR pos1=40,51,0 pos2=42,56,0"
+    triggers: []
 
-  graveyard:
-    entry_bounds: "pos1=85,50,-30 pos2=140,90,30"
+  room2:
+    entry_bounds: "pos1=-16,-60,-29 pos2=-18,-58,-29"
 
     on_entry:
-      - "MESSAGE message=<gray>Entering the graveyard</gray>"
-      - "GRAVEYARD pos=100,52,0"
-      - "MOB type=ZOMBIE pos=95,52,3 level=4 count=4 preset=DEFAULT"
-      - "MOB type=SPIDER pos=102,52,-4 level=4 count=2 preset=DEFAULT"
-
+      - "MOB type=CREEPER pos=-12,-60,-39 level=5 count=1 preset=BEEHIVE_CREEPER"
+      - "MOB type=COW pos=-12,-60,-39 level=5 count=1 preset=NOXIOUS_CULTIVATOR"
+      - "MOB type=ZOMBIE pos=-12,-60,-39 level=6 count=1 preset=BRUISER armour=IRON_SILENCE_REDSTONE_2"
+      - "MOB type=SKELETON pos=-12,-60,-39 level=6 count=1 preset=KNIGHT armour=COPPER_1"
+      - "MOB type=ZOMBIE pos=-12,-60,-39 level=6 count=1 preset=FIEND weapon=IRON_SWORD,IRON_AXE"
+      - "MOB type=SPIDER pos=-12,-60,-39 level=1 count=1"
     on_clear:
-      - "MESSAGE message=<green>Graveyard cleared</green>"
+      - "MESSAGE message=<green> cleared whoo </green>"
       - "SOUND sound=GOAT_HORN_0"
-      - "FILL block=TORCH pos1=98,52,0 pos2=98,52,0"
+      - "FILL pos1=-21,-60,-28 pos2=-21,-59,-29 block=AIR"
+      - "MOB type=VILLAGER pos=-29,-60,-28 level=1 count=1 preset=VILLAGER"
 
-    interactions:
-      - pos: "110,52,5"
-        commands:
-          - "MESSAGE message=<light_purple>You disturbed an ancient grave</light_purple>"
-          - "SOUND sound=GOAT_HORN_0"
-          - "MOB type=ZOMBIE pos=112,52,5 level=5 count=2 preset=DEFAULT"
+    interactions: []
 
     triggers:
-      - id: "graveyard_boss_spawn"
+      - id: "hello-test"
         commands:
           - "MESSAGE message=<red>Something awakens beneath the ground</red>"
           - "SOUND sound=GOAT_HORN_0"
-          - "MOB type=WITHER_SKELETON pos=120,52,0 level=8 count=1 preset=DEFAULT"
+          - "MOB type=VILLAGER pos=-29,-60,-28 level=50 count=1 preset=VILLAGER"

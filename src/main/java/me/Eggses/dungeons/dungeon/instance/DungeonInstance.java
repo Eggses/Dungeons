@@ -117,8 +117,10 @@ public class DungeonInstance {
 
     public void removePlayer(Player player) {
         dungeonPlayers.remove(player);
-        if (dungeonPlayers.isEmpty()) tryEndDungeon();
         player.setGameMode(GameMode.SURVIVAL);
+        if (dungeonPlayers.isEmpty()) {
+            Bukkit.getScheduler().runTaskLater(plugin, this::tryEndDungeon, 20 * 10);
+        }
     }
 
     public boolean isInDungeon(Player player) {
@@ -151,6 +153,7 @@ public class DungeonInstance {
             case PlayerRespawnEvent e -> areaController.handlePlayerRespawnEvent(e);
             case PlayerInteractEvent e -> this.handlePlayerInteractEvent(e);
             case PlayerQuitEvent e -> this.removePlayer(e.getPlayer());
+
             default -> {}
         }
     }

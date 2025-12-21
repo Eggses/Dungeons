@@ -292,7 +292,8 @@ public class DungeonFileReader {
 
         Integer level = stringToInteger(valueMap.get("level"));
         Integer count = stringToInteger(valueMap.get("count"));
-        if (level == null || count == null) return null;
+        if (level == null) level = 1;
+        if (count == null) count = 1;
 
         WeaponEquipment weaponEquipment = WeaponEquipment.createWeaponsFromString(valueMap.get("weapon"));
         ArmourEquipment armourEquipment = ArmourCreator.createArmourFromString(valueMap.get("armour"));

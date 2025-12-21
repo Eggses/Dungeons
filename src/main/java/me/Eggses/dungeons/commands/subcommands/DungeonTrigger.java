@@ -33,17 +33,12 @@ public class DungeonTrigger implements SubCommand {
     @Override
     public void onCommand(CommandSender sender, String[] args) {
 
-        if (!sender.hasPermission(COMMAND_PERMISSION)) {
-            sender.sendMessage(messageCreator.createMessage(Messages.PERMISSION_FAIL.getMessage()));
-            return;
-        }
-
         if (!(sender instanceof BlockCommandSender blockCommandSender))  {
             sender.sendMessage(messageCreator.createMessage(Messages.MUST_BE_COMMAND_BLOCK.getMessage()));
             return;
         }
 
-        if (args.length != 1) {
+        if (args.length != 2) {
             sender.sendMessage(messageCreator.createMessage(Messages.UNKNOWN_SYNTAX.getMessage()));
             return;
         }

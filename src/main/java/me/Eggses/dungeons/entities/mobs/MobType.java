@@ -9,6 +9,9 @@ import me.Eggses.dungeons.entities.nameutility.MobName;
 import me.Eggses.dungeons.entities.tasks.EntityTask;
 import me.Eggses.dungeons.utility.NMS;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeMap;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
@@ -16,9 +19,7 @@ import net.minecraft.world.entity.player.Player;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.craftbukkit.entity.CraftEntity;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Illusioner;
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.inventory.ItemStack;
@@ -41,9 +42,11 @@ public enum MobType {
         mobBuilder.spawnChanges((dungeonEntity -> {
             var ac = dungeonEntity.getAttributeController();
             ac.setBaseAttribute(Attribute.SCALE, 1.1);
-            ac.setBaseAttribute(Attribute.MOVEMENT_SPEED, 0.25);
-            ac.setBaseAttribute(Attribute.KNOCKBACK_RESISTANCE, 0.3);
+            ac.setBaseAttribute(Attribute.MOVEMENT_SPEED, 0.26);
+            ac.setBaseAttribute(Attribute.KNOCKBACK_RESISTANCE, 0.6);
             ac.setBaseAttribute(Attribute.ATTACK_KNOCKBACK, 1.5);
+
+            makeFixedSize(dungeonEntity);
         }));
     }),
 
@@ -55,7 +58,7 @@ public enum MobType {
             var ac = dungeonEntity.getAttributeController();
 
             ac.setBaseAttribute(Attribute.SCALE, 0.7);
-            ac.setBaseAttribute(Attribute.MOVEMENT_SPEED, 0.4);
+            ac.setBaseAttribute(Attribute.MOVEMENT_SPEED, 0.29);
 
             PathfinderMob pathfinderMob = toPathFinderMobWithClearedGoal(dungeonEntity.getEntity());
             if (pathfinderMob == null) return;
@@ -69,6 +72,8 @@ public enum MobType {
 
             pathfinderMob.targetSelector.addGoal(1, new HurtByTargetGoal(pathfinderMob));
             pathfinderMob.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(pathfinderMob, Player.class, true));
+
+            makeFixedSize(dungeonEntity);
         });
     }),
 
@@ -79,7 +84,9 @@ public enum MobType {
         mobBuilder.spawnChanges(dungeonEntity -> {
             var ac = dungeonEntity.getAttributeController();
             ac.setBaseAttribute(Attribute.SCALE, 1.04);
-            ac.setBaseAttribute(Attribute.MOVEMENT_SPEED, 0.3);
+            ac.setBaseAttribute(Attribute.MOVEMENT_SPEED, 0.27);
+
+            makeFixedSize(dungeonEntity);
         });
     }),
 
@@ -105,17 +112,17 @@ public enum MobType {
 
         mobBuilder.spawnChanges(dungeonEntity -> {
             var ac = dungeonEntity.getAttributeController();
-            ac.setBaseAttribute(Attribute.SCALE, 1.1);
+            ac.setBaseAttribute(Attribute.SCALE, 1.06);
             ac.setBaseAttribute(Attribute.MAX_HEALTH, 30.0);
 
             PathfinderMob pathfinderMob = toPathFinderMobWithClearedGoal(dungeonEntity.getEntity());
             if (pathfinderMob == null) return;
 
             float avoidDistance = 8.0f;
-            double fleeWalkSpeed = 1.0;
-            double fleeSprintSpeed = 1.15;
 
-            double followSpeed = 1.0;
+            double fleeWalkSpeed = 0.8;
+            double fleeSprintSpeed = 0.8;
+            double followSpeed = 1.8;
 
             pathfinderMob.goalSelector.addGoal(1, new FloatGoal(pathfinderMob));
             pathfinderMob.goalSelector.addGoal(2, new AvoidEntityGoal<>(pathfinderMob, Player.class, avoidDistance, fleeWalkSpeed, fleeSprintSpeed));
@@ -132,9 +139,9 @@ public enum MobType {
 
             List<Entity> nearbyEntities = enchanter.getNearbyEntities(BUFF_RANGE, BUFF_RANGE, BUFF_RANGE);
             List<LivingEntity> buffTargets = nearbyEntities.stream()
+                    .filter(entity -> !(entity instanceof org.bukkit.entity.Player))
                     .filter(entity -> entity instanceof LivingEntity)
                     .map(entity -> (LivingEntity) entity)
-                    .filter(livingEntity -> !(livingEntity instanceof Player))
                     .filter(livingEntity -> !(livingEntity instanceof Illusioner))
                     .filter(livingEntity -> !livingEntity.getUniqueId().equals(enchanter.getUniqueId()))
                     .limit(MAX_BUFF_TARGETS)
@@ -166,11 +173,14 @@ public enum MobType {
     NOXIOUS_CULTIVATOR(mobBuilder -> {
         mobBuilder.spawnChanges(dungeonEntity -> {
 
-            toZombieStyleAttributes(dungeonEntity);
+            var ac = dungeonEntity.getAttributeController();
+            ac.setBaseAttribute(Attribute.MAX_HEALTH, 20.0);
+            ac.setBaseAttribute(Attribute.MOVEMENT_SPEED, 0.31);
 
             PathfinderMob pathfinderMob = toPathFinderMobWithClearedGoal(dungeonEntity.getEntity());
             if (pathfinderMob == null) return;
 
+            addAttackDamageAttribute(pathfinderMob);
             toZombieStyleMeleeGoals(pathfinderMob);
         });
         mobBuilder.mobName(new MobName("Noxious Cultivator", true));
@@ -180,15 +190,16 @@ public enum MobType {
 
         mobBuilder.spawnChanges(dungeonEntity -> {
             var ac = dungeonEntity.getAttributeController();
-            ac.setBaseAttribute(Attribute.MAX_HEALTH, 2000.0);
-
+            ac.setBaseAttribute(Attribute.MAX_HEALTH, 1000.0);
         });
         mobBuilder.eventBehaviour(EntityDamageByEntityEvent.class, new RegenerateOnDamage());
     }),
     BEEHIVE_CREEPER( mobBuilder -> {
 
-        mobBuilder.mobName(new MobName("Honey Creeper", true));
+        mobBuilder.mobName(new MobName("Beehive Creeper", true));
 
+        // dosnt put on head
+        // abiltities do not work at all
         ItemStack helmet = new ItemStack(Material.BEE_NEST, 1);
         mobBuilder.armourEquipment(new ArmourEquipment(helmet));
 
@@ -230,9 +241,25 @@ public enum MobType {
         pathfinderMob.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(pathfinderMob, Player.class, true));
     }
 
-    private static void toZombieStyleAttributes(DungeonEntity dungeonEntity) {
-        dungeonEntity.getAttributeController().setBaseAttribute(Attribute.ATTACK_DAMAGE, 4.0);
-        dungeonEntity.getAttributeController().setBaseAttribute(Attribute.MAX_HEALTH, 20.0);
+    private static void addAttackDamageAttribute(PathfinderMob pathfinderMob) {
+
+        AttributeMap attributes = pathfinderMob.getAttributes();
+
+        if (!attributes.hasAttribute(Attributes.ATTACK_DAMAGE)) {
+            attributes.registerAttribute(Attributes.ATTACK_DAMAGE);
+        }
+
+        AttributeInstance attackDamage = attributes.getInstance(Attributes.ATTACK_DAMAGE);
+
+        if (attackDamage != null) {
+            attackDamage.setBaseValue(2.5);
+        }
+    }
+
+    private static void makeFixedSize(DungeonEntity dungeonEntity) {
+        if (dungeonEntity.getEntity() instanceof Ageable entity) {
+            entity.setAdult();
+        }
     }
 
     public static MobType getMobType(String mobType) {

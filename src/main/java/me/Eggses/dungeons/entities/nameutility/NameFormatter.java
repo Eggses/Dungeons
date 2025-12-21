@@ -14,10 +14,11 @@ public class NameFormatter {
     private static final Map<Integer, String> LEVEL_COLOUR_MAP = new TreeMap<>();
     private static final Map<EntityType, String> ENTITY_NAME_CACHE = new HashMap<>();
 
-    private static final String LEVEL_PREFIX = "<white>ʟᴠʟ</white>";
-    private static final String SEPARATOR = "<dark_gray> ⟡ </dark_gray";
+    private static final String LEVEL_PREFIX = "<gray>ʟᴠʟ</gray>";
+    private static final String SEPARATOR = "<gray> ⟡ <gray>";
     private static final String HEALTH_PREFIX = "<red>";
-    private static final String HEALTH_SUFFIX = "<white>ʜᴘ</white>";
+    private static final String HEALTH_SUFFIX = "<gray>ʜᴘ</gray>";
+    private static final String NAME_PREFIX = "<white>";
 
     static {
         LEVEL_COLOUR_MAP.put(0, "<green>");
@@ -37,7 +38,7 @@ public class NameFormatter {
         this.dungeonEntity = dungeonEntity;
         this.messageCreator = messageCreator;
 
-        levelAndName = messageCreator.createMessage(createLevelPart() + SEPARATOR + createNamePart() + SEPARATOR);
+        levelAndName = messageCreator.createMessage(createLevelPart() + SEPARATOR + NAME_PREFIX + createNamePart() + SEPARATOR);
     }
 
     public Component updateHealth(int health) {

@@ -9,6 +9,7 @@ import me.Eggses.dungeons.entities.tasks.TaskManager;
 import me.Eggses.dungeons.listeners.entities.Combustion;
 import me.Eggses.dungeons.listeners.entities.EntityCombat;
 import me.Eggses.dungeons.listeners.entities.EntityDeath;
+import me.Eggses.dungeons.listeners.entities.EntityExplode;
 import me.Eggses.dungeons.listeners.players.Login;
 import me.Eggses.dungeons.listeners.players.dungeonchanges.DeathController;
 import me.Eggses.dungeons.listeners.players.dungeonchanges.PlayerDungeonWorld;
@@ -59,6 +60,7 @@ public final class Dungeons extends JavaPlugin {
         pluginManager.registerEvents(new Combustion(dungeonRegistry), this);
         pluginManager.registerEvents(new EntityCombat(dungeonEventRouter), this);
         pluginManager.registerEvents(new EntityDeath(dungeonEventRouter), this);
+        pluginManager.registerEvents(new EntityExplode(dungeonEventRouter), this);
 
         pluginManager.registerEvents(new Login(), this);
         pluginManager.registerEvents(new ChorusFruitTeleport(dungeonRegistry), this);

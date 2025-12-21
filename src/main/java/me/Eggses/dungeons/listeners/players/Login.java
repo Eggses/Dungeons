@@ -11,16 +11,15 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 public class Login implements Listener {
 
-    private final World mainWorld;
-
-    public Login() {
-        World mainWorld = Bukkit.getWorld("world");
-        if (mainWorld == null) mainWorld = Bukkit.getWorlds().getFirst();
-        this.mainWorld = mainWorld;
-    }
+    private World mainWorld;
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
+
+        if (mainWorld == null) {
+            mainWorld = Bukkit.getWorld("world");
+            if (mainWorld == null) mainWorld = Bukkit.getWorlds().getFirst();
+        }
 
         Player player = event.getPlayer();
         if (player.getWorld().getName().startsWith(InstanceNameManager.getInstancePrefix())) {

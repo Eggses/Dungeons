@@ -19,6 +19,9 @@ public class EntityAbilityEventHandler {
         this.entityManager = entityManager;
     }
 
+    /*
+    maybe generic handleEvent(Mob, and Event) and if mob in the map... pass it to the handler
+     */
     public void handleEntityExplodeEvent(EntityExplodeEvent event) {
         DungeonEntity dungeonEntity = entityManager.getDungeonEntity(event.getEntity().getUniqueId());
         if (dungeonEntity != null) dungeonEntity.getEntityEventHandler().handleEvent(dungeonEntity, event, EventContext.EMPTY);
