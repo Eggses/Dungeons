@@ -40,11 +40,6 @@ public class DungeonEventRouter {
         dungeonInstance.getInstanceEventHandler().handleMovementEventOutsideDungeon(player, destination);
     }
 
-    public void handlePlayerInteractEvent(PlayerInteractEvent event) {
-        World world = event.getPlayer().getWorld();
-        runIfInstanceExists(world, (instance) -> instance.getInstanceEventHandler().handlePlayerInteractEvent(event));
-    }
-
     public void handleDungeonTriggerCommand(World world, String argument) {
         runIfInstanceExists(world, (instance) -> instance.getInstanceEventHandler().handleDungeonTriggerCommand(argument));
     }

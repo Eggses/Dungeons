@@ -1,8 +1,7 @@
 package me.Eggses.dungeons.entities.eventbehaviour.explosion;
 
-import me.Eggses.dungeons.entities.eventbehaviour.EventBehaviour;
-import me.Eggses.dungeons.entities.eventbehaviour.EventContext;
-import me.Eggses.dungeons.entities.mobs.DungeonEntity;
+import me.Eggses.dungeons.eventhandler.EventBehaviour;
+import me.Eggses.dungeons.eventhandler.EventContext;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -28,7 +27,7 @@ public class SlownessExplosion implements EventBehaviour<ExplosionPrimeEvent> {
             true);
 
     @Override
-    public void handleEvent(DungeonEntity dungeonEntity, ExplosionPrimeEvent event, EventContext eventContext) {
+    public void handleEvent(ExplosionPrimeEvent event, EventContext eventContext) {
 
         Location location = event.getEntity().getLocation();
         Collection<Entity> nearby = location.getNearbyEntities(EFFECT_RADIUS, EFFECT_RADIUS, EFFECT_RADIUS);

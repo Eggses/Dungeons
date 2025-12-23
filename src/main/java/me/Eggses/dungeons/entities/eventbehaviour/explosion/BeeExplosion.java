@@ -1,8 +1,7 @@
 package me.Eggses.dungeons.entities.eventbehaviour.explosion;
 
-import me.Eggses.dungeons.entities.eventbehaviour.EventBehaviour;
-import me.Eggses.dungeons.entities.eventbehaviour.EventContext;
-import me.Eggses.dungeons.entities.mobs.DungeonEntity;
+import me.Eggses.dungeons.eventhandler.EventBehaviour;
+import me.Eggses.dungeons.eventhandler.EventContext;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Bee;
@@ -25,7 +24,7 @@ public class BeeExplosion implements EventBehaviour<ExplosionPrimeEvent> {
     );
 
     @Override
-    public void handleEvent(DungeonEntity dungeonEntity, ExplosionPrimeEvent event, EventContext eventContext) {
+    public void handleEvent(ExplosionPrimeEvent event, EventContext eventContext) {
 
         if (!(event.getEntity() instanceof Creeper)) return;
 

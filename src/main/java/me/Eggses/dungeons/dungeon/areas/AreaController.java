@@ -1,5 +1,7 @@
 package me.Eggses.dungeons.dungeon.areas;
 
+import me.Eggses.dungeons.blocks.BlockRegistry;
+import me.Eggses.dungeons.dungeon.areas.eventbehaviour.DungeonInteraction;
 import me.Eggses.dungeons.dungeon.graveyard.Graveyard;
 import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.dungeon.areas.utility.AreaControllerBuilder;
@@ -7,6 +9,7 @@ import me.Eggses.dungeons.dungeon.areas.utility.DungeonArea;
 import me.Eggses.dungeons.dungeon.utility.DungeonContext;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.Map;
 import java.util.Set;
@@ -18,8 +21,9 @@ public class AreaController {
     private final EntityManager entityManager;
     private final Graveyard graveyard;
     private final World dungeonWorld;
+    private final BlockRegistry blockRegistry;
+
     private final Map<Long, Set<DungeonArea>> dungeonAreasMap;
-    private final Map<Position, Consumer<DungeonContext>> blockInteractionMap;
     private final Map<String, Consumer<DungeonContext>> dungeonTriggerCommandMap;
 
     private DungeonArea dungeonAreaInProgress;
@@ -30,15 +34,31 @@ public class AreaController {
     public AreaController(EntityManager entityManager,
                           Graveyard graveyard,
                           World dungeonWorld,
+                          BlockRegistry blockRegistry,
                           AreaControllerBuilder areaControllerBuilder) {
 
         this.entityManager = entityManager;
         this.graveyard = graveyard;
         this.dungeonWorld = dungeonWorld;
+        this.blockRegistry = blockRegistry;
         this.dungeonAreasMap = areaControllerBuilder.getDungeonAreasMap();
-        this.blockInteractionMap = areaControllerBuilder.getBlockInteractionMap();
         this.dungeonTriggerCommandMap = areaControllerBuilder.getDungeonTriggerCommandMap();
         this.dungeonContext = new DungeonContext(dungeonWorld, entityManager, graveyard, dungeonWorld::getPlayers);
+
+        addAllCustomBlocks(areaControllerBuilder.getBlockInteractionMap());
+    }
+
+    private void addAllCustomBlocks(Map<Position, Consumer<DungeonContext>> blockInteractionMap) {
+
+        for (Map.Entry<Position, Consumer<DungeonContext>> entry : blockInteractionMap.entrySet()) {
+            Location location = entry.getKey().toLocation(dungeonWorld);
+            blockRegistry.addOrUpdateEventBehaviour(location, PlayerInteractEvent.class, new DungeonInteraction(
+                    blockRegistry,
+                    entry.getValue(),
+                    dungeonContext,
+                    () -> !areaInProgress
+            ));
+        }
     }
 
     public void handlePlayerMovement(Location to, long chunkKey) {
@@ -54,14 +74,6 @@ public class AreaController {
                 return;
             }
         }
-    }
-
-    public void handleBlockInteraction(Position position) {
-        if (areaInProgress) return;
-
-        Consumer<DungeonContext> consumer = blockInteractionMap.remove(position);
-        if (consumer == null) return;
-        consumer.accept(dungeonContext);
     }
 
     public void handleDungeonTriggerCommand(String argument) {

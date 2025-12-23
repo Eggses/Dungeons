@@ -1,7 +1,7 @@
 package me.Eggses.dungeons.entities.mobs;
 
 import me.Eggses.dungeons.entities.attributes.AttributeController;
-import me.Eggses.dungeons.entities.eventbehaviour.EventContext;
+import me.Eggses.dungeons.eventhandler.EventContext;
 import me.Eggses.dungeons.entities.nameutility.MobName;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -15,7 +15,7 @@ public interface DungeonEntity {
     UUID getUUID();
     LivingEntity getEntity();
     void endTasks();
-    <E extends Event> void handleEvent(DungeonEntity dungeonEntity, E event, EventContext eventContext);
+    <E extends Event> void handleEvent(E event, EventContext eventContext);
     AttributeController getAttributeController();
 
     // More Methods

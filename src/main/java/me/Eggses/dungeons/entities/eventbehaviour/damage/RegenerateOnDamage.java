@@ -1,8 +1,7 @@
 package me.Eggses.dungeons.entities.eventbehaviour.damage;
 
-import me.Eggses.dungeons.entities.eventbehaviour.EventBehaviour;
-import me.Eggses.dungeons.entities.eventbehaviour.EventContext;
-import me.Eggses.dungeons.entities.mobs.DungeonEntity;
+import me.Eggses.dungeons.eventhandler.EventBehaviour;
+import me.Eggses.dungeons.eventhandler.EventContext;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.potion.PotionEffect;
@@ -23,7 +22,7 @@ public class RegenerateOnDamage implements EventBehaviour<EntityDamageByEntityEv
             true);
 
     @Override
-    public void handleEvent(DungeonEntity dungeonEntity, EntityDamageByEntityEvent event, EventContext eventContext) {
+    public void handleEvent(EntityDamageByEntityEvent event, EventContext eventContext) {
         if (!(event.getEntity() instanceof LivingEntity livingEntity)) return;
         livingEntity.addPotionEffect(POTION_EFFECT);
     }

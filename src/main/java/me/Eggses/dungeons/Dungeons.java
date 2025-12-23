@@ -1,5 +1,6 @@
 package me.Eggses.dungeons;
 
+import me.Eggses.dungeons.blocks.BlockRegistry;
 import me.Eggses.dungeons.commands.DungeonsBaseCommand;
 import me.Eggses.dungeons.dungeon.files.DungeonLog;
 import me.Eggses.dungeons.dungeon.lifecycle.*;
@@ -13,7 +14,7 @@ import me.Eggses.dungeons.listeners.entities.EntityExplode;
 import me.Eggses.dungeons.listeners.players.Login;
 import me.Eggses.dungeons.listeners.players.dungeonchanges.DeathController;
 import me.Eggses.dungeons.listeners.players.dungeonchanges.PlayerDungeonWorld;
-import me.Eggses.dungeons.listeners.players.dungeonchanges.PlayerInteract;
+import me.Eggses.dungeons.listeners.blocks.PlayerInteract;
 import me.Eggses.dungeons.listeners.players.dungeonchanges.PlayerMovement;
 import me.Eggses.dungeons.listeners.players.bans.*;
 import me.Eggses.dungeons.utility.MessageCreator;
@@ -36,6 +37,7 @@ public final class Dungeons extends JavaPlugin {
     );
 
     DungeonEventRouter dungeonEventRouter = new DungeonEventRouter(dungeonRegistry, dungeonOpenPortalRegistry);
+    BlockRegistry blockRegistry = new BlockRegistry();
 
     MessageCreator messageCreator = new MessageCreator();
 
@@ -44,6 +46,7 @@ public final class Dungeons extends JavaPlugin {
             dungeonRegistry,
             dungeonInstanceCoordinator,
             dungeonWorldManager,
+            blockRegistry,
             instanceNameManager,
             new TaskManager(this),
             messageCreator,
@@ -76,7 +79,7 @@ public final class Dungeons extends JavaPlugin {
 
         pluginManager.registerEvents(new DeathController(dungeonRegistry, dungeonEventRouter), this);
         pluginManager.registerEvents(new PlayerDungeonWorld(dungeonEventRouter), this);
-        pluginManager.registerEvents(new PlayerInteract(dungeonEventRouter), this);
+        pluginManager.registerEvents(new PlayerInteract(blockRegistry), this);
         pluginManager.registerEvents(new PlayerMovement(dungeonEventRouter), this);
 
         var dungeonsBaseCommand = new DungeonsBaseCommand(dungeonRegistry, dungeonEventRouter, messageCreator);

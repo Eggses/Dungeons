@@ -53,7 +53,7 @@ public class DungeonRegistry {
     }
 
     public void endDungeonInstance(DungeonInstance dungeonInstance, boolean destroyWorldFolder) {
-        dungeonInstance.forceEndDungeonInstance(destroyWorldFolder);
+        dungeonInstance.endDungeon(destroyWorldFolder);
     }
 
     public void endAllInstances(boolean destroyWorldFolder) {

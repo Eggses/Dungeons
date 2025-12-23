@@ -2,11 +2,11 @@ package me.Eggses.dungeons.entities.mobs;
 
 import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.entities.attributes.AttributeController;
-import me.Eggses.dungeons.entities.eventbehaviour.EventContext;
+import me.Eggses.dungeons.eventhandler.EventContext;
 import me.Eggses.dungeons.entities.nameutility.MobName;
 import me.Eggses.dungeons.entities.tasks.TaskManager;
 import me.Eggses.dungeons.entities.nameutility.NameFormatter;
-import me.Eggses.dungeons.entities.eventbehaviour.EntityEventBehaviour;
+import me.Eggses.dungeons.eventhandler.EventManager;
 import me.Eggses.dungeons.entities.equipment.EquipmentManager;
 import me.Eggses.dungeons.entities.tasks.ActiveEntityTasks;
 import me.Eggses.dungeons.utility.MessageCreator;
@@ -33,7 +33,7 @@ public class DungeonMob implements DungeonEntity {
     private final int dungeonLevel;
     private final MobName mobName;
     private final NameFormatter nameFormatter;
-    private final EntityEventBehaviour entityEventBehaviour;
+    private final EventManager eventManager;
 
     private final AttributeController attributeController = new AttributeController(this);
     private final ActiveEntityTasks activeEntityTasks = new ActiveEntityTasks();
@@ -51,7 +51,7 @@ public class DungeonMob implements DungeonEntity {
         this.dungeonLevel = mobBuilder.getDungeonLevel();
         this.mobName = mobBuilder.getMobName();
         this.nameFormatter = new NameFormatter(this, messageCreator);
-        this.entityEventBehaviour = mobBuilder.getEntityEventBehaviour();
+        this.eventManager = mobBuilder.getEntityEventBehaviour();
 
         // Apply Armour
         EquipmentManager equipmentManager = new EquipmentManager(this);
@@ -98,8 +98,8 @@ public class DungeonMob implements DungeonEntity {
     }
 
     @Override
-    public <E extends Event> void handleEvent(DungeonEntity dungeonEntity, E event, EventContext eventContext) {
-        entityEventBehaviour.handleEvent(dungeonEntity, event, eventContext);
+    public <E extends Event> void handleEvent(E event, EventContext eventContext) {
+        eventManager.handleEvent(event, eventContext);
     }
 
     @Override

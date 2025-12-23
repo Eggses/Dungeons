@@ -3,20 +3,15 @@ package me.Eggses.dungeons.dungeon.instance;
 import me.Eggses.dungeons.dungeon.areas.AreaController;
 import me.Eggses.dungeons.dungeon.areas.EntityManager;
 import me.Eggses.dungeons.dungeon.portals.PortalController;
-import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.entities.attributes.AttributeController;
-import me.Eggses.dungeons.entities.eventbehaviour.EventContext;
+import me.Eggses.dungeons.eventhandler.EventContext;
 import me.Eggses.dungeons.entities.mobs.DungeonEntity;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.Event;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.projectiles.ProjectileSource;
@@ -65,23 +60,6 @@ public class InstanceEventHandler {
         }
     }
 
-    public void handlePlayerInteractEvent(PlayerInteractEvent event) {
-
-        Block block = event.getClickedBlock();
-        if (block == null) return;
-
-        Action action = event.getAction();
-        Material type = block.getType();
-        String name = type.name();
-
-        boolean trigger = (action == Action.RIGHT_CLICK_BLOCK && (type == Material.LEVER || name.endsWith("_BUTTON")))
-                || (action == Action.PHYSICAL && name.endsWith("_PRESSURE_PLATE"));
-
-        if (!trigger) return;
-
-        areaController.handleBlockInteraction(new Position(block.getX(), block.getY(), block.getZ()));
-    }
-
     public void handleDungeonTriggerCommand(String argument) {
         areaController.handleDungeonTriggerCommand(argument);
     }
@@ -110,11 +88,11 @@ public class InstanceEventHandler {
 
         if (!(event.getEntity() instanceof LivingEntity victim)) return;
 
-        LivingEntity attacker = resolveTrueAttacker(event);
-        if (attacker == null) return;
+        LivingEntity trueAttacker = resolveTrueAttacker(event);
+        if (trueAttacker == null) return;
 
         UUID victimUUID = victim.getUniqueId();
-        UUID attackerUUID = attacker.getUniqueId();
+        UUID attackerUUID = trueAttacker.getUniqueId();
 
         if (entityManager.contains(victimUUID) && entityManager.contains(attackerUUID)) {
             event.setCancelled(true);
@@ -130,14 +108,28 @@ public class InstanceEventHandler {
                 default -> AttributeController.getIdentityDamageFormula();
             };
             event.setDamage(damageFormula.apply(dungeonAttacker, event.getDamage()));
-            dungeonAttacker.handleEvent(dungeonAttacker, event, new EventContext(attacker));
+
+            EventContext eventContext = EventContext
+                    .builder()
+                    .ownerOfBehaviour(dungeonAttacker)
+                    .trueAttacker(trueAttacker)
+                    .build();
+
+            dungeonAttacker.handleEvent(event, eventContext);
             return;
         }
 
         DungeonEntity dungeonVictim = entityManager.getDungeonEntity(victimUUID);
         if (dungeonVictim != null) {
             dungeonVictim.updateHealthDisplay(event.getFinalDamage());
-            dungeonVictim.handleEvent(dungeonVictim, event, new EventContext(attacker));
+
+            EventContext eventContext = EventContext
+                    .builder()
+                    .ownerOfBehaviour(dungeonVictim)
+                    .trueAttacker(trueAttacker)
+                    .build();
+
+            dungeonVictim.handleEvent(event, eventContext);
         }
     }
 
@@ -174,6 +166,6 @@ public class InstanceEventHandler {
         DungeonEntity dungeonEntity = entityManager.getDungeonEntity(entity.getUniqueId());
         if (dungeonEntity == null) return;
 
-        dungeonEntity.handleEvent(dungeonEntity, event, eventContext);
+        dungeonEntity.handleEvent(event, eventContext);
     }
 }

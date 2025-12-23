@@ -1,5 +1,6 @@
 package me.Eggses.dungeons.dungeon.lifecycle;
 
+import me.Eggses.dungeons.blocks.BlockRegistry;
 import me.Eggses.dungeons.dungeon.files.DungeonLog;
 import me.Eggses.dungeons.dungeon.instance.DungeonInstance;
 import me.Eggses.dungeons.dungeon.instance.templates.DungeonTemplate;
@@ -24,6 +25,7 @@ public class DungeonFactory {
     private final DungeonRegistry dungeonRegistry;
     private final DungeonInstanceCoordinator dungeonInstanceCoordinator;
     private final DungeonWorldManager dungeonWorldManager;
+    private final BlockRegistry blockRegistry;
     private final InstanceNameManager instanceNameManager;
     private final TaskManager taskManager;
     private final MessageCreator messageCreator;
@@ -35,6 +37,7 @@ public class DungeonFactory {
                           DungeonRegistry dungeonRegistry,
                           DungeonInstanceCoordinator dungeonInstanceCoordinator,
                           DungeonWorldManager dungeonWorldManager,
+                          BlockRegistry blockRegistry,
                           InstanceNameManager instanceNameManager,
                           TaskManager taskManager,
                           MessageCreator messageCreator,
@@ -46,6 +49,7 @@ public class DungeonFactory {
         this.dungeonRegistry = dungeonRegistry;
         this.dungeonInstanceCoordinator = dungeonInstanceCoordinator;
         this.dungeonWorldManager = dungeonWorldManager;
+        this.blockRegistry = blockRegistry;
         this.instanceNameManager = instanceNameManager;
         this.taskManager = taskManager;
         this.messageCreator = messageCreator;
@@ -63,6 +67,7 @@ public class DungeonFactory {
                 dungeonInstanceCoordinator,
                 world,
                 dungeonTemplate,
+                blockRegistry,
                 instanceFileName,
                 messageCreator,
                 taskManager,

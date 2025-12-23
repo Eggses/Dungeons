@@ -1,7 +1,7 @@
 package me.Eggses.dungeons.entities.eventbehaviour.damage;
 
-import me.Eggses.dungeons.entities.eventbehaviour.EventBehaviour;
-import me.Eggses.dungeons.entities.eventbehaviour.EventContext;
+import me.Eggses.dungeons.eventhandler.EventBehaviour;
+import me.Eggses.dungeons.eventhandler.EventContext;
 import me.Eggses.dungeons.entities.mobs.DungeonEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -17,12 +17,14 @@ public class PoisonImpact implements EventBehaviour<EntityDamageByEntityEvent> {
     private static final int MAX_AMPLIFIER = 1;
 
     @Override
-    public void handleEvent(DungeonEntity dungeonEntity, EntityDamageByEntityEvent event, EventContext eventContext) {
+    public void handleEvent(EntityDamageByEntityEvent event, EventContext eventContext) {
 
         Entity victim = event.getEntity();
         LivingEntity attacker = eventContext.getTrueAttacker();
         if (attacker == null) return;
 
+        DungeonEntity dungeonEntity = eventContext.getOwnerOfBehaviour();
+        if (dungeonEntity == null) return;
         if (!DungeonEntity.equals(dungeonEntity, attacker)) return;
 
         if (!(victim instanceof LivingEntity livingEntity)) return;

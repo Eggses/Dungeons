@@ -1,5 +1,6 @@
 package me.Eggses.dungeons.dungeon.instance;
 
+import me.Eggses.dungeons.blocks.BlockRegistry;
 import me.Eggses.dungeons.dungeon.areas.AreaController;
 import me.Eggses.dungeons.dungeon.areas.EntityManager;
 import me.Eggses.dungeons.dungeon.graveyard.Graveyard;
@@ -25,6 +26,7 @@ public class DungeonInstance {
     private final DungeonInstanceCoordinator dungeonInstanceCoordinator;
     private final World dungeonWorld;
     private final String instanceFileName;
+    private final BlockRegistry blockRegistry;
 
     private final AreaController areaController;
     private final InstanceEventHandler instanceEventHandler;
@@ -35,6 +37,7 @@ public class DungeonInstance {
                            DungeonInstanceCoordinator dungeonInstanceCoordinator,
                            World dungeonWorld,
                            DungeonTemplate dungeonTemplate,
+                           BlockRegistry blockRegistry,
                            String instanceFileName,
                            MessageCreator messageCreator,
                            TaskManager taskManager,
@@ -44,9 +47,10 @@ public class DungeonInstance {
         this.dungeonInstanceCoordinator = dungeonInstanceCoordinator;
         this.dungeonWorld = dungeonWorld;
         this.instanceFileName = instanceFileName;
+        this.blockRegistry = blockRegistry;
 
         var entityManager = new EntityManager(dungeonWorld, taskManager, messageCreator);
-        this.areaController = new AreaController(entityManager, new Graveyard(dungeonTemplate.getDefaultGraveyardPosition()), dungeonWorld, dungeonTemplate.getAreaControllerBuilder());
+        this.areaController = new AreaController(entityManager, new Graveyard(dungeonTemplate.getDefaultGraveyardPosition()), dungeonWorld, blockRegistry, dungeonTemplate.getAreaControllerBuilder());
         this.instanceEventHandler = new InstanceEventHandler(this, areaController, entityManager);
         this.portalController = new PortalController(plugin, this, dungeonTemplate.getDungeonPortal(), bannedItems);
         this.dungeonPlayers = new DungeonPlayers();
@@ -61,23 +65,20 @@ public class DungeonInstance {
     public void closeDungeonPortal() {
         portalController.closeDungeonPortal();
         dungeonInstanceCoordinator.closePortal(portalController.getChunkKeysEncompassed());
-        tryEndDungeon();
+        if (shouldEndDungeon()) endDungeon(true);
     }
 
-    private void tryEndDungeon() {
-        if (!dungeonPlayers.isEmpty() || portalController.isOpen()) return;
-        endInstanceRuntime();
-        dungeonInstanceCoordinator.destroyWorld(instanceFileName);
+    public boolean shouldEndDungeon() {
+        return dungeonPlayers.isEmpty() && !portalController.isOpen();
     }
 
-    public void forceEndDungeonInstance(boolean destroyWorldFolder) {
-        portalController.closeDungeonPortal();
-        dungeonInstanceCoordinator.closePortal(portalController.getChunkKeysEncompassed());
-        endInstanceRuntime();
-        if (destroyWorldFolder) dungeonInstanceCoordinator.destroyWorld(instanceFileName);
-    }
+    public void endDungeon(boolean destroyWorldFolder) {
+        // Dungeon may be force ended... if so destroy portal.
+        if (portalController.isOpen()) {
+            portalController.closeDungeonPortal();
+            dungeonInstanceCoordinator.closePortal(portalController.getChunkKeysEncompassed());
+        }
 
-    private void endInstanceRuntime() {
         World mainWorld = Bukkit.getWorld("world");
         if (mainWorld == null) mainWorld = Bukkit.getWorlds().getFirst();
 
@@ -96,7 +97,13 @@ public class DungeonInstance {
         }
 
         areaController.endAllTasks();
+        blockRegistry.removeAllByWorld(dungeonWorld);
         dungeonInstanceCoordinator.destroyInstanceRuntime(this);
+
+        if (destroyWorldFolder) {
+            Bukkit.getScheduler().runTaskLater(
+                    plugin, () -> dungeonInstanceCoordinator.destroyWorld(instanceFileName), 30 * 20);
+        }
     }
 
     public void addPlayer(Player player) {
@@ -107,9 +114,7 @@ public class DungeonInstance {
     public void removePlayer(Player player) {
         dungeonPlayers.remove(player);
         player.setGameMode(GameMode.SURVIVAL);
-        if (dungeonPlayers.isEmpty()) {
-            Bukkit.getScheduler().runTaskLater(plugin, this::tryEndDungeon, 20 * 10);
-        }
+        if (shouldEndDungeon()) endDungeon(true);
     }
 
     public boolean isInDungeon(Player player) {
