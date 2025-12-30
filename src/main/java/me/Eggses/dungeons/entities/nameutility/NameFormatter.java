@@ -1,7 +1,8 @@
 package me.Eggses.dungeons.entities.nameutility;
 
 import me.Eggses.dungeons.entities.mobs.DungeonEntity;
-import me.Eggses.dungeons.utility.MessageCreator;
+import me.Eggses.dungeons.utility.text.MessageCreator;
+import me.Eggses.dungeons.utility.text.TextFormatter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.EntityType;
 
@@ -31,12 +32,14 @@ public class NameFormatter {
 
     private final DungeonEntity dungeonEntity;
     private final MessageCreator messageCreator;
+    private final TextFormatter textFormatter;
 
     private final Component levelAndName;
 
-    public NameFormatter(DungeonEntity dungeonEntity, MessageCreator messageCreator) {
+    public NameFormatter(DungeonEntity dungeonEntity, MessageCreator messageCreator, TextFormatter textFormatter) {
         this.dungeonEntity = dungeonEntity;
         this.messageCreator = messageCreator;
+        this.textFormatter = textFormatter;
 
         levelAndName = messageCreator.createMessage(createLevelPart() + SEPARATOR + NAME_PREFIX + createNamePart() + SEPARATOR);
     }
@@ -71,32 +74,11 @@ public class NameFormatter {
 
             entityName = ENTITY_NAME_CACHE.get(entityType);
             if (entityName == null) {
-                entityName = createNameFromEnum(entityType);
+                entityName = textFormatter.formatName(entityType.name(), TextFormatter.SPLITTER_UNDERSCORE, TextFormatter.SEPARATOR_SPACE);
                 ENTITY_NAME_CACHE.put(entityType, entityName);
             }
             entityName = entityName + name;
         }
         return entityName;
-    }
-
-    private String createNameFromEnum(EntityType entityType) {
-
-        StringBuilder cleanedName = new StringBuilder();
-
-        String[] splitName = entityType.name().split("_");
-
-        for (String part : splitName) {
-            if (part.length() == 1) {
-                cleanedName.append(part).append(" ");
-                continue;
-            }
-
-            String restInLowerCase = part.substring(1).toLowerCase();
-
-            String full = part.charAt(0) + restInLowerCase + " ";
-
-            cleanedName.append(full);
-        }
-        return cleanedName.toString();
     }
 }

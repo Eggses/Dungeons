@@ -1,4 +1,5 @@
 package me.Eggses.dungeons.dungeon.areas.utility;
+import me.Eggses.dungeons.dispatch.ChunkMappingRegistry;
 import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.dungeon.utility.DungeonContext;
 
@@ -7,20 +8,12 @@ import java.util.function.Consumer;
 
 public class AreaControllerBuilder {
 
-    private final Map<Long, Set<DungeonArea>> dungeonAreasMap = new HashMap<>();
+    private final ChunkMappingRegistry<DungeonArea> dungeonAreaChunkMappingRegistry = new ChunkMappingRegistry<>();
     private final Map<Position, Consumer<DungeonContext>> blockInteractionMap = new HashMap<>();
     private final Map<String, Consumer<DungeonContext>> dungeonTriggerCommandMap = new HashMap<>();
 
     public void addDungeonArea(DungeonArea dungeonArea) {
-
-        Set<Long> encompassedChunkKeys = dungeonArea.getEntryRegion().getCoveredChunkKeys();
-
-        for (Long chunkKey : encompassedChunkKeys) {
-            dungeonAreasMap.putIfAbsent(chunkKey, new HashSet<>());
-
-            Set<DungeonArea> dungeonAreas = dungeonAreasMap.get(chunkKey);
-            dungeonAreas.add(dungeonArea);
-        }
+        dungeonAreaChunkMappingRegistry.add(dungeonArea, dungeonArea.getEntryRegion().getCoveredChunkKeys());
     }
 
     public void addBlockInteractionList(List<DungeonAction<Position>> blockInteractionList) {
@@ -33,8 +26,8 @@ public class AreaControllerBuilder {
                 -> dungeonTriggerCommandMap.put(action.getK(), action.getAction()));
     }
 
-    public Map<Long, Set<DungeonArea>> getDungeonAreasMap() {
-        return dungeonAreasMap;
+    public ChunkMappingRegistry<DungeonArea> getDungeonAreaChunkMapping() {
+        return dungeonAreaChunkMappingRegistry;
     }
 
     public Map<Position, Consumer<DungeonContext>> getBlockInteractionMap() {

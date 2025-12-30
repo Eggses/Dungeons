@@ -1,5 +1,6 @@
 package me.Eggses.dungeons.dungeon.lifecycle;
 
+import me.Eggses.dungeons.dungeon.types.DungeonType;
 import me.Eggses.dungeons.dungeon.files.DungeonLog;
 import me.Eggses.dungeons.dungeon.instance.DungeonInstance;
 import org.bukkit.Bukkit;
@@ -7,10 +8,9 @@ import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 
-public class DungeonLifecycleService implements DungeonInstanceCoordinator {
+public class DungeonLifecycleService {
 
     private final JavaPlugin plugin;
     private final DungeonRegistry dungeonRegistry;
@@ -31,26 +31,22 @@ public class DungeonLifecycleService implements DungeonInstanceCoordinator {
         this.dungeonLog = dungeonLog;
     }
 
-    @Override
-    public void openPortal(DungeonInstance dungeonInstance, Set<Long> portalChunkKeys) {
-        dungeonOpenPortalRegistry.addToOpenPortals(dungeonInstance, portalChunkKeys);
+    public void openPortal(DungeonInstance dungeonInstance) {
+        dungeonOpenPortalRegistry.addToOpenPortals(dungeonInstance, dungeonInstance.getPortalChunkKeys());
     }
 
-    @Override
-    public void closePortal(Set<Long> portalChunkKeys) {
-        dungeonOpenPortalRegistry.removeFromOpenPortals(portalChunkKeys);
+    public void closePortal(DungeonInstance dungeonInstance) {
+        dungeonOpenPortalRegistry.removeFromOpenPortals(dungeonInstance, dungeonInstance.getPortalChunkKeys());
     }
 
-    @Override
-    public void destroyInstanceRuntime(DungeonInstance dungeonInstance) {
+    public void destroyInstanceRuntime(DungeonInstance dungeonInstance, DungeonType dungeonType) {
         World world = dungeonInstance.getDungeonWorld();
         Bukkit.unloadWorld(world, false);
 
-        dungeonOpenPortalRegistry.removeFromOpenPortals(dungeonInstance.getPortalChunkKeys());
-        dungeonRegistry.removeDungeonInstance(world);
+        dungeonOpenPortalRegistry.removeFromOpenPortals(dungeonInstance, dungeonInstance.getPortalChunkKeys());
+        dungeonRegistry.removeDungeonInstance(world, dungeonType);
     }
 
-    @Override
     public void destroyWorld(String fileName) {
 
         dungeonWorldManager.attemptToDeleteInstance(
@@ -62,7 +58,6 @@ public class DungeonLifecycleService implements DungeonInstanceCoordinator {
         );
     }
 
-    @Override
     public void destroyLeftAllInstanceWorlds() {
         List<String> fileNames = dungeonLog.getActiveNameList();
         fileNames.forEach(this::destroyWorld);

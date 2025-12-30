@@ -1,8 +1,8 @@
 package me.Eggses.dungeons.commands.subcommands;
 
 import me.Eggses.dungeons.dungeon.lifecycle.DungeonEventRouter;
-import me.Eggses.dungeons.utility.Messages;
-import me.Eggses.dungeons.utility.MessageCreator;
+import me.Eggses.dungeons.utility.text.Messages;
+import me.Eggses.dungeons.utility.text.MessageCreator;
 import org.bukkit.command.*;
 
 import java.util.List;

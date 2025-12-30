@@ -4,12 +4,13 @@ import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.entities.attributes.AttributeController;
 import me.Eggses.dungeons.eventhandler.EventContext;
 import me.Eggses.dungeons.entities.nameutility.MobName;
-import me.Eggses.dungeons.entities.tasks.TaskManager;
+import me.Eggses.dungeons.tasks.running.ActiveTasks;
+import me.Eggses.dungeons.tasks.running.TaskManager;
 import me.Eggses.dungeons.entities.nameutility.NameFormatter;
 import me.Eggses.dungeons.eventhandler.EventManager;
 import me.Eggses.dungeons.entities.equipment.EquipmentManager;
-import me.Eggses.dungeons.entities.tasks.ActiveEntityTasks;
-import me.Eggses.dungeons.utility.MessageCreator;
+import me.Eggses.dungeons.utility.text.MessageCreator;
+import me.Eggses.dungeons.utility.text.TextFormatter;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
@@ -36,9 +37,13 @@ public class DungeonMob implements DungeonEntity {
     private final EventManager eventManager;
 
     private final AttributeController attributeController = new AttributeController(this);
-    private final ActiveEntityTasks activeEntityTasks = new ActiveEntityTasks();
+    private final ActiveTasks<DungeonEntity> activeEntityTasks = new ActiveTasks<>();
 
-    public DungeonMob(MobBuilder mobBuilder, World world,TaskManager taskManager, MessageCreator messageCreator) {
+    public DungeonMob(MobBuilder mobBuilder,
+                      World world,
+                      TaskManager taskManager,
+                      MessageCreator messageCreator,
+                      TextFormatter textFormatter) {
 
         // Spawn Entity
         Position position = mobBuilder.getPosition();
@@ -50,7 +55,7 @@ public class DungeonMob implements DungeonEntity {
         // Set Instance Fields
         this.dungeonLevel = mobBuilder.getDungeonLevel();
         this.mobName = mobBuilder.getMobName();
-        this.nameFormatter = new NameFormatter(this, messageCreator);
+        this.nameFormatter = new NameFormatter(this, messageCreator, textFormatter);
         this.eventManager = mobBuilder.getEntityEventBehaviour();
 
         // Apply Armour
@@ -79,7 +84,7 @@ public class DungeonMob implements DungeonEntity {
         entity.setCustomNameVisible(true);
 
         // Start Tasks
-        activeEntityTasks.addAndRunTasks(mobBuilder.getEntityTaskBehaviour(), this, taskManager);
+        activeEntityTasks.addAndRunTasks(this, mobBuilder.getEntityTaskBehaviour(), taskManager);
     }
 
     @Override
@@ -94,7 +99,7 @@ public class DungeonMob implements DungeonEntity {
 
     @Override
     public void endTasks() {
-        activeEntityTasks.clearAllTasks();
+        activeEntityTasks.endAllTasks();
     }
 
     @Override

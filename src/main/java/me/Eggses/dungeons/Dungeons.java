@@ -1,12 +1,14 @@
 package me.Eggses.dungeons;
 
 import me.Eggses.dungeons.blocks.BlockRegistry;
+import me.Eggses.dungeons.dispatch.EventManagerRegistry;
 import me.Eggses.dungeons.commands.DungeonsBaseCommand;
 import me.Eggses.dungeons.dungeon.files.DungeonLog;
 import me.Eggses.dungeons.dungeon.lifecycle.*;
 import me.Eggses.dungeons.dungeon.utility.BannedItems;
 import me.Eggses.dungeons.dungeon.utility.InstanceNameManager;
-import me.Eggses.dungeons.entities.tasks.TaskManager;
+import me.Eggses.dungeons.tasks.running.TaskManager;
+import me.Eggses.dungeons.items.ItemKey;
 import me.Eggses.dungeons.listeners.entities.Combustion;
 import me.Eggses.dungeons.listeners.entities.EntityCombat;
 import me.Eggses.dungeons.listeners.entities.EntityDeath;
@@ -17,42 +19,50 @@ import me.Eggses.dungeons.listeners.players.dungeonchanges.PlayerDungeonWorld;
 import me.Eggses.dungeons.listeners.blocks.PlayerInteract;
 import me.Eggses.dungeons.listeners.players.dungeonchanges.PlayerMovement;
 import me.Eggses.dungeons.listeners.players.bans.*;
-import me.Eggses.dungeons.utility.MessageCreator;
-import me.Eggses.dungeons.utility.SoundPlayer;
+import me.Eggses.dungeons.utility.text.MessageCreator;
+import me.Eggses.dungeons.utility.text.TextFormatter;
+import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;
 
 public final class Dungeons extends JavaPlugin {
 
-    DungeonRegistry dungeonRegistry = new DungeonRegistry();
+    DungeonInstanceTemplateRegistry dungeonInstanceTemplateRegistry = new DungeonInstanceTemplateRegistry();
+    DungeonRegistry dungeonRegistry = new DungeonRegistry(dungeonInstanceTemplateRegistry);
     DungeonOpenPortalRegistry dungeonOpenPortalRegistry = new DungeonOpenPortalRegistry();
 
     DungeonLog dungeonLog = new DungeonLog(this);
     InstanceNameManager instanceNameManager = new InstanceNameManager(dungeonLog);
 
     DungeonWorldManager dungeonWorldManager = new DungeonWorldManager(this, instanceNameManager);
-    DungeonInstanceCoordinator dungeonInstanceCoordinator = new DungeonLifecycleService(
+    DungeonLifecycleService dungeonLifecycleService = new DungeonLifecycleService(
             this, dungeonRegistry, dungeonOpenPortalRegistry, dungeonWorldManager, dungeonLog
     );
 
+    TaskManager taskManager = new TaskManager(this);
+
     DungeonEventRouter dungeonEventRouter = new DungeonEventRouter(dungeonRegistry, dungeonOpenPortalRegistry);
-    BlockRegistry blockRegistry = new BlockRegistry();
+    BlockRegistry blockRegistry = new BlockRegistry(taskManager);
+    EventManagerRegistry<String> itemRegistry = new EventManagerRegistry<>();
+    ItemKey itemKey = new ItemKey(this);
 
     MessageCreator messageCreator = new MessageCreator();
+    TextFormatter textFormatter = new TextFormatter();
 
     DungeonFactory dungeonFactory = new DungeonFactory(
             this,
             dungeonRegistry,
-            dungeonInstanceCoordinator,
+            dungeonInstanceTemplateRegistry,
+            dungeonLifecycleService,
             dungeonWorldManager,
             blockRegistry,
             instanceNameManager,
-            new TaskManager(this),
+            taskManager,
             messageCreator,
-            new SoundPlayer(),
+            textFormatter,
             dungeonLog,
-            new BannedItems(messageCreator)
+            new BannedItems(messageCreator, textFormatter)
     );
 
     @Override
@@ -79,16 +89,14 @@ public final class Dungeons extends JavaPlugin {
 
         pluginManager.registerEvents(new DeathController(dungeonRegistry, dungeonEventRouter), this);
         pluginManager.registerEvents(new PlayerDungeonWorld(dungeonEventRouter), this);
-        pluginManager.registerEvents(new PlayerInteract(blockRegistry), this);
+        pluginManager.registerEvents(new PlayerInteract(blockRegistry, itemRegistry, itemKey), this);
         pluginManager.registerEvents(new PlayerMovement(dungeonEventRouter), this);
 
         var dungeonsBaseCommand = new DungeonsBaseCommand(dungeonRegistry, dungeonEventRouter, messageCreator);
         Objects.requireNonNull(getCommand("dungeons")).setExecutor(dungeonsBaseCommand);
         Objects.requireNonNull(getCommand("dungeons")).setTabCompleter(dungeonsBaseCommand);
 
-        dungeonInstanceCoordinator.destroyLeftAllInstanceWorlds();
-
-        dungeonFactory.createDungeon(DungeonType.FLAT_TEST);
+        dungeonLifecycleService.destroyLeftAllInstanceWorlds();
     }
 
     @Override

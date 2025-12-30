@@ -3,11 +3,11 @@ package me.Eggses.dungeons.entities.mobs;
 import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.eventhandler.EventBehaviour;
 import me.Eggses.dungeons.entities.nameutility.MobName;
-import me.Eggses.dungeons.entities.tasks.EntityTask;
-import me.Eggses.dungeons.entities.tasks.EntityTaskBehaviour;
 import me.Eggses.dungeons.eventhandler.EventManager;
 import me.Eggses.dungeons.entities.equipment.ArmourEquipment;
 import me.Eggses.dungeons.entities.equipment.WeaponEquipment;
+import me.Eggses.dungeons.tasks.definitions.TaskBehaviour;
+import me.Eggses.dungeons.tasks.definitions.TaskDefinition;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.Event;
 
@@ -21,7 +21,7 @@ public class MobBuilder {
     private WeaponEquipment weaponEquipment = new WeaponEquipment();
     private ArmourEquipment armourEquipment = new ArmourEquipment();
     private final EventManager eventManager = new EventManager();
-    private final EntityTaskBehaviour entityTaskBehaviour = new EntityTaskBehaviour();
+    private final TaskBehaviour<DungeonEntity> entityTaskBehaviour = new TaskBehaviour<>();
     private Consumer<DungeonEntity> spawnChanges = (entity) -> {};
     private int count = 1;
     private MobName mobName = new MobName();
@@ -63,8 +63,8 @@ public class MobBuilder {
         return this;
     }
 
-    public MobBuilder entityTask(EntityTask entityTask) {
-        this.entityTaskBehaviour.addEntityTask(entityTask);
+    public MobBuilder entityTask(TaskDefinition<DungeonEntity> entityTask) {
+        this.entityTaskBehaviour.addTask(entityTask);
         return this;
     }
 
@@ -83,11 +83,9 @@ public class MobBuilder {
         return this;
     }
 
-    public MobBuilder applyPreset(MobType mobType) {
-        if (mobType == null) return this;
-        Consumer<MobBuilder> mobBuilderConsumer = mobType.getMobBuilder();
-        if (mobBuilderConsumer == null) return this;
-        mobBuilderConsumer.accept(this);
+    public MobBuilder applyPreset(Consumer<MobBuilder> builderPreset) {
+        if (builderPreset == null) return this;
+        builderPreset.accept(this);
         return this;
     }
 
@@ -121,7 +119,7 @@ public class MobBuilder {
         return spawnChanges;
     }
 
-    public EntityTaskBehaviour getEntityTaskBehaviour() {
+    public TaskBehaviour<DungeonEntity> getEntityTaskBehaviour() {
         return entityTaskBehaviour;
     }
 

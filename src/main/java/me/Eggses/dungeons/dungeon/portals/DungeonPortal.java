@@ -1,7 +1,7 @@
 package me.Eggses.dungeons.dungeon.portals;
 
-import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.dungeon.regions.Region;
+import me.Eggses.dungeons.dungeon.regions.RotationPosition;
 import me.Eggses.dungeons.dungeon.regions.WorldRegion;
 import me.Eggses.dungeons.dungeon.utility.DungeonContext;
 import org.bukkit.Bukkit;
@@ -15,10 +15,10 @@ public class DungeonPortal {
     private final World worldWithPortal;
 
     private final Region entryPortalRegion;
-    private final Position dungeonSpawnPosition;
+    private final RotationPosition dungeonSpawnPosition;
 
     private final Region exitPortalRegion;
-    private final Position worldExitLocation;
+    private final RotationPosition worldExitLocation;
 
     private final int openDurationSeconds;
 
@@ -33,15 +33,16 @@ public class DungeonPortal {
                     Bukkit::getOnlinePlayers
             );
 
-    public DungeonPortal(String worldWithPortal,
+    public DungeonPortal(World worldWithPortal,
                          Region entryPortalRegion,
-                         Position dungeonSpawnPosition,
+                         RotationPosition dungeonSpawnPosition,
                          Region exitPortalRegion,
-                         Position worldExitLocation,
+                         RotationPosition worldExitLocation,
                          int openDurationSeconds,
                          Consumer<DungeonContext> onOpen,
                          Consumer<DungeonContext> onClose) {
 
+        this.worldWithPortal = worldWithPortal;
         this.entryPortalRegion = entryPortalRegion;
         this.dungeonSpawnPosition = dungeonSpawnPosition;
         this.exitPortalRegion = exitPortalRegion;
@@ -49,23 +50,15 @@ public class DungeonPortal {
         this.openDurationSeconds = openDurationSeconds;
         this.onOpen = onOpen;
         this.onClose = onClose;
-
-        World world = null;
-        if (worldWithPortal != null) {
-            world = Bukkit.getWorld(worldWithPortal);
-        }
-        if (world == null) {
-            world = Bukkit.getWorlds().getFirst();
-        }
-        this.worldWithPortal = world;
     }
+
 
     // Main World -> Dungeon
     public WorldRegion getEntryPortalWorldRegion() {
         return new WorldRegion(worldWithPortal, entryPortalRegion);
     }
 
-    public Position getDungeonSpawnPosition() {
+    public RotationPosition getDungeonSpawnPosition() {
         return dungeonSpawnPosition;
     }
 

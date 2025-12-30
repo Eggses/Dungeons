@@ -9,6 +9,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.event.player.*;
 
+import java.util.Set;
 import java.util.function.Consumer;
 
 public class DungeonEventRouter {
@@ -35,9 +36,11 @@ public class DungeonEventRouter {
                 (instance) -> instance.getInstanceEventHandler().handleMovementEventInDungeon(player, destination, chunkKeyOfDestination));
         if (ran) return;
 
-        DungeonInstance dungeonInstance = dungeonOpenPortalRegistry.getDungeonInstance(chunkKeyOfDestination);
-        if (dungeonInstance == null) return;
-        dungeonInstance.getInstanceEventHandler().handleMovementEventOutsideDungeon(player, destination);
+        Set<DungeonInstance> dungeonInstances = dungeonOpenPortalRegistry.getDungeonInstance(chunkKeyOfDestination);
+        if (dungeonInstances == null) return;
+        for (DungeonInstance dungeonInstance : dungeonInstances) {
+            dungeonInstance.getInstanceEventHandler().handleMovementEventOutsideDungeon(player, destination);
+        }
     }
 
     public void handleDungeonTriggerCommand(World world, String argument) {

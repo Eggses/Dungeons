@@ -1,17 +1,20 @@
 package me.Eggses.dungeons.dungeon.instance;
 
 import me.Eggses.dungeons.blocks.BlockRegistry;
+import me.Eggses.dungeons.dungeon.types.DungeonType;
+import me.Eggses.dungeons.dispatch.EventManagerRegistry;
+import me.Eggses.dungeons.dungeon.files.templates.DungeonInstanceTemplate;
 import me.Eggses.dungeons.dungeon.areas.AreaController;
 import me.Eggses.dungeons.dungeon.areas.EntityManager;
-import me.Eggses.dungeons.dungeon.graveyard.Graveyard;
-import me.Eggses.dungeons.dungeon.instance.templates.DungeonTemplate;
+import me.Eggses.dungeons.dungeon.lifecycle.DungeonLifecycleService;
 import me.Eggses.dungeons.dungeon.players.DungeonPlayers;
 import me.Eggses.dungeons.dungeon.portals.PortalController;
 import me.Eggses.dungeons.dungeon.utility.BannedItems;
+import me.Eggses.dungeons.dungeon.utility.DungeonContext;
 import me.Eggses.dungeons.dungeon.utility.GameRules;
-import me.Eggses.dungeons.dungeon.lifecycle.DungeonInstanceCoordinator;
-import me.Eggses.dungeons.entities.tasks.TaskManager;
-import me.Eggses.dungeons.utility.MessageCreator;
+import me.Eggses.dungeons.tasks.running.TaskManager;
+import me.Eggses.dungeons.utility.text.MessageCreator;
+import me.Eggses.dungeons.utility.text.TextFormatter;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -23,7 +26,7 @@ import java.util.Set;
 public class DungeonInstance {
 
     private final JavaPlugin plugin;
-    private final DungeonInstanceCoordinator dungeonInstanceCoordinator;
+    private final DungeonLifecycleService dungeonLifecycleService;
     private final World dungeonWorld;
     private final String instanceFileName;
     private final BlockRegistry blockRegistry;
@@ -32,39 +35,43 @@ public class DungeonInstance {
     private final InstanceEventHandler instanceEventHandler;
     private final PortalController portalController;
     private final DungeonPlayers dungeonPlayers;
+    private final DungeonType dungeonType;
 
     public DungeonInstance(JavaPlugin plugin,
-                           DungeonInstanceCoordinator dungeonInstanceCoordinator,
+                           DungeonLifecycleService dungeonLifecycleService,
                            World dungeonWorld,
-                           DungeonTemplate dungeonTemplate,
+                           DungeonInstanceTemplate dungeonInstanceTemplate,
                            BlockRegistry blockRegistry,
                            String instanceFileName,
                            MessageCreator messageCreator,
+                           TextFormatter textFormatter,
                            TaskManager taskManager,
-                           BannedItems bannedItems) {
+                           BannedItems bannedItems, DungeonType dungeonType) {
 
         this.plugin = plugin;
-        this.dungeonInstanceCoordinator = dungeonInstanceCoordinator;
+        this.dungeonLifecycleService = dungeonLifecycleService;
         this.dungeonWorld = dungeonWorld;
         this.instanceFileName = instanceFileName;
         this.blockRegistry = blockRegistry;
+        this.dungeonType = dungeonType;
 
-        var entityManager = new EntityManager(dungeonWorld, taskManager, messageCreator);
-        this.areaController = new AreaController(entityManager, new Graveyard(dungeonTemplate.getDefaultGraveyardPosition()), dungeonWorld, blockRegistry, dungeonTemplate.getAreaControllerBuilder());
+        var graveyard = dungeonInstanceTemplate.getGraveyard();
+        var entityManager = new EntityManager(dungeonWorld, taskManager, messageCreator, textFormatter);
+        this.areaController = new AreaController(entityManager, graveyard, dungeonWorld, blockRegistry, dungeonInstanceTemplate.getAreaControllerBuilder());
         this.instanceEventHandler = new InstanceEventHandler(this, areaController, entityManager);
-        this.portalController = new PortalController(plugin, this, dungeonTemplate.getDungeonPortal(), bannedItems);
+        this.portalController = new PortalController(plugin, this, dungeonInstanceTemplate.getDungeonPortal(), bannedItems);
         this.dungeonPlayers = new DungeonPlayers();
 
         new GameRules(dungeonWorld).applyRules();
-        dungeonTemplate.getDungeonRules().accept(dungeonWorld);
+        dungeonInstanceTemplate.getOnDungeonStart().accept(new DungeonContext(dungeonWorld, entityManager, graveyard, dungeonWorld::getPlayers));
 
         portalController.openDungeonPortal();
-        dungeonInstanceCoordinator.openPortal(this, portalController.getChunkKeysEncompassed());
+        dungeonLifecycleService.openPortal(this);
     }
 
     public void closeDungeonPortal() {
         portalController.closeDungeonPortal();
-        dungeonInstanceCoordinator.closePortal(portalController.getChunkKeysEncompassed());
+        dungeonLifecycleService.closePortal(this);
         if (shouldEndDungeon()) endDungeon(true);
     }
 
@@ -76,7 +83,7 @@ public class DungeonInstance {
         // Dungeon may be force ended... if so destroy portal.
         if (portalController.isOpen()) {
             portalController.closeDungeonPortal();
-            dungeonInstanceCoordinator.closePortal(portalController.getChunkKeysEncompassed());
+            dungeonLifecycleService.closePortal(this);
         }
 
         World mainWorld = Bukkit.getWorld("world");
@@ -97,12 +104,14 @@ public class DungeonInstance {
         }
 
         areaController.endAllTasks();
-        blockRegistry.removeAllByWorld(dungeonWorld);
-        dungeonInstanceCoordinator.destroyInstanceRuntime(this);
+
+        blockRegistry.removeAll(location -> location.getWorld().equals(dungeonWorld));
+
+        dungeonLifecycleService.destroyInstanceRuntime(this, dungeonType);
 
         if (destroyWorldFolder) {
             Bukkit.getScheduler().runTaskLater(
-                    plugin, () -> dungeonInstanceCoordinator.destroyWorld(instanceFileName), 30 * 20);
+                    plugin, () -> dungeonLifecycleService.destroyWorld(instanceFileName), 30 * 20);
         }
     }
 

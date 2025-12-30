@@ -1,22 +1,22 @@
 package me.Eggses.dungeons.dungeon.graveyard;
 
-import me.Eggses.dungeons.dungeon.regions.Position;
+import me.Eggses.dungeons.dungeon.regions.RotationPosition;
 import org.bukkit.Location;
 import org.bukkit.World;
 
 public class Graveyard {
 
-    private Position activeGraveyard;
+    private RotationPosition activeGraveyard;
 
-    public Graveyard(Position position) {
-        this.activeGraveyard = position;
+    public Graveyard(RotationPosition rotationPosition) {
+        this.activeGraveyard = rotationPosition;
     }
 
-    public void setActiveGraveyard(Position position) {
-        activeGraveyard = position;
+    public void setActiveGraveyard(RotationPosition rotationPosition) {
+        activeGraveyard = rotationPosition;
     }
 
     public Location getActiveGraveyardLocation(World world) {
-        return activeGraveyard.toLocationCenterBlock(world);
+        return activeGraveyard.toLocation(world);
     }
 }

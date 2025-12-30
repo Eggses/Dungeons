@@ -1,28 +1,42 @@
+dungeon_name: "<red>Flat Test</red>"
 dungeon_template_name: "flat_test"
+
+dungeon_key_item:
+  material: "OMINOUS_TRIAL_KEY"
+  name: "<gold>Keystone: %dungeon_name%"
+  lore:
+    - "<red> Place this key into the %dungeon_name% keystone to start the Dungeon."
+    - "1 use"
+    - "Legendary Item"
+  glow: true
+
+dungeon_portal_world: "world"
+
+dungeon_portal_room:
+  general_portal_room_region: "pos1=x,y,z pos2=x,y,z"
+  keystone_position: "pos=x,y,z"
+  keystone_name: "<dark_purple>Keystone"
+
+dungeon_portal:
+  entry_portal_region: "pos1=117,155,-42 pos2=117,157,-43"
+  dungeon_spawn_position: "pos=-16,-60,2 rotation=90"
+
+  exit_portal_region: "pos1=-15,-60,0 pos2=-17,-58,0"
+  world_exit_position: "pos=123,155,-43 rotation=90"
+
+  open_duration_seconds: "30"
+
+  on_open:
+    - "SOUND sound=ITEM_GOAT_HORN_SOUND_0"
+    - "MESSAGE message=<green>Dungeon portal has stablised for %open_duration%</green>"
+
+  on_close:
+    - "SOUND sound=ITEM_GOAT_HORN_SOUND_0"
+    - "MESSAGE message=<red>Dungeon portal closed</red>"
 
 default_graveyard: "pos=-42,-60,16"
 
-dungeon_portal:
-  world_with_portal: "world"
-
-  # Region format: pos1=x,y,z pos2=x,y,z
-  entry_portal_region: "pos1=117,155,-42 pos2=117,157,-43"
-
-
-  dungeon_spawn_position: "pos=-16,-60,2"
-
-  exit_portal_region: "pos1=-15,-60,0 pos2=-17,-58,0"
-  world_exit_location: "pos=123,155,-43"
-
-  open_duration_seconds: 30
-
-  on_open:
-    - "SOUND sound=GOAT_HORN_0"
-    - "MESSAGE message=<green>Dungeon portal has stablised for 30 seconds!</green>"
-
-  on_close:
-    - "SOUND sound=GOAT_HORN_0"
-    - "MESSAGE message=<red>Dungeon portal closed</red>"
+on_start: []
 
 dungeon_areas:
 
@@ -46,6 +60,10 @@ dungeon_areas:
         commands:
           - "MESSAGE message=<gold>button press</gold>"
           - "MOB type=ZOMBIE pos=21,-60,-13 level=5 count=1 preset=FIEND"
+      - pos: "x,y,z"
+        commands:
+          - "abc"
+          - "def"
 
     triggers: []
 
@@ -68,7 +86,7 @@ dungeon_areas:
     interactions: []
 
     triggers:
-      - id: "hello-test"
+      - id: "test-id-1"
         commands:
           - "MESSAGE message=<red>Something awakens beneath the ground</red>"
           - "SOUND sound=GOAT_HORN_0"

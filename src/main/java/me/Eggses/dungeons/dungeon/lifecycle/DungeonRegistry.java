@@ -1,5 +1,6 @@
 package me.Eggses.dungeons.dungeon.lifecycle;
 
+import me.Eggses.dungeons.dungeon.types.DungeonType;
 import me.Eggses.dungeons.dungeon.instance.DungeonInstance;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -12,8 +13,10 @@ import java.util.Set;
 public class DungeonRegistry {
 
     private final Map<World, DungeonInstance> dungeonInstances = new HashMap<>();
+    private final DungeonInstanceTemplateRegistry dungeonInstanceTemplateRegistry;
 
-    public DungeonRegistry() {
+    public DungeonRegistry(DungeonInstanceTemplateRegistry dungeonInstanceTemplateRegistry) {
+        this.dungeonInstanceTemplateRegistry = dungeonInstanceTemplateRegistry;
     }
 
     public boolean isInDungeon(Player player) {
@@ -33,8 +36,9 @@ public class DungeonRegistry {
         dungeonInstances.put(world, dungeonInstance);
     }
 
-    public void removeDungeonInstance(World world) {
+    public void removeDungeonInstance(World world, DungeonType dungeonType) {
         dungeonInstances.remove(world);
+        dungeonInstanceTemplateRegistry.freeTemplate(dungeonType);
     }
 
     public DungeonInstance getDungeonInstance(World world) {

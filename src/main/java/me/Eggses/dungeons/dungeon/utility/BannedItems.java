@@ -1,6 +1,7 @@
 package me.Eggses.dungeons.dungeon.utility;
 
-import me.Eggses.dungeons.utility.MessageCreator;
+import me.Eggses.dungeons.utility.text.MessageCreator;
+import me.Eggses.dungeons.utility.text.TextFormatter;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -39,9 +40,11 @@ public class BannedItems {
     private static final Map<Material, String> MATERIAL_NAME_CACHE = new HashMap<>();
 
     private final MessageCreator messageCreator;
+    private final TextFormatter textFormatter;
 
-    public BannedItems(MessageCreator messageCreator) {
+    public BannedItems(MessageCreator messageCreator, TextFormatter textFormatter) {
         this.messageCreator = messageCreator;
+        this.textFormatter = textFormatter;
     }
 
     public boolean hasBannedItems(Player player) {
@@ -78,32 +81,11 @@ public class BannedItems {
             String name = MATERIAL_NAME_CACHE.get(material);
 
             if (name == null) {
-                name = cleanEnumMaterialName(material);
+                name = textFormatter.formatName(material.name(), TextFormatter.SPLITTER_UNDERSCORE, TextFormatter.SEPARATOR_SPACE);
                 MATERIAL_NAME_CACHE.put(material, name);
             }
             names.add(name);
         }
         return names;
-    }
-
-    private String cleanEnumMaterialName(Material material) {
-
-        StringBuilder cleanedName = new StringBuilder();
-
-        String[] splitName = material.name().split("_");
-
-        for (String part : splitName) {
-            if (part.length() == 1) {
-                cleanedName.append(part).append(" ");
-                continue;
-            }
-
-            String restInLowerCase = part.substring(1).toLowerCase();
-
-            String full = part.charAt(0) + restInLowerCase + " ";
-
-            cleanedName.append(full);
-        }
-        return cleanedName.toString().strip();
     }
 }

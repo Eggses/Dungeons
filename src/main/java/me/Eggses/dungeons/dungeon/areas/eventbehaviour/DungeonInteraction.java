@@ -1,9 +1,11 @@
 package me.Eggses.dungeons.dungeon.areas.eventbehaviour;
 
 import me.Eggses.dungeons.blocks.BlockRegistry;
+import me.Eggses.dungeons.dispatch.EventManagerRegistry;
 import me.Eggses.dungeons.dungeon.utility.DungeonContext;
 import me.Eggses.dungeons.eventhandler.EventBehaviour;
 import me.Eggses.dungeons.eventhandler.EventContext;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.Action;
@@ -50,6 +52,6 @@ public class DungeonInteraction implements EventBehaviour<PlayerInteractEvent> {
 
         if (!trigger) return;
         onInteractConsumer.accept(dungeonContext);
-        blockRegistry.removeCustomBlock(block.getLocation());
+        blockRegistry.remove(block.getLocation());
     }
 }

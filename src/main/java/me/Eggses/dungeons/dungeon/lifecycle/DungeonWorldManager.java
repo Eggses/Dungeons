@@ -124,7 +124,7 @@ public class DungeonWorldManager {
         }
 
         try {
-            deleteFolderBFS(folderToDelete);
+            deleteFolderDFS(folderToDelete);
         } catch (IOException e) {
             error(e, onFailure);
             return;
@@ -132,6 +132,29 @@ public class DungeonWorldManager {
         instanceNameManager.freeFolderName(fileNameOfNewInstance);
     }
 
+    private void deleteFolderDFS(File folder) throws IOException {
+
+        if (!folder.isDirectory()) {
+            Files.delete(folder.toPath());
+            return;
+        }
+
+        File[] files = folder.listFiles();
+        if (files == null) {
+            throw new IOException("Error accessing " + folder.getPath() + " contents.");
+        }
+
+        for (File file : files) {
+            if (file.isDirectory()) {
+                deleteFolderDFS(file);
+            } else {
+                Files.delete(file.toPath());
+            }
+        }
+        Files.delete(folder.toPath());
+    }
+
+    @Deprecated // Still here in case DFS starts to overflow!
     private void deleteFolderBFS(File startingFolder) throws IOException {
 
         Queue<File> folders = new LinkedList<>();

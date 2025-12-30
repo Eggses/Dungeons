@@ -1,0 +1,43 @@
+keystone_menu:
+  title: "<bold>Keystone: %dungeon_name%"
+
+  items:
+    panel:
+      material: "LIGHT_GRAY_STAINED_GLASS_PANE"
+      name: ""
+      lore: []
+
+    open_portal:
+      material: "PURPLE_STAINED_GLASS"
+      name: "<gradient:#9b5cff:#d7b3ff><bold>Open Portal</bold></gradient>"
+      lore:
+        - "<gray>Click this to open the dungeon portal.</gray>"
+        - "<gray>The portal will remain open for</gray>"
+        - "<gray><bold>%open_duration%</bold> seconds.</gray>"
+
+    invalid_key:
+      material: "RED_STAINED_GLASS"
+      name: "<red><bold>Invalid Key</bold></red>"
+      lore:
+        - "<gray>This item cannot be used</gray>"
+        - "<gray>to open the dungeon portal.</gray>"
+
+    insert_key:
+      material: "EMPTY_MAP"
+      name: "<red><bold>Insert Key Above</bold></red>"
+      lore:
+        - "<gray>Place a valid dungeon key</gray>"
+        - "<gray>into the slot above.</gray>"
+
+    check_inventory:
+      material: "BOOK"
+      name: "<gold><bold>Check Inventory</bold></gold>"
+      lore:
+      - "<gray>Click to check your inventory for banned items.</gray>"
+      - "<gray>You will be informed if you have any banned items after.</gray>"
+
+    close:
+      material: BARRIER
+      name: "<red><bold>Close</bold></red>"
+      lore:
+        - "<gray>Click to close this menu.</gray>"

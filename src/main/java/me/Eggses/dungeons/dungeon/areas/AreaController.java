@@ -1,6 +1,8 @@
 package me.Eggses.dungeons.dungeon.areas;
 
 import me.Eggses.dungeons.blocks.BlockRegistry;
+import me.Eggses.dungeons.dispatch.EventManagerRegistry;
+import me.Eggses.dungeons.dispatch.ChunkMappingRegistry;
 import me.Eggses.dungeons.dungeon.areas.eventbehaviour.DungeonInteraction;
 import me.Eggses.dungeons.dungeon.graveyard.Graveyard;
 import me.Eggses.dungeons.dungeon.regions.Position;
@@ -22,8 +24,7 @@ public class AreaController {
     private final Graveyard graveyard;
     private final World dungeonWorld;
     private final BlockRegistry blockRegistry;
-
-    private final Map<Long, Set<DungeonArea>> dungeonAreasMap;
+    private final ChunkMappingRegistry<DungeonArea> dungeonAreaChunkMappingRegistry;
     private final Map<String, Consumer<DungeonContext>> dungeonTriggerCommandMap;
 
     private DungeonArea dungeonAreaInProgress;
@@ -41,7 +42,7 @@ public class AreaController {
         this.graveyard = graveyard;
         this.dungeonWorld = dungeonWorld;
         this.blockRegistry = blockRegistry;
-        this.dungeonAreasMap = areaControllerBuilder.getDungeonAreasMap();
+        this.dungeonAreaChunkMappingRegistry = areaControllerBuilder.getDungeonAreaChunkMapping();
         this.dungeonTriggerCommandMap = areaControllerBuilder.getDungeonTriggerCommandMap();
         this.dungeonContext = new DungeonContext(dungeonWorld, entityManager, graveyard, dungeonWorld::getPlayers);
 
@@ -52,7 +53,8 @@ public class AreaController {
 
         for (Map.Entry<Position, Consumer<DungeonContext>> entry : blockInteractionMap.entrySet()) {
             Location location = entry.getKey().toLocation(dungeonWorld);
-            blockRegistry.addOrUpdateEventBehaviour(location, PlayerInteractEvent.class, new DungeonInteraction(
+
+            blockRegistry.addBlockAndEvent(location, PlayerInteractEvent.class, new DungeonInteraction(
                     blockRegistry,
                     entry.getValue(),
                     dungeonContext,
@@ -65,7 +67,7 @@ public class AreaController {
 
         if (areaInProgress) return;
 
-        Set<DungeonArea> dungeonAreasAtChunk = dungeonAreasMap.get(chunkKey);
+        Set<DungeonArea> dungeonAreasAtChunk = dungeonAreaChunkMappingRegistry.get(chunkKey);
         if (dungeonAreasAtChunk == null) return;
 
         for (DungeonArea dungeonArea : dungeonAreasAtChunk) {
@@ -98,21 +100,7 @@ public class AreaController {
         areaInProgress = true;
 
         dungeonArea.onEnterFirstTime(dungeonContext);
-        removeDungeonAreaFromMap(dungeonArea);
-    }
-
-    private void removeDungeonAreaFromMap(DungeonArea dungeonArea) {
-
-        Set<Long> encompassedChunkKeys = dungeonArea.getEntryRegion().getCoveredChunkKeys();
-
-        for (Long chunkKey : encompassedChunkKeys) {
-
-            Set<DungeonArea> dungeonAreasAtChunk = dungeonAreasMap.get(chunkKey);
-            if (dungeonAreasAtChunk == null) continue;
-
-            dungeonAreasAtChunk.remove(dungeonArea);
-            if (dungeonAreasAtChunk.isEmpty()) dungeonAreasMap.remove(chunkKey);
-        }
+        dungeonAreaChunkMappingRegistry.remove(dungeonArea, dungeonArea.getEntryRegion().getCoveredChunkKeys());
     }
 
     private void tryEndActiveDungeonArea() {

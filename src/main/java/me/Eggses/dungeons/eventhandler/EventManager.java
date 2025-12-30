@@ -11,10 +11,10 @@ public class EventManager {
 
     private final Map<Class<? extends Event>, List<EventBehaviour<? extends Event>>> entityEventBehaviours = new HashMap<>();
 
-    public <E extends Event> void addEventBehaviour(Class<E> eventBehaviourClass, EventBehaviour<E> eventBehaviour) {
+    public <E extends Event> void addEventBehaviour(Class<E> eventClass, EventBehaviour<E> eventBehaviour) {
 
-        entityEventBehaviours.putIfAbsent(eventBehaviourClass, new ArrayList<>());
-        List<EventBehaviour<? extends Event>> eventBehaviours = entityEventBehaviours.get(eventBehaviourClass);
+        entityEventBehaviours.putIfAbsent(eventClass, new ArrayList<>());
+        List<EventBehaviour<? extends Event>> eventBehaviours = entityEventBehaviours.get(eventClass);
         eventBehaviours.add(eventBehaviour);
     }
 

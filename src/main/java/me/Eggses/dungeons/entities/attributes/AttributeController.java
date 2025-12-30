@@ -1,7 +1,7 @@
 package me.Eggses.dungeons.entities.attributes;
 
 import me.Eggses.dungeons.entities.mobs.DungeonEntity;
-import me.Eggses.dungeons.utility.TriFunction;
+import me.Eggses.dungeons.utility.misc.TriFunction;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 
