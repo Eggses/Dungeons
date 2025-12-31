@@ -21,7 +21,6 @@ import me.Eggses.dungeons.listeners.players.dungeonchanges.PlayerMovement;
 import me.Eggses.dungeons.listeners.players.bans.*;
 import me.Eggses.dungeons.utility.text.MessageCreator;
 import me.Eggses.dungeons.utility.text.TextFormatter;
-import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;

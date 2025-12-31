@@ -25,14 +25,21 @@ public class OrbitParticleEffect {
         this.particle = particle;
         this.totalPoints = countOfPointsInBetween + 2;
 
+        // Ensure angles are 0 to 360
         double start = ((startingAngleDegree % 360) + 360) % 360;
         double end = ((endingAngleDegree % 360) + 360) % 360;
 
-        double clockwiseDelta = (start - end + 360) % 360;
+        // Finds total distance of the arc.
+        double distanceNormalised = (start - end + 360) % 360;
 
-        this.startRad = Math.toRadians(start);
-        this.stepRad = Math.toRadians(-(clockwiseDelta / (totalPoints - 1)));
-        this.yStep = maxY / (totalPoints - 1);
+        this.startRad = Math.toRadians(start); // Starting position
+        this.stepRad = Math.toRadians(-(distanceNormalised / (totalPoints - 1)));
+        /*
+        Size of jump to each point.
+        N points means N-1 spaces between the points. Size of each gap is distance / count of gaps, So distance / N - 1
+        Then *-1 as we move clockwise and Angles decrease clockwise.
+         */
+        this.yStep = maxY / (totalPoints - 1); // Y is treated like the other stepping.
     }
 
     public void spawnParticle(Location center) {

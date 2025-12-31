@@ -14,7 +14,7 @@ import java.util.function.BiConsumer;
 public class KeystoneParticleTask implements Task<Location> {
 
     private static final long DELAY_TICKS = 0;
-    private static final long REPEATING_PERIOD_TICKS = 2;
+    private static final long REPEATING_PERIOD_TICKS = 1;
 
     private final RepeatingTask<Location> particleTask;
 

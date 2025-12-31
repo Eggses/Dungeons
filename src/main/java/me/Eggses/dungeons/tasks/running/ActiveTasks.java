@@ -25,4 +25,13 @@ public class ActiveTasks<T> {
         }
         activeTasks.clear();
     }
+
+    public void endAllWithoutClearing() {
+        for (BukkitTask task : activeTasks) {
+            if (!task.isCancelled()) {
+                task.cancel();
+            }
+        }
+    }
+
 }

@@ -1,4 +1,4 @@
-package me.Eggses.dungeons.dungeon.utility;
+package me.Eggses.dungeons.blocks.events;
 
 import me.Eggses.dungeons.eventhandler.EventBehaviour;
 import me.Eggses.dungeons.eventhandler.EventContext;

@@ -50,7 +50,7 @@ public class BlockRegistry {
 
         blockActiveTaskRegistry.putIfAbsent(location, new ActiveTasks<>());
         ActiveTasks<Location> blockTasks = blockActiveTaskRegistry.get(location);
-        blockTasks.endAllTasks();
+        blockTasks.endAllWithoutClearing();
         blockTasks.addAndRunTasks(location, taskBehaviour, taskManager);
     }
 

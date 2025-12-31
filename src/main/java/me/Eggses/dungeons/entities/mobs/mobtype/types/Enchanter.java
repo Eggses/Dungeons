@@ -8,7 +8,10 @@ import me.Eggses.dungeons.entities.nameutility.MobName;
 import me.Eggses.dungeons.tasks.definitions.RepeatingTask;
 import me.Eggses.dungeons.tasks.running.TaskManager;
 import me.Eggses.dungeons.utility.misc.NMS;
+import me.Eggses.dungeons.utility.sound.DungeonSound;
+import me.Eggses.dungeons.utility.sound.SoundPlayer;
 import me.Eggses.dungeons.utility.text.TextFormatter;
+import net.kyori.adventure.sound.Sound;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.player.Player;
@@ -23,9 +26,11 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 @NMS
 public class Enchanter implements MobPreset {
@@ -33,11 +38,13 @@ public class Enchanter implements MobPreset {
     private final JavaPlugin plugin;
     private final MobUtility mobUtility;
     private final String displayName;
+    private final SoundPlayer soundPlayer;
 
-    public Enchanter(JavaPlugin plugin, MobUtility mobUtility, TextFormatter textFormatter) {
+    public Enchanter(JavaPlugin plugin, MobUtility mobUtility, TextFormatter textFormatter, SoundPlayer soundPlayer) {
         this.plugin = plugin;
         this.mobUtility = mobUtility;
         this.displayName = textFormatter.formatName(this.getClass().getSimpleName(), TextFormatter.SPLITTER_INNER_WORD, TextFormatter.SEPARATOR_SPACE);
+        this.soundPlayer = soundPlayer;
     }
 
     @Override
@@ -91,12 +98,16 @@ public class Enchanter implements MobPreset {
                 if (enchanter == null || enchanter.isDead()) return;
 
                 List<Entity> nearbyEntities = enchanter.getNearbyEntities(BUFF_RANGE, BUFF_RANGE, BUFF_RANGE);
-                List<LivingEntity> buffTargets = nearbyEntities.stream()
-                        .filter(entity -> !(entity instanceof org.bukkit.entity.Player))
+
+                Map<Boolean, List<LivingEntity>> partitionedEntities = nearbyEntities.stream()
                         .filter(entity -> entity instanceof LivingEntity)
                         .map(entity -> (LivingEntity) entity)
                         .filter(livingEntity -> !(livingEntity instanceof Illusioner))
                         .filter(livingEntity -> !livingEntity.getUniqueId().equals(enchanter.getUniqueId()))
+                        .collect(Collectors.partitioningBy(e -> e instanceof org.bukkit.entity.Player));
+
+                List<LivingEntity> buffTargets = partitionedEntities.get(false);
+                buffTargets = buffTargets.stream()
                         .limit(MAX_BUFF_TARGETS)
                         .toList();
 
@@ -119,6 +130,24 @@ public class Enchanter implements MobPreset {
                                 true
                         ));
                     }
+                }
+
+                List<org.bukkit.entity.Player> players = partitionedEntities.get(true)
+                        .stream()
+                        .map(livingEntity -> (org.bukkit.entity.Player) livingEntity)
+                        .toList();
+
+                if (!players.isEmpty()) {
+                    List<DungeonSound> sounds = List.of(
+                            DungeonSound.EVOKER_CAST_SPELL,
+                            DungeonSound.EVOKER_PREPARE_ATTACK,
+                            DungeonSound.EVOKER_PREPARE_SUMMON
+                    );
+
+                    DungeonSound randomSound = sounds.get(ThreadLocalRandom.current().nextInt(sounds.size()));
+                    Sound sound = soundPlayer.createSound(randomSound.getMinecraftSound());
+
+                    soundPlayer.playSound(sound, players);
                 }
             };
             mobBuilder.entityTask(new RepeatingTask<>(task, 0, REPEATING_PERIOD));

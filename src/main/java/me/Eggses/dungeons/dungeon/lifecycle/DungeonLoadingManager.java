@@ -3,7 +3,7 @@ package me.Eggses.dungeons.dungeon.lifecycle;
 import me.Eggses.dungeons.blocks.BlockRegistry;
 import me.Eggses.dungeons.blocks.task.KeystoneParticleTask;
 import me.Eggses.dungeons.dungeon.types.DungeonType;
-import me.Eggses.dungeons.dungeon.utility.InteractOpenMenu;
+import me.Eggses.dungeons.blocks.events.InteractOpenMenu;
 import me.Eggses.dungeons.configuration.ConfigurationFile;
 import me.Eggses.dungeons.dispatch.EventManagerRegistry;
 import me.Eggses.dungeons.dungeon.files.reading.DungeonFileReader;
