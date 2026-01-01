@@ -2,6 +2,7 @@ package me.Eggses.dungeons.particles;
 
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.entity.Player;
 
 public class OrbitParticleEffect {
 
@@ -43,6 +44,18 @@ public class OrbitParticleEffect {
     }
 
     public void spawnParticle(Location center) {
+
+        final double viewDistSq = 64.0 * 64.0;
+
+        var players = center.getWorld().getPlayers();
+        boolean anyNearby = false;
+        for (Player p : players) {
+            if (p.getLocation().distanceSquared(center) <= viewDistSq) {
+                anyNearby = true;
+                break;
+            }
+        }
+        if (!anyNearby) return;
 
         double radians = startRad + stepRad * index;
 

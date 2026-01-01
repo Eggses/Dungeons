@@ -4,8 +4,9 @@ import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.entities.attributes.AttributeController;
 import me.Eggses.dungeons.eventhandler.EventContext;
 import me.Eggses.dungeons.entities.nameutility.MobName;
-import me.Eggses.dungeons.tasks.running.ActiveTasks;
-import me.Eggses.dungeons.tasks.running.TaskManager;
+import me.Eggses.dungeons.tasks.ActiveTasks;
+import me.Eggses.dungeons.tasks.TaskContext;
+import me.Eggses.dungeons.tasks.TaskRunner;
 import me.Eggses.dungeons.entities.nameutility.NameFormatter;
 import me.Eggses.dungeons.eventhandler.EventManager;
 import me.Eggses.dungeons.entities.equipment.EquipmentManager;
@@ -21,7 +22,9 @@ import org.bukkit.event.Event;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public class DungeonMob implements DungeonEntity {
 
@@ -37,11 +40,11 @@ public class DungeonMob implements DungeonEntity {
     private final EventManager eventManager;
 
     private final AttributeController attributeController = new AttributeController(this);
-    private final ActiveTasks<DungeonEntity> activeEntityTasks = new ActiveTasks<>();
+    private final ActiveTasks activeTasks = new ActiveTasks();
 
     public DungeonMob(MobBuilder mobBuilder,
                       World world,
-                      TaskManager taskManager,
+                      TaskRunner taskRunner,
                       MessageCreator messageCreator,
                       TextFormatter textFormatter) {
 
@@ -84,7 +87,11 @@ public class DungeonMob implements DungeonEntity {
         entity.setCustomNameVisible(true);
 
         // Start Tasks
-        activeEntityTasks.addAndRunTasks(this, mobBuilder.getEntityTaskBehaviour(), taskManager);
+        List<Consumer<TaskContext<DungeonEntity>>> tasks = mobBuilder.getEntityTaskBehaviour();
+        TaskContext<DungeonEntity> taskContext = new TaskContext<>(this, activeTasks, taskRunner);
+        for (Consumer<TaskContext<DungeonEntity>> task : tasks) {
+            task.accept(taskContext);
+        }
     }
 
     @Override
@@ -99,7 +106,7 @@ public class DungeonMob implements DungeonEntity {
 
     @Override
     public void endTasks() {
-        activeEntityTasks.endAllTasks();
+        activeTasks.endAllTasks();
     }
 
     @Override

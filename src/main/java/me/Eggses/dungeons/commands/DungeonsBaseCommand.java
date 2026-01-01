@@ -45,6 +45,8 @@ public class DungeonsBaseCommand implements CommandExecutor, TabCompleter {
                              @NotNull String s,
                              @NotNull String @NotNull [] args) {
 
+
+        // TODO: getMessage now returns a path... need to apass in a file configuration for the messages file.
         if (!sender.hasPermission(COMMAND_PERMISSION)) {
             sender.sendMessage(messageCreator.createMessage(Messages.PERMISSION_FAIL.getMessage()));
             return true;

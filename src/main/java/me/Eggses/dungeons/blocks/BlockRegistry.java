@@ -3,9 +3,9 @@ package me.Eggses.dungeons.blocks;
 import me.Eggses.dungeons.dispatch.EventManagerRegistry;
 import me.Eggses.dungeons.eventhandler.EventBehaviour;
 import me.Eggses.dungeons.eventhandler.EventContext;
-import me.Eggses.dungeons.tasks.definitions.TaskBehaviour;
-import me.Eggses.dungeons.tasks.running.ActiveTasks;
-import me.Eggses.dungeons.tasks.running.TaskManager;
+import me.Eggses.dungeons.tasks.ActiveTasks;
+import me.Eggses.dungeons.tasks.TaskContext;
+import me.Eggses.dungeons.tasks.TaskRunner;
 import org.bukkit.Location;
 import org.bukkit.entity.TextDisplay;
 import org.bukkit.event.Event;
@@ -19,14 +19,14 @@ import java.util.function.Predicate;
 
 public class BlockRegistry {
 
-    private final TaskManager taskManager;
+    private final TaskRunner taskRunner;
 
     private final EventManagerRegistry<Location> blockEventRegistry = new EventManagerRegistry<>();
     private final Map<Location, TextDisplay> blockTextDisplayRegistry = new HashMap<>();
-    private final Map<Location, ActiveTasks<Location>> blockActiveTaskRegistry = new HashMap<>();
+    private final Map<Location, ActiveTasks> blockActiveTaskRegistry = new HashMap<>();
 
-    public BlockRegistry(TaskManager taskManager) {
-        this.taskManager = taskManager;
+    public BlockRegistry(TaskRunner taskRunner) {
+        this.taskRunner = taskRunner;
     }
 
     public <E extends Event> void addBlockAndEvent(Location location,
@@ -46,12 +46,13 @@ public class BlockRegistry {
         settings.accept(textDisplay);
     }
 
-    public void addBlockAndTaskBehaviour(Location location, TaskBehaviour<Location> taskBehaviour) {
+    public void addBlockAndTaskBehaviour(Location location, Consumer<TaskContext<Location>> task) {
 
-        blockActiveTaskRegistry.putIfAbsent(location, new ActiveTasks<>());
-        ActiveTasks<Location> blockTasks = blockActiveTaskRegistry.get(location);
-        blockTasks.endAllWithoutClearing();
-        blockTasks.addAndRunTasks(location, taskBehaviour, taskManager);
+        blockActiveTaskRegistry.putIfAbsent(location, new ActiveTasks());
+        ActiveTasks activeTasks = blockActiveTaskRegistry.get(location);
+
+        TaskContext<Location> taskContext = new TaskContext<>(location, activeTasks, taskRunner);
+        task.accept(taskContext);
     }
 
     public void remove(Location location) {
@@ -60,7 +61,7 @@ public class BlockRegistry {
         TextDisplay textDisplay = blockTextDisplayRegistry.remove(location);
         if (textDisplay != null) textDisplay.remove();
 
-        ActiveTasks<Location> blockTasks = blockActiveTaskRegistry.remove(location);
+        ActiveTasks blockTasks = blockActiveTaskRegistry.remove(location);
         if (blockTasks != null) blockTasks.endAllTasks();
     }
 

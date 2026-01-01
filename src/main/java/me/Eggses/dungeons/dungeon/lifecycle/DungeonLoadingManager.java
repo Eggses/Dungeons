@@ -17,7 +17,6 @@ import me.Eggses.dungeons.dungeon.regions.WorldRegion;
 import me.Eggses.dungeons.entities.mobs.mobtype.MobRegistry;
 import me.Eggses.dungeons.items.DungeonItemKeys;
 import me.Eggses.dungeons.items.events.CancelUse;
-import me.Eggses.dungeons.tasks.definitions.TaskBehaviour;
 import me.Eggses.dungeons.utility.text.MessageCreator;
 import me.Eggses.dungeons.utility.placeholder.Placeholder;
 import me.Eggses.dungeons.utility.placeholder.Placeholders;
@@ -135,11 +134,7 @@ public class DungeonLoadingManager {
                 textDisplay.text(keystoneName);
                 textDisplay.setAlignment(TextDisplay.TextAlignment.CENTER);
             });
-
-            TaskBehaviour<Location> blockTaskBehaviour = new TaskBehaviour<>();
-            KeystoneParticleTask keystoneParticleTask = new KeystoneParticleTask();
-            blockTaskBehaviour.addTask(keystoneParticleTask.getTask());
-            blockRegistry.addBlockAndTaskBehaviour(locationOfKeystone, blockTaskBehaviour);
+            blockRegistry.addBlockAndTaskBehaviour(locationOfKeystone, new KeystoneParticleTask().getTaskContext());
 
             var generalPortalRoomRegion = nonInstanceDungeonTemplate.generalPortalRoomRegion();
             var worldRegion = new WorldRegion(worldOfKeystone, generalPortalRoomRegion);

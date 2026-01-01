@@ -7,7 +7,7 @@ import me.Eggses.dungeons.dungeon.files.DungeonLog;
 import me.Eggses.dungeons.dungeon.lifecycle.*;
 import me.Eggses.dungeons.dungeon.utility.BannedItems;
 import me.Eggses.dungeons.dungeon.utility.InstanceNameManager;
-import me.Eggses.dungeons.tasks.running.TaskManager;
+import me.Eggses.dungeons.tasks.TaskRunner;
 import me.Eggses.dungeons.items.ItemKey;
 import me.Eggses.dungeons.listeners.entities.Combustion;
 import me.Eggses.dungeons.listeners.entities.EntityCombat;
@@ -39,10 +39,10 @@ public final class Dungeons extends JavaPlugin {
             this, dungeonRegistry, dungeonOpenPortalRegistry, dungeonWorldManager, dungeonLog
     );
 
-    TaskManager taskManager = new TaskManager(this);
+    TaskRunner taskRunner = new TaskRunner(this);
 
     DungeonEventRouter dungeonEventRouter = new DungeonEventRouter(dungeonRegistry, dungeonOpenPortalRegistry);
-    BlockRegistry blockRegistry = new BlockRegistry(taskManager);
+    BlockRegistry blockRegistry = new BlockRegistry(taskRunner);
     EventManagerRegistry<String> itemRegistry = new EventManagerRegistry<>();
     ItemKey itemKey = new ItemKey(this);
 
@@ -57,7 +57,7 @@ public final class Dungeons extends JavaPlugin {
             dungeonWorldManager,
             blockRegistry,
             instanceNameManager,
-            taskManager,
+            taskRunner,
             messageCreator,
             textFormatter,
             dungeonLog,

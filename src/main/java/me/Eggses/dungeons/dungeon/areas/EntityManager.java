@@ -3,7 +3,7 @@ package me.Eggses.dungeons.dungeon.areas;
 import me.Eggses.dungeons.entities.mobs.DungeonEntity;
 import me.Eggses.dungeons.entities.mobs.DungeonMob;
 import me.Eggses.dungeons.entities.mobs.MobBuilder;
-import me.Eggses.dungeons.tasks.running.TaskManager;
+import me.Eggses.dungeons.tasks.TaskRunner;
 import me.Eggses.dungeons.utility.text.MessageCreator;
 import me.Eggses.dungeons.utility.text.TextFormatter;
 import org.bukkit.World;
@@ -15,17 +15,17 @@ public class EntityManager {
     private final Map<UUID, DungeonEntity> dungeonEntities = new HashMap<>();
 
     private final World dungeonWorld;
-    private final TaskManager taskManager;
+    private final TaskRunner taskRunner;
     private final MessageCreator messageCreator;
     private final TextFormatter textFormatter;
 
     public EntityManager(World dungeonWorld,
-                         TaskManager taskManager,
+                         TaskRunner taskRunner,
                          MessageCreator messageCreator,
                          TextFormatter textFormatter) {
 
         this.dungeonWorld = dungeonWorld;
-        this.taskManager = taskManager;
+        this.taskRunner = taskRunner;
         this.messageCreator = messageCreator;
         this.textFormatter = textFormatter;
     }
@@ -44,7 +44,7 @@ public class EntityManager {
 
     public void spawnMob(MobBuilder mobBuilder) {
         for (int i = 0; i < mobBuilder.getCount(); i++) {
-            addMob(new DungeonMob(mobBuilder, dungeonWorld, taskManager, messageCreator, textFormatter));
+            addMob(new DungeonMob(mobBuilder, dungeonWorld, taskRunner, messageCreator, textFormatter));
         }
     }
 

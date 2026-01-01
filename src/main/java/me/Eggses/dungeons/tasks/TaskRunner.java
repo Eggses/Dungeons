@@ -1,14 +1,14 @@
-package me.Eggses.dungeons.tasks.running;
+package me.Eggses.dungeons.tasks;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
-public class TaskManager {
+public class TaskRunner {
 
     private final JavaPlugin plugin;
 
-    public TaskManager(JavaPlugin plugin) {
+    public TaskRunner(JavaPlugin plugin) {
         this.plugin = plugin;
     }
 
@@ -16,7 +16,6 @@ public class TaskManager {
         return Bukkit.getScheduler().runTaskTimer(plugin, runnable, delayInTicks, periodInTicks);
     }
 
-    @Deprecated
     public BukkitTask runTaskLater(Runnable runnable, long delayInTicks) {
         return Bukkit.getScheduler().runTaskLater(plugin, runnable, delayInTicks);
     }

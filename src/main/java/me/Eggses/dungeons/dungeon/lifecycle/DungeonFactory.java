@@ -2,19 +2,17 @@ package me.Eggses.dungeons.dungeon.lifecycle;
 
 import me.Eggses.dungeons.blocks.BlockRegistry;
 import me.Eggses.dungeons.dungeon.types.DungeonType;
-import me.Eggses.dungeons.dispatch.EventManagerRegistry;
 import me.Eggses.dungeons.dungeon.files.templates.DungeonInstanceTemplate;
 import me.Eggses.dungeons.dungeon.files.DungeonLog;
 import me.Eggses.dungeons.dungeon.instance.DungeonInstance;
 import me.Eggses.dungeons.dungeon.utility.BannedItems;
 import me.Eggses.dungeons.dungeon.utility.InstanceNameManager;
-import me.Eggses.dungeons.tasks.running.TaskManager;
+import me.Eggses.dungeons.tasks.TaskRunner;
 import me.Eggses.dungeons.utility.text.MessageCreator;
 import me.Eggses.dungeons.utility.text.TextFormatter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -29,7 +27,7 @@ public class DungeonFactory {
     private final DungeonWorldManager dungeonWorldManager;
     private final BlockRegistry blockRegistry;
     private final InstanceNameManager instanceNameManager;
-    private final TaskManager taskManager;
+    private final TaskRunner taskRunner;
     private final MessageCreator messageCreator;
     private final TextFormatter textFormatter;
     private final DungeonLog dungeonLog;
@@ -42,7 +40,7 @@ public class DungeonFactory {
                           DungeonWorldManager dungeonWorldManager,
                           BlockRegistry blockRegistry,
                           InstanceNameManager instanceNameManager,
-                          TaskManager taskManager,
+                          TaskRunner taskRunner,
                           MessageCreator messageCreator,
                           TextFormatter textFormatter,
                           DungeonLog dungeonLog,
@@ -55,7 +53,7 @@ public class DungeonFactory {
         this.dungeonWorldManager = dungeonWorldManager;
         this.blockRegistry = blockRegistry;
         this.instanceNameManager = instanceNameManager;
-        this.taskManager = taskManager;
+        this.taskRunner = taskRunner;
         this.messageCreator = messageCreator;
         this.textFormatter = textFormatter;
         this.dungeonLog = dungeonLog;
@@ -76,7 +74,7 @@ public class DungeonFactory {
                 instanceFileName,
                 messageCreator,
                 textFormatter,
-                taskManager,
+                taskRunner,
                 bannedItems,
                 dungeonType
         );

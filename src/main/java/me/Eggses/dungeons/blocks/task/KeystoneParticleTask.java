@@ -1,33 +1,36 @@
 package me.Eggses.dungeons.blocks.task;
 
 import me.Eggses.dungeons.particles.OrbitParticleEffect;
-import me.Eggses.dungeons.tasks.definitions.RepeatingTask;
-import me.Eggses.dungeons.tasks.definitions.Task;
-import me.Eggses.dungeons.tasks.definitions.TaskDefinition;
-import me.Eggses.dungeons.tasks.running.TaskManager;
+import me.Eggses.dungeons.tasks.TaskContext;
+import me.Eggses.dungeons.tasks.TaskContextProvider;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 
 import java.util.List;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
-public class KeystoneParticleTask implements Task<Location> {
+public class KeystoneParticleTask implements TaskContextProvider<Location> {
 
     private static final long DELAY_TICKS = 0;
     private static final long REPEATING_PERIOD_TICKS = 1;
 
-    private final RepeatingTask<Location> particleTask;
-
     public KeystoneParticleTask() {
+    }
+
+    @Override
+    public Consumer<TaskContext<Location>> getTaskContext() {
 
         double radius = 0.73;
         List<OrbitParticleEffect> particleEffectList = getOrbitParticleEffects(radius);
 
-        BiConsumer<Location, TaskManager> task = (location, taskManager) -> {
-            Location center = location.clone().add(0.5, 0, 0.5);
-            particleEffectList.forEach(ope -> ope.spawnParticle(center));
-        };
-        particleTask = new RepeatingTask<>(task, DELAY_TICKS, REPEATING_PERIOD_TICKS);
+        return (taskContext -> {
+            Location center = taskContext.getOwner().clone().add(0.5, 0, 0.5);
+
+            taskContext.runTaskRepeatedly(
+                    () -> particleEffectList.forEach(ope -> ope.spawnParticle(center))
+                    , DELAY_TICKS, REPEATING_PERIOD_TICKS
+            );
+        });
     }
 
     private List<OrbitParticleEffect> getOrbitParticleEffects(double radius) {
@@ -42,10 +45,5 @@ public class KeystoneParticleTask implements Task<Location> {
                 new OrbitParticleEffect(radius, 315, 180, particle, countOfPointsInBetween, maxY),
                 new OrbitParticleEffect(radius, 225, 90, particle, countOfPointsInBetween, maxY)
         );
-    }
-
-    @Override
-    public TaskDefinition<Location> getTask() {
-        return particleTask;
     }
 }

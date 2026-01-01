@@ -5,8 +5,7 @@ import me.Eggses.dungeons.entities.mobs.MobBuilder;
 import me.Eggses.dungeons.entities.mobs.mobtype.MobPreset;
 import me.Eggses.dungeons.entities.mobs.mobtype.MobUtility;
 import me.Eggses.dungeons.entities.nameutility.MobName;
-import me.Eggses.dungeons.tasks.definitions.RepeatingTask;
-import me.Eggses.dungeons.tasks.running.TaskManager;
+import me.Eggses.dungeons.tasks.TaskContext;
 import me.Eggses.dungeons.utility.misc.NMS;
 import me.Eggses.dungeons.utility.sound.DungeonSound;
 import me.Eggses.dungeons.utility.sound.SoundPlayer;
@@ -28,20 +27,17 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @NMS
 public class Enchanter implements MobPreset {
 
-    private final JavaPlugin plugin;
     private final MobUtility mobUtility;
     private final String displayName;
     private final SoundPlayer soundPlayer;
 
-    public Enchanter(JavaPlugin plugin, MobUtility mobUtility, TextFormatter textFormatter, SoundPlayer soundPlayer) {
-        this.plugin = plugin;
+    public Enchanter(MobUtility mobUtility, TextFormatter textFormatter, SoundPlayer soundPlayer) {
         this.mobUtility = mobUtility;
         this.displayName = textFormatter.formatName(this.getClass().getSimpleName(), TextFormatter.SPLITTER_INNER_WORD, TextFormatter.SEPARATOR_SPACE);
         this.soundPlayer = soundPlayer;
@@ -92,9 +88,9 @@ public class Enchanter implements MobPreset {
                 pathfinderMob.goalSelector.addGoal(7, new RandomLookAroundGoal(pathfinderMob));
             });
 
-            BiConsumer<DungeonEntity, TaskManager> task = (dungeonEntity, taskManager) -> {
+            Consumer<TaskContext<DungeonEntity>> task = (dungeonEntityTaskContext -> dungeonEntityTaskContext.runTaskRepeatedly(() -> {
 
-                LivingEntity enchanter = dungeonEntity.getEntity();
+                LivingEntity enchanter = dungeonEntityTaskContext.getOwner().getEntity();
                 if (enchanter == null || enchanter.isDead()) return;
 
                 List<Entity> nearbyEntities = enchanter.getNearbyEntities(BUFF_RANGE, BUFF_RANGE, BUFF_RANGE);
@@ -149,8 +145,9 @@ public class Enchanter implements MobPreset {
 
                     soundPlayer.playSound(sound, players);
                 }
-            };
-            mobBuilder.entityTask(new RepeatingTask<>(task, 0, REPEATING_PERIOD));
+
+            }, 0, REPEATING_PERIOD));
+            mobBuilder.entityTask(task);
         };
     }
 }

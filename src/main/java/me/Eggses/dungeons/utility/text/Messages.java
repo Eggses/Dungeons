@@ -2,22 +2,23 @@ package me.Eggses.dungeons.utility.text;
 
 public enum Messages {
 
-    UNKNOWN_COMMAND("<dark_red><bold>Error: </bold></dark_red><gradient:#ff5555:#ffaaaa>Unknown command.</gradient>"),
-    PERMISSION_FAIL("<dark_red><bold>Error: </bold></dark_red><gradient:#ff5555:#ffaaaa>You do not have permission to use this command.</gradient>"),
-    UNKNOWN_SYNTAX("<dark_red><bold>Error: </bold></dark_red><gradient:#ff5555:#ffaaaa>Unknown command syntax.</gradient>"),
-    MUST_BE_PLAYER("<dark_red><bold>Error: </bold></dark_red><gradient:#ff5555:#ffaaaa>This command can only be used by a player.</gradient>"),
-    MUST_BE_COMMAND_BLOCK("<dark_red><bold>Error: </bold></dark_red><gradient:#ff5555:#ffaaaa>This command can only be executed by a command block.</gradient>"),
-    INVALID_DUNGEON_WORLD("<dark_red><bold>Error: </bold></dark_red><gradient:#ff5555:#ffaaaa>That world does not exist or is not a dungeon world.</gradient>"),
-    DUNGEON_DESTROY_REQUESTED("<gradient:#00FF00:#32CD32>Dungeon world(s) scheduled for destruction.</gradient>"),
+    UNKNOWN_COMMAND("unknown_command"),
+    PERMISSION_FAIL("permission_fail"),
+    UNKNOWN_SYNTAX("unknown_syntax"),
+    MUST_BE_PLAYER("must_be_player"),
+    MUST_BE_COMMAND_BLOCK("must_be_command_block"),
+    INVALID_DUNGEON_WORLD("invalid_dungeon_world"),
+    DUNGEON_DESTROY_REQUESTED("dungeon_destroy_requested"),
+    KEYSTONE_DISABLED("keystone_disabled"),
     ;
 
-    private final String string;
+    private final String path;
 
-    Messages(String string) {
-        this.string = string;
+    Messages(String path) {
+        this.path = path;
     }
 
-    public String getMessage() {
-        return string;
+    public String getPath() {
+        return path;
     }
 }

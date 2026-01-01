@@ -1,0 +1,9 @@
+
+unknown_command: "<dark_red><bold>Error: </bold></dark_red><red>Unknown command.</red>"
+permission_fail: "<dark_red><bold>Error: </bold></dark_red><red>You do not have permission to use this command.</red>"
+unknown_syntax: "<dark_red><bold>Error: </bold></dark_red><red>Unknown command syntax.</red>"
+must_be_player: "<dark_red><bold>Error: </bold></dark_red><red>This command can only be used by a player.</red>"
+must_be_command_block: "<dark_red><bold>Error: </bold></dark_red><red>This command can only be executed by a command block.</red>"
+invalid_dungeon_world: "<dark_red><bold>Error: </bold></dark_red><red>That world does not exist or is not a dungeon world.</red>"
+dungeon_destroy_requested: "<green>Dungeon world(s) scheduled for destruction.</green>"
+keystone_disabled: "<red>This keystone has no energy."

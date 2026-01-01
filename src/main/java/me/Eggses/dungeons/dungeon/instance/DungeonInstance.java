@@ -2,7 +2,6 @@ package me.Eggses.dungeons.dungeon.instance;
 
 import me.Eggses.dungeons.blocks.BlockRegistry;
 import me.Eggses.dungeons.dungeon.types.DungeonType;
-import me.Eggses.dungeons.dispatch.EventManagerRegistry;
 import me.Eggses.dungeons.dungeon.files.templates.DungeonInstanceTemplate;
 import me.Eggses.dungeons.dungeon.areas.AreaController;
 import me.Eggses.dungeons.dungeon.areas.EntityManager;
@@ -12,7 +11,7 @@ import me.Eggses.dungeons.dungeon.portals.PortalController;
 import me.Eggses.dungeons.dungeon.utility.BannedItems;
 import me.Eggses.dungeons.dungeon.utility.DungeonContext;
 import me.Eggses.dungeons.dungeon.utility.GameRules;
-import me.Eggses.dungeons.tasks.running.TaskManager;
+import me.Eggses.dungeons.tasks.TaskRunner;
 import me.Eggses.dungeons.utility.text.MessageCreator;
 import me.Eggses.dungeons.utility.text.TextFormatter;
 import org.bukkit.*;
@@ -45,7 +44,7 @@ public class DungeonInstance {
                            String instanceFileName,
                            MessageCreator messageCreator,
                            TextFormatter textFormatter,
-                           TaskManager taskManager,
+                           TaskRunner taskRunner,
                            BannedItems bannedItems, DungeonType dungeonType) {
 
         this.plugin = plugin;
@@ -56,7 +55,7 @@ public class DungeonInstance {
         this.dungeonType = dungeonType;
 
         var graveyard = dungeonInstanceTemplate.getGraveyard();
-        var entityManager = new EntityManager(dungeonWorld, taskManager, messageCreator, textFormatter);
+        var entityManager = new EntityManager(dungeonWorld, taskRunner, messageCreator, textFormatter);
         this.areaController = new AreaController(entityManager, graveyard, dungeonWorld, blockRegistry, dungeonInstanceTemplate.getAreaControllerBuilder());
         this.instanceEventHandler = new InstanceEventHandler(this, areaController, entityManager);
         this.portalController = new PortalController(plugin, this, dungeonInstanceTemplate.getDungeonPortal(), bannedItems);
