@@ -4,7 +4,7 @@ import me.Eggses.dungeons.configuration.ConfigurationFile;
 import me.Eggses.dungeons.items.ItemCreator;
 import me.Eggses.dungeons.items.ItemStackTemplate;
 import me.Eggses.dungeons.utility.text.MessageCreator;
-import me.Eggses.dungeons.utility.placeholder.Placeholders;
+import me.Eggses.dungeons.utility.text.Placeholders;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;

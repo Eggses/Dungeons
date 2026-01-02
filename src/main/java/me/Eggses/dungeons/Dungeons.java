@@ -1,8 +1,9 @@
 package me.Eggses.dungeons;
 
 import me.Eggses.dungeons.blocks.BlockRegistry;
+import me.Eggses.dungeons.configuration.ConfigurationFile;
 import me.Eggses.dungeons.dispatch.EventManagerRegistry;
-import me.Eggses.dungeons.commands.DungeonsBaseCommand;
+import me.Eggses.dungeons.commandsOLD.DungeonsBaseCommand;
 import me.Eggses.dungeons.dungeon.files.DungeonLog;
 import me.Eggses.dungeons.dungeon.lifecycle.*;
 import me.Eggses.dungeons.dungeon.utility.BannedItems;
@@ -46,7 +47,10 @@ public final class Dungeons extends JavaPlugin {
     EventManagerRegistry<String> itemRegistry = new EventManagerRegistry<>();
     ItemKey itemKey = new ItemKey(this);
 
-    MessageCreator messageCreator = new MessageCreator();
+    ConfigurationFile messagesFile = new ConfigurationFile(this, "messages.yml");
+    ConfigurationFile menuFile = new ConfigurationFile(this, "menus.yml");
+
+    MessageCreator messageCreator = new MessageCreator(messagesFile);
     TextFormatter textFormatter = new TextFormatter();
 
     DungeonFactory dungeonFactory = new DungeonFactory(

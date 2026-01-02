@@ -1,0 +1,27 @@
+package me.Eggses.dungeons.utility.misc;
+
+import org.bukkit.command.CommandSender;
+
+public enum Permission {
+
+    DUNGEONS_BASE("dungeons.command.base"),
+    RELOAD("dungeons.command.reload"),
+    TRIGGER("dungeons.command.trigger"),
+    GIVE("dungeons.command.give"),
+    DESTROY("dungeons.command.destroy"),
+    TRIGGER_COMMAND_BLOCK("dungeons.command.trigger.commandblock");
+
+    private final String permission;
+
+    Permission(String permission) {
+        this.permission = permission;
+    }
+
+    public String getPermission() {
+        return permission;
+    }
+
+    public boolean has(CommandSender sender) {
+        return sender.hasPermission(permission);
+    }
+}

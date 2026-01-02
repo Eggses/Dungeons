@@ -30,7 +30,7 @@ public class MobRegistry {
         mobPresets.put(MobType.KNIGHT, new Knight(mobUtility, textFormatter).getBuilderConsumer());
         mobPresets.put(MobType.FIEND, new Fiend(mobUtility, textFormatter).getBuilderConsumer());
         mobPresets.put(MobType.BRUISER, new Bruiser(mobUtility, textFormatter).getBuilderConsumer());
-        mobPresets.put(MobType.ENCHANTER, new Enchanter(plugin, mobUtility, textFormatter, soundPlayer).getBuilderConsumer());
+        mobPresets.put(MobType.ENCHANTER, new Enchanter(mobUtility, textFormatter, soundPlayer).getBuilderConsumer());
         mobPresets.put(MobType.NOXIOUS_CULTIVATOR, new NoxiousCultivator(mobUtility, textFormatter).getBuilderConsumer());
         mobPresets.put(MobType.VILLAGER, new Villager(mobUtility).getBuilderConsumer());
         mobPresets.put(MobType.BEEHIVE_CREEPER, new BeehiveCreeper(textFormatter).getBuilderConsumer());

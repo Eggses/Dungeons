@@ -1,4 +1,4 @@
-package me.Eggses.dungeons.commands.subcommands;
+package me.Eggses.dungeons.commandsOLD.subcommands;
 
 import me.Eggses.dungeons.dungeon.instance.DungeonInstance;
 import me.Eggses.dungeons.dungeon.lifecycle.DungeonRegistry;

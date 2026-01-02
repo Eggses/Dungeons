@@ -1,9 +1,36 @@
+# =========================================================
+# Shared (used by all commands)
+# =========================================================
+shared:
+  prefix:
+    main: "<blue><bold>[Dungeons] </bold></blue>"
+    error: "<dark_red><bold>Error: </bold></dark_red>"
 
-unknown_command: "<dark_red><bold>Error: </bold></dark_red><red>Unknown command.</red>"
-permission_fail: "<dark_red><bold>Error: </bold></dark_red><red>You do not have permission to use this command.</red>"
-unknown_syntax: "<dark_red><bold>Error: </bold></dark_red><red>Unknown command syntax.</red>"
-must_be_player: "<dark_red><bold>Error: </bold></dark_red><red>This command can only be used by a player.</red>"
-must_be_command_block: "<dark_red><bold>Error: </bold></dark_red><red>This command can only be executed by a command block.</red>"
-invalid_dungeon_world: "<dark_red><bold>Error: </bold></dark_red><red>That world does not exist or is not a dungeon world.</red>"
-dungeon_destroy_requested: "<green>Dungeon world(s) scheduled for destruction.</green>"
-keystone_disabled: "<red>This keystone has no energy."
+  error:
+    unknown_command: "%prefix_main%%prefix_error%<red>Unknown command.</red>"
+    permission_fail: "%prefix_main%%prefix_error%<red>You do not have permission to use this command.</red>"
+    unknown_syntax: "%prefix_main%%prefix_error%<red>Unknown command syntax.</red>"
+    must_be_player: "%prefix_main%%prefix_error%<red>This command can only be used by a player.</red>"
+    must_be_command_block: "%prefix_main%%prefix_error%<red>This command can only be executed by a command block.</red>"
+
+# =========================================================
+# /dungeons reload
+# =========================================================
+dungeons_reload:
+  usage: "%prefix_main%%prefix_error%<red>Usage: /dungeons reload <all|messages|menus|dungeon_templates></red>"
+  unknown_target: "%prefix_main%%prefix_error%<red>Unknown reload target: %reload_target%.</red>"
+  reloaded: "%prefix_main%<green>Reloaded %reload_target%.</green>"
+
+# =========================================================
+# /dungeons destroy
+# =========================================================
+dungeons_destroy:
+  usage: "%prefix_main%%prefix_error%<red>Usage: /dungeons destroy <all|target_instance></red>"
+  invalid_dungeon_world: "%prefix_main%%prefix_error%<red>That world does not exist or is not a dungeon world.</red>"
+  requested: "%prefix_main%<green>Dungeon world(s) scheduled for destruction.</green>"
+
+# =========================================================
+# Keystone / mechanics
+# =========================================================
+keystone:
+  disabled: "%prefix_main%%prefix_error%<red>This keystone has no energy.</red>"

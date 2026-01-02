@@ -8,17 +8,40 @@ description: Dungeons
 
 commands:
   dungeons:
-    description: Dungeon Base Command
+    description: Dungeon base command
     usage: /dungeons
-    permission: dungeons.commands
+    permission: dungeons.command.base
 
 permissions:
-  dungeons.commands:
-    description: Permission for /dungeons
+  # =====================================
+  # Base command
+  # =====================================
+  dungeons.command.base:
+    description: Allows use of /dungeons
+    default: true
+
+  # =====================================
+  # Core subcommands
+  # =====================================
+  dungeons.command.reload:
+    description: Allows use of /dungeons reload
     default: op
-  dungeons.commands.admin.cmdblock.trigger:
-    description: Permission for /dungeons trigger [arg1]
+
+  dungeons.command.trigger:
+    description: Allows use of /dungeons trigger
     default: op
-  dungeons.commands.admin.destroy:
-    description: Permission for /dungeons destroy <ALL | World_Name>
+
+  dungeons.command.give:
+    description: Allows use of /dungeons give
+    default: op
+
+  dungeons.command.destroy:
+    description: Allows use of /dungeons destroy
+    default: op
+
+  # =====================================
+  # Command Block
+  # =====================================
+  dungeons.command.trigger.commandblock:
+    description: Allows /dungeons trigger to be executed by command blocks
     default: op

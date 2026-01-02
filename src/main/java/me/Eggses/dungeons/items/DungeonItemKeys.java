@@ -1,7 +1,7 @@
 package me.Eggses.dungeons.items;
 
 import me.Eggses.dungeons.dungeon.types.DungeonType;
-import me.Eggses.dungeons.utility.placeholder.Placeholders;
+import me.Eggses.dungeons.utility.text.Placeholders;
 
 import java.util.EnumMap;
 import java.util.Map;

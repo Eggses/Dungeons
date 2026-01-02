@@ -18,16 +18,14 @@ import me.Eggses.dungeons.entities.mobs.mobtype.MobRegistry;
 import me.Eggses.dungeons.items.DungeonItemKeys;
 import me.Eggses.dungeons.items.events.CancelUse;
 import me.Eggses.dungeons.utility.text.MessageCreator;
-import me.Eggses.dungeons.utility.placeholder.Placeholder;
-import me.Eggses.dungeons.utility.placeholder.Placeholders;
+import me.Eggses.dungeons.utility.text.Placeholder;
+import me.Eggses.dungeons.utility.text.Placeholders;
 import me.Eggses.dungeons.utility.sound.SoundPlayer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.entity.TextDisplay;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.util.EnumMap;
 import java.util.EnumSet;
@@ -51,11 +49,10 @@ public class DungeonLoadingManager {
 
     private final DungeonInstanceTemplateRegistry dungeonInstanceTemplateRegistry;
 
-
     private final Map<DungeonType, Location> keystoneLocations = new EnumMap<>(DungeonType.class);
     private final Map<DungeonType, WorldRegion> portalRooms = new EnumMap<>(DungeonType.class);
 
-    private BukkitTask loadingTask = null;
+    private boolean loadScheduled = false;
 
     public DungeonLoadingManager(JavaPlugin plugin,
                                  ReadingUtility readingUtility,
@@ -80,27 +77,23 @@ public class DungeonLoadingManager {
         this.dungeonInstanceTemplateRegistry = dungeonInstanceTemplateRegistry;
     }
 
-    public void loadAllDungeons() {
+    public void loadAllDungeonsOnEnable() {
+        loadScheduled = true;
 
-        if (loadingTask != null) {
-            loadingTask.cancel();
-            loadingTask = null;
-        }
-
-        loadingTask = new BukkitRunnable() {
-            @Override
-            public void run() {
-                try {
-                    load();
-                } finally {
-                    loadingTask = null;
-                }
-            }
-        }.runTaskLater(plugin, 20 * 30);
+        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+            loadScheduled = false;
+            loadDungeons();
+        }, 20 * 30);
     }
 
-    private void load() {
-        cleanUp();
+    public void reloadAllDungeons() {
+        if (loadScheduled) return;
+
+        cleanUpDungeons();
+        loadDungeons();
+    }
+
+    private void loadDungeons() {
         for (DungeonType dungeonType : dungeons) {
 
             ConfigurationFile fileToRead = new ConfigurationFile(plugin, dungeonType.getDungeonConfigFileName());
@@ -143,7 +136,7 @@ public class DungeonLoadingManager {
         }
     }
 
-    public void cleanUp() {
+    private void cleanUpDungeons() {
 
         for (DungeonType dungeonType : dungeons) {
 

@@ -1,17 +1,44 @@
 package me.Eggses.dungeons.utility.text;
 
-import me.Eggses.dungeons.utility.placeholder.Placeholders;
+import me.Eggses.dungeons.configuration.ConfigurationFile;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.bukkit.configuration.file.FileConfiguration;
 
 public class MessageCreator {
 
     private final LegacyComponentSerializer OLD_MESSAGE = LegacyComponentSerializer.legacyAmpersand();
     private final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
 
+    private final FileConfiguration messagesFile;
+
+    public MessageCreator(ConfigurationFile messagesFile) {
+        this.messagesFile = messagesFile.getCustomFile();
+    }
+
+    public Component createMessage(Messages message) {
+        return createMessage(message, new Placeholders());
+    }
+
+    public Component createMessage(Messages message, Placeholders placeholders) {
+        return createMessage(messagesFile.getString(message.getPath()), placeholders);
+    }
+
     public Component createMessage(String text) {
         return createMessage(text, new Placeholders());
+    }
+
+    public Placeholders Placeholders() {
+        Placeholders placeholders = new Placeholders();
+
+        String prefixValue = this.messagesFile.getString(Messages.PREFIX_MAIN.getPath());
+        placeholders.addPlaceholder(Placeholder.PREFIX_MAIN, prefixValue);
+
+        String errorValue = this.messagesFile.getString(Messages.PREFIX_ERROR.getPath());
+        placeholders.addPlaceholder(Placeholder.PREFIX_ERROR, errorValue);
+
+        return placeholders;
     }
 
     public Component createMessage(String text, Placeholders placeholders) {

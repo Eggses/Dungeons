@@ -1,7 +1,7 @@
 package me.Eggses.dungeons.items;
 
 import me.Eggses.dungeons.utility.text.MessageCreator;
-import me.Eggses.dungeons.utility.placeholder.Placeholders;
+import me.Eggses.dungeons.utility.text.Placeholders;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;

@@ -1,6 +1,6 @@
 package me.Eggses.dungeons.items;
 
-import me.Eggses.dungeons.utility.placeholder.Placeholders;
+import me.Eggses.dungeons.utility.text.Placeholders;
 
 public record ItemRecord(ItemStackTemplate itemStackTemplate, String uniqueKey, Placeholders placeholders) {
 }

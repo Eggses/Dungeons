@@ -18,10 +18,6 @@ public class TaskContext<O> {
         return owner;
     }
 
-    public ActiveTasks getOwnersActiveTasks() {
-        return ownersActiveTasks;
-    }
-
     public BukkitTask runTaskRepeatedly(Runnable runnable, long delayInTicks, long periodInTicks) {
         BukkitTask task = taskRunner.runTaskRepeatedly(runnable, delayInTicks, periodInTicks);
         ownersActiveTasks.addTask(task);
@@ -32,5 +28,9 @@ public class TaskContext<O> {
         BukkitTask task = taskRunner.runTaskLater(runnable, delayInTicks);
         ownersActiveTasks.addTask(task);
         return task;
+    }
+
+    public void removeAndEndTask(BukkitTask bukkitTask) {
+        ownersActiveTasks.endTask(bukkitTask);
     }
 }

@@ -1,4 +1,4 @@
-package me.Eggses.dungeons.utility.placeholder;
+package me.Eggses.dungeons.utility.text;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,6 +6,9 @@ import java.util.Map;
 public class Placeholders {
 
     private final Map<String, String> placeholders = new HashMap<>();
+
+    Placeholders() {
+    }
 
     public void addPlaceholder(Placeholder placeholder, String value) {
         placeholders.put(placeholder.getPlaceholder(), value);
