@@ -97,7 +97,11 @@ public class DungeonFactory {
                 .text("Dungeon Failed To Generate.")
                 .color(TextColor.color(255, 20, 20));
 
-        Bukkit.getOnlinePlayers().forEach(player -> player.sendMessage(message));
+        plugin.getServer().getScheduler().runTask(
+                plugin,
+                () -> Bukkit.getOnlinePlayers().forEach(
+                        player -> player.sendMessage(message))
+        );
     }
 
     public boolean attemptToCreateDungeon(DungeonType dungeonType) {
