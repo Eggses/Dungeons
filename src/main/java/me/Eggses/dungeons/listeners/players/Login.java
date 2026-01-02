@@ -22,7 +22,8 @@ public class Login implements Listener {
         }
 
         Player player = event.getPlayer();
-        if (player.getWorld().getName().startsWith(InstanceNameManager.getInstancePrefix())) {
+
+        if (player.getWorld().getName().contains(InstanceNameManager.getInstanceInfix())) {
             player.teleport(mainWorld.getSpawnLocation());
             player.setGameMode(GameMode.SURVIVAL);
         }

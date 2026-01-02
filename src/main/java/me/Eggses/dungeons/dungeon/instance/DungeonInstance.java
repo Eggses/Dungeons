@@ -106,7 +106,7 @@ public class DungeonInstance {
 
         blockRegistry.removeAll(location -> location.getWorld().equals(dungeonWorld));
 
-        dungeonLifecycleService.destroyInstanceRuntime(this, dungeonType);
+        dungeonLifecycleService.destroyInstanceRuntime(this);
 
         if (destroyWorldFolder) {
             Bukkit.getScheduler().runTaskLater(
@@ -143,5 +143,9 @@ public class DungeonInstance {
 
     public Set<Long> getPortalChunkKeys() {
         return portalController.getChunkKeysEncompassed();
+    }
+
+    public DungeonType getDungeonType() {
+        return dungeonType;
     }
 }

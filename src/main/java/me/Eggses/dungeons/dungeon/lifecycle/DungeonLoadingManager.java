@@ -106,7 +106,7 @@ public class DungeonLoadingManager {
 
             NonInstanceDungeonTemplate nonInstanceDungeonTemplate = dungeonTemplateCompiler.createNonInstanceDungeonTemplate();
 
-            Placeholders placeholders = new Placeholders();
+            Placeholders placeholders = messageCreator.Placeholders();
             placeholders.addPlaceholder(Placeholder.DUNGEON_NAME, nonInstanceDungeonTemplate.dungeonName());
             String openDurationSeconds = String.valueOf(dungeonTemplate.getPortalTemplate().getOpenDurationSeconds());
             placeholders.addPlaceholder(Placeholder.OPEN_DURATION, openDurationSeconds);

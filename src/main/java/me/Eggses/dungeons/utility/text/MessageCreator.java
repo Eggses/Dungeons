@@ -17,18 +17,6 @@ public class MessageCreator {
         this.messagesFile = messagesFile.getCustomFile();
     }
 
-    public Component createMessage(Messages message) {
-        return createMessage(message, new Placeholders());
-    }
-
-    public Component createMessage(Messages message, Placeholders placeholders) {
-        return createMessage(messagesFile.getString(message.getPath()), placeholders);
-    }
-
-    public Component createMessage(String text) {
-        return createMessage(text, new Placeholders());
-    }
-
     public Placeholders Placeholders() {
         Placeholders placeholders = new Placeholders();
 
@@ -39,6 +27,15 @@ public class MessageCreator {
         placeholders.addPlaceholder(Placeholder.PREFIX_ERROR, errorValue);
 
         return placeholders;
+    }
+
+    public Component createMessage(Messages message, Placeholders placeholders) {
+        return createMessage(messagesFile.getString(message.getPath()), placeholders);
+    }
+
+    @Deprecated
+    public Component createMessage(String text) {
+        return createMessage(text, new Placeholders());
     }
 
     public Component createMessage(String text, Placeholders placeholders) {

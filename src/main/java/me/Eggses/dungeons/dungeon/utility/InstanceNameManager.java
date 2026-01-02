@@ -1,12 +1,13 @@
 package me.Eggses.dungeons.dungeon.utility;
 
 import me.Eggses.dungeons.dungeon.files.DungeonLog;
+import me.Eggses.dungeons.dungeon.types.DungeonType;
 
 import java.util.*;
 
 public class InstanceNameManager {
 
-    private static final String FOLDER_NAME = "dungeon_instance_";
+    private static final String INSTANCE_INFIX = "_instance_";
     private final Set<String> folderNames = new HashSet<>();
 
     private final DungeonLog dungeonLog;
@@ -16,11 +17,13 @@ public class InstanceNameManager {
        folderNames.addAll(dungeonLog.getActiveNameList());
     }
 
-    public synchronized String generateFolderName() {
+    public synchronized String generateFolderName(DungeonType dungeonType) {
+
+        String folderName = dungeonType.getUniqueKey() + INSTANCE_INFIX;
 
         int next = 1;
         String name;
-        while (folderNames.contains(name = FOLDER_NAME + next)) {
+        while (folderNames.contains(name = folderName + next)) {
             next++;
         }
 
@@ -34,7 +37,7 @@ public class InstanceNameManager {
         dungeonLog.removeActiveName(folderName);
     }
 
-    public static String getInstancePrefix() {
-        return FOLDER_NAME;
+    public static String getInstanceInfix() {
+        return INSTANCE_INFIX;
     }
 }

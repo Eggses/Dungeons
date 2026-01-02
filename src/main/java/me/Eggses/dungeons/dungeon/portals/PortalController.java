@@ -59,7 +59,7 @@ public class PortalController {
             return;
         }
 
-        Location spawningLocation = dungeonPortal.getDungeonSpawnPosition().toLocationCenterBlock(dungeonWorld);
+        Location spawningLocation = dungeonPortal.getDungeonSpawnPosition().toLocation(dungeonWorld);
         player.teleport(spawningLocation);
     }
 

@@ -29,15 +29,16 @@ import java.util.Objects;
 public final class Dungeons extends JavaPlugin {
 
     DungeonInstanceTemplateRegistry dungeonInstanceTemplateRegistry = new DungeonInstanceTemplateRegistry();
-    DungeonRegistry dungeonRegistry = new DungeonRegistry(dungeonInstanceTemplateRegistry);
+    DungeonRegistry dungeonRegistry = new DungeonRegistry();
     DungeonOpenPortalRegistry dungeonOpenPortalRegistry = new DungeonOpenPortalRegistry();
 
     DungeonLog dungeonLog = new DungeonLog(this);
     InstanceNameManager instanceNameManager = new InstanceNameManager(dungeonLog);
 
     DungeonWorldManager dungeonWorldManager = new DungeonWorldManager(this, instanceNameManager);
+    TemplateReservation templateReservation = new TemplateReservation();
     DungeonLifecycleService dungeonLifecycleService = new DungeonLifecycleService(
-            this, dungeonRegistry, dungeonOpenPortalRegistry, dungeonWorldManager, dungeonLog
+            this, dungeonRegistry, dungeonOpenPortalRegistry, templateReservation, dungeonWorldManager, dungeonLog
     );
 
     TaskRunner taskRunner = new TaskRunner(this);
@@ -57,6 +58,7 @@ public final class Dungeons extends JavaPlugin {
             this,
             dungeonRegistry,
             dungeonInstanceTemplateRegistry,
+            templateReservation,
             dungeonLifecycleService,
             dungeonWorldManager,
             blockRegistry,

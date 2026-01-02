@@ -23,6 +23,7 @@ public class DungeonFactory {
     private final JavaPlugin plugin;
     private final DungeonRegistry dungeonRegistry;
     private final DungeonInstanceTemplateRegistry dungeonInstanceTemplateRegistry;
+    private final TemplateReservation templateReservation;
     private final DungeonLifecycleService dungeonLifecycleService;
     private final DungeonWorldManager dungeonWorldManager;
     private final BlockRegistry blockRegistry;
@@ -36,6 +37,7 @@ public class DungeonFactory {
     public DungeonFactory(JavaPlugin plugin,
                           DungeonRegistry dungeonRegistry,
                           DungeonInstanceTemplateRegistry dungeonInstanceTemplateRegistry,
+                          TemplateReservation templateReservation,
                           DungeonLifecycleService dungeonLifecycleService,
                           DungeonWorldManager dungeonWorldManager,
                           BlockRegistry blockRegistry,
@@ -49,6 +51,7 @@ public class DungeonFactory {
         this.plugin = plugin;
         this.dungeonRegistry = dungeonRegistry;
         this.dungeonInstanceTemplateRegistry = dungeonInstanceTemplateRegistry;
+        this.templateReservation = templateReservation;
         this.dungeonLifecycleService = dungeonLifecycleService;
         this.dungeonWorldManager = dungeonWorldManager;
         this.blockRegistry = blockRegistry;
@@ -85,7 +88,7 @@ public class DungeonFactory {
                                              String instanceFileName, DungeonType dungeonType) {
 
         instanceNameManager.freeFolderName(instanceFileName);
-        dungeonInstanceTemplateRegistry.freeTemplate(dungeonType);
+        templateReservation.free(dungeonType);
 
         plugin.getLogger().log(Level.SEVERE, "Dungeon Failed To Generate: ", e);
         dungeonLog.addError("Dungeon Generation Failure: " + templateFileName + ".");
@@ -99,12 +102,12 @@ public class DungeonFactory {
 
     public boolean attemptToCreateDungeon(DungeonType dungeonType) {
 
-        if (!dungeonInstanceTemplateRegistry.isTemplateFree(dungeonType)) return false;
-        dungeonInstanceTemplateRegistry.reserveTemplate(dungeonType);
+        if (!templateReservation.isTemplateFree(dungeonType)) return false;
+        templateReservation.reserve(dungeonType);
 
         var template = dungeonInstanceTemplateRegistry.getDungeonInstanceTemplate(dungeonType);
         if (template == null) {
-            dungeonInstanceTemplateRegistry.freeTemplate(dungeonType);
+            templateReservation.free(dungeonType);
             throw new IllegalArgumentException("No template found for: " + dungeonType);
         }
 
@@ -115,7 +118,7 @@ public class DungeonFactory {
     private void createDungeon(DungeonInstanceTemplate dungeonInstanceTemplate, DungeonType dungeonType) {
 
         String templateFolderName = dungeonInstanceTemplate.getTemplateFolderName();
-        String instanceFolderName = instanceNameManager.generateFolderName();
+        String instanceFolderName = instanceNameManager.generateFolderName(dungeonType);
 
         dungeonWorldManager.attemptToCreateInstance(templateFolderName, instanceFolderName,
                 (world) -> createDungeonInstance(world, dungeonInstanceTemplate, instanceFolderName, dungeonType),

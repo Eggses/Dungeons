@@ -1,6 +1,5 @@
 package me.Eggses.dungeons.dungeon.lifecycle;
 
-import me.Eggses.dungeons.dungeon.types.DungeonType;
 import me.Eggses.dungeons.dungeon.files.DungeonLog;
 import me.Eggses.dungeons.dungeon.instance.DungeonInstance;
 import org.bukkit.Bukkit;
@@ -15,18 +14,21 @@ public class DungeonLifecycleService {
     private final JavaPlugin plugin;
     private final DungeonRegistry dungeonRegistry;
     private final DungeonOpenPortalRegistry dungeonOpenPortalRegistry;
+    private final TemplateReservation templateReservation;
     private final DungeonWorldManager dungeonWorldManager;
     private final DungeonLog dungeonLog;
 
     public DungeonLifecycleService(JavaPlugin plugin,
                                    DungeonRegistry dungeonRegistry,
                                    DungeonOpenPortalRegistry dungeonOpenPortalRegistry,
+                                   TemplateReservation templateReservation,
                                    DungeonWorldManager dungeonWorldManager,
                                    DungeonLog dungeonLog) {
 
         this.plugin = plugin;
         this.dungeonRegistry = dungeonRegistry;
         this.dungeonOpenPortalRegistry = dungeonOpenPortalRegistry;
+        this.templateReservation = templateReservation;
         this.dungeonWorldManager = dungeonWorldManager;
         this.dungeonLog = dungeonLog;
     }
@@ -37,14 +39,14 @@ public class DungeonLifecycleService {
 
     public void closePortal(DungeonInstance dungeonInstance) {
         dungeonOpenPortalRegistry.removeFromOpenPortals(dungeonInstance, dungeonInstance.getPortalChunkKeys());
+        templateReservation.free(dungeonInstance.getDungeonType());
     }
 
-    public void destroyInstanceRuntime(DungeonInstance dungeonInstance, DungeonType dungeonType) {
+    public void destroyInstanceRuntime(DungeonInstance dungeonInstance) {
         World world = dungeonInstance.getDungeonWorld();
         Bukkit.unloadWorld(world, false);
 
-        dungeonOpenPortalRegistry.removeFromOpenPortals(dungeonInstance, dungeonInstance.getPortalChunkKeys());
-        dungeonRegistry.removeDungeonInstance(world, dungeonType);
+        dungeonRegistry.removeDungeonInstance(world);
     }
 
     public void destroyWorld(String fileName) {
