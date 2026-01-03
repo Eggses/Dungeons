@@ -45,7 +45,7 @@ public class OrbitParticleEffect {
 
     public void spawnParticle(Location center) {
 
-        final double viewDistSq = 64.0 * 64.0;
+        final double viewDistSq = 30 * 30;
 
         var players = center.getWorld().getPlayers();
         boolean anyNearby = false;
@@ -59,6 +59,7 @@ public class OrbitParticleEffect {
 
         double radians = startRad + stepRad * index;
 
+        // Formula for position on an arc, where z acts like y.
         double x = center.getX() + radius * Math.cos(radians);
         double y = center.getY() + yStep * index;
         double z = center.getZ() + radius * Math.sin(radians);

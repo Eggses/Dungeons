@@ -33,7 +33,6 @@ public class MessageCreator {
         return createMessage(messagesFile.getString(message.getPath()), placeholders);
     }
 
-    @Deprecated
     public Component createMessage(String text) {
         return createMessage(text, new Placeholders());
     }
