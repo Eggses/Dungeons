@@ -9,7 +9,8 @@ public enum Permission {
     TRIGGER("dungeons.command.trigger"),
     GIVE("dungeons.command.give"),
     DESTROY("dungeons.command.destroy"),
-    TRIGGER_COMMAND_BLOCK("dungeons.command.trigger.commandblock");
+
+    ;
 
     private final String permission;
 

@@ -21,4 +21,12 @@ public enum DungeonType {
     public String getUniqueKey() {
         return uniqueKey;
     }
+
+    public static DungeonType getType(String type) {
+        try {
+            return DungeonType.valueOf(type);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+    }
 }

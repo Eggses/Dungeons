@@ -63,5 +63,10 @@ public class DungeonLifecycleService {
     public void destroyLeftAllInstanceWorlds() {
         List<String> fileNames = dungeonLog.getActiveNameList();
         fileNames.forEach(this::destroyWorld);
+
+        /*
+         DungeonWorldManager frees + removes name from the list,
+         there are no issues with old names remaining too long.
+         */
     }
 }

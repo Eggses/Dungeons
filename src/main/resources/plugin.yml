@@ -38,10 +38,3 @@ permissions:
   dungeons.command.destroy:
     description: Allows use of /dungeons destroy
     default: op
-
-  # =====================================
-  # Command Block
-  # =====================================
-  dungeons.command.trigger.commandblock:
-    description: Allows /dungeons trigger to be executed by command blocks
-    default: op

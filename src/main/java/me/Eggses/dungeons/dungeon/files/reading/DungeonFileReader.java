@@ -50,7 +50,7 @@ public class DungeonFileReader {
     private static final String AREA_INTERACTIONS_POS = "pos";
     private static final String AREA_INTERACTIONS_COMMANDS = "commands";
     private static final String AREA_TRIGGERS = "triggers";
-    private static final String AREA_TRIGGERS_ID =  "id";
+    private static final String AREA_TRIGGERS_POS =  "pos";
     private static final String AREA_TRIGGERS_COMMANDS = "commands";
 
     private final ConfigurationFile configurationFile;
@@ -234,11 +234,11 @@ public class DungeonFileReader {
                     maybeList ->  (maybeList instanceof List<?> rawList) ? readingUtility.unkownListToStringList(rawList) : null,
                     ActionTemplate::new
             );
-            List<ActionTemplate<String>> triggerTemplates = readingUtility.unknownTwoKeyMapToListR(
+            List<ActionTemplate<Position>> triggerTemplates = readingUtility.unknownTwoKeyMapToListR(
                     triggerMapList,
-                    AREA_TRIGGERS_ID,
+                    AREA_TRIGGERS_POS,
                     AREA_TRIGGERS_COMMANDS,
-                    maybeString -> (maybeString instanceof String string) ? string : null,
+                    maybeString -> (maybeString instanceof String string) ? readingUtility.stringToPosition(string) : null,
                     maybeList -> (maybeList instanceof List<?> rawList) ? readingUtility.unkownListToStringList(rawList) : null,
                     ActionTemplate::new
             );

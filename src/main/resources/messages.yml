@@ -11,7 +11,9 @@ shared:
     permission_fail: "%prefix_main%%prefix_error%<red>You do not have permission to use this command.</red>"
     unknown_syntax: "%prefix_main%%prefix_error%<red>Unknown command syntax.</red>"
     must_be_player: "%prefix_main%%prefix_error%<red>This command can only be used by a player.</red>"
-    must_be_command_block: "%prefix_main%%prefix_error%<red>This command can only be executed by a command block.</red>"
+    player_not_found: "%prefix_main%%prefix_error%<red>Player %target_player% not found.</red>"
+    invalid_quantity: "%prefix_main%%prefix_error%<red>Invalid quantity: %quantity%.</red>"
+
 
 # =========================================================
 # /dungeons reload
@@ -26,8 +28,17 @@ dungeons_reload:
 # =========================================================
 dungeons_destroy:
   usage: "%prefix_main%%prefix_error%<red>Usage: /dungeons destroy <all|target_instance></red>"
-  invalid_dungeon_world: "%prefix_main%%prefix_error%<red>That world does not exist or is not a dungeon world.</red>"
-  requested: "%prefix_main%<green>Dungeon world(s) scheduled for destruction.</green>"
+  invalid_dungeon_world: "%prefix_main%%prefix_error%<red>World %destroy_target% does not exist or is not a dungeon world.</red>"
+  requested: "%prefix_main%<green>Dungeon world(s) %destroy_target% scheduled for destruction.</green>"
+
+# =========================================================
+# /dungeons give <type> <id> [Player] [Quantity]
+# =========================================================
+dungeons_give:
+  usage: "%prefix_main%%prefix_error%<red>Usage: /dungeons give <type> <id> [player] [quantity]</red>"
+  unknown_type: "%prefix_main%%prefix_error%<red>Unknown give type: %give_type%.</red>"
+  unknown_id: "%prefix_main%%prefix_error%<red>Unknown %give_type%: %give_id%.</red>"
+  given: "%prefix_main%<green>Given %quantity%x %give_type% (%give_id%) to %target_player%.</green>"
 
 # =========================================================
 # Keystone / mechanics

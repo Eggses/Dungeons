@@ -14,17 +14,29 @@ import java.util.function.Consumer;
 
 public class ItemCreator {
 
-    private final MessageCreator messageCreator;
-    private final ItemKey itemKey;
+    public static final Consumer<ItemMeta> STACK_SIZE_1 = itemMeta -> {
+        itemMeta.setMaxStackSize(1);
+    };
 
-    public ItemCreator(ItemKey itemKey, MessageCreator messageCreator) {
-        this.itemKey = itemKey;
+    private final MessageCreator messageCreator;
+    private final ItemKeyManager itemKeyManager;
+
+    public ItemCreator(ItemKeyManager itemKeyManager, MessageCreator messageCreator) {
+        this.itemKeyManager = itemKeyManager;
         this.messageCreator = messageCreator;
     }
 
     public ItemStack createItem(ItemStackTemplate itemStackTemplate, Placeholders placeholders) {
         return createItem(itemStackTemplate, itemMeta -> {}, placeholders);
     }
+
+
+    public ItemStack createItem(ItemRecord itemRecord) {
+        ItemStack item = createItem(itemRecord.itemStackTemplate(), itemRecord.itemMetaConsumer(), itemRecord.placeholders());
+        item = applyUniqueKey(item, itemRecord.uniqueKey());
+        return item;
+    }
+
 
     public ItemStack createItem(ItemStackTemplate itemStackTemplate,
                                 Consumer<ItemMeta> itemMetaConsumer,
@@ -59,7 +71,7 @@ public class ItemCreator {
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return item;
 
-        meta.getPersistentDataContainer().set(itemKey.getKey(), PersistentDataType.STRING, uniqueValue);
+        meta.getPersistentDataContainer().set(itemKeyManager.getKey(), PersistentDataType.STRING, uniqueValue);
 
         item.setItemMeta(meta);
         return item;

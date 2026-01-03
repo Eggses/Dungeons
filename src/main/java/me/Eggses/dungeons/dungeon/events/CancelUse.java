@@ -1,4 +1,4 @@
-package me.Eggses.dungeons.items.events;
+package me.Eggses.dungeons.dungeon.events;
 
 import me.Eggses.dungeons.eventhandler.EventBehaviour;
 import me.Eggses.dungeons.eventhandler.EventContext;
@@ -15,7 +15,7 @@ public class CancelUse implements EventBehaviour<PlayerInteractEvent> {
         if (block == null) return;
 
         Material material = block.getType();
-        if (material != Material.VAULT ) return;
+        if (material != Material.VAULT) return;
 
         event.setCancelled(true);
     }

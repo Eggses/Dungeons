@@ -12,13 +12,13 @@ public class AreaTemplate {
     private final List<String> onEntryCommands;
     private final List<String> onClearCommands;
     private final List<ActionTemplate<Position>> interactionsTemplates;
-    private final List<ActionTemplate<String>> triggerTemplates;
+    private final List<ActionTemplate<Position>> triggerTemplates;
 
     public AreaTemplate(Region entryBounds,
                         List<String> onEntryCommands,
                         List<String> onClearCommands,
                         List<ActionTemplate<Position>> interactionsTemplates,
-                        List<ActionTemplate<String>> triggerTemplates) {
+                        List<ActionTemplate<Position>> triggerTemplates) {
 
         this.entryBounds = entryBounds;
         this.onEntryCommands = onEntryCommands;
@@ -43,7 +43,7 @@ public class AreaTemplate {
         return interactionsTemplates;
     }
 
-    public List<ActionTemplate<String>> getTriggerTemplates() {
+    public List<ActionTemplate<Position>> getTriggerTemplates() {
         return triggerTemplates;
     }
 }

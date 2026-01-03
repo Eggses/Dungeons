@@ -5,9 +5,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class DungeonRegistry {
 
@@ -41,10 +40,6 @@ public class DungeonRegistry {
         return dungeonInstances.get(world);
     }
 
-    public Set<World> getDungeonWorlds() {
-        return Set.copyOf(dungeonInstances.keySet());
-    }
-
     public DungeonInstance getDungeonWithWorldName(String worldName) {
         World world = Bukkit.getWorld(worldName);
         if (world == null) return null;
@@ -60,5 +55,12 @@ public class DungeonRegistry {
         for (DungeonInstance dungeonInstance : Set.copyOf(dungeonInstances.values())) {
             endDungeonInstance(dungeonInstance, destroyWorldFolder);
         }
+    }
+
+    public List<String> getDungeonWorldNames() {
+        return dungeonInstances.keySet()
+                .stream()
+                .map(World::getName)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 }

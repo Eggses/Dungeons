@@ -86,7 +86,7 @@ dungeon_areas:
     interactions: []
 
     triggers:
-      - id: "test-id-1"
+      - pos: "x,y,z"
         commands:
           - "MESSAGE message=<red>Something awakens beneath the ground</red>"
           - "SOUND sound=GOAT_HORN_0"

@@ -1,9 +1,8 @@
 package me.Eggses.dungeons.dungeon.areas;
 
 import me.Eggses.dungeons.blocks.BlockRegistry;
-import me.Eggses.dungeons.dispatch.EventManagerRegistry;
 import me.Eggses.dungeons.dispatch.ChunkMappingRegistry;
-import me.Eggses.dungeons.dungeon.areas.eventbehaviour.DungeonInteraction;
+import me.Eggses.dungeons.dungeon.events.DungeonInteraction;
 import me.Eggses.dungeons.dungeon.graveyard.Graveyard;
 import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.dungeon.areas.utility.AreaControllerBuilder;
@@ -25,7 +24,7 @@ public class AreaController {
     private final World dungeonWorld;
     private final BlockRegistry blockRegistry;
     private final ChunkMappingRegistry<DungeonArea> dungeonAreaChunkMappingRegistry;
-    private final Map<String, Consumer<DungeonContext>> dungeonTriggerCommandMap;
+    private final Map<Position, Consumer<DungeonContext>> dungeonTriggerCommandMap;
 
     private DungeonArea dungeonAreaInProgress;
     private boolean areaInProgress = false;
@@ -78,10 +77,10 @@ public class AreaController {
         }
     }
 
-    public void handleDungeonTriggerCommand(String argument) {
+    public void handleDungeonTriggerCommand(Position positionOfSender) {
         if (areaInProgress) return;
 
-        Consumer<DungeonContext> consumer = dungeonTriggerCommandMap.remove(argument);
+        Consumer<DungeonContext> consumer = dungeonTriggerCommandMap.remove(positionOfSender);
         if (consumer == null) return;
         consumer.accept(dungeonContext);
     }

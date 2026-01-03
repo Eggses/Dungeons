@@ -1,6 +1,7 @@
 package me.Eggses.dungeons.dungeon.lifecycle;
 
 import me.Eggses.dungeons.dungeon.instance.DungeonInstance;
+import me.Eggses.dungeons.dungeon.regions.Position;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -43,8 +44,8 @@ public class DungeonEventRouter {
         }
     }
 
-    public void handleDungeonTriggerCommand(World world, String argument) {
-        runIfInstanceExists(world, (instance) -> instance.getInstanceEventHandler().handleDungeonTriggerCommand(argument));
+    public void handleDungeonTriggerCommand(World world, Position positionOfSender) {
+        runIfInstanceExists(world, (instance) -> instance.getInstanceEventHandler().handleDungeonTriggerCommand(positionOfSender));
     }
 
     /* =========================================================

@@ -1,11 +1,9 @@
-package me.Eggses.dungeons.dungeon.areas.eventbehaviour;
+package me.Eggses.dungeons.dungeon.events;
 
 import me.Eggses.dungeons.blocks.BlockRegistry;
-import me.Eggses.dungeons.dispatch.EventManagerRegistry;
 import me.Eggses.dungeons.dungeon.utility.DungeonContext;
 import me.Eggses.dungeons.eventhandler.EventBehaviour;
 import me.Eggses.dungeons.eventhandler.EventContext;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.Action;
@@ -35,11 +33,6 @@ public class DungeonInteraction implements EventBehaviour<PlayerInteractEvent> {
     @Override
     public void handleEvent(PlayerInteractEvent event, EventContext eventContext) {
 
-        if (!canInteract.getAsBoolean()) {
-            event.setCancelled(true);
-            return;
-        }
-
         Block block = event.getClickedBlock();
         if (block == null) return;
 
@@ -50,7 +43,14 @@ public class DungeonInteraction implements EventBehaviour<PlayerInteractEvent> {
         boolean trigger = (action == Action.RIGHT_CLICK_BLOCK && (type == Material.LEVER || name.endsWith("_BUTTON")))
                 || (action == Action.PHYSICAL && name.endsWith("_PRESSURE_PLATE"));
 
-        if (!trigger) return;
+        if (!trigger) {
+            return;
+        }
+
+        if (!canInteract.getAsBoolean()) {
+            event.setCancelled(true);
+            return;
+        }
         onInteractConsumer.accept(dungeonContext);
         blockRegistry.remove(block.getLocation());
     }

@@ -17,7 +17,7 @@ public class MessageCreator {
         this.messagesFile = messagesFile.getCustomFile();
     }
 
-    public Placeholders Placeholders() {
+    public Placeholders placeholders() {
         Placeholders placeholders = new Placeholders();
 
         String prefixValue = this.messagesFile.getString(Messages.PREFIX_MAIN.getPath());

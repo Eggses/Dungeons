@@ -51,10 +51,7 @@ public class Reload implements SubCommand {
     }
 
     @Override
-    public void execute(CommandSender sender, String[] args) {
-
-        Placeholders placeholders = messageCreator.Placeholders();
-        placeholders.addPlaceholder(Placeholder.PLAYER, sender.getName());
+    public void execute(CommandSender sender, String[] args, Placeholders placeholders) {
 
         if (!PERMISSION.has(sender)) {
             sender.sendMessage(messageCreator.createMessage(Messages.ERROR_PERMISSION_FAIL, placeholders));

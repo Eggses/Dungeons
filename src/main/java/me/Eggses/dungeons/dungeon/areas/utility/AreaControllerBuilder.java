@@ -10,7 +10,7 @@ public class AreaControllerBuilder {
 
     private final ChunkMappingRegistry<DungeonArea> dungeonAreaChunkMappingRegistry = new ChunkMappingRegistry<>();
     private final Map<Position, Consumer<DungeonContext>> blockInteractionMap = new HashMap<>();
-    private final Map<String, Consumer<DungeonContext>> dungeonTriggerCommandMap = new HashMap<>();
+    private final Map<Position, Consumer<DungeonContext>> dungeonTriggerCommandMap = new HashMap<>();
 
     public void addDungeonArea(DungeonArea dungeonArea) {
         dungeonAreaChunkMappingRegistry.add(dungeonArea, dungeonArea.getEntryRegion().getCoveredChunkKeys());
@@ -21,7 +21,7 @@ public class AreaControllerBuilder {
                 -> blockInteractionMap.put(action.getK(), action.getAction()));
     }
 
-    public void addDungeonTriggerCommandList(List<DungeonAction<String>> dungeonTriggerCommandList) {
+    public void addDungeonTriggerCommandList(List<DungeonAction<Position>> dungeonTriggerCommandList) {
         dungeonTriggerCommandList.forEach(action
                 -> dungeonTriggerCommandMap.put(action.getK(), action.getAction()));
     }
@@ -34,7 +34,7 @@ public class AreaControllerBuilder {
         return blockInteractionMap;
     }
 
-    public Map<String, Consumer<DungeonContext>> getDungeonTriggerCommandMap() {
+    public Map<Position, Consumer<DungeonContext>> getDungeonTriggerCommandMap() {
         return dungeonTriggerCommandMap;
     }
 }

@@ -3,6 +3,7 @@ package me.Eggses.dungeons.dungeon.instance;
 import me.Eggses.dungeons.dungeon.areas.AreaController;
 import me.Eggses.dungeons.dungeon.areas.EntityManager;
 import me.Eggses.dungeons.dungeon.portals.PortalController;
+import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.entities.attributes.AttributeController;
 import me.Eggses.dungeons.eventhandler.EventContext;
 import me.Eggses.dungeons.entities.mobs.DungeonEntity;
@@ -60,8 +61,8 @@ public class InstanceEventHandler {
         }
     }
 
-    public void handleDungeonTriggerCommand(String argument) {
-        areaController.handleDungeonTriggerCommand(argument);
+    public void handleDungeonTriggerCommand(Position positionOfSender) {
+        areaController.handleDungeonTriggerCommand(positionOfSender);
     }
 
     /* =========================================================
