@@ -13,6 +13,15 @@ import java.util.Set;
 public class ItemUse implements Listener {
 
     private static final Set<Material> BANNED_RIGHT_CLICK_ITEM_INTERACTIONS = Set.of(
+
+            Material.WOODEN_SPEAR,
+            Material.STONE_SPEAR,
+            Material.COPPER_SPEAR,
+            Material.IRON_SPEAR,
+            Material.GOLDEN_SPEAR,
+            Material.DIAMOND_SPEAR,
+            Material.NETHERITE_SPEAR,
+
             Material.TRIDENT,
             Material.BOW,
             Material.CROSSBOW,

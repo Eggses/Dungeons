@@ -127,6 +127,7 @@ public final class Dungeons extends JavaPlugin {
         pluginManager.registerEvents(new ChorusFruitTeleport(dungeonRegistry), this);
         pluginManager.registerEvents(new DurabilityLoss(dungeonRegistry), this);
         pluginManager.registerEvents(new ElytraGlide(dungeonRegistry), this);
+        pluginManager.registerEvents(new EntityInteract(dungeonRegistry), this);
         pluginManager.registerEvents(new FrostWalkerFreeze(dungeonRegistry), this);
         pluginManager.registerEvents(new ItemUse(dungeonRegistry), this);
         pluginManager.registerEvents(new MendingProfit(dungeonRegistry), this);
@@ -168,7 +169,6 @@ public final class Dungeons extends JavaPlugin {
         Objects.requireNonNull(getCommand("dungeons")).setExecutor(dungeonsBaseCommand);
         Objects.requireNonNull(getCommand("dungeons")).setTabCompleter(dungeonsBaseCommand);
     }
-
 
     @Override
     public void onDisable() {

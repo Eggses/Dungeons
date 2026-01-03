@@ -31,7 +31,12 @@ public enum Messages {
     DUNGEONS_GIVE_GIVEN("dungeons_give.given"),
 
     // Keystone
-    KEYSTONE_DISABLED("keystone.disabled");
+    KEYSTONE_DISABLED("keystone.disabled"),
+
+    BANNED_ITEMS_ALLOWED_TO_ENTER("banned_items.allowed_to_enter"),
+    BANNED_ITEMS_DENIED_TO_ENTER("banned_items.denied_to_enter"),
+
+    ;
 
     private final String path;
 

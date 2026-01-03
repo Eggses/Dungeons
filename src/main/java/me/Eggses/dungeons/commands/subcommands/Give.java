@@ -74,33 +74,38 @@ public class Give implements SubCommand {
             return;
         }
 
-        Optional<GiveCommandArgs> giveCommandArgs = parseGiveCommandPlayerAndQuantity(player, args, placeholders);
-        if (giveCommandArgs.isEmpty()) return;
+        Optional<GiveCommandArgs> maybeGiveCommandArgs = parseGiveCommandPlayerAndQuantity(player, args, placeholders);
+        if (maybeGiveCommandArgs.isEmpty()) return;
+
+        GiveCommandArgs giveCommandArgs = maybeGiveCommandArgs.get();
+
+        placeholders.addPlaceholder(Placeholder.GIVE_TYPE, args[1]);
+        placeholders.addPlaceholder(Placeholder.GIVE_ID, args[2]);
+        placeholders.addPlaceholder(Placeholder.QUANTITY, String.valueOf(giveCommandArgs.quantity()));
+        placeholders.addPlaceholder(Placeholder.TARGET_PLAYER, giveCommandArgs.player().getName());
 
         if (args[1].equals(KEY)) {
-            giveKey(player, args, placeholders);
+            giveKey(giveCommandArgs, player, args, placeholders);
             return;
         }
-
-        /*
-        if type is a dungeon tool... add another if here when it exists...
-         */
 
         player.sendMessage(messageCreator.createMessage(Messages.DUNGEONS_GIVE_UNKNOWN_TYPE, placeholders));
     }
 
-    private void giveKey(Player player, String[] args, Placeholders placeholders) {
+    private void giveKey(GiveCommandArgs giveCommandArgs, Player sender, String[] args, Placeholders placeholders) {
+
+        Player recipient = giveCommandArgs.player;
 
         ItemRecord itemRecord = dungeonKeys.getItemRecord(DungeonType.getType(args[2]));
         if (itemRecord == null) {
-            player.sendMessage(messageCreator.createMessage(Messages.DUNGEONS_GIVE_UNKNOWN_ID, placeholders));
+            sender.sendMessage(messageCreator.createMessage(Messages.DUNGEONS_GIVE_UNKNOWN_ID, placeholders));
             return;
         }
 
         ItemStack item = itemCreator.createItem(itemRecord);
+        itemGive.giveOrDrop(recipient, new ItemGive.ItemAmount(item, giveCommandArgs.quantity));
 
-        itemGive.giveOrDrop(player, item);
-        player.sendMessage(messageCreator.createMessage(Messages.DUNGEONS_GIVE_GIVEN, placeholders));
+        sender.sendMessage(messageCreator.createMessage(Messages.DUNGEONS_GIVE_GIVEN, placeholders));
     }
 
     private Optional<GiveCommandArgs> parseGiveCommandPlayerAndQuantity(Player player, String[] args, Placeholders placeholders) {
@@ -175,7 +180,7 @@ public class Give implements SubCommand {
                     .toList();
         }
 
-        if (args.length == 3) {
+        if (args.length == 3 && args[1].equals(KEY)) {
             if (dungeonNames != null) return dungeonNames;
             dungeonNames = Arrays.stream(DungeonType.values())
                     .map(DungeonType::getUniqueKey)

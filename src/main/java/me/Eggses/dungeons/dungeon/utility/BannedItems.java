@@ -1,7 +1,6 @@
 package me.Eggses.dungeons.dungeon.utility;
 
-import me.Eggses.dungeons.utility.text.MessageCreator;
-import me.Eggses.dungeons.utility.text.TextFormatter;
+import me.Eggses.dungeons.utility.text.*;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -11,6 +10,16 @@ import java.util.*;
 public class BannedItems {
 
     private static final Set<Material> BANNED_ITEMS = Set.of(
+
+            Material.MACE,
+            Material.WOODEN_SPEAR,
+            Material.STONE_SPEAR,
+            Material.COPPER_SPEAR,
+            Material.IRON_SPEAR,
+            Material.GOLDEN_SPEAR,
+            Material.DIAMOND_SPEAR,
+            Material.NETHERITE_SPEAR,
+
             Material.SADDLE,
             Material.FEATHER,
 
@@ -33,10 +42,6 @@ public class BannedItems {
             Material.LIGHT_GRAY_BUNDLE
     );
 
-    private static final String ALLOWED_TO_ENTER = "<green>You are allowed to enter this Dungeon.</green>";
-    private static final String DENIED_TO_ENTER = "<red>You are unable to enter this Dungeon with these items: </red>";
-    private static final String ITEM_COLOUR = "<dark_red>";
-
     private static final Map<Material, String> MATERIAL_NAME_CACHE = new HashMap<>();
 
     private final MessageCreator messageCreator;
@@ -57,6 +62,10 @@ public class BannedItems {
     }
 
     public void createAndSendBannedItemsMessage(Player player) {
+
+        Placeholders placeholders = messageCreator.placeholders();
+        placeholders.addPlaceholder(Placeholder.PLAYER, player.getName());
+
         Set<Material> bannedMaterials = new HashSet<>();
 
         for (ItemStack item : player.getInventory().getContents()) {
@@ -65,13 +74,15 @@ public class BannedItems {
         }
 
         if (bannedMaterials.isEmpty()) {
-            player.sendMessage(messageCreator.createMessage(ALLOWED_TO_ENTER));
+            player.sendMessage(messageCreator.createMessage(Messages.BANNED_ITEMS_ALLOWED_TO_ENTER, placeholders));
             return;
         }
 
         String bannedItems = String.join(", ", convertMaterialSetToNames(bannedMaterials));
         bannedItems = bannedItems + ".";
-        player.sendMessage(messageCreator.createMessage(DENIED_TO_ENTER + ITEM_COLOUR + bannedItems));
+
+        placeholders.addPlaceholder(Placeholder.BANNED_ITEMS, bannedItems);
+        player.sendMessage(messageCreator.createMessage(Messages.BANNED_ITEMS_DENIED_TO_ENTER, placeholders));
     }
 
     private List<String> convertMaterialSetToNames(Set<Material> bannedMaterials) {
