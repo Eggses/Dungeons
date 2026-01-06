@@ -10,7 +10,7 @@ import me.Eggses.dungeons.dungeon.players.DungeonPlayers;
 import me.Eggses.dungeons.dungeon.portals.PortalController;
 import me.Eggses.dungeons.dungeon.utility.BannedItems;
 import me.Eggses.dungeons.dungeon.utility.DungeonContext;
-import me.Eggses.dungeons.dungeon.utility.GameRules;
+import me.Eggses.dungeons.dungeon.utility.DungeonGameRules;
 import me.Eggses.dungeons.tasks.TaskRunner;
 import me.Eggses.dungeons.utility.text.MessageCreator;
 import me.Eggses.dungeons.utility.text.TextFormatter;
@@ -61,7 +61,7 @@ public class DungeonInstance {
         this.portalController = new PortalController(plugin, this, dungeonInstanceTemplate.getDungeonPortal(), bannedItems);
         this.dungeonPlayers = new DungeonPlayers();
 
-        new GameRules(dungeonWorld).applyRules();
+        new DungeonGameRules(dungeonWorld).applyRules();
         dungeonInstanceTemplate.getOnDungeonStart().accept(new DungeonContext(dungeonWorld, entityManager, graveyard, dungeonWorld::getPlayers));
 
         portalController.openDungeonPortal();
