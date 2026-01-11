@@ -2,8 +2,9 @@ package me.Eggses.dungeons.dungeon.events;
 
 import me.Eggses.dungeons.blocks.BlockRegistry;
 import me.Eggses.dungeons.dungeon.utility.DungeonContext;
-import me.Eggses.dungeons.eventhandler.EventBehaviour;
-import me.Eggses.dungeons.eventhandler.EventContext;
+import me.Eggses.dungeons.eventinvoker.EventContext;
+import me.Eggses.dungeons.eventinvoker.EventInvoker;
+import me.Eggses.dungeons.eventinvoker.Invoker;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.Action;
@@ -12,7 +13,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
-public class DungeonInteraction implements EventBehaviour<PlayerInteractEvent> {
+public class DungeonInteraction implements Invoker {
 
     private final BlockRegistry blockRegistry;
     private final Consumer<DungeonContext> onInteractConsumer;
@@ -30,7 +31,7 @@ public class DungeonInteraction implements EventBehaviour<PlayerInteractEvent> {
         this.canInteract = canInteract;
     }
 
-    @Override
+    @EventInvoker
     public void handleEvent(PlayerInteractEvent event, EventContext eventContext) {
 
         Block block = event.getClickedBlock();

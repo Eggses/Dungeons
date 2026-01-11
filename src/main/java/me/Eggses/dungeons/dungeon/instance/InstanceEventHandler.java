@@ -5,7 +5,7 @@ import me.Eggses.dungeons.dungeon.areas.EntityManager;
 import me.Eggses.dungeons.dungeon.portals.PortalController;
 import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.entities.attributes.AttributeController;
-import me.Eggses.dungeons.eventhandler.EventContext;
+import me.Eggses.dungeons.eventinvoker.EventContext;
 import me.Eggses.dungeons.entities.mobs.DungeonEntity;
 import org.bukkit.Location;
 import org.bukkit.entity.*;

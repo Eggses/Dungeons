@@ -10,7 +10,6 @@ import me.Eggses.dungeons.dungeon.areas.utility.DungeonArea;
 import me.Eggses.dungeons.dungeon.utility.DungeonContext;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.Map;
 import java.util.Set;
@@ -53,7 +52,7 @@ public class AreaController {
         for (Map.Entry<Position, Consumer<DungeonContext>> entry : blockInteractionMap.entrySet()) {
             Location location = entry.getKey().toLocation(dungeonWorld);
 
-            blockRegistry.addBlockAndEvent(location, PlayerInteractEvent.class, new DungeonInteraction(
+            blockRegistry.addBlockAndEvent(location, new DungeonInteraction(
                     blockRegistry,
                     entry.getValue(),
                     dungeonContext,

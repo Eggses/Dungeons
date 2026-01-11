@@ -1,14 +1,15 @@
 package me.Eggses.dungeons.dungeon.events;
 
-import me.Eggses.dungeons.eventhandler.EventBehaviour;
-import me.Eggses.dungeons.eventhandler.EventContext;
+import me.Eggses.dungeons.eventinvoker.EventContext;
+import me.Eggses.dungeons.eventinvoker.EventInvoker;
+import me.Eggses.dungeons.eventinvoker.Invoker;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-public class CancelUse implements EventBehaviour<PlayerInteractEvent> {
+public class CancelUse implements Invoker {
 
-    @Override
+    @EventInvoker
     public void handleEvent(PlayerInteractEvent event, EventContext eventContext) {
 
         Block block = event.getClickedBlock();

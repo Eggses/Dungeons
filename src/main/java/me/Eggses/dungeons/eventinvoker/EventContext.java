@@ -1,4 +1,4 @@
-package me.Eggses.dungeons.eventhandler;
+package me.Eggses.dungeons.eventinvoker;
 
 import me.Eggses.dungeons.entities.mobs.DungeonEntity;
 import org.bukkit.entity.LivingEntity;

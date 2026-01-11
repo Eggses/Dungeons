@@ -26,7 +26,6 @@ import me.Eggses.dungeons.utility.sound.SoundPlayer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.entity.TextDisplay;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.EnumMap;
@@ -116,14 +115,14 @@ public class DungeonLoadingManager {
             var itemStackTemplate = nonInstanceDungeonTemplate.itemStackTemplate();
             var uniqueKey = dungeonType.getUniqueKey();
             dungeonKeys.add(dungeonType, new ItemRecord(itemStackTemplate, ItemCreator.STACK_SIZE_1, uniqueKey, placeholders));
-            itemRegistry.addOrUpdate(uniqueKey, PlayerInteractEvent.class, new CancelUse());
+            itemRegistry.addOrUpdate(uniqueKey, new CancelUse());
 
             var positionOfKeystone = nonInstanceDungeonTemplate.positionOfKeyStone();
             var worldOfKeystone = nonInstanceDungeonTemplate.dungeonPortalRoomWorld();
             var locationOfKeystone = positionOfKeystone.toLocation(worldOfKeystone);
             keystoneLocations.put(dungeonType, locationOfKeystone);
 
-            blockRegistry.addBlockAndEvent(locationOfKeystone, PlayerInteractEvent.class, new InteractOpenMenu());
+            blockRegistry.addBlockAndEvent(locationOfKeystone, new InteractOpenMenu());
             blockRegistry.addBlockAndName(locationOfKeystone, textDisplay -> {
                 Component keystoneName = messageCreator.createMessage(nonInstanceDungeonTemplate.keystoneName(), placeholders);
                 textDisplay.text(keystoneName);

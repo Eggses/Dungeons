@@ -2,13 +2,13 @@ package me.Eggses.dungeons.entities.mobs;
 
 import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.entities.attributes.AttributeController;
-import me.Eggses.dungeons.eventhandler.EventContext;
+import me.Eggses.dungeons.eventinvoker.EventContext;
 import me.Eggses.dungeons.entities.nameutility.MobName;
+import me.Eggses.dungeons.eventinvoker.EventRegistry;
 import me.Eggses.dungeons.tasks.ActiveTasks;
 import me.Eggses.dungeons.tasks.TaskContext;
 import me.Eggses.dungeons.tasks.TaskRunner;
 import me.Eggses.dungeons.entities.nameutility.NameFormatter;
-import me.Eggses.dungeons.eventhandler.EventManager;
 import me.Eggses.dungeons.entities.equipment.EquipmentManager;
 import me.Eggses.dungeons.utility.text.MessageCreator;
 import me.Eggses.dungeons.utility.text.TextFormatter;
@@ -25,6 +25,7 @@ import org.bukkit.scoreboard.Team;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.logging.Logger;
 
 public class DungeonMob implements DungeonEntity {
 
@@ -37,7 +38,7 @@ public class DungeonMob implements DungeonEntity {
     private final int dungeonLevel;
     private final MobName mobName;
     private final NameFormatter nameFormatter;
-    private final EventManager eventManager;
+    private final EventRegistry eventRegistry;
 
     private final AttributeController attributeController = new AttributeController(this);
     private final ActiveTasks activeTasks = new ActiveTasks();
@@ -45,6 +46,7 @@ public class DungeonMob implements DungeonEntity {
     public DungeonMob(MobBuilder mobBuilder,
                       World world,
                       TaskRunner taskRunner,
+                      Logger logger,
                       MessageCreator messageCreator,
                       TextFormatter textFormatter) {
 
@@ -59,7 +61,8 @@ public class DungeonMob implements DungeonEntity {
         this.dungeonLevel = mobBuilder.getDungeonLevel();
         this.mobName = mobBuilder.getMobName();
         this.nameFormatter = new NameFormatter(this, messageCreator, textFormatter);
-        this.eventManager = mobBuilder.getEntityEventBehaviour();
+        this.eventRegistry = new EventRegistry(logger);
+        eventRegistry.registerInvoker(mobBuilder.getInvokers());
 
         // Apply Armour
         EquipmentManager equipmentManager = new EquipmentManager(this);
@@ -110,8 +113,8 @@ public class DungeonMob implements DungeonEntity {
     }
 
     @Override
-    public <E extends Event> void handleEvent(E event, EventContext eventContext) {
-        eventManager.handleEvent(event, eventContext);
+    public void handleEvent(Event event, EventContext eventContext) {
+        eventRegistry.handleEvent(event, eventContext);
     }
 
     @Override

@@ -11,6 +11,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 public class EntityManager {
 
@@ -27,16 +28,19 @@ public class EntityManager {
 
     private final World dungeonWorld;
     private final TaskRunner taskRunner;
+    private final Logger logger;
     private final MessageCreator messageCreator;
     private final TextFormatter textFormatter;
 
     public EntityManager(World dungeonWorld,
                          TaskRunner taskRunner,
+                         Logger logger,
                          MessageCreator messageCreator,
                          TextFormatter textFormatter) {
 
         this.dungeonWorld = dungeonWorld;
         this.taskRunner = taskRunner;
+        this.logger = logger;
         this.messageCreator = messageCreator;
         this.textFormatter = textFormatter;
     }
@@ -55,7 +59,7 @@ public class EntityManager {
 
     public void spawnMob(MobBuilder mobBuilder) {
         for (int i = 0; i < mobBuilder.getCount(); i++) {
-            var mob = new DungeonMob(mobBuilder, dungeonWorld, taskRunner, messageCreator, textFormatter);
+            var mob = new DungeonMob(mobBuilder, dungeonWorld, taskRunner, logger, messageCreator, textFormatter);
             addMob(mob);
             applyDolphinsGrace(mob);
         }

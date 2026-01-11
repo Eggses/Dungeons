@@ -1,14 +1,12 @@
 package me.Eggses.dungeons.entities.mobs;
 
 import me.Eggses.dungeons.dungeon.regions.Position;
-import me.Eggses.dungeons.eventhandler.EventBehaviour;
 import me.Eggses.dungeons.entities.nameutility.MobName;
-import me.Eggses.dungeons.eventhandler.EventManager;
 import me.Eggses.dungeons.entities.equipment.ArmourEquipment;
 import me.Eggses.dungeons.entities.equipment.WeaponEquipment;
+import me.Eggses.dungeons.eventinvoker.Invoker;
 import me.Eggses.dungeons.tasks.TaskContext;
 import org.bukkit.entity.EntityType;
-import org.bukkit.event.Event;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +19,7 @@ public class MobBuilder {
     private int dungeonLevel = 1;
     private WeaponEquipment weaponEquipment = new WeaponEquipment();
     private ArmourEquipment armourEquipment = new ArmourEquipment();
-    private final EventManager eventManager = new EventManager();
+    private final List<Invoker> invokers = new ArrayList<>();
     private final List<Consumer<TaskContext<DungeonEntity>>> taskContextConsumers = new ArrayList<>();
     private Consumer<DungeonEntity> spawnChanges = (entity) -> {};
     private int count = 1;
@@ -59,8 +57,8 @@ public class MobBuilder {
         return this;
     }
 
-    public <E extends Event> MobBuilder eventBehaviour(Class<E> eventClass, EventBehaviour<E> eventBehaviour) {
-        this.eventManager.addEventBehaviour(eventClass, eventBehaviour);
+    public MobBuilder invoker(Invoker invoker) {
+        this.invokers.add(invoker);
         return this;
     }
 
@@ -112,8 +110,8 @@ public class MobBuilder {
         return armourEquipment;
     }
 
-    public EventManager getEntityEventBehaviour() {
-        return eventManager;
+    public List<Invoker> getInvokers() {
+        return invokers;
     }
 
     public Consumer<DungeonEntity> getSpawnChanges() {

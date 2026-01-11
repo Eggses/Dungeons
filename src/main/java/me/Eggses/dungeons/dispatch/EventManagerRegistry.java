@@ -1,33 +1,36 @@
 package me.Eggses.dungeons.dispatch;
 
-import me.Eggses.dungeons.eventhandler.EventBehaviour;
-import me.Eggses.dungeons.eventhandler.EventContext;
-import me.Eggses.dungeons.eventhandler.EventManager;
+import me.Eggses.dungeons.eventinvoker.EventContext;
+import me.Eggses.dungeons.eventinvoker.EventRegistry;
+import me.Eggses.dungeons.eventinvoker.Invoker;
 import org.bukkit.event.Event;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.logging.Logger;
 
 public class EventManagerRegistry<T> {
 
-    private final Map<T, EventManager> registry = new HashMap<>();
+    private final Map<T, EventRegistry> registry = new HashMap<>();
+    private final Logger logger;
 
-    public <E extends Event> void addOrUpdate(T t, Class<E> eventClass, EventBehaviour<E> eventBehaviour) {
-
-        registry.putIfAbsent(t, new EventManager());
-        EventManager eventManager = registry.get(t);
-
-        eventManager.addEventBehaviour(eventClass, eventBehaviour);
+    public EventManagerRegistry(Logger logger) {
+        this.logger = logger;
     }
 
-    public <E extends Event> void handleEvent(T t, E event, EventContext eventContext) {
+    public void addOrUpdate(T t, Invoker invoker) {
+        EventRegistry eventRegistry = registry.computeIfAbsent(t, k -> new EventRegistry(logger));
+        eventRegistry.registerInvoker(invoker);
+    }
 
-        EventManager eventManager = registry.get(t);
-        if (eventManager == null) return;
+    public void handleEvent(T t, Event event, EventContext eventContext) {
 
-        eventManager.handleEvent(event, eventContext);
+        EventRegistry eventRegistry = registry.get(t);
+        if (eventRegistry == null) return;
+
+        eventRegistry.handleEvent(event, eventContext);
     }
 
     public void remove(T t) {

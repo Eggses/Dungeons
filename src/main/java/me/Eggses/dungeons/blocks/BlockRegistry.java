@@ -1,8 +1,8 @@
 package me.Eggses.dungeons.blocks;
 
 import me.Eggses.dungeons.dispatch.EventManagerRegistry;
-import me.Eggses.dungeons.eventhandler.EventBehaviour;
-import me.Eggses.dungeons.eventhandler.EventContext;
+import me.Eggses.dungeons.eventinvoker.EventContext;
+import me.Eggses.dungeons.eventinvoker.Invoker;
 import me.Eggses.dungeons.tasks.ActiveTasks;
 import me.Eggses.dungeons.tasks.TaskContext;
 import me.Eggses.dungeons.tasks.TaskRunner;
@@ -16,24 +16,23 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.logging.Logger;
 
 public class BlockRegistry {
 
     private final TaskRunner taskRunner;
 
-    private final EventManagerRegistry<Location> blockEventRegistry = new EventManagerRegistry<>();
+    private final EventManagerRegistry<Location> blockEventRegistry;
     private final Map<Location, TextDisplay> blockTextDisplayRegistry = new HashMap<>();
     private final Map<Location, ActiveTasks> blockActiveTaskRegistry = new HashMap<>();
 
-    public BlockRegistry(TaskRunner taskRunner) {
+    public BlockRegistry(TaskRunner taskRunner, Logger logger) {
         this.taskRunner = taskRunner;
+        blockEventRegistry = new EventManagerRegistry<>(logger);
     }
 
-    public <E extends Event> void addBlockAndEvent(Location location,
-                                           Class<E> eventClass,
-                                           EventBehaviour<E> eventBehaviour) {
-
-        blockEventRegistry.addOrUpdate(location, eventClass, eventBehaviour);
+    public void addBlockAndEvent(Location location, Invoker invoker) {
+        blockEventRegistry.addOrUpdate(location, invoker);
     }
 
     public void addBlockAndName(Location location, Consumer<TextDisplay> settings) {
@@ -79,7 +78,7 @@ public class BlockRegistry {
         }
     }
 
-    public <E extends Event> void handleEvent(Location location, E event, EventContext eventContext) {
+    public void handleEvent(Location location, Event event, EventContext eventContext) {
         blockEventRegistry.handleEvent(location, event, eventContext);
     }
 }

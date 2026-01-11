@@ -1,12 +1,13 @@
 package me.Eggses.dungeons.blocks.events;
 
-import me.Eggses.dungeons.eventhandler.EventBehaviour;
-import me.Eggses.dungeons.eventhandler.EventContext;
+import me.Eggses.dungeons.eventinvoker.EventContext;
+import me.Eggses.dungeons.eventinvoker.EventInvoker;
+import me.Eggses.dungeons.eventinvoker.Invoker;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-public class InteractOpenMenu implements EventBehaviour<PlayerInteractEvent> {
+public class InteractOpenMenu implements Invoker {
 
-    @Override
+    @EventInvoker
     public void handleEvent(PlayerInteractEvent event, EventContext eventContext) {
 
     }

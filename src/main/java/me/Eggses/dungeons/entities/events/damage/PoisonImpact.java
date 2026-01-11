@@ -1,8 +1,9 @@
-package me.Eggses.dungeons.entities.eventbehaviour.damage;
+package me.Eggses.dungeons.entities.events.damage;
 
-import me.Eggses.dungeons.eventhandler.EventBehaviour;
-import me.Eggses.dungeons.eventhandler.EventContext;
+import me.Eggses.dungeons.eventinvoker.EventContext;
 import me.Eggses.dungeons.entities.mobs.DungeonEntity;
+import me.Eggses.dungeons.eventinvoker.EventInvoker;
+import me.Eggses.dungeons.eventinvoker.Invoker;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -11,12 +12,12 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class PoisonImpact implements EventBehaviour<EntityDamageByEntityEvent> {
+public class PoisonImpact implements Invoker {
 
     private static final int BUFF_DURATION = 20 * 10;
     private static final int MAX_AMPLIFIER = 1;
 
-    @Override
+    @EventInvoker
     public void handleEvent(EntityDamageByEntityEvent event, EventContext eventContext) {
 
         Entity victim = event.getEntity();

@@ -1,7 +1,8 @@
-package me.Eggses.dungeons.entities.eventbehaviour.explosion;
+package me.Eggses.dungeons.entities.events.explosion;
 
-import me.Eggses.dungeons.eventhandler.EventBehaviour;
-import me.Eggses.dungeons.eventhandler.EventContext;
+import me.Eggses.dungeons.eventinvoker.EventContext;
+import me.Eggses.dungeons.eventinvoker.EventInvoker;
+import me.Eggses.dungeons.eventinvoker.Invoker;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Bee;
@@ -10,7 +11,7 @@ import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class BeeExplosion implements EventBehaviour<ExplosionPrimeEvent> {
+public class BeeExplosion implements Invoker {
 
     private static final int BEES_TO_SPAWN = 3;
 
@@ -23,7 +24,7 @@ public class BeeExplosion implements EventBehaviour<ExplosionPrimeEvent> {
             false
     );
 
-    @Override
+    @EventInvoker
     public void handleEvent(ExplosionPrimeEvent event, EventContext eventContext) {
 
         if (!(event.getEntity() instanceof Creeper)) return;

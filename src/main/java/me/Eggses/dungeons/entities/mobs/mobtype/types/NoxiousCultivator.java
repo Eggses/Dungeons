@@ -1,6 +1,6 @@
 package me.Eggses.dungeons.entities.mobs.mobtype.types;
 
-import me.Eggses.dungeons.entities.eventbehaviour.damage.PoisonImpact;
+import me.Eggses.dungeons.entities.events.damage.PoisonImpact;
 import me.Eggses.dungeons.entities.mobs.MobBuilder;
 import me.Eggses.dungeons.entities.mobs.mobtype.MobPreset;
 import me.Eggses.dungeons.entities.mobs.mobtype.MobUtility;
@@ -43,7 +43,7 @@ public class NoxiousCultivator implements MobPreset {
             });
 
             mobBuilder.mobName(new MobName(displayName, true));
-            mobBuilder.eventBehaviour(EntityDamageByEntityEvent.class, new PoisonImpact());
+            mobBuilder.invoker(new PoisonImpact());
         };
     }
 }

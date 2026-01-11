@@ -55,7 +55,7 @@ public class DungeonInstance {
         this.dungeonType = dungeonType;
 
         var graveyard = dungeonInstanceTemplate.getGraveyard();
-        var entityManager = new EntityManager(dungeonWorld, taskRunner, messageCreator, textFormatter);
+        var entityManager = new EntityManager(dungeonWorld, taskRunner, plugin.getLogger(), messageCreator, textFormatter);
         this.areaController = new AreaController(entityManager, graveyard, dungeonWorld, blockRegistry, dungeonInstanceTemplate.getAreaControllerBuilder());
         this.instanceEventHandler = new InstanceEventHandler(this, areaController, entityManager);
         this.portalController = new PortalController(plugin, this, dungeonInstanceTemplate.getDungeonPortal(), bannedItems);

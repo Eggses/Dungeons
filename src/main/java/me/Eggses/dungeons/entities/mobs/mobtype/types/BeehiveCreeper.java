@@ -1,7 +1,7 @@
 package me.Eggses.dungeons.entities.mobs.mobtype.types;
 
-import me.Eggses.dungeons.entities.eventbehaviour.explosion.BeeExplosion;
-import me.Eggses.dungeons.entities.eventbehaviour.explosion.SlownessExplosion;
+import me.Eggses.dungeons.entities.events.explosion.BeeExplosion;
+import me.Eggses.dungeons.entities.events.explosion.SlownessExplosion;
 import me.Eggses.dungeons.entities.mobs.MobBuilder;
 import me.Eggses.dungeons.entities.mobs.mobtype.MobPreset;
 import me.Eggses.dungeons.entities.nameutility.MobName;
@@ -22,8 +22,8 @@ public class BeehiveCreeper implements MobPreset {
     public Consumer<MobBuilder> getBuilderConsumer() {
         return mobBuilder -> {
             mobBuilder.mobName(new MobName(displayName, true));
-            mobBuilder.eventBehaviour(ExplosionPrimeEvent.class, new BeeExplosion());
-            mobBuilder.eventBehaviour(ExplosionPrimeEvent.class, new SlownessExplosion());
+            mobBuilder.invoker(new BeeExplosion());
+            mobBuilder.invoker(new SlownessExplosion());
         };
     }
 }

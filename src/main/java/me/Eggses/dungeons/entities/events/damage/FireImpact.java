@@ -1,17 +1,19 @@
-package me.Eggses.dungeons.entities.eventbehaviour.damage;
+package me.Eggses.dungeons.entities.events.damage;
 
-import me.Eggses.dungeons.eventhandler.EventBehaviour;
-import me.Eggses.dungeons.eventhandler.EventContext;
+import me.Eggses.dungeons.eventinvoker.EventContext;
 import me.Eggses.dungeons.entities.mobs.DungeonEntity;
+
+import me.Eggses.dungeons.eventinvoker.EventInvoker;
+import me.Eggses.dungeons.eventinvoker.Invoker;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
-public class FrostImpact implements EventBehaviour<EntityDamageByEntityEvent> {
+public class FireImpact implements Invoker {
 
-    private static final int FREEZE_DURATION = 10 * 20;
+    private static final int BURN_DURATION = 10 * 20;
 
-    @Override
+    @EventInvoker
     public void handleEvent(EntityDamageByEntityEvent event, EventContext eventContext) {
 
         Entity victim = event.getEntity();
@@ -24,6 +26,6 @@ public class FrostImpact implements EventBehaviour<EntityDamageByEntityEvent> {
 
         if (!(victim instanceof LivingEntity livingEntity)) return;
 
-        livingEntity.setFreezeTicks(Math.max(livingEntity.getFreezeTicks(), FREEZE_DURATION));
+        livingEntity.setFireTicks(Math.max(livingEntity.getFireTicks(), BURN_DURATION));
     }
 }

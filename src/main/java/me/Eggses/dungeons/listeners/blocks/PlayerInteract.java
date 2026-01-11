@@ -2,7 +2,7 @@ package me.Eggses.dungeons.listeners.blocks;
 
 import me.Eggses.dungeons.blocks.BlockRegistry;
 import me.Eggses.dungeons.dispatch.EventManagerRegistry;
-import me.Eggses.dungeons.eventhandler.EventContext;
+import me.Eggses.dungeons.eventinvoker.EventContext;
 import me.Eggses.dungeons.items.ItemKeyManager;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;

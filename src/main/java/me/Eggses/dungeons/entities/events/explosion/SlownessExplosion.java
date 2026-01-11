@@ -1,7 +1,8 @@
-package me.Eggses.dungeons.entities.eventbehaviour.explosion;
+package me.Eggses.dungeons.entities.events.explosion;
 
-import me.Eggses.dungeons.eventhandler.EventBehaviour;
-import me.Eggses.dungeons.eventhandler.EventContext;
+import me.Eggses.dungeons.eventinvoker.EventContext;
+import me.Eggses.dungeons.eventinvoker.EventInvoker;
+import me.Eggses.dungeons.eventinvoker.Invoker;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -11,7 +12,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.Collection;
 
-public class SlownessExplosion implements EventBehaviour<ExplosionPrimeEvent> {
+public class SlownessExplosion implements Invoker {
 
     private static final double EFFECT_RADIUS = 7.0;
 
@@ -26,7 +27,7 @@ public class SlownessExplosion implements EventBehaviour<ExplosionPrimeEvent> {
             true,
             true);
 
-    @Override
+    @EventInvoker
     public void handleEvent(ExplosionPrimeEvent event, EventContext eventContext) {
 
         Location location = event.getEntity().getLocation();
