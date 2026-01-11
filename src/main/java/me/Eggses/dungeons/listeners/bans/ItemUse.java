@@ -87,7 +87,18 @@ public class ItemUse implements Listener {
             Material.MANGROVE_FENCE_GATE,
             Material.BAMBOO_FENCE_GATE,
             Material.CHERRY_FENCE_GATE,
-            Material.PALE_OAK_FENCE_GATE
+            Material.PALE_OAK_FENCE_GATE,
+
+            Material.OAK_SHELF,
+            Material.SPRUCE_SHELF,
+            Material.BIRCH_SHELF,
+            Material.JUNGLE_SHELF,
+            Material.ACACIA_SHELF,
+            Material.DARK_OAK_SHELF,
+            Material.MANGROVE_SHELF,
+            Material.BAMBOO_SHELF,
+            Material.CHERRY_SHELF,
+            Material.PALE_OAK_SHELF
     );
 
     private final DungeonRegistry dungeonRegistry;
