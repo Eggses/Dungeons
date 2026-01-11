@@ -5,7 +5,6 @@ import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.utility.misc.Permission;
 import me.Eggses.dungeons.utility.text.MessageCreator;
 import me.Eggses.dungeons.utility.text.Messages;
-import me.Eggses.dungeons.utility.text.Placeholder;
 import me.Eggses.dungeons.utility.text.Placeholders;
 import org.bukkit.Location;
 import org.bukkit.World;

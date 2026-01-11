@@ -1,4 +1,4 @@
-package me.Eggses.dungeons.listeners.players.bans;
+package me.Eggses.dungeons.listeners.bans;
 
 import me.Eggses.dungeons.dungeon.lifecycle.DungeonRegistry;
 import org.bukkit.event.EventHandler;

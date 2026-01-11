@@ -9,18 +9,19 @@ import java.util.Map;
 
 public class EventManager {
 
-    private final Map<Class<? extends Event>, List<EventBehaviour<? extends Event>>> entityEventBehaviours = new HashMap<>();
+    private final Map<Class<? extends Event>, List<EventBehaviour<? extends Event>>> behaviours = new HashMap<>();
 
     public <E extends Event> void addEventBehaviour(Class<E> eventClass, EventBehaviour<E> eventBehaviour) {
 
-        entityEventBehaviours.putIfAbsent(eventClass, new ArrayList<>());
-        List<EventBehaviour<? extends Event>> eventBehaviours = entityEventBehaviours.get(eventClass);
+        List<EventBehaviour<? extends Event>> eventBehaviours = behaviours.computeIfAbsent(eventClass,
+                key -> new ArrayList<>()
+        );
         eventBehaviours.add(eventBehaviour);
     }
 
     public <E extends Event> void handleEvent(E event, EventContext eventContext) {
 
-        List<EventBehaviour<? extends Event>> eventBehaviours = entityEventBehaviours.get(event.getClass());
+        List<EventBehaviour<? extends Event>> eventBehaviours = behaviours.get(event.getClass());
         if (eventBehaviours == null) return;
 
         for (EventBehaviour<? extends Event> eventBehaviour : eventBehaviours) {

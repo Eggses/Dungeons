@@ -7,10 +7,21 @@ import me.Eggses.dungeons.tasks.TaskRunner;
 import me.Eggses.dungeons.utility.text.MessageCreator;
 import me.Eggses.dungeons.utility.text.TextFormatter;
 import org.bukkit.World;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
 
 public class EntityManager {
+
+    private static final PotionEffect DOLPHINS_GRACE = new PotionEffect(
+            PotionEffectType.DOLPHINS_GRACE,
+            Integer.MAX_VALUE,
+            49,
+            false,
+            false,
+            false
+    );
 
     private final Map<UUID, DungeonEntity> dungeonEntities = new HashMap<>();
 
@@ -44,7 +55,9 @@ public class EntityManager {
 
     public void spawnMob(MobBuilder mobBuilder) {
         for (int i = 0; i < mobBuilder.getCount(); i++) {
-            addMob(new DungeonMob(mobBuilder, dungeonWorld, taskRunner, messageCreator, textFormatter));
+            var mob = new DungeonMob(mobBuilder, dungeonWorld, taskRunner, messageCreator, textFormatter);
+            addMob(mob);
+            applyDolphinsGrace(mob);
         }
     }
 
@@ -69,5 +82,9 @@ public class EntityManager {
         for (UUID uuid : keys) {
             removeMob(uuid);
         }
+    }
+
+    private void applyDolphinsGrace(DungeonEntity dungeonEntity) {
+        dungeonEntity.getEntity().addPotionEffect(DOLPHINS_GRACE);
     }
 }

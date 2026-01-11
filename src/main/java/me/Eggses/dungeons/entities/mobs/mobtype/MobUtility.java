@@ -9,6 +9,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Ageable;
@@ -32,8 +33,14 @@ public class MobUtility {
     }
 
     public void toZombieStyleMeleeGoals(PathfinderMob pathfinderMob) {
+
         pathfinderMob.goalSelector.addGoal(1, new FloatGoal(pathfinderMob));
-        pathfinderMob.goalSelector.addGoal(2, new MeleeAttackGoal(pathfinderMob, 1.0, false));
+
+        if (pathfinderMob instanceof Monster monster) {
+            pathfinderMob.goalSelector.addGoal(2, new SpearUseGoal<>(monster, 1.0, 1.0, 10.0f, 2.0f));
+        }
+
+        pathfinderMob.goalSelector.addGoal(3, new MeleeAttackGoal(pathfinderMob, 1.0, false));
         pathfinderMob.goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(pathfinderMob, 1.0));
         pathfinderMob.goalSelector.addGoal(8, new LookAtPlayerGoal(pathfinderMob, Player.class, 8.0f));
         pathfinderMob.goalSelector.addGoal(8, new RandomLookAroundGoal(pathfinderMob));

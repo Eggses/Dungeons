@@ -22,11 +22,11 @@ import me.Eggses.dungeons.listeners.entities.EntityCombat;
 import me.Eggses.dungeons.listeners.entities.EntityDeath;
 import me.Eggses.dungeons.listeners.entities.EntityExplode;
 import me.Eggses.dungeons.listeners.players.Login;
-import me.Eggses.dungeons.listeners.players.dungeonchanges.DeathController;
-import me.Eggses.dungeons.listeners.players.dungeonchanges.PlayerDungeonWorld;
+import me.Eggses.dungeons.listeners.players.DeathController;
+import me.Eggses.dungeons.listeners.players.PlayerDungeonWorld;
 import me.Eggses.dungeons.listeners.blocks.PlayerInteract;
-import me.Eggses.dungeons.listeners.players.dungeonchanges.PlayerMovement;
-import me.Eggses.dungeons.listeners.players.bans.*;
+import me.Eggses.dungeons.listeners.players.PlayerMovement;
+import me.Eggses.dungeons.listeners.bans.*;
 import me.Eggses.dungeons.utility.sound.SoundPlayer;
 import me.Eggses.dungeons.utility.text.MessageCreator;
 import me.Eggses.dungeons.utility.text.TextFormatter;
@@ -123,7 +123,7 @@ public final class Dungeons extends JavaPlugin {
         pluginManager.registerEvents(new EntityDeath(dungeonEventRouter), this);
         pluginManager.registerEvents(new EntityExplode(dungeonEventRouter), this);
 
-        pluginManager.registerEvents(new Login(), this);
+        pluginManager.registerEvents(new CauldronLevel(dungeonRegistry), this);
         pluginManager.registerEvents(new ChorusFruitTeleport(dungeonRegistry), this);
         pluginManager.registerEvents(new DurabilityLoss(dungeonRegistry), this);
         pluginManager.registerEvents(new ElytraGlide(dungeonRegistry), this);
@@ -136,6 +136,7 @@ public final class Dungeons extends JavaPlugin {
         pluginManager.registerEvents(new ShieldCooldown(this, dungeonRegistry), this);
         pluginManager.registerEvents(new TotemUse(dungeonRegistry), this);
 
+        pluginManager.registerEvents(new Login(), this);
         pluginManager.registerEvents(new DeathController(dungeonRegistry, dungeonEventRouter), this);
         pluginManager.registerEvents(new PlayerDungeonWorld(dungeonEventRouter), this);
         pluginManager.registerEvents(new PlayerInteract(blockRegistry, itemRegistry, itemKeyManager), this);

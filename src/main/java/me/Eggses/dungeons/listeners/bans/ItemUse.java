@@ -1,4 +1,4 @@
-package me.Eggses.dungeons.listeners.players.bans;
+package me.Eggses.dungeons.listeners.bans;
 
 import me.Eggses.dungeons.dungeon.lifecycle.DungeonRegistry;
 import org.bukkit.Material;
@@ -65,7 +65,29 @@ public class ItemUse implements Listener {
     );
 
     private static final Set<Material> BANNED_RIGHT_CLICK_BLOCK_INTERACTIONS = Set.of(
-            Material.DECORATED_POT
+            Material.DECORATED_POT,
+
+            Material.OAK_TRAPDOOR,
+            Material.SPRUCE_TRAPDOOR,
+            Material.BIRCH_TRAPDOOR,
+            Material.JUNGLE_TRAPDOOR,
+            Material.ACACIA_TRAPDOOR,
+            Material.DARK_OAK_TRAPDOOR,
+            Material.MANGROVE_TRAPDOOR,
+            Material.BAMBOO_TRAPDOOR,
+            Material.CHERRY_TRAPDOOR,
+            Material.PALE_OAK_TRAPDOOR,
+
+            Material.OAK_FENCE_GATE,
+            Material.SPRUCE_FENCE_GATE,
+            Material.BIRCH_FENCE_GATE,
+            Material.JUNGLE_FENCE_GATE,
+            Material.ACACIA_FENCE_GATE,
+            Material.DARK_OAK_FENCE_GATE,
+            Material.MANGROVE_FENCE_GATE,
+            Material.BAMBOO_FENCE_GATE,
+            Material.CHERRY_FENCE_GATE,
+            Material.PALE_OAK_FENCE_GATE
     );
 
     private final DungeonRegistry dungeonRegistry;
