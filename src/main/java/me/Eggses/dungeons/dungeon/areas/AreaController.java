@@ -78,8 +78,6 @@ public class AreaController {
     }
 
     public void handleDungeonTriggerCommand(Position positionOfSender) {
-        if (areaInProgress) return;
-
         Consumer<DungeonContext> consumer = dungeonTriggerCommandMap.remove(positionOfSender);
         if (consumer == null) return;
         consumer.accept(dungeonContext);
