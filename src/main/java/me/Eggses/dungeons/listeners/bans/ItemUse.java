@@ -13,7 +13,6 @@ import java.util.Set;
 public class ItemUse implements Listener {
 
     private static final Set<Material> BANNED_RIGHT_CLICK_ITEM_INTERACTIONS = Set.of(
-
             Material.WOODEN_SPEAR,
             Material.STONE_SPEAR,
             Material.COPPER_SPEAR,
@@ -31,35 +30,6 @@ public class ItemUse implements Listener {
             Material.FISHING_ROD,
             Material.CARROT_ON_A_STICK,
             Material.WARPED_FUNGUS_ON_A_STICK,
-
-            Material.OAK_BOAT,
-            Material.SPRUCE_BOAT,
-            Material.BIRCH_BOAT,
-            Material.JUNGLE_BOAT,
-            Material.ACACIA_BOAT,
-            Material.DARK_OAK_BOAT,
-            Material.MANGROVE_BOAT,
-            Material.BAMBOO_RAFT,
-            Material.CHERRY_BOAT,
-            Material.PALE_OAK_BOAT,
-
-            Material.OAK_CHEST_BOAT,
-            Material.SPRUCE_CHEST_BOAT,
-            Material.BIRCH_CHEST_BOAT,
-            Material.JUNGLE_CHEST_BOAT,
-            Material.ACACIA_CHEST_BOAT,
-            Material.DARK_OAK_CHEST_BOAT,
-            Material.MANGROVE_CHEST_BOAT,
-            Material.BAMBOO_CHEST_RAFT,
-            Material.CHERRY_CHEST_BOAT,
-            Material.PALE_OAK_CHEST_BOAT,
-
-            Material.MINECART,
-            Material.CHEST_MINECART,
-            Material.FURNACE_MINECART,
-            Material.HOPPER_MINECART,
-            Material.TNT_MINECART,
-            Material.COMMAND_BLOCK_MINECART,
 
             Material.ENCHANTED_GOLDEN_APPLE
     );
