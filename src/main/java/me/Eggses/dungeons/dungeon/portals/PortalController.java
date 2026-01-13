@@ -52,14 +52,14 @@ public class PortalController {
         return dungeonPortal.getEntryPortalWorldRegion().within(location);
     }
 
-    public void enterDungeon(Player player, World dungeonWorld) {
+    public void enterDungeon(Player player) {
 
         if (bannedItems.hasBannedItems(player)) {
             bannedItems.createAndSendBannedItemsMessage(player);
             return;
         }
 
-        Location spawningLocation = dungeonPortal.getDungeonSpawnPosition().toLocation(dungeonWorld);
+        Location spawningLocation = dungeonPortal.getDungeonSpawnPosition().toLocation(dungeonInstance.getDungeonWorld());
         player.teleport(spawningLocation);
     }
 

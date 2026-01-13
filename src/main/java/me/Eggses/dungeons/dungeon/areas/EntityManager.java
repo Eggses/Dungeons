@@ -3,10 +3,13 @@ package me.Eggses.dungeons.dungeon.areas;
 import me.Eggses.dungeons.entities.mobs.DungeonEntity;
 import me.Eggses.dungeons.entities.mobs.DungeonMob;
 import me.Eggses.dungeons.entities.mobs.MobBuilder;
+import me.Eggses.dungeons.eventhandler.EventContext;
 import me.Eggses.dungeons.tasks.TaskRunner;
 import me.Eggses.dungeons.utility.text.MessageCreator;
 import me.Eggses.dungeons.utility.text.TextFormatter;
 import org.bukkit.World;
+import org.bukkit.entity.Entity;
+import org.bukkit.event.Event;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -51,6 +54,11 @@ public class EntityManager {
 
     public DungeonEntity getDungeonEntity(UUID uuid) {
         return dungeonEntities.get(uuid);
+    }
+
+    public <E extends Event> void passEventToMobIfExists(Entity entity, E event, EventContext eventContext) {
+        DungeonEntity dungeonEntity = dungeonEntities.get(entity.getUniqueId());
+        if (dungeonEntity != null) dungeonEntity.handleEvent(event, eventContext);
     }
 
     public void spawnMob(MobBuilder mobBuilder) {

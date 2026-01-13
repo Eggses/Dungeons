@@ -34,7 +34,7 @@ public class DungeonInstance {
     private final BlockRegistry blockRegistry;
     private final AreaController areaController;
     private final EventManager eventManager;
-    private final InstanceEventHandler instanceEventHandler;
+    private final InstanceEventHandlerOLD instanceEventHandler;
     private final PortalController portalController;
     private final DungeonPlayers dungeonPlayers;
     private final DungeonType dungeonType;
@@ -61,7 +61,7 @@ public class DungeonInstance {
         var entityManager = new EntityManager(dungeonWorld, taskRunner, messageCreator, textFormatter);
         this.areaController = new AreaController(entityManager, graveyard, dungeonWorld, blockRegistry, dungeonInstanceTemplate.getAreaControllerBuilder());
         this.eventManager = new EventManager();
-        this.instanceEventHandler = new InstanceEventHandler(this, eventManager, areaController, entityManager);
+        this.instanceEventHandler = new InstanceEventHandlerOLD(this, eventManager, areaController, entityManager);
         this.portalController = new PortalController(plugin, this, dungeonInstanceTemplate.getDungeonPortal(), bannedItems);
         this.dungeonPlayers = new DungeonPlayers();
 
@@ -86,7 +86,7 @@ public class DungeonInstance {
         // Dungeon may be force ended... if so destroy portal.
         if (portalController.isOpen()) {
             portalController.closeDungeonPortal();
-            dungeonLifecycleService.closePortal(this);
+            dungeonLifecycleService.closePortal(portalController, dungeonType);
         }
 
         World mainWorld = Bukkit.getWorld("world");

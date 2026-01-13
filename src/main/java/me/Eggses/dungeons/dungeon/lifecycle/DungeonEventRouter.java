@@ -25,14 +25,15 @@ public class DungeonEventRouter {
     }
 
     public void handlePlayerMovementEvent(PlayerMoveEvent event) {
-        Location to = event.getTo();
-        World world = to.getWorld();
-        handleEvent(event, world);
 
+        Location to = event.getTo();
         PortalController portalController = openPortalRegistry.getPortalController(to.getChunk().getChunkKey(), to);
         if (portalController != null) {
-            portalController.enterDungeon(event.getPlayer(), world);
+            portalController.enterDungeon(event.getPlayer());
+            return;
         }
+        DungeonInstance dungeonInstance = dungeonRegistry.getDungeonInstance(to.getWorld());
+        if (dungeonInstance != null) dungeonInstance.handleEvent(event);
     }
 
     public void handleDungeonTriggerCommand(Location locationOfBlock) {

@@ -20,6 +20,7 @@ public class OpenPortalRegistry {
     public PortalController getPortalController(Long chunkKey, Location location) {
 
         Set<PortalController> portalControllers = openPortals.get(chunkKey);
+        if (portalControllers == null) return null;
 
         for (PortalController portalController : portalControllers) {
             if (portalController.isInPortalOutsideDungeon(location)) {
