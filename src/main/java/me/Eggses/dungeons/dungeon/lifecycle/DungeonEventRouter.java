@@ -1,22 +1,37 @@
 package me.Eggses.dungeons.dungeon.lifecycle;
 
 import me.Eggses.dungeons.dungeon.instance.DungeonInstance;
+import me.Eggses.dungeons.dungeon.portals.OpenPortalRegistry;
+import me.Eggses.dungeons.dungeon.portals.PortalController;
 import me.Eggses.dungeons.dungeon.regions.Position;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.event.Event;
+import org.bukkit.event.player.PlayerMoveEvent;
 
 public class DungeonEventRouter {
 
     private final DungeonRegistry dungeonRegistry;
+    private final OpenPortalRegistry openPortalRegistry;
 
-    public DungeonEventRouter(DungeonRegistry dungeonRegistry) {
+    public DungeonEventRouter(DungeonRegistry dungeonRegistry, OpenPortalRegistry openPortalRegistry) {
         this.dungeonRegistry = dungeonRegistry;
+        this.openPortalRegistry = openPortalRegistry;
     }
 
     public <E extends Event> void handleEvent(E event, World world) {
         DungeonInstance dungeonInstance = dungeonRegistry.getDungeonInstance(world);
         if (dungeonInstance != null) dungeonInstance.handleEvent(event);
+    }
+
+    public void handlePlayerMovementEvent(PlayerMoveEvent event) {
+        Location to = event.getTo();
+        handleEvent(event, to.getWorld());
+
+        PortalController portalController = openPortalRegistry.getPortalController(to.getChunk().getChunkKey(), to);
+        if (portalController != null) {
+            portalController.enterDungeon();
+        }
     }
 
     public void handleDungeonTriggerCommand(Location locationOfBlock) {

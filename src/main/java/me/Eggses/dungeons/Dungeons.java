@@ -9,6 +9,7 @@ import me.Eggses.dungeons.dungeon.files.reading.ReadingUtility;
 import me.Eggses.dungeons.dungeon.items.DungeonKeys;
 import me.Eggses.dungeons.dungeon.lifecycle.*;
 import me.Eggses.dungeons.dungeon.portalroom.DungeonEntranceRoomRegistry;
+import me.Eggses.dungeons.dungeon.portals.OpenPortalRegistry;
 import me.Eggses.dungeons.dungeon.utility.BannedItems;
 import me.Eggses.dungeons.dungeon.utility.InstanceNameManager;
 import me.Eggses.dungeons.entities.mobs.mobtype.MobRegistry;
@@ -47,7 +48,6 @@ public final class Dungeons extends JavaPlugin {
         var textFormatter = new TextFormatter();
 
         var dungeonInstanceTemplateRegistry = new DungeonInstanceTemplateRegistry();
-        var dungeonOpenPortalRegistry = new DungeonOpenPortalRegistry();
         var itemRegistry = new EventManagerRegistry<String>();
         var templateReservation = new TemplateReservation();
 
@@ -57,11 +57,13 @@ public final class Dungeons extends JavaPlugin {
         var taskRunner = new TaskRunner(this);
         var blockRegistry = new BlockRegistry(taskRunner);
 
+        var openPortalRegistry = new OpenPortalRegistry();
+
         var dungeonLifecycleService = new DungeonLifecycleService(
-                this, dungeonRegistry, dungeonOpenPortalRegistry, templateReservation, dungeonWorldManager, dungeonLog
+                this, dungeonRegistry, openPortalRegistry, templateReservation, dungeonWorldManager, dungeonLog
         );
 
-        var dungeonEventRouter = new DungeonEventRouter(dungeonRegistry);
+        var dungeonEventRouter = new DungeonEventRouter(dungeonRegistry, openPortalRegistry);
 
         var soundPlayer = new SoundPlayer();
         var mobRegistry = new MobRegistry(this, new MobUtility(), textFormatter, soundPlayer);

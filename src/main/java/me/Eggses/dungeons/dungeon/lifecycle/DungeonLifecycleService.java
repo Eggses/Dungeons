@@ -2,6 +2,9 @@ package me.Eggses.dungeons.dungeon.lifecycle;
 
 import me.Eggses.dungeons.dungeon.files.DungeonLog;
 import me.Eggses.dungeons.dungeon.instance.DungeonInstance;
+import me.Eggses.dungeons.dungeon.portals.OpenPortalRegistry;
+import me.Eggses.dungeons.dungeon.portals.PortalController;
+import me.Eggses.dungeons.dungeon.types.DungeonType;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -13,33 +16,33 @@ public class DungeonLifecycleService {
 
     private final JavaPlugin plugin;
     private final DungeonRegistry dungeonRegistry;
-    private final DungeonOpenPortalRegistry dungeonOpenPortalRegistry;
+    private final OpenPortalRegistry openPortalRegistry;
     private final TemplateReservation templateReservation;
     private final DungeonWorldManager dungeonWorldManager;
     private final DungeonLog dungeonLog;
 
     public DungeonLifecycleService(JavaPlugin plugin,
                                    DungeonRegistry dungeonRegistry,
-                                   DungeonOpenPortalRegistry dungeonOpenPortalRegistry,
+                                   OpenPortalRegistry openPortalRegistry,
                                    TemplateReservation templateReservation,
                                    DungeonWorldManager dungeonWorldManager,
                                    DungeonLog dungeonLog) {
 
         this.plugin = plugin;
         this.dungeonRegistry = dungeonRegistry;
-        this.dungeonOpenPortalRegistry = dungeonOpenPortalRegistry;
+        this.openPortalRegistry = openPortalRegistry;
         this.templateReservation = templateReservation;
         this.dungeonWorldManager = dungeonWorldManager;
         this.dungeonLog = dungeonLog;
     }
 
-    public void openPortal(DungeonInstance dungeonInstance) {
-        dungeonOpenPortalRegistry.addToOpenPortals(dungeonInstance, dungeonInstance.getPortalChunkKeys());
+    public void openPortal(PortalController portalToOpen) {
+        openPortalRegistry.addOpenPortal(portalToOpen);
     }
 
-    public void closePortal(DungeonInstance dungeonInstance) {
-        dungeonOpenPortalRegistry.removeFromOpenPortals(dungeonInstance, dungeonInstance.getPortalChunkKeys());
-        templateReservation.free(dungeonInstance.getDungeonType());
+    public void closePortal(PortalController portalController, DungeonType dungeonType) {
+        openPortalRegistry.removeOpenPortal(portalController);
+        templateReservation.free(dungeonType);
     }
 
     public void destroyInstanceRuntime(DungeonInstance dungeonInstance) {

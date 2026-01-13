@@ -24,7 +24,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class DungeonInstance {
 
@@ -70,12 +69,12 @@ public class DungeonInstance {
         dungeonInstanceTemplate.getOnDungeonStart().accept(new DungeonContext(dungeonWorld, entityManager, graveyard, dungeonWorld::getPlayers));
 
         portalController.openDungeonPortal();
-        dungeonLifecycleService.openPortal(this);
+        dungeonLifecycleService.openPortal(portalController);
     }
 
     public void closeDungeonPortal() {
         portalController.closeDungeonPortal();
-        dungeonLifecycleService.closePortal(this);
+        dungeonLifecycleService.closePortal(portalController, dungeonType);
         if (shouldEndDungeon()) endDungeon(true);
     }
 
@@ -149,15 +148,6 @@ public class DungeonInstance {
     public World getDungeonWorld() {
         return dungeonWorld;
     }
-
-    public Set<Long> getPortalChunkKeys() {
-        return portalController.getChunkKeysEncompassed();
-    }
-
-    public DungeonType getDungeonType() {
-        return dungeonType;
-    }
-
 
 
 
