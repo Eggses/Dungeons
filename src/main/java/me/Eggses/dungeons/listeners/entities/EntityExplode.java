@@ -15,6 +15,6 @@ public class EntityExplode implements Listener {
 
     @EventHandler
     public void onEntityExplode(ExplosionPrimeEvent event) {
-        dungeonEventRouter.handleExplosionPrimeEvent(event);
+        dungeonEventRouter.handleEvent(event, event.getEntity().getWorld());
     }
 }

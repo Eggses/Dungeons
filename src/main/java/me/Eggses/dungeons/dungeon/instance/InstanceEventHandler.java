@@ -7,12 +7,14 @@ import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.entities.attributes.AttributeController;
 import me.Eggses.dungeons.eventhandler.EventContext;
 import me.Eggses.dungeons.entities.mobs.DungeonEntity;
+import me.Eggses.dungeons.eventhandler.EventManager;
 import org.bukkit.Location;
 import org.bukkit.entity.*;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.projectiles.ProjectileSource;
@@ -23,17 +25,51 @@ import java.util.function.BiFunction;
 public class InstanceEventHandler {
 
     private final DungeonInstance dungeonInstance;
+    private final EventManager eventManager;
     private final AreaController areaController;
     private final EntityManager entityManager;
 
     public InstanceEventHandler(DungeonInstance dungeonInstance,
+                                EventManager eventManager,
                                 AreaController areaController,
                                 EntityManager entityManager) {
 
         this.dungeonInstance = dungeonInstance;
+        this.eventManager = eventManager;
         this.areaController = areaController;
         this.entityManager = entityManager;
     }
+
+    // for now keep this but yeah.
+    public <E extends Event> void handleEvent(E event) {
+        eventManager.handleEvent(event, EventContext.EMPTY);
+    }
+
+
+    private void registerEvents() {
+
+        eventManager.addEventBehaviour(PlayerMoveEvent.class, (event, eventContext)
+                -> areaController.handlePlayerMovement(event.getTo()));
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /* =========================================================
      * Core Dungeon Area Control Events

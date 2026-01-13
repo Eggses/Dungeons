@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Set;
 
-public class DungeonPortalRoomRegistry {
+public class DungeonEntranceRoomRegistry {
 
     private final ChunkMappingRegistry<WorldRegion> dungeonPortalRoomChunkMappingRegistry = new ChunkMappingRegistry<>();
 

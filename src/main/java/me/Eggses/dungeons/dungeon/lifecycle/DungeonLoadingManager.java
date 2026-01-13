@@ -13,7 +13,7 @@ import me.Eggses.dungeons.dungeon.files.reading.ReadingUtility;
 import me.Eggses.dungeons.dungeon.files.templates.DungeonInstanceTemplate;
 import me.Eggses.dungeons.dungeon.files.templates.DungeonTemplate;
 import me.Eggses.dungeons.dungeon.files.templates.NonInstanceDungeonTemplate;
-import me.Eggses.dungeons.dungeon.portalroom.DungeonPortalRoomRegistry;
+import me.Eggses.dungeons.dungeon.portalroom.DungeonEntranceRoomRegistry;
 import me.Eggses.dungeons.dungeon.regions.WorldRegion;
 import me.Eggses.dungeons.entities.mobs.mobtype.MobRegistry;
 import me.Eggses.dungeons.dungeon.events.CancelUse;
@@ -44,7 +44,7 @@ public class DungeonLoadingManager {
     private final SoundPlayer soundPlayer;
     private final MobRegistry mobRegistry;
 
-    private final DungeonPortalRoomRegistry dungeonPortalRoomRegistry;
+    private final DungeonEntranceRoomRegistry dungeonEntranceRoomRegistry;
     private final BlockRegistry blockRegistry;
     private final DungeonKeys dungeonKeys;
     private final EventManagerRegistry<String> itemRegistry;
@@ -61,7 +61,7 @@ public class DungeonLoadingManager {
                                  MessageCreator messageCreator,
                                  SoundPlayer soundPlayer,
                                  MobRegistry mobRegistry,
-                                 DungeonPortalRoomRegistry dungeonPortalRoomRegistry,
+                                 DungeonEntranceRoomRegistry dungeonEntranceRoomRegistry,
                                  BlockRegistry blockRegistry,
                                  DungeonKeys dungeonKeys,
                                  EventManagerRegistry<String> itemRegistry,
@@ -72,7 +72,7 @@ public class DungeonLoadingManager {
         this.messageCreator = messageCreator;
         this.soundPlayer = soundPlayer;
         this.mobRegistry = mobRegistry;
-        this.dungeonPortalRoomRegistry = dungeonPortalRoomRegistry;
+        this.dungeonEntranceRoomRegistry = dungeonEntranceRoomRegistry;
         this.blockRegistry = blockRegistry;
         this.dungeonKeys = dungeonKeys;
         this.itemRegistry = itemRegistry;
@@ -134,7 +134,7 @@ public class DungeonLoadingManager {
             var generalPortalRoomRegion = nonInstanceDungeonTemplate.generalPortalRoomRegion();
             var worldRegion = new WorldRegion(worldOfKeystone, generalPortalRoomRegion);
             portalRooms.put(dungeonType, worldRegion);
-            dungeonPortalRoomRegistry.addPortalRoom(worldRegion);
+            dungeonEntranceRoomRegistry.addPortalRoom(worldRegion);
         }
     }
 
@@ -149,7 +149,7 @@ public class DungeonLoadingManager {
             if (locationOfKeystone != null) blockRegistry.remove(locationOfKeystone);
 
             WorldRegion generalPortalRoomRegion = portalRooms.remove(dungeonType);
-            if (generalPortalRoomRegion != null) dungeonPortalRoomRegistry.remove(generalPortalRoomRegion);
+            if (generalPortalRoomRegion != null) dungeonEntranceRoomRegistry.remove(generalPortalRoomRegion);
         }
     }
 }

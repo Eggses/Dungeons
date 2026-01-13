@@ -1,7 +1,6 @@
 package me.Eggses.dungeons.commands.subcommands;
 
 import me.Eggses.dungeons.dungeon.lifecycle.DungeonEventRouter;
-import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.utility.misc.Permission;
 import me.Eggses.dungeons.utility.text.MessageCreator;
 import me.Eggses.dungeons.utility.text.Messages;
@@ -49,19 +48,8 @@ public class Trigger implements SubCommand {
             return;
         }
 
-        World sendersWorld = null;
-        Position position = null;
-
-        if (sender instanceof Player player) {
-            sendersWorld = player.getWorld();
-            position = new Position(player.getLocation());
-        }
-        if (sender instanceof BlockCommandSender commandBlock) {
-            Location locationOfBlock = commandBlock.getBlock().getLocation();
-            sendersWorld = locationOfBlock.getWorld();
-            position = new Position(locationOfBlock);
-        }
-        dungeonEventRouter.handleDungeonTriggerCommand(sendersWorld, position);
+        Location locationOfBlock = (sender instanceof BlockCommandSender commandBlock) ? commandBlock.getBlock().getLocation() : null;
+        if (locationOfBlock != null) dungeonEventRouter.handleDungeonTriggerCommand(locationOfBlock);
     }
 
     @Override

@@ -8,7 +8,7 @@ import me.Eggses.dungeons.dungeon.files.DungeonLog;
 import me.Eggses.dungeons.dungeon.files.reading.ReadingUtility;
 import me.Eggses.dungeons.dungeon.items.DungeonKeys;
 import me.Eggses.dungeons.dungeon.lifecycle.*;
-import me.Eggses.dungeons.dungeon.portalroom.DungeonPortalRoomRegistry;
+import me.Eggses.dungeons.dungeon.portalroom.DungeonEntranceRoomRegistry;
 import me.Eggses.dungeons.dungeon.utility.BannedItems;
 import me.Eggses.dungeons.dungeon.utility.InstanceNameManager;
 import me.Eggses.dungeons.entities.mobs.mobtype.MobRegistry;
@@ -61,11 +61,11 @@ public final class Dungeons extends JavaPlugin {
                 this, dungeonRegistry, dungeonOpenPortalRegistry, templateReservation, dungeonWorldManager, dungeonLog
         );
 
-        var dungeonEventRouter = new DungeonEventRouter(dungeonRegistry, dungeonOpenPortalRegistry);
+        var dungeonEventRouter = new DungeonEventRouter(dungeonRegistry);
 
         var soundPlayer = new SoundPlayer();
         var mobRegistry = new MobRegistry(this, new MobUtility(), textFormatter, soundPlayer);
-        var dungeonPortalRoomRegistry = new DungeonPortalRoomRegistry();
+        var dungeonPortalRoomRegistry = new DungeonEntranceRoomRegistry();
 
         var bannedItems = new BannedItems(messageCreator, textFormatter);
 

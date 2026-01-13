@@ -1,6 +1,7 @@
 package me.Eggses.dungeons.dungeon.instance;
 
 import me.Eggses.dungeons.blocks.BlockRegistry;
+import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.dungeon.types.DungeonType;
 import me.Eggses.dungeons.dungeon.files.templates.DungeonInstanceTemplate;
 import me.Eggses.dungeons.dungeon.areas.AreaController;
@@ -11,11 +12,14 @@ import me.Eggses.dungeons.dungeon.portals.PortalController;
 import me.Eggses.dungeons.dungeon.utility.BannedItems;
 import me.Eggses.dungeons.dungeon.utility.DungeonContext;
 import me.Eggses.dungeons.dungeon.utility.DungeonGameRules;
+import me.Eggses.dungeons.eventhandler.EventContext;
+import me.Eggses.dungeons.eventhandler.EventManager;
 import me.Eggses.dungeons.tasks.TaskRunner;
 import me.Eggses.dungeons.utility.text.MessageCreator;
 import me.Eggses.dungeons.utility.text.TextFormatter;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
@@ -29,8 +33,8 @@ public class DungeonInstance {
     private final World dungeonWorld;
     private final String instanceFileName;
     private final BlockRegistry blockRegistry;
-
     private final AreaController areaController;
+    private final EventManager eventManager;
     private final InstanceEventHandler instanceEventHandler;
     private final PortalController portalController;
     private final DungeonPlayers dungeonPlayers;
@@ -57,7 +61,8 @@ public class DungeonInstance {
         var graveyard = dungeonInstanceTemplate.getGraveyard();
         var entityManager = new EntityManager(dungeonWorld, taskRunner, messageCreator, textFormatter);
         this.areaController = new AreaController(entityManager, graveyard, dungeonWorld, blockRegistry, dungeonInstanceTemplate.getAreaControllerBuilder());
-        this.instanceEventHandler = new InstanceEventHandler(this, areaController, entityManager);
+        this.eventManager = new EventManager();
+        this.instanceEventHandler = new InstanceEventHandler(this, eventManager, areaController, entityManager);
         this.portalController = new PortalController(plugin, this, dungeonInstanceTemplate.getDungeonPortal(), bannedItems);
         this.dungeonPlayers = new DungeonPlayers();
 
@@ -133,8 +138,12 @@ public class DungeonInstance {
         return portalController;
     }
 
-    public InstanceEventHandler getInstanceEventHandler() {
-        return instanceEventHandler;
+    public <E extends Event> void handleEvent(E event) {
+        eventManager.handleEvent(event, EventContext.EMPTY); // TODO: Fix the content here.
+    }
+
+    public void handleDungeonTriggerCommand(Position positionOfBlock) {
+        areaController.handleDungeonTriggerCommand(positionOfBlock);
     }
 
     public World getDungeonWorld() {
@@ -148,4 +157,22 @@ public class DungeonInstance {
     public DungeonType getDungeonType() {
         return dungeonType;
     }
+
+
+
+
 }
+
+/*
+
+change keysotne to just right click-  if you have the key it opens... if other item = invalid
+if no item = banned items.
+
+no more menu.
+
+can keep area Controllers current methods just hcange event handler to use a event manager ibject
+and use method refronces or just olmabda as event behaivour is a FUnctional Interface...
+
+then just call those methods.
+
+ */

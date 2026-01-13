@@ -16,6 +16,6 @@ public class PlayerMovement implements Listener {
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         if (!event.hasExplicitlyChangedBlock()) return;
-        dungeonEventRouter.handleMovementEvent(event);
+        dungeonEventRouter.handleEvent(event, event.getTo().getWorld());
     }
 }

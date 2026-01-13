@@ -16,11 +16,11 @@ public class PlayerDungeonWorld implements Listener {
 
     @EventHandler
     public void onWorldChange(PlayerChangedWorldEvent event) {
-        dungeonEventRouter.handlePlayerChangeWorldEvent(event);
+        dungeonEventRouter.handleEvent(event, event.getPlayer().getWorld());
     }
 
     @EventHandler
     public void onLogout(PlayerQuitEvent event) {
-        dungeonEventRouter.handlePlayerQuitEvent(event);
+        dungeonEventRouter.handleEvent(event, event.getPlayer().getWorld());
     }
 }

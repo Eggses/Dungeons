@@ -62,11 +62,11 @@ public class AreaController {
         }
     }
 
-    public void handlePlayerMovement(Location to, long chunkKey) {
+    public void handlePlayerMovement(Location to) {
 
         if (areaInProgress) return;
 
-        Set<DungeonArea> dungeonAreasAtChunk = dungeonAreaChunkMappingRegistry.get(chunkKey);
+        Set<DungeonArea> dungeonAreasAtChunk = dungeonAreaChunkMappingRegistry.get(to.getChunk().getChunkKey());
         if (dungeonAreasAtChunk == null) return;
 
         for (DungeonArea dungeonArea : dungeonAreasAtChunk) {
@@ -77,8 +77,8 @@ public class AreaController {
         }
     }
 
-    public void handleDungeonTriggerCommand(Position positionOfSender) {
-        Consumer<DungeonContext> consumer = dungeonTriggerCommandMap.remove(positionOfSender);
+    public void handleDungeonTriggerCommand(Position positionOfBlock) {
+        Consumer<DungeonContext> consumer = dungeonTriggerCommandMap.remove(positionOfBlock);
         if (consumer == null) return;
         consumer.accept(dungeonContext);
     }
