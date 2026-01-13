@@ -16,7 +16,7 @@ public class PlayerDungeonWorld implements Listener {
 
     @EventHandler
     public void onWorldChange(PlayerChangedWorldEvent event) {
-        dungeonEventRouter.handleEvent(event, event.getPlayer().getWorld());
+        dungeonEventRouter.handlePlayerChangeWorldEvent(event);
     }
 
     @EventHandler

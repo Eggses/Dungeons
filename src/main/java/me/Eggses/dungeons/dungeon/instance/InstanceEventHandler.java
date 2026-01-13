@@ -2,10 +2,19 @@ package me.Eggses.dungeons.dungeon.instance;
 
 import me.Eggses.dungeons.dungeon.areas.AreaController;
 import me.Eggses.dungeons.dungeon.areas.EntityManager;
-import me.Eggses.dungeons.dungeon.regions.Position;
+import me.Eggses.dungeons.dungeon.events.EntityDamageEntity;
+import me.Eggses.dungeons.dungeon.portals.PortalController;
+import me.Eggses.dungeons.eventhandler.EventBehaviour;
 import me.Eggses.dungeons.eventhandler.EventContext;
 import me.Eggses.dungeons.eventhandler.EventManager;
+import org.bukkit.Location;
 import org.bukkit.event.Event;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.ExplosionPrimeEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 
 public class InstanceEventHandler {
 
@@ -22,13 +31,44 @@ public class InstanceEventHandler {
         this.dungeonInstance = dungeonInstance;
         this.areaController = areaController;
         this.entityManager = entityManager;
+
+        registerEvents();
+    }
+
+    private void registerEvents() {
+
+        eventManager.addEventBehaviour(PlayerMoveEvent.class, (event, eventContext) -> {
+
+            Location to = event.getTo();
+
+            PortalController portalController = dungeonInstance.getPortalController();
+            if (portalController.isInPortalInDungeonWorld(to)) {
+                portalController.leaveDungeon(event.getPlayer());
+                return;
+            }
+            areaController.handlePlayerMovement(to);
+        });
+
+        eventManager.addEventBehaviour(ExplosionPrimeEvent.class, (event, eventContext)
+                -> entityManager.passEventToMobIfExists(event.getEntity(), event, eventContext));
+
+        eventManager.addEventBehaviour(PlayerRespawnEvent.class, (event, eventContext)
+                -> event.setRespawnLocation(areaController.getGraveyardRespawnLocation()));
+
+        eventManager.addEventBehaviour(PlayerQuitEvent.class, (event, eventContext)
+                -> dungeonInstance.removePlayer(event.getPlayer()));
+
+        eventManager.addEventBehaviour(EntityDeathEvent.class, (event, eventContext)
+                -> areaController.handleEntityDeath(event.getEntity().getUniqueId()));
+
+        eventManager.addEventBehaviour(EntityDamageByEntityEvent.class, new EntityDamageEntity(entityManager));
+    }
+
+    public <E extends Event> void addEventBehaviour(Class<E> eventClass, EventBehaviour<E> eventBehaviour) {
+        eventManager.addEventBehaviour(eventClass, eventBehaviour);
     }
 
     public <E extends Event> void handleEvent(E event) {
-        eventManager.handleEvent(event, EventContext.EMPTY); // TODO: Fix the content here.
-    }
-
-    public void handleDungeonTriggerCommand(Position positionOfBlock) {
-        areaController.handleDungeonTriggerCommand(positionOfBlock);
+        eventManager.handleEvent(event, EventContext.EMPTY);
     }
 }

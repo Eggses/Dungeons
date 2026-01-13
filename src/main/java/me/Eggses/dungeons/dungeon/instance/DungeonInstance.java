@@ -12,8 +12,7 @@ import me.Eggses.dungeons.dungeon.portals.PortalController;
 import me.Eggses.dungeons.dungeon.utility.BannedItems;
 import me.Eggses.dungeons.dungeon.utility.DungeonContext;
 import me.Eggses.dungeons.dungeon.utility.DungeonGameRules;
-import me.Eggses.dungeons.eventhandler.EventContext;
-import me.Eggses.dungeons.eventhandler.EventManager;
+import me.Eggses.dungeons.eventhandler.EventBehaviour;
 import me.Eggses.dungeons.tasks.TaskRunner;
 import me.Eggses.dungeons.utility.text.MessageCreator;
 import me.Eggses.dungeons.utility.text.TextFormatter;
@@ -33,8 +32,7 @@ public class DungeonInstance {
     private final String instanceFileName;
     private final BlockRegistry blockRegistry;
     private final AreaController areaController;
-    private final EventManager eventManager;
-    private final InstanceEventHandlerOLD instanceEventHandler;
+    private final InstanceEventHandler instanceEventHandler;
     private final PortalController portalController;
     private final DungeonPlayers dungeonPlayers;
     private final DungeonType dungeonType;
@@ -60,8 +58,7 @@ public class DungeonInstance {
         var graveyard = dungeonInstanceTemplate.getGraveyard();
         var entityManager = new EntityManager(dungeonWorld, taskRunner, messageCreator, textFormatter);
         this.areaController = new AreaController(entityManager, graveyard, dungeonWorld, blockRegistry, dungeonInstanceTemplate.getAreaControllerBuilder());
-        this.eventManager = new EventManager();
-        this.instanceEventHandler = new InstanceEventHandlerOLD(this, eventManager, areaController, entityManager);
+        this.instanceEventHandler = new InstanceEventHandler(this, areaController, entityManager);
         this.portalController = new PortalController(plugin, this, dungeonInstanceTemplate.getDungeonPortal(), bannedItems);
         this.dungeonPlayers = new DungeonPlayers();
 
@@ -137,8 +134,13 @@ public class DungeonInstance {
         return portalController;
     }
 
+
     public <E extends Event> void handleEvent(E event) {
-        eventManager.handleEvent(event, EventContext.EMPTY); // TODO: Fix the content here.
+        instanceEventHandler.handleEvent(event);
+    }
+
+    public <E extends Event> void addEventBehaviour(Class<E> eventClass, EventBehaviour<E> eventBehaviour) {
+        instanceEventHandler.addEventBehaviour(eventClass, eventBehaviour);
     }
 
     public void handleDungeonTriggerCommand(Position positionOfBlock) {
@@ -148,8 +150,6 @@ public class DungeonInstance {
     public World getDungeonWorld() {
         return dungeonWorld;
     }
-
-
 
 }
 
