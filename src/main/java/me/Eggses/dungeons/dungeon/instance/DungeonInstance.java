@@ -134,7 +134,6 @@ public class DungeonInstance {
         return portalController;
     }
 
-
     public <E extends Event> void handleEvent(E event) {
         instanceEventHandler.handleEvent(event);
     }
