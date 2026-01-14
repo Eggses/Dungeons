@@ -6,6 +6,7 @@ import me.Eggses.dungeons.dungeon.files.templates.builders.*;
 import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.dungeon.regions.Region;
 import me.Eggses.dungeons.dungeon.regions.RotationPosition;
+import me.Eggses.dungeons.items.ItemTemplate;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -27,7 +28,6 @@ public class DungeonFileReader {
     private static final String KEY_ITEM_MATERIAL = "material";
     private static final String KEY_ITEM_NAME = "name";
     private static final String KEY_ITEM_LORE = "lore";
-    private static final String KEY_ITEM_GLOW = "glow";
 
     private static final String TEMPLATE_NAME = "dungeon_template_name";
     private static final String DEFAULT_GRAVEYARD = "default_graveyard";
@@ -140,9 +140,7 @@ public class DungeonFileReader {
 
         if (material == null || name == null) return null;
 
-        boolean glow = keySection.getBoolean(KEY_ITEM_GLOW);
-
-        return new ItemTemplate(material, name, lore, glow);
+        return new ItemTemplate(material, name, lore);
     }
 
     private String readTemplateName() {

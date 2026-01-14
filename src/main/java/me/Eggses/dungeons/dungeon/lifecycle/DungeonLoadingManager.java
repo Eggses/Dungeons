@@ -2,7 +2,7 @@ package me.Eggses.dungeons.dungeon.lifecycle;
 
 import me.Eggses.dungeons.blocks.BlockRegistry;
 import me.Eggses.dungeons.blocks.task.KeystoneParticleTask;
-import me.Eggses.dungeons.dungeon.items.DungeonKeys;
+import me.Eggses.dungeons.dungeon.items.DungeonKeyItems;
 import me.Eggses.dungeons.dungeon.types.DungeonType;
 import me.Eggses.dungeons.blocks.events.InteractOpenMenu;
 import me.Eggses.dungeons.configuration.ConfigurationFile;
@@ -18,8 +18,6 @@ import me.Eggses.dungeons.dungeon.regions.WorldRegion;
 import me.Eggses.dungeons.entities.mobs.mobtype.MobRegistry;
 import me.Eggses.dungeons.dungeon.items.CancelUse;
 import me.Eggses.dungeons.eventhandler.EventRegistry;
-import me.Eggses.dungeons.items.ItemCreator;
-import me.Eggses.dungeons.items.ItemRecord;
 import me.Eggses.dungeons.utility.text.MessageCreator;
 import me.Eggses.dungeons.utility.text.Placeholder;
 import me.Eggses.dungeons.utility.text.Placeholders;
@@ -48,7 +46,7 @@ public class DungeonLoadingManager {
 
     private final DungeonEntranceRoomRegistry dungeonEntranceRoomRegistry;
     private final BlockRegistry blockRegistry;
-    private final DungeonKeys dungeonKeys;
+    private final DungeonKeyItems dungeonKeyItems;
     private final EventManagerRegistry<String> itemRegistry;
 
     private final DungeonInstanceTemplateRegistry dungeonInstanceTemplateRegistry;
@@ -66,7 +64,7 @@ public class DungeonLoadingManager {
                                  EventRegistry eventRegistry,
                                  DungeonEntranceRoomRegistry dungeonEntranceRoomRegistry,
                                  BlockRegistry blockRegistry,
-                                 DungeonKeys dungeonKeys,
+                                 DungeonKeyItems dungeonKeyItems,
                                  EventManagerRegistry<String> itemRegistry,
                                  DungeonInstanceTemplateRegistry dungeonInstanceTemplateRegistry) {
 
@@ -78,7 +76,7 @@ public class DungeonLoadingManager {
         this.eventRegistry = eventRegistry;
         this.dungeonEntranceRoomRegistry = dungeonEntranceRoomRegistry;
         this.blockRegistry = blockRegistry;
-        this.dungeonKeys = dungeonKeys;
+        this.dungeonKeyItems = dungeonKeyItems;
         this.itemRegistry = itemRegistry;
         this.dungeonInstanceTemplateRegistry = dungeonInstanceTemplateRegistry;
     }
@@ -117,10 +115,11 @@ public class DungeonLoadingManager {
             String openDurationSeconds = String.valueOf(dungeonTemplate.getPortalTemplate().getOpenDurationSeconds());
             placeholders.addPlaceholder(Placeholder.OPEN_DURATION, openDurationSeconds);
 
-            var itemStackTemplate = nonInstanceDungeonTemplate.itemStackTemplate();
+            var itemTemplate = nonInstanceDungeonTemplate.itemTemplate();
             var uniqueKey = dungeonType.getUniqueKey();
-            dungeonKeys.add(dungeonType, new ItemRecord(itemStackTemplate, ItemCreator.STACK_SIZE_1, uniqueKey, placeholders));
+            dungeonKeyItems.addKey(dungeonType, new DungeonKeyItems.KeyItem(itemTemplate, placeholders, uniqueKey));
             itemRegistry.addOrUpdate(uniqueKey, PlayerInteractEvent.class, new CancelUse());
+            // TODO: add in the event that passes into a menu if open.
 
             var positionOfKeystone = nonInstanceDungeonTemplate.positionOfKeyStone();
             var worldOfKeystone = nonInstanceDungeonTemplate.dungeonPortalRoomWorld();
@@ -146,7 +145,7 @@ public class DungeonLoadingManager {
 
         for (DungeonType dungeonType : dungeons) {
 
-            dungeonKeys.remove(dungeonType);
+            dungeonKeyItems.removeKey(dungeonType);
             itemRegistry.remove(dungeonType.getUniqueKey());
 
             Location locationOfKeystone = keystoneLocations.remove(dungeonType);

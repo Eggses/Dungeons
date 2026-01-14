@@ -14,6 +14,10 @@ public class Placeholders {
         placeholders.put(placeholder.getPlaceholder(), value);
     }
 
+    public void addAll(Placeholders other) {
+        placeholders.putAll(other.placeholders);
+    }
+
     public String replace(String text) {
         for (Map.Entry<String, String> entry : placeholders.entrySet()) {
             text = text.replace(entry.getKey(), entry.getValue());

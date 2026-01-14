@@ -6,7 +6,7 @@ import me.Eggses.dungeons.configuration.ConfigurationFile;
 import me.Eggses.dungeons.dispatch.EventManagerRegistry;
 import me.Eggses.dungeons.dungeon.files.DungeonLog;
 import me.Eggses.dungeons.dungeon.files.reading.ReadingUtility;
-import me.Eggses.dungeons.dungeon.items.DungeonKeys;
+import me.Eggses.dungeons.dungeon.items.DungeonKeyItems;
 import me.Eggses.dungeons.dungeon.lifecycle.*;
 import me.Eggses.dungeons.dungeon.portalroom.DungeonEntranceRoomRegistry;
 import me.Eggses.dungeons.dungeon.portals.OpenPortalRegistry;
@@ -15,10 +15,10 @@ import me.Eggses.dungeons.dungeon.utility.InstanceNameManager;
 import me.Eggses.dungeons.entities.mobs.mobtype.MobRegistry;
 import me.Eggses.dungeons.entities.mobs.mobtype.MobUtility;
 import me.Eggses.dungeons.eventhandler.EventRegistry;
-import me.Eggses.dungeons.items.ItemCreator;
+import me.Eggses.dungeons.items.ItemHandler;
+import me.Eggses.dungeons.items.ItemKey;
 import me.Eggses.dungeons.items.ItemGive;
 import me.Eggses.dungeons.tasks.TaskRunner;
-import me.Eggses.dungeons.items.ItemKeyManager;
 import me.Eggses.dungeons.listeners.entities.Combustion;
 import me.Eggses.dungeons.listeners.entities.EntityCombat;
 import me.Eggses.dungeons.listeners.entities.EntityDeath;
@@ -73,9 +73,9 @@ public final class Dungeons extends JavaPlugin {
 
         var bannedItems = new BannedItems(messageCreator, textFormatter);
 
-        var itemKeyManager = new ItemKeyManager(this);
-        var itemCreator = new ItemCreator(itemKeyManager, messageCreator);
-        var dungeonKeys = new DungeonKeys();
+        var itemKey = new ItemKey(this);
+        var itemHandler = new ItemHandler(itemKey, messageCreator);
+        var dungeonKeys = new DungeonKeyItems(itemHandler);
         var itemGive = new ItemGive();
 
         var eventRegistry = new EventRegistry();
@@ -110,8 +110,8 @@ public final class Dungeons extends JavaPlugin {
                 dungeonInstanceTemplateRegistry
         );
 
-        registerListeners(dungeonEventRouter, blockRegistry, itemRegistry, itemKeyManager, dungeonRegistry);
-        registerCommands(dungeonRegistry, dungeonEventRouter, dungeonLoadingManager, dungeonKeys, itemCreator, itemGive, messagesFile, menuFile, messageCreator, textFormatter);
+        registerListeners(dungeonEventRouter, blockRegistry, itemRegistry, itemKey, dungeonRegistry);
+        registerCommands(dungeonRegistry, dungeonEventRouter, dungeonLoadingManager, dungeonKeys, itemGive, messagesFile, menuFile, messageCreator, textFormatter);
 
         dungeonLifecycleService.destroyLeftAllInstanceWorlds();
         dungeonLoadingManager.loadAllDungeonsOnEnable();
@@ -120,7 +120,7 @@ public final class Dungeons extends JavaPlugin {
     private void registerListeners(DungeonEventRouter dungeonEventRouter,
                                    BlockRegistry blockRegistry,
                                    EventManagerRegistry<String> itemRegistry,
-                                   ItemKeyManager itemKeyManager,
+                                   ItemKey itemKey,
                                    DungeonRegistry dungeonRegistry) {
 
         var pluginManager = getServer().getPluginManager();
@@ -146,15 +146,14 @@ public final class Dungeons extends JavaPlugin {
         pluginManager.registerEvents(new Login(), this);
         pluginManager.registerEvents(new DeathController(dungeonRegistry, dungeonEventRouter), this);
         pluginManager.registerEvents(new PlayerDungeonWorld(dungeonRegistry, dungeonEventRouter), this);
-        pluginManager.registerEvents(new PlayerInteract(blockRegistry, itemRegistry, itemKeyManager), this);
+        pluginManager.registerEvents(new PlayerInteract(blockRegistry, itemRegistry, itemKey), this);
         pluginManager.registerEvents(new PlayerMovement(dungeonEventRouter), this);
     }
 
     private void registerCommands(DungeonRegistry dungeonRegistry,
                                   DungeonEventRouter dungeonEventRouter,
                                   DungeonLoadingManager dungeonLoadingManager,
-                                  DungeonKeys dungeonKeys,
-                                  ItemCreator itemCreator,
+                                  DungeonKeyItems dungeonKeyItems,
                                   ItemGive itemGive,
                                   ConfigurationFile messagesFile,
                                   ConfigurationFile menuFile,
@@ -165,8 +164,7 @@ public final class Dungeons extends JavaPlugin {
                 dungeonRegistry,
                 dungeonEventRouter,
                 dungeonLoadingManager,
-                dungeonKeys,
-                itemCreator,
+                dungeonKeyItems,
                 itemGive,
                 messagesFile,
                 menuFile,

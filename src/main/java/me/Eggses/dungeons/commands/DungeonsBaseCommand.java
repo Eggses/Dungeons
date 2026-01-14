@@ -2,11 +2,10 @@ package me.Eggses.dungeons.commands;
 
 import me.Eggses.dungeons.commands.subcommands.*;
 import me.Eggses.dungeons.configuration.ConfigurationFile;
-import me.Eggses.dungeons.dungeon.items.DungeonKeys;
+import me.Eggses.dungeons.dungeon.items.DungeonKeyItems;
 import me.Eggses.dungeons.dungeon.lifecycle.DungeonEventRouter;
 import me.Eggses.dungeons.dungeon.lifecycle.DungeonLoadingManager;
 import me.Eggses.dungeons.dungeon.lifecycle.DungeonRegistry;
-import me.Eggses.dungeons.items.ItemCreator;
 import me.Eggses.dungeons.items.ItemGive;
 import me.Eggses.dungeons.utility.misc.Permission;
 import me.Eggses.dungeons.utility.text.*;
@@ -27,8 +26,7 @@ public class DungeonsBaseCommand implements CommandExecutor, TabCompleter {
     private final DungeonRegistry dungeonRegistry;
     private final DungeonEventRouter dungeonEventRouter;
     private final DungeonLoadingManager dungeonLoadingManager;
-    private final DungeonKeys dungeonKeys;
-    private final ItemCreator itemCreator;
+    private final DungeonKeyItems dungeonKeyItems;
     private final ItemGive itemGive;
     private final ConfigurationFile messagesFile;
     private final ConfigurationFile menusFile;
@@ -40,8 +38,7 @@ public class DungeonsBaseCommand implements CommandExecutor, TabCompleter {
     public DungeonsBaseCommand(DungeonRegistry dungeonRegistry,
                                DungeonEventRouter dungeonEventRouter,
                                DungeonLoadingManager dungeonLoadingManager,
-                               DungeonKeys dungeonKeys,
-                               ItemCreator itemCreator,
+                               DungeonKeyItems dungeonKeyItems,
                                ItemGive itemGive,
                                ConfigurationFile messagesFile,
                                ConfigurationFile menusFile,
@@ -51,8 +48,7 @@ public class DungeonsBaseCommand implements CommandExecutor, TabCompleter {
         this.dungeonRegistry = dungeonRegistry;
         this.dungeonEventRouter = dungeonEventRouter;
         this.dungeonLoadingManager = dungeonLoadingManager;
-        this.dungeonKeys = dungeonKeys;
-        this.itemCreator = itemCreator;
+        this.dungeonKeyItems = dungeonKeyItems;
         this.itemGive = itemGive;
         this.messagesFile = messagesFile;
         this.menusFile = menusFile;
@@ -65,7 +61,7 @@ public class DungeonsBaseCommand implements CommandExecutor, TabCompleter {
     private void registerCommands() {
         var trigger = new Trigger(dungeonEventRouter, messageCreator);
         var reload = new Reload(dungeonLoadingManager, messagesFile, menusFile, messageCreator);
-        var give = new Give(dungeonKeys, itemCreator, itemGive, messageCreator, textFormatter);
+        var give = new Give(dungeonKeyItems, itemGive,messageCreator, textFormatter);
         var destroyInstance = new DestroyInstance(dungeonRegistry, messageCreator);
 
         subCommands.put(trigger.commandName(), trigger);

@@ -23,7 +23,7 @@ import me.Eggses.dungeons.entities.mobs.MobBuilder;
 import me.Eggses.dungeons.entities.mobs.mobtype.MobRegistry;
 import me.Eggses.dungeons.eventhandler.EventDefinition;
 import me.Eggses.dungeons.eventhandler.EventRegistry;
-import me.Eggses.dungeons.items.ItemStackTemplate;
+import me.Eggses.dungeons.items.ItemTemplate;
 import me.Eggses.dungeons.utility.text.MessageCreator;
 import me.Eggses.dungeons.utility.sound.SoundPlayer;
 import net.kyori.adventure.sound.Sound;
@@ -32,6 +32,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Item;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
@@ -111,7 +112,7 @@ public class DungeonTemplateCompiler {
         Region generalPortalRoomRegion = portalRoomTemplate.getGeneralRoomRegion();
         String keystoneName = portalRoomTemplate.getKeystoneName();
 
-        ItemStackTemplate itemStackTemplate = createItemStackTemplate();
+        ItemTemplate itemTemplate = createItemStackTemplate();
 
         return new NonInstanceDungeonTemplate(
                 dungeonName,
@@ -119,7 +120,7 @@ public class DungeonTemplateCompiler {
                 positionOfKeyStone,
                 generalPortalRoomRegion,
                 keystoneName,
-                itemStackTemplate
+                itemTemplate
         );
     }
 
@@ -166,8 +167,8 @@ public class DungeonTemplateCompiler {
         return dungeonTemplate.getPortalRoomTemplate();
     }
 
-    private ItemStackTemplate createItemStackTemplate() {
-        return new ItemStackTemplate(dungeonTemplate.getItemTemplate());
+    private ItemTemplate createItemStackTemplate() {
+        return dungeonTemplate.getItemTemplate();
     }
 
     private Consumer<DungeonContext> createOnDungeonStart() {

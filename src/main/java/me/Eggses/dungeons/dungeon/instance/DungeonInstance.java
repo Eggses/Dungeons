@@ -165,27 +165,3 @@ public class DungeonInstance {
     }
 
 }
-
-/*
-
-change keysotne to just right click-  if you have the key it opens... if other item = invalid
-if no item = banned items.
-
-no more menu.
-
-can keep area Controllers current methods just hcange event handler to use a event manager ibject
-and use method refronces or just olmabda as event behaivour is a FUnctional Interface...
-
-then just call those methods.
-
-also add a RIDING command
-and mob rides the target mob
-
-and then add in a dungoen like events command section
-can do like
-
-POSION_WATER
-
-and it adds in a posion water into the instances event handler unless in a boat or on a lily pad...
-
- */

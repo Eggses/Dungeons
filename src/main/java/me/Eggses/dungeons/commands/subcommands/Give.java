@@ -1,10 +1,8 @@
 package me.Eggses.dungeons.commands.subcommands;
 
-import me.Eggses.dungeons.dungeon.items.DungeonKeys;
+import me.Eggses.dungeons.dungeon.items.DungeonKeyItems;
 import me.Eggses.dungeons.dungeon.types.DungeonType;
-import me.Eggses.dungeons.items.ItemCreator;
 import me.Eggses.dungeons.items.ItemGive;
-import me.Eggses.dungeons.items.ItemRecord;
 import me.Eggses.dungeons.utility.misc.Permission;
 import me.Eggses.dungeons.utility.text.*;
 import org.bukkit.Bukkit;
@@ -25,26 +23,24 @@ public class Give implements SubCommand {
     private static final String KEY = "key";
     private static final List<String> OPTIONS = List.of(KEY);
 
-    private final DungeonKeys dungeonKeys;
-    private final ItemCreator itemCreator;
+    private final DungeonKeyItems dungeonKeyItems;
     private final ItemGive itemGive;
     private final MessageCreator messageCreator;
     private final TextFormatter textFormatter;
 
     private List<String> dungeonNames;
 
-    public Give(DungeonKeys dungeonKeys,
-                ItemCreator itemCreator,
+    public Give(DungeonKeyItems dungeonKeyItems,
                 ItemGive itemGive,
                 MessageCreator messageCreator,
                 TextFormatter textFormatter) {
 
-        this.dungeonKeys = dungeonKeys;
-        this.itemCreator = itemCreator;
+        this.dungeonKeyItems = dungeonKeyItems;
         this.itemGive = itemGive;
         this.messageCreator = messageCreator;
         this.textFormatter = textFormatter;
     }
+
 
     @Override
     public String commandName() {
@@ -96,14 +92,14 @@ public class Give implements SubCommand {
 
         Player recipient = giveCommandArgs.player;
 
-        ItemRecord itemRecord = dungeonKeys.getItemRecord(DungeonType.getType(args[2]));
-        if (itemRecord == null) {
+        ItemStack itemStack = dungeonKeyItems.getDungeonKey(DungeonType.getType(args[2]), placeholders);
+
+        if (itemStack == null) {
             sender.sendMessage(messageCreator.createMessage(Messages.DUNGEONS_GIVE_UNKNOWN_ID, placeholders));
             return;
         }
 
-        ItemStack item = itemCreator.createItem(itemRecord);
-        itemGive.giveOrDrop(recipient, new ItemGive.ItemAmount(item, giveCommandArgs.quantity));
+        itemGive.giveOrDrop(recipient, new ItemGive.ItemAmount(itemStack, giveCommandArgs.quantity));
 
         sender.sendMessage(messageCreator.createMessage(Messages.DUNGEONS_GIVE_GIVEN, placeholders));
     }

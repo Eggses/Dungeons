@@ -3,12 +3,12 @@ package me.Eggses.dungeons.items;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class ItemKeyManager {
+public class ItemKey {
 
     private static final String KEY = "eggses_dungeons_custom_item";
     private final NamespacedKey namespacedKey;
 
-    public ItemKeyManager(JavaPlugin plugin) {
+    public ItemKey(JavaPlugin plugin) {
         namespacedKey = new NamespacedKey(plugin, KEY);
     }
 

@@ -8,7 +8,6 @@ dungeon_key_item:
     - "<red> Place this key into the %dungeon_name% keystone to start the Dungeon."
     - "1 use"
     - "Legendary Item"
-  glow: true
 
 dungeon_portal_world: "world"
 

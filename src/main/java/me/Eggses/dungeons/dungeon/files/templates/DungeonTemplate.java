@@ -1,10 +1,10 @@
 package me.Eggses.dungeons.dungeon.files.templates;
 
 import me.Eggses.dungeons.dungeon.files.templates.builders.AreaTemplate;
-import me.Eggses.dungeons.dungeon.files.templates.builders.ItemTemplate;
 import me.Eggses.dungeons.dungeon.files.templates.builders.PortalRoomTemplate;
 import me.Eggses.dungeons.dungeon.files.templates.builders.PortalTemplate;
 import me.Eggses.dungeons.dungeon.regions.RotationPosition;
+import me.Eggses.dungeons.items.ItemTemplate;
 
 import java.util.List;
 

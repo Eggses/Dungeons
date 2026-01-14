@@ -3,7 +3,7 @@ package me.Eggses.dungeons.listeners.blocks;
 import me.Eggses.dungeons.blocks.BlockRegistry;
 import me.Eggses.dungeons.dispatch.EventManagerRegistry;
 import me.Eggses.dungeons.eventhandler.EventContext;
-import me.Eggses.dungeons.items.ItemKeyManager;
+import me.Eggses.dungeons.items.ItemKey;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -17,15 +17,15 @@ public class PlayerInteract implements Listener {
 
     private final BlockRegistry blockRegistry;
     private final EventManagerRegistry<String> itemRegistry;
-    private final ItemKeyManager itemKeyManager;
+    private final ItemKey itemKey;
 
     public PlayerInteract(BlockRegistry blockRegistry,
                           EventManagerRegistry<String> itemRegistry,
-                          ItemKeyManager itemKeyManager) {
+                          ItemKey itemKey) {
 
         this.blockRegistry = blockRegistry;
         this.itemRegistry = itemRegistry;
-        this.itemKeyManager = itemKeyManager;
+        this.itemKey = itemKey;
     }
 
     @EventHandler
@@ -51,7 +51,7 @@ public class PlayerInteract implements Listener {
 
         PersistentDataContainer pdc = itemMeta.getPersistentDataContainer();
 
-        String value = pdc.get(itemKeyManager.getKey(), PersistentDataType.STRING);
+        String value = pdc.get(itemKey.getKey(), PersistentDataType.STRING);
         if (value == null) return;
 
         itemRegistry.handleEvent(value, event, EventContext.EMPTY);
