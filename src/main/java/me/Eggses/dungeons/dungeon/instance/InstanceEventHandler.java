@@ -1,8 +1,8 @@
 package me.Eggses.dungeons.dungeon.instance;
 
 import me.Eggses.dungeons.dungeon.areas.AreaController;
-import me.Eggses.dungeons.dungeon.areas.EntityManager;
-import me.Eggses.dungeons.dungeon.events.EntityDamageEntity;
+import me.Eggses.dungeons.entities.mobs.EntityManager;
+import me.Eggses.dungeons.dungeon.events.core.EntityDamageEntity;
 import me.Eggses.dungeons.dungeon.portals.PortalController;
 import me.Eggses.dungeons.eventhandler.EventBehaviour;
 import me.Eggses.dungeons.eventhandler.EventContext;

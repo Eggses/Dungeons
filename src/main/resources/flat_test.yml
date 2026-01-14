@@ -38,6 +38,8 @@ default_graveyard: "pos=-42,-60,16"
 
 on_start: []
 
+
+
 dungeon_areas:
 
   room1:
@@ -46,7 +48,7 @@ dungeon_areas:
     on_entry:
       - "MESSAGE message=<yellow>Entering room1</yellow>"
       - "SOUND sound=ITEM_GOAT_HORN_SOUND_0"
-      - "MOB type=MOOSHROOM pos=-12,-60,-39 level=5 count=1 preset=NOXIOUS_CULTIVATOR"
+      - "MOB type=MOOSHROOM pos=-12,-60,-39 level=5 count=1 preset=NOXIOUS_CULTIVATOR riding=ZOMBIE_HORSE"
 
 # - "MOB type=ZOMBIE pos=-25,-60,-10 level=2 count=2"
 # - "MOB type=SKELETON pos=-25,-60,-10 level=22 count=2 preset=KNIGHT"

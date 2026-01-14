@@ -25,13 +25,9 @@ public class DungeonPortal {
     private final Consumer<DungeonContext> onOpen;
     private final Consumer<DungeonContext> onClose;
 
-    private static final DungeonContext CONTEXT =
-            new DungeonContext(
-                    null,
-                    null,
-                    null,
-                    Bukkit::getOnlinePlayers
-            );
+    private static final DungeonContext CONTEXT = DungeonContext.builder()
+            .players(Bukkit::getOnlinePlayers)
+            .build();
 
     public DungeonPortal(World worldWithPortal,
                          Region entryPortalRegion,

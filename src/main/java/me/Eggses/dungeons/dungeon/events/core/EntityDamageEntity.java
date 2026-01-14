@@ -1,6 +1,6 @@
-package me.Eggses.dungeons.dungeon.events;
+package me.Eggses.dungeons.dungeon.events.core;
 
-import me.Eggses.dungeons.dungeon.areas.EntityManager;
+import me.Eggses.dungeons.entities.mobs.EntityManager;
 import me.Eggses.dungeons.entities.attributes.AttributeController;
 import me.Eggses.dungeons.entities.mobs.DungeonEntity;
 import me.Eggses.dungeons.eventhandler.EventBehaviour;

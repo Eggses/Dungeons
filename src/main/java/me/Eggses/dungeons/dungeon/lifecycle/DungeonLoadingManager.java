@@ -16,7 +16,8 @@ import me.Eggses.dungeons.dungeon.files.templates.NonInstanceDungeonTemplate;
 import me.Eggses.dungeons.dungeon.portalroom.DungeonEntranceRoomRegistry;
 import me.Eggses.dungeons.dungeon.regions.WorldRegion;
 import me.Eggses.dungeons.entities.mobs.mobtype.MobRegistry;
-import me.Eggses.dungeons.dungeon.events.CancelUse;
+import me.Eggses.dungeons.dungeon.items.CancelUse;
+import me.Eggses.dungeons.eventhandler.EventRegistry;
 import me.Eggses.dungeons.items.ItemCreator;
 import me.Eggses.dungeons.items.ItemRecord;
 import me.Eggses.dungeons.utility.text.MessageCreator;
@@ -43,6 +44,7 @@ public class DungeonLoadingManager {
     private final MessageCreator messageCreator;
     private final SoundPlayer soundPlayer;
     private final MobRegistry mobRegistry;
+    private final EventRegistry eventRegistry;
 
     private final DungeonEntranceRoomRegistry dungeonEntranceRoomRegistry;
     private final BlockRegistry blockRegistry;
@@ -61,6 +63,7 @@ public class DungeonLoadingManager {
                                  MessageCreator messageCreator,
                                  SoundPlayer soundPlayer,
                                  MobRegistry mobRegistry,
+                                 EventRegistry eventRegistry,
                                  DungeonEntranceRoomRegistry dungeonEntranceRoomRegistry,
                                  BlockRegistry blockRegistry,
                                  DungeonKeys dungeonKeys,
@@ -72,6 +75,7 @@ public class DungeonLoadingManager {
         this.messageCreator = messageCreator;
         this.soundPlayer = soundPlayer;
         this.mobRegistry = mobRegistry;
+        this.eventRegistry = eventRegistry;
         this.dungeonEntranceRoomRegistry = dungeonEntranceRoomRegistry;
         this.blockRegistry = blockRegistry;
         this.dungeonKeys = dungeonKeys;
@@ -101,7 +105,7 @@ public class DungeonLoadingManager {
             ConfigurationFile fileToRead = new ConfigurationFile(plugin, dungeonType.getDungeonConfigFileName());
             DungeonFileReader dungeonFileReader = new DungeonFileReader(fileToRead, readingUtility);
             DungeonTemplate dungeonTemplate = dungeonFileReader.createTemplate();
-            DungeonTemplateCompiler dungeonTemplateCompiler = new DungeonTemplateCompiler(plugin, dungeonTemplate, readingUtility, mobRegistry, messageCreator, soundPlayer);
+            DungeonTemplateCompiler dungeonTemplateCompiler = new DungeonTemplateCompiler(plugin, dungeonTemplate, readingUtility, mobRegistry, eventRegistry, messageCreator, soundPlayer);
 
             DungeonInstanceTemplate dungeonInstanceTemplate = dungeonTemplateCompiler.createDungeonInstanceTemplate();
             dungeonInstanceTemplateRegistry.add(dungeonType, dungeonInstanceTemplate);

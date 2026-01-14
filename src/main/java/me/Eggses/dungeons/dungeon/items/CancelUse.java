@@ -1,4 +1,4 @@
-package me.Eggses.dungeons.dungeon.events;
+package me.Eggses.dungeons.dungeon.items;
 
 import me.Eggses.dungeons.eventhandler.EventBehaviour;
 import me.Eggses.dungeons.eventhandler.EventContext;

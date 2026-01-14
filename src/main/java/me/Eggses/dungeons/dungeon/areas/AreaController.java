@@ -2,12 +2,14 @@ package me.Eggses.dungeons.dungeon.areas;
 
 import me.Eggses.dungeons.blocks.BlockRegistry;
 import me.Eggses.dungeons.dispatch.ChunkMappingRegistry;
-import me.Eggses.dungeons.dungeon.events.DungeonInteraction;
+import me.Eggses.dungeons.dungeon.events.core.DungeonInteraction;
 import me.Eggses.dungeons.dungeon.graveyard.Graveyard;
+import me.Eggses.dungeons.dungeon.instance.DungeonInstance;
 import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.dungeon.areas.utility.AreaControllerBuilder;
 import me.Eggses.dungeons.dungeon.areas.utility.DungeonArea;
 import me.Eggses.dungeons.dungeon.utility.DungeonContext;
+import me.Eggses.dungeons.entities.mobs.EntityManager;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -31,7 +33,8 @@ public class AreaController {
 
     private final DungeonContext dungeonContext;
 
-    public AreaController(EntityManager entityManager,
+    public AreaController(DungeonInstance dungeonInstance,
+                          EntityManager entityManager,
                           Graveyard graveyard,
                           World dungeonWorld,
                           BlockRegistry blockRegistry,
@@ -43,7 +46,14 @@ public class AreaController {
         this.blockRegistry = blockRegistry;
         this.dungeonAreaChunkMappingRegistry = areaControllerBuilder.getDungeonAreaChunkMapping();
         this.dungeonTriggerCommandMap = areaControllerBuilder.getDungeonTriggerCommandMap();
-        this.dungeonContext = new DungeonContext(dungeonWorld, entityManager, graveyard, dungeonWorld::getPlayers);
+
+        this.dungeonContext = DungeonContext.builder()
+                .dungeonInstance(dungeonInstance)
+                .world(dungeonWorld)
+                .entityManager(entityManager)
+                .graveyard(graveyard)
+                .players(dungeonWorld::getPlayers)
+                .build();
 
         addAllCustomBlocks(areaControllerBuilder.getBlockInteractionMap());
     }

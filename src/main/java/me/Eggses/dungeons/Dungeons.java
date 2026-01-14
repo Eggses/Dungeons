@@ -14,6 +14,7 @@ import me.Eggses.dungeons.dungeon.utility.BannedItems;
 import me.Eggses.dungeons.dungeon.utility.InstanceNameManager;
 import me.Eggses.dungeons.entities.mobs.mobtype.MobRegistry;
 import me.Eggses.dungeons.entities.mobs.mobtype.MobUtility;
+import me.Eggses.dungeons.eventhandler.EventRegistry;
 import me.Eggses.dungeons.items.ItemCreator;
 import me.Eggses.dungeons.items.ItemGive;
 import me.Eggses.dungeons.tasks.TaskRunner;
@@ -35,6 +36,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;
 
+@SuppressWarnings("unused")
 public final class Dungeons extends JavaPlugin {
 
     private final DungeonRegistry dungeonRegistry = new DungeonRegistry();
@@ -76,6 +78,8 @@ public final class Dungeons extends JavaPlugin {
         var dungeonKeys = new DungeonKeys();
         var itemGive = new ItemGive();
 
+        var eventRegistry = new EventRegistry();
+
         var dungeonFactory = new DungeonFactory(
                 this,
                 dungeonRegistry,
@@ -98,6 +102,7 @@ public final class Dungeons extends JavaPlugin {
                 messageCreator,
                 soundPlayer,
                 mobRegistry,
+                eventRegistry,
                 dungeonPortalRoomRegistry,
                 blockRegistry,
                 dungeonKeys,

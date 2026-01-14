@@ -5,7 +5,7 @@ import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.dungeon.types.DungeonType;
 import me.Eggses.dungeons.dungeon.files.templates.DungeonInstanceTemplate;
 import me.Eggses.dungeons.dungeon.areas.AreaController;
-import me.Eggses.dungeons.dungeon.areas.EntityManager;
+import me.Eggses.dungeons.entities.mobs.EntityManager;
 import me.Eggses.dungeons.dungeon.lifecycle.DungeonLifecycleService;
 import me.Eggses.dungeons.dungeon.players.DungeonPlayers;
 import me.Eggses.dungeons.dungeon.portals.PortalController;
@@ -13,6 +13,7 @@ import me.Eggses.dungeons.dungeon.utility.BannedItems;
 import me.Eggses.dungeons.dungeon.utility.DungeonContext;
 import me.Eggses.dungeons.dungeon.utility.DungeonGameRules;
 import me.Eggses.dungeons.eventhandler.EventBehaviour;
+import me.Eggses.dungeons.eventhandler.EventDefinition;
 import me.Eggses.dungeons.tasks.TaskRunner;
 import me.Eggses.dungeons.utility.text.MessageCreator;
 import me.Eggses.dungeons.utility.text.TextFormatter;
@@ -57,13 +58,22 @@ public class DungeonInstance {
 
         var graveyard = dungeonInstanceTemplate.getGraveyard();
         var entityManager = new EntityManager(dungeonWorld, taskRunner, messageCreator, textFormatter);
-        this.areaController = new AreaController(entityManager, graveyard, dungeonWorld, blockRegistry, dungeonInstanceTemplate.getAreaControllerBuilder());
+        this.areaController = new AreaController(this, entityManager, graveyard, dungeonWorld, blockRegistry, dungeonInstanceTemplate.getAreaControllerBuilder());
         this.instanceEventHandler = new InstanceEventHandler(this, areaController, entityManager);
         this.portalController = new PortalController(plugin, this, dungeonInstanceTemplate.getDungeonPortal(), bannedItems);
         this.dungeonPlayers = new DungeonPlayers();
 
         new DungeonGameRules(dungeonWorld).applyRules();
-        dungeonInstanceTemplate.getOnDungeonStart().accept(new DungeonContext(dungeonWorld, entityManager, graveyard, dungeonWorld::getPlayers));
+
+        var dungeonContext = DungeonContext.builder()
+                .dungeonInstance(this)
+                .world(dungeonWorld)
+                .entityManager(entityManager)
+                .graveyard(graveyard)
+                .players(dungeonWorld::getPlayers)
+                .build();
+
+        dungeonInstanceTemplate.getOnDungeonStart().accept(dungeonContext);
 
         portalController.openDungeonPortal();
         dungeonLifecycleService.openPortal(portalController);
@@ -138,7 +148,11 @@ public class DungeonInstance {
         instanceEventHandler.handleEvent(event);
     }
 
-    public <E extends Event> void addEventBehaviour(Class<E> eventClass, EventBehaviour<E> eventBehaviour) {
+    public <E extends Event> void addEventBehaviour(EventDefinition<E> eventDefinition) {
+
+        Class<E> eventClass = eventDefinition.eventClass();
+        EventBehaviour<E> eventBehaviour = eventDefinition.createEventBehaviour().get();
+
         instanceEventHandler.addEventBehaviour(eventClass, eventBehaviour);
     }
 
@@ -163,5 +177,15 @@ can keep area Controllers current methods just hcange event handler to use a eve
 and use method refronces or just olmabda as event behaivour is a FUnctional Interface...
 
 then just call those methods.
+
+also add a RIDING command
+and mob rides the target mob
+
+and then add in a dungoen like events command section
+can do like
+
+POSION_WATER
+
+and it adds in a posion water into the instances event handler unless in a boat or on a lily pad...
 
  */

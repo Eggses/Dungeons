@@ -26,6 +26,7 @@ public class MobBuilder {
     private Consumer<DungeonEntity> spawnChanges = (entity) -> {};
     private int count = 1;
     private MobName mobName = new MobName();
+    private EntityType mountType;
 
     public MobBuilder(EntityType entityType, Position position) {
         this.entityType = entityType;
@@ -90,6 +91,11 @@ public class MobBuilder {
         return this;
     }
 
+    public MobBuilder mountType(EntityType mountType) {
+        this.mountType = mountType;
+        return this;
+    }
+
     // Getters
 
     public EntityType getEntityType() {
@@ -130,5 +136,9 @@ public class MobBuilder {
 
     public MobName getMobName() {
         return mobName;
+    }
+
+    public EntityType getMountType() {
+        return mountType;
     }
 }

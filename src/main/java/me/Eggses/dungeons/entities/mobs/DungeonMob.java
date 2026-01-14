@@ -1,6 +1,5 @@
 package me.Eggses.dungeons.entities.mobs;
 
-import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.entities.attributes.AttributeController;
 import me.Eggses.dungeons.eventhandler.EventContext;
 import me.Eggses.dungeons.entities.nameutility.MobName;
@@ -13,12 +12,16 @@ import me.Eggses.dungeons.entities.equipment.EquipmentManager;
 import me.Eggses.dungeons.utility.text.MessageCreator;
 import me.Eggses.dungeons.utility.text.TextFormatter;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Event;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
@@ -31,6 +34,15 @@ public class DungeonMob implements DungeonEntity {
     private static final String TEAM_NAME = "DungeonEntities";
     private static final Scoreboard SCOREBOARD = Bukkit.getScoreboardManager().getMainScoreboard();
     private static Team TEAM = SCOREBOARD.getTeam(TEAM_NAME);
+
+    private static final PotionEffect DOLPHINS_GRACE = new PotionEffect(
+            PotionEffectType.DOLPHINS_GRACE,
+            Integer.MAX_VALUE,
+            49,
+            false,
+            false,
+            false
+    );
 
     private final LivingEntity entity;
 
@@ -49,9 +61,9 @@ public class DungeonMob implements DungeonEntity {
                       TextFormatter textFormatter) {
 
         // Spawn Entity
-        Position position = mobBuilder.getPosition();
+        Location location = mobBuilder.getPosition().toLocation(world);
 
-        Entity entitySpawned = world.spawnEntity(position.toLocation(world), mobBuilder.getEntityType());
+        Entity entitySpawned = world.spawnEntity(location, mobBuilder.getEntityType());
         if (!(entitySpawned instanceof LivingEntity livingEntity)) throw new IllegalArgumentException("Tried to Spawn a Non-Living Mob!");
         this.entity = livingEntity;
 
@@ -92,6 +104,21 @@ public class DungeonMob implements DungeonEntity {
         for (Consumer<TaskContext<DungeonEntity>> task : tasks) {
             task.accept(taskContext);
         }
+
+        // Mount
+        EntityType typeOfMount = mobBuilder.getMountType();
+        if (typeOfMount != null) {
+
+            Entity mountSpawned = world.spawnEntity(location, typeOfMount);
+            if (!(mountSpawned instanceof LivingEntity livingMount)) throw new IllegalArgumentException("Tried to Spawn a Non-Living Mob for a Mount!");
+            livingMount.setPersistent(true);
+            livingMount.addPotionEffect(DOLPHINS_GRACE);
+
+            livingMount.addPassenger(entity);
+        }
+
+        // Potion
+        entity.addPotionEffect(DOLPHINS_GRACE);
     }
 
     @Override

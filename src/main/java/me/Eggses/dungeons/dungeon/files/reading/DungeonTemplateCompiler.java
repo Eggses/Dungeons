@@ -21,6 +21,8 @@ import me.Eggses.dungeons.entities.equipment.ArmourEquipment;
 import me.Eggses.dungeons.entities.equipment.WeaponEquipment;
 import me.Eggses.dungeons.entities.mobs.MobBuilder;
 import me.Eggses.dungeons.entities.mobs.mobtype.MobRegistry;
+import me.Eggses.dungeons.eventhandler.EventDefinition;
+import me.Eggses.dungeons.eventhandler.EventRegistry;
 import me.Eggses.dungeons.items.ItemStackTemplate;
 import me.Eggses.dungeons.utility.text.MessageCreator;
 import me.Eggses.dungeons.utility.sound.SoundPlayer;
@@ -34,6 +36,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -46,6 +49,7 @@ public class DungeonTemplateCompiler {
     private static final String COMMAND_WEATHER = "WEATHER";
     private static final String COMMAND_MESSAGE = "MESSAGE";
     private static final String COMMAND_SOUND = "SOUND";
+    private static final String COMMAND_EVENT = "EVENT";
 
     private static final String ARG_TYPE = "type";
     private static final String ARG_PRESET = "preset";
@@ -53,6 +57,7 @@ public class DungeonTemplateCompiler {
     private static final String ARG_COUNT = "count";
     private static final String ARG_WEAPON = "weapon";
     private static final String ARG_ARMOUR = "armour";
+    private static final String ARG_RIDING = "riding";
 
     private static final String ARG_BLOCK = "block";
 
@@ -67,10 +72,13 @@ public class DungeonTemplateCompiler {
 
     private static final String ARG_SOUND = "sound";
 
+    private static final String ARG_EVENTS = "events";
+
     private final JavaPlugin plugin;
     private final DungeonTemplate dungeonTemplate;
     private final ReadingUtility readingUtility;
     private final MobRegistry mobRegistry;
+    private final EventRegistry eventRegistry;
     private final MessageCreator messageCreator;
     private final SoundPlayer soundPlayer;
 
@@ -81,6 +89,7 @@ public class DungeonTemplateCompiler {
                                    DungeonTemplate dungeonTemplate,
                                    ReadingUtility readingUtility,
                                    MobRegistry mobRegistry,
+                                   EventRegistry eventRegistry,
                                    MessageCreator messageCreator,
                                    SoundPlayer soundPlayer) {
 
@@ -88,6 +97,7 @@ public class DungeonTemplateCompiler {
         this.dungeonTemplate = dungeonTemplate;
         this.readingUtility = readingUtility;
         this.mobRegistry = mobRegistry;
+        this.eventRegistry = eventRegistry;
         this.messageCreator = messageCreator;
         this.soundPlayer = soundPlayer;
     }
@@ -268,6 +278,10 @@ public class DungeonTemplateCompiler {
                     var action = resolveSoundCommand(command);
                     if (action != null) consumersToRun.add(action);
                 }
+                case COMMAND_EVENT -> {
+                    var action = resolveEventCommand(command);
+                    if (action != null) consumersToRun.add(action);
+                }
                 default -> plugin.getLogger().warning("Unknown Command Used: " + commandName + "!");
             }
         }
@@ -291,14 +305,8 @@ public class DungeonTemplateCompiler {
 
         Map<String, String> valueMap = readingUtility.createValueMap(command);
 
-        String type = valueMap.get(ARG_TYPE);
-        if (type == null) return null;
-        EntityType entityType;
-        try {
-            entityType = EntityType.valueOf(type.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            return null;
-        }
+        EntityType entityType = getEntityType(valueMap.get(ARG_TYPE));
+        if (entityType == null) return null;
 
         Position position = readingUtility.stringToPosition(valueMap.get(ReadingUtility.ARG_POS));
         if (position == null) return null;
@@ -313,12 +321,27 @@ public class DungeonTemplateCompiler {
         WeaponEquipment weaponEquipment = WeaponEquipment.createWeaponsFromString(valueMap.get(ARG_WEAPON));
         ArmourEquipment armourEquipment = ArmourCreator.createArmourFromString(valueMap.get(ARG_ARMOUR));
 
+        EntityType typeOfMount = getEntityType(valueMap.get(ARG_RIDING));
+
         return new MobBuilder(entityType, position)
                 .armourEquipment(armourEquipment)
                 .weaponEquipment(weaponEquipment)
                 .dungeonLevel(level)
                 .count(count)
+                .mountType(typeOfMount)
                 .applyPreset(preset);
+    }
+
+    private EntityType getEntityType(String type) {
+
+        if (type == null) return null;
+
+        try {
+            return EntityType.valueOf(type.toUpperCase(Locale.ROOT));
+        }
+        catch (IllegalArgumentException e) {
+            return null;
+        }
     }
 
     private Consumer<DungeonContext> resolveFillCommand(String command) {
@@ -452,6 +475,35 @@ public class DungeonTemplateCompiler {
             if (players == null) return;
 
             soundPlayer.playSound(sound, players);
+        };
+    }
+
+    private Consumer<DungeonContext> resolveEventCommand(String event) {
+
+        Map<String, String> valuesMap = readingUtility.createValueMap(event);
+        String eventsString = valuesMap.get(ARG_EVENTS);
+
+        if (eventsString == null) return null;
+        List<EventDefinition<?>> eventDefinitions = new ArrayList<>();
+
+        String[] eventKeys = eventsString.split(",");
+        for (String eventKey : eventKeys) {
+
+            if (eventKey == null) continue;
+            eventKey = eventKey.trim();
+
+            EventDefinition<?> eventDefinition = eventRegistry.getEventDefinition(eventKey);
+            if (eventDefinition == null) continue;
+
+            eventDefinitions.add(eventDefinition);
+        }
+
+        return dungeonContext -> {
+            var instance = dungeonContext.getDungeonInstance();
+            if (instance == null) return;
+
+            List<EventDefinition<?>> copy = List.copyOf(eventDefinitions);
+            copy.forEach(instance::addEventBehaviour);
         };
     }
 
