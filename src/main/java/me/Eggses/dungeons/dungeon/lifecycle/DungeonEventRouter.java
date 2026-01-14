@@ -40,5 +40,4 @@ public class DungeonEventRouter {
         DungeonInstance dungeonInstance = dungeonRegistry.getDungeonInstance(locationOfBlock.getWorld());
         if (dungeonInstance != null) dungeonInstance.handleDungeonTriggerCommand(new Position(locationOfBlock));
     }
-
 }
