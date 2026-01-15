@@ -213,3 +213,8 @@ public class Give implements SubCommand {
         return List.of();
     }
 }
+
+/*
+TODO: cannot reload templates + the give command isnt displaying the word key it dosnt suggest it to us
+and cannot get an items.
+ */

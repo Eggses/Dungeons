@@ -83,7 +83,7 @@ public class DestroyInstance implements SubCommand {
 
         String currentString = args[1].toLowerCase(Locale.ROOT);
         List<String> suggestions = dungeonRegistry.getDungeonWorldNames();
-        suggestions.add(ALL);
+        if (!suggestions.isEmpty()) suggestions.add(ALL);
 
         return suggestions.stream()
                 .filter(suggestion -> suggestion.startsWith(currentString))
