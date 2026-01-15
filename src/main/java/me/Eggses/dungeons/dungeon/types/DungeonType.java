@@ -2,16 +2,14 @@ package me.Eggses.dungeons.dungeon.types;
 
 public enum DungeonType {
 
-    FLAT_TEST("flat_test.yml", "flat_test"),
+    FLAT_TEST("flat_test.yml"),
     //MALIGNANT_MARSH("malignant_marsh.yml", "malignant_marsh"),
     ;
 
     private final String dungeonConfigFileName;
-    private final String uniqueKey;
 
-    DungeonType(String dungeonConfigFileName, String uniqueKey) {
+    DungeonType(String dungeonConfigFileName) {
         this.dungeonConfigFileName = dungeonConfigFileName;
-        this.uniqueKey = uniqueKey;
     }
 
     public String getDungeonConfigFileName() {
@@ -19,7 +17,7 @@ public enum DungeonType {
     }
 
     public String getUniqueKey() {
-        return uniqueKey;
+        return dungeonConfigFileName.substring(0, dungeonConfigFileName.indexOf('.'));
     }
 
     public static DungeonType getType(String type) {

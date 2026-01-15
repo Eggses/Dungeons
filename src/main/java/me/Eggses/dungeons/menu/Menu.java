@@ -1,6 +1,7 @@
 package me.Eggses.dungeons.menu;
 
-import me.Eggses.dungeons.configuration.ConfigurationFile;
+import me.Eggses.dungeons.items.ItemHandler;
+import me.Eggses.dungeons.items.ItemTemplate;
 import me.Eggses.dungeons.utility.text.MessageCreator;
 import me.Eggses.dungeons.utility.text.Placeholders;
 import org.bukkit.Bukkit;
@@ -9,13 +10,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
+import java.util.Optional;
 
 public abstract class Menu implements InventoryHolder {
 
@@ -24,76 +24,102 @@ public abstract class Menu implements InventoryHolder {
     protected static final String ITEM_LORE = "lore";
 
     private final Inventory inventory;
-    private final Player owner;
-    private final Map<Integer, Runnable> actions = new HashMap<>();
-    private final ConfigurationFile configurationFile;
-    private final ItemCreator itemCreator;
+    private final Player player;
+    private final ItemHandler itemHandler;
     private final Placeholders placeholders;
+    private final FileConfiguration menuConfig;
+
+    private final Map<Integer, Runnable> onClickActions = new HashMap<>();
 
     protected Menu(String title,
-                   int slotCount,
-                   Player owner,
-                   ConfigurationFile configurationFile,
-                   ItemCreator itemCreator,
+                   Row rows,
+                   Player player,
+                   ItemHandler itemHandler,
                    MessageCreator messageCreator,
                    Placeholders placeholders,
-                   MenuManager menuManager) {
+                   FileConfiguration menuConfig) {
 
-        this.inventory = Bukkit.createInventory(this, slotCount, messageCreator.createMessage(title, placeholders));
-        this.owner = owner;
-        this.configurationFile = configurationFile;
-        this.itemCreator = itemCreator;
+        this.inventory = Bukkit.createInventory(
+                this, rows.getSlotCount(), messageCreator.createMessage(title, placeholders)
+        );
+
+        this.player = player;
+        this.itemHandler = itemHandler;
         this.placeholders = placeholders;
-
-        menuManager.addAndOpen(this);
+        this.menuConfig = menuConfig;
     }
 
-    public void execute(int slotClicked) {
-        Runnable action = actions.get(slotClicked);
-        if (action != null) action.run();
-    }
+    protected void addItem(MenuItem menuItem, Runnable action) {
 
-    protected void addItem(ItemStack itemStack, int slot, Runnable runnable) {
+        String name = menuConfig.getString(menuItem.getNamePath());
+        String material = menuConfig.getString(menuItem.getMaterialPath());
+        List<String> lore = menuConfig.getStringList(menuItem.getLorePath());
+        int slot = menuItem.getSlot();
+
+        ItemTemplate itemTemplate = new ItemTemplate(name, material, lore);
+
+        ItemStack itemStack = itemHandler.createItem(itemTemplate, placeholders);
+
         inventory.setItem(slot, itemStack);
-        if (runnable != null) actions.put(slot, runnable);
+
+        if (action != null) onClickActions.put(slot, action);
+
     }
 
-    protected void addItem(ItemStack itemStack, int slot) {
-        addItem(itemStack, slot, null);
+    protected void addItem(MenuItem menuItem) {
+        addItem(menuItem, null);
     }
 
-    protected ItemStack createItem(MenuItem menuItem) {
-        return createItem(menuItem, (itemMeta) -> {});
+    protected void fillPanelItems(MenuItem menuItem) {
+
+        String material = menuConfig.getString(menuItem.getMaterialPath());
+        ItemTemplate itemTemplate = new ItemTemplate(null, material, null);
+        ItemStack item = itemHandler.createItem(itemTemplate, placeholders, ItemHandler.NO_DISPLAY);
+
+        ItemStack[] items = inventory.getContents();
+
+        for (int i = 0; i < items.length; i++) {
+            if (items[i] == null || items[i].getType().isAir()) {
+                inventory.setItem(i, item);
+            }
+        }
     }
 
-    protected ItemStack createPanelItem(MenuItem menuItem) {
-        return createItem(menuItem, itemMeta -> itemMeta.setHideTooltip(true));
+    protected void addAction(int slot, Runnable runnable) {
+        onClickActions.put(slot, runnable);
     }
 
-    private ItemStack createItem(MenuItem menuItem, Consumer<ItemMeta> itemMetaConsumer) {
+    protected Optional<ItemStack> takeAndDestroyItemAt(int slot) {
 
-        FileConfiguration file = configurationFile.getCustomFile();
-
-        String itemName = file.getString(menuItem.getNamePath());
-        String itemMaterial = file.getString(menuItem.getMaterialPath());
-        List<String> itemLore = file.getStringList(menuItem.getLorePath());
-
-        ItemStackTemplate itemStackTemplate = new ItemStackTemplate(itemName, itemMaterial, itemLore, false);
-        return itemCreator.createItem(itemStackTemplate, itemMetaConsumer, placeholders);
+        ItemStack item = inventory.getContents()[slot];
+        if (item != null) {
+            inventory.setItem(slot, null);
+            return Optional.of(item);
+        }
+        return Optional.empty();
     }
 
-    protected abstract void setItems();
-
-    public void onMenuClose() {
-        return;
+    public void open() {
+        player.openInventory(inventory);
     }
 
-    public final void open() {
-        owner.openInventory(inventory);
+    public void close() {
+        player.closeInventory();
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    protected abstract void createItems();
+
+    public void click(int slot) {
+        Runnable runnable = onClickActions.get(slot);
+        if (runnable != null) runnable.run();
     }
 
     @Override
-    public final @NotNull Inventory getInventory() {
+    public @NotNull Inventory getInventory() {
         return inventory;
     }
 

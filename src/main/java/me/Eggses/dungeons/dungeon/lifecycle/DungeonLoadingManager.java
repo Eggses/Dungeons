@@ -2,6 +2,7 @@ package me.Eggses.dungeons.dungeon.lifecycle;
 
 import me.Eggses.dungeons.blocks.BlockRegistry;
 import me.Eggses.dungeons.blocks.task.KeystoneParticleTask;
+import me.Eggses.dungeons.dungeon.items.ClickItem;
 import me.Eggses.dungeons.dungeon.items.DungeonKeyItems;
 import me.Eggses.dungeons.dungeon.types.DungeonType;
 import me.Eggses.dungeons.blocks.events.InteractOpenMenu;
@@ -15,16 +16,22 @@ import me.Eggses.dungeons.dungeon.files.templates.DungeonTemplate;
 import me.Eggses.dungeons.dungeon.files.templates.NonInstanceDungeonTemplate;
 import me.Eggses.dungeons.dungeon.portalroom.DungeonEntranceRoomRegistry;
 import me.Eggses.dungeons.dungeon.regions.WorldRegion;
+import me.Eggses.dungeons.dungeon.utility.BannedItems;
 import me.Eggses.dungeons.entities.mobs.mobtype.MobRegistry;
 import me.Eggses.dungeons.dungeon.items.CancelUse;
 import me.Eggses.dungeons.eventhandler.EventRegistry;
+import me.Eggses.dungeons.items.ItemGive;
+import me.Eggses.dungeons.items.ItemHandler;
+import me.Eggses.dungeons.items.ItemKey;
 import me.Eggses.dungeons.utility.text.MessageCreator;
 import me.Eggses.dungeons.utility.text.Placeholder;
 import me.Eggses.dungeons.utility.text.Placeholders;
 import me.Eggses.dungeons.utility.sound.SoundPlayer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.TextDisplay;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -38,27 +45,37 @@ public class DungeonLoadingManager {
     private final Set<DungeonType> dungeons = EnumSet.allOf(DungeonType.class);
 
     private final JavaPlugin plugin;
+    private final DungeonFactory dungeonFactory;
+
     private final ReadingUtility readingUtility;
     private final MessageCreator messageCreator;
+    private final FileConfiguration menuFile;
     private final SoundPlayer soundPlayer;
+
     private final MobRegistry mobRegistry;
     private final EventRegistry eventRegistry;
-
     private final DungeonEntranceRoomRegistry dungeonEntranceRoomRegistry;
     private final BlockRegistry blockRegistry;
     private final DungeonKeyItems dungeonKeyItems;
     private final EventManagerRegistry<String> itemRegistry;
 
+    private final ItemHandler itemHandler;
+    private final ItemGive itemGive;
+    private final ItemKey itemKey;
+    private final BannedItems bannedItems;
+
+    private final TemplateReservation templateReservation;
     private final DungeonInstanceTemplateRegistry dungeonInstanceTemplateRegistry;
 
     private final Map<DungeonType, Location> keystoneLocations = new EnumMap<>(DungeonType.class);
     private final Map<DungeonType, WorldRegion> portalRooms = new EnumMap<>(DungeonType.class);
-
     private boolean loadScheduled = false;
 
     public DungeonLoadingManager(JavaPlugin plugin,
+                                 DungeonFactory dungeonFactory,
                                  ReadingUtility readingUtility,
                                  MessageCreator messageCreator,
+                                 ConfigurationFile menuFile,
                                  SoundPlayer soundPlayer,
                                  MobRegistry mobRegistry,
                                  EventRegistry eventRegistry,
@@ -66,18 +83,34 @@ public class DungeonLoadingManager {
                                  BlockRegistry blockRegistry,
                                  DungeonKeyItems dungeonKeyItems,
                                  EventManagerRegistry<String> itemRegistry,
+                                 ItemHandler itemHandler,
+                                 ItemGive itemGive,
+                                 ItemKey itemKey,
+                                 BannedItems bannedItems,
+                                 TemplateReservation templateReservation,
                                  DungeonInstanceTemplateRegistry dungeonInstanceTemplateRegistry) {
 
         this.plugin = plugin;
+        this.dungeonFactory = dungeonFactory;
+
         this.readingUtility = readingUtility;
         this.messageCreator = messageCreator;
+        this.menuFile = menuFile.getCustomFile();
         this.soundPlayer = soundPlayer;
+
         this.mobRegistry = mobRegistry;
         this.eventRegistry = eventRegistry;
         this.dungeonEntranceRoomRegistry = dungeonEntranceRoomRegistry;
         this.blockRegistry = blockRegistry;
         this.dungeonKeyItems = dungeonKeyItems;
         this.itemRegistry = itemRegistry;
+
+        this.itemHandler = itemHandler;
+        this.itemGive = itemGive;
+        this.itemKey = itemKey;
+        this.bannedItems = bannedItems;
+
+        this.templateReservation = templateReservation;
         this.dungeonInstanceTemplateRegistry = dungeonInstanceTemplateRegistry;
     }
 
@@ -98,6 +131,7 @@ public class DungeonLoadingManager {
     }
 
     private void loadDungeons() {
+
         for (DungeonType dungeonType : dungeons) {
 
             ConfigurationFile fileToRead = new ConfigurationFile(plugin, dungeonType.getDungeonConfigFileName());
@@ -118,15 +152,27 @@ public class DungeonLoadingManager {
             var itemTemplate = nonInstanceDungeonTemplate.itemTemplate();
             var uniqueKey = dungeonType.getUniqueKey();
             dungeonKeyItems.addKey(dungeonType, new DungeonKeyItems.KeyItem(itemTemplate, placeholders, uniqueKey));
+
             itemRegistry.addOrUpdate(uniqueKey, PlayerInteractEvent.class, new CancelUse());
-            // TODO: add in the event that passes into a menu if open.
+            itemRegistry.addOrUpdate(uniqueKey, InventoryClickEvent.class, new ClickItem());
 
             var positionOfKeystone = nonInstanceDungeonTemplate.positionOfKeyStone();
             var worldOfKeystone = nonInstanceDungeonTemplate.dungeonPortalRoomWorld();
             var locationOfKeystone = positionOfKeystone.toLocation(worldOfKeystone);
             keystoneLocations.put(dungeonType, locationOfKeystone);
 
-            blockRegistry.addBlockAndEvent(locationOfKeystone, PlayerInteractEvent.class, new InteractOpenMenu());
+            blockRegistry.addBlockAndEvent(locationOfKeystone, PlayerInteractEvent.class, new InteractOpenMenu(
+                    dungeonFactory,
+                    templateReservation,
+                    dungeonType,
+                    itemHandler,
+                    itemGive,
+                    itemKey,
+                    bannedItems,
+                    messageCreator,
+                    menuFile
+            ));
+
             blockRegistry.addBlockAndName(locationOfKeystone, textDisplay -> {
                 Component keystoneName = messageCreator.createMessage(nonInstanceDungeonTemplate.keystoneName(), placeholders);
                 textDisplay.text(keystoneName);

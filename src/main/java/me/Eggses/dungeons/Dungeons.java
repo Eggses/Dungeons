@@ -18,16 +18,13 @@ import me.Eggses.dungeons.eventhandler.EventRegistry;
 import me.Eggses.dungeons.items.ItemHandler;
 import me.Eggses.dungeons.items.ItemKey;
 import me.Eggses.dungeons.items.ItemGive;
+import me.Eggses.dungeons.listeners.players.*;
 import me.Eggses.dungeons.tasks.TaskRunner;
 import me.Eggses.dungeons.listeners.entities.Combustion;
 import me.Eggses.dungeons.listeners.entities.EntityCombat;
 import me.Eggses.dungeons.listeners.entities.EntityDeath;
 import me.Eggses.dungeons.listeners.entities.EntityExplode;
-import me.Eggses.dungeons.listeners.players.Login;
-import me.Eggses.dungeons.listeners.players.DeathController;
-import me.Eggses.dungeons.listeners.players.PlayerDungeonWorld;
-import me.Eggses.dungeons.listeners.blocks.PlayerInteract;
-import me.Eggses.dungeons.listeners.players.PlayerMovement;
+import me.Eggses.dungeons.listeners.players.PlayerBlockInteract;
 import me.Eggses.dungeons.listeners.bans.*;
 import me.Eggses.dungeons.utility.sound.SoundPlayer;
 import me.Eggses.dungeons.utility.text.MessageCreator;
@@ -36,7 +33,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;
 
-@SuppressWarnings("unused")
 public final class Dungeons extends JavaPlugin {
 
     private final DungeonRegistry dungeonRegistry = new DungeonRegistry();
@@ -50,8 +46,8 @@ public final class Dungeons extends JavaPlugin {
         var textFormatter = new TextFormatter();
 
         var dungeonInstanceTemplateRegistry = new DungeonInstanceTemplateRegistry();
-        var itemRegistry = new EventManagerRegistry<String>();
         var templateReservation = new TemplateReservation();
+        var itemRegistry = new EventManagerRegistry<String>();
 
         var dungeonLog = new DungeonLog(this);
         var instanceNameManager = new InstanceNameManager(dungeonLog);
@@ -62,21 +58,26 @@ public final class Dungeons extends JavaPlugin {
         var openPortalRegistry = new OpenPortalRegistry();
 
         var dungeonLifecycleService = new DungeonLifecycleService(
-                this, dungeonRegistry, openPortalRegistry, templateReservation, dungeonWorldManager, dungeonLog
+                this,
+                dungeonRegistry,
+                openPortalRegistry,
+                templateReservation,
+                dungeonWorldManager,
+                dungeonLog
         );
 
         var dungeonEventRouter = new DungeonEventRouter(dungeonRegistry, openPortalRegistry);
 
         var soundPlayer = new SoundPlayer();
         var mobRegistry = new MobRegistry(this, new MobUtility(), textFormatter, soundPlayer);
-        var dungeonPortalRoomRegistry = new DungeonEntranceRoomRegistry();
+        var dungeonEntranceRoomRegistry = new DungeonEntranceRoomRegistry();
 
         var bannedItems = new BannedItems(messageCreator, textFormatter);
 
         var itemKey = new ItemKey(this);
         var itemHandler = new ItemHandler(itemKey, messageCreator);
-        var dungeonKeys = new DungeonKeyItems(itemHandler);
         var itemGive = new ItemGive();
+        var dungeonKeyItems = new DungeonKeyItems(itemHandler);
 
         var eventRegistry = new EventRegistry();
 
@@ -98,24 +99,43 @@ public final class Dungeons extends JavaPlugin {
 
         var dungeonLoadingManager = new DungeonLoadingManager(
                 this,
+                dungeonFactory,
                 new ReadingUtility(),
                 messageCreator,
+                menuFile,
                 soundPlayer,
                 mobRegistry,
                 eventRegistry,
-                dungeonPortalRoomRegistry,
+                dungeonEntranceRoomRegistry,
                 blockRegistry,
-                dungeonKeys,
+                dungeonKeyItems,
                 itemRegistry,
+                itemHandler,
+                itemGive,
+                itemKey,
+                bannedItems,
+                templateReservation,
                 dungeonInstanceTemplateRegistry
         );
 
         registerListeners(dungeonEventRouter, blockRegistry, itemRegistry, itemKey, dungeonRegistry);
-        registerCommands(dungeonRegistry, dungeonEventRouter, dungeonLoadingManager, dungeonKeys, itemGive, messagesFile, menuFile, messageCreator, textFormatter);
+
+        registerCommands(
+                dungeonRegistry,
+                dungeonEventRouter,
+                dungeonLoadingManager,
+                dungeonKeyItems,
+                itemGive,
+                messagesFile,
+                menuFile,
+                messageCreator,
+                textFormatter
+        );
 
         dungeonLifecycleService.destroyLeftAllInstanceWorlds();
         dungeonLoadingManager.loadAllDungeonsOnEnable();
     }
+
 
     private void registerListeners(DungeonEventRouter dungeonEventRouter,
                                    BlockRegistry blockRegistry,
@@ -145,8 +165,10 @@ public final class Dungeons extends JavaPlugin {
 
         pluginManager.registerEvents(new Login(), this);
         pluginManager.registerEvents(new DeathController(dungeonRegistry, dungeonEventRouter), this);
+        pluginManager.registerEvents(new Inventory(itemRegistry, itemKey), this);
         pluginManager.registerEvents(new PlayerDungeonWorld(dungeonRegistry, dungeonEventRouter), this);
-        pluginManager.registerEvents(new PlayerInteract(blockRegistry, itemRegistry, itemKey), this);
+        pluginManager.registerEvents(new PlayerBlockInteract(blockRegistry), this);
+        pluginManager.registerEvents(new PlayerItemInteract(itemRegistry, itemKey), this);
         pluginManager.registerEvents(new PlayerMovement(dungeonEventRouter), this);
     }
 

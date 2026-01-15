@@ -32,6 +32,7 @@ public enum Messages {
 
     // Keystone
     KEYSTONE_DISABLED("keystone.disabled"),
+    KEYSTONE_OPENING("keystone.opening"),
 
     BANNED_ITEMS_ALLOWED_TO_ENTER("banned_items.allowed_to_enter"),
     BANNED_ITEMS_DENIED_TO_ENTER("banned_items.denied_to_enter"),

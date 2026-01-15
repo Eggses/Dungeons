@@ -6,6 +6,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
@@ -14,12 +15,18 @@ import java.util.function.Consumer;
 
 public class ItemHandler {
 
+    public static final Consumer<ItemMeta> NO_DISPLAY = (itemMeta -> itemMeta.setHideTooltip(true));
+
     private final ItemKey itemKey;
     private final MessageCreator messageCreator;
 
     public ItemHandler(ItemKey itemKey, MessageCreator messageCreator) {
         this.itemKey = itemKey;
         this.messageCreator = messageCreator;
+    }
+
+    public ItemStack createItem(ItemTemplate itemTemplate, Placeholders placeholders) {
+        return createItem(itemTemplate, placeholders, null);
     }
 
     public ItemStack createItem(ItemTemplate itemTemplate,
@@ -31,7 +38,10 @@ public class ItemHandler {
         if (material == null) material = Material.BARRIER;
 
         List<Component> lore = new ArrayList<>();
-        itemTemplate.lore().forEach(line -> lore.add(messageCreator.createMessage(line, placeholders)));
+        List<String> stringLore = itemTemplate.lore();
+        if (stringLore != null) {
+            stringLore.forEach(line -> lore.add(messageCreator.createMessage(line, placeholders)));
+        }
 
         ItemStack item = new ItemStack(material, 1);
 
@@ -40,7 +50,8 @@ public class ItemHandler {
 
         meta.displayName(name);
         meta.lore(lore);
-        itemMetaTransformer.accept(meta);
+
+        if (itemMetaTransformer != null) itemMetaTransformer.accept(meta);
 
         item.setItemMeta(meta);
 
@@ -54,10 +65,9 @@ public class ItemHandler {
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return;
 
-        meta.getPersistentDataContainer().set(itemKey.getKey(), PersistentDataType.STRING, uniqueValue);
+        PersistentDataContainer pdc = meta.getPersistentDataContainer();
+        pdc.set(itemKey.getKey(), PersistentDataType.STRING, uniqueValue);
 
         item.setItemMeta(meta);
-
-        return;
     }
 }

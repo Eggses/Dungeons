@@ -44,6 +44,7 @@ dungeons_give:
 # Keystone / mechanics
 # =========================================================
 keystone:
+  opening: "%prefix_main% The Dungeon Portal is Opening..."
   disabled: "%prefix_main%%prefix_error%<red>This keystone has no energy.</red>"
 
 # =========================================================

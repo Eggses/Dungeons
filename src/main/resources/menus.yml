@@ -2,6 +2,20 @@ keystone_menu:
   title: "<bold>Keystone: %dungeon_name%"
 
   items:
+
+    info:
+      material: "BOOK"
+      name: "<aqua><bold>Keystone Information</bold></aqua>"
+      lore:
+        - "<gray>A keystone is required to</gray>"
+        - "<gray>open this dungeon portal.</gray>"
+        - ""
+        - "<gray>Insert a <bold>%dungeon_name%</bold></gray>"
+        - "<gray>keystone into the slot above.</gray>"
+        - ""
+        - "<gray>The portal will open only if</gray>"
+        - "<gray>the keystone matches this dungeon.</gray>"
+
     panel:
       material: "LIGHT_GRAY_STAINED_GLASS_PANE"
       name: ""
