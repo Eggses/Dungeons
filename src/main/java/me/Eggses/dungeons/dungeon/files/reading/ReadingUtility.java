@@ -62,6 +62,15 @@ public class ReadingUtility {
         return new RotationPosition(position, number);
     }
 
+    public Position unforamttedPosStringToPosition(String position) {
+
+        if (position == null) return null;
+
+        Map<String, String> valuesMap = createValueMap(position);
+
+        return stringToPosition(valuesMap.get(ARG_POS));
+    }
+
     public <T extends Number> T toNumber(String numberString, Function<String, T> parseFunction) {
         if (numberString == null) return null;
         try {

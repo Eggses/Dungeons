@@ -90,3 +90,11 @@ public class DestroyInstance implements SubCommand {
                 .toList();
     }
 }
+
+/*
+TODO: can manually type all its no logner suggest and command runs
+
+/dugneon trigger should be hidden
+
+still getting errors on reading the protal room.
+ */

@@ -13,7 +13,7 @@ dungeon_portal_world: "world"
 
 dungeon_portal_room:
   general_portal_room_region: "pos1=x,y,z pos2=x,y,z"
-  keystone_position: "x,y,z" #No pos= it breaks here.
+  keystone_position: "pos=x,y,z"
   keystone_name: "<dark_purple>Keystone"
 
 dungeon_portal:

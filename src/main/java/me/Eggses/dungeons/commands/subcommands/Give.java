@@ -217,4 +217,8 @@ public class Give implements SubCommand {
 /*
 TODO: cannot reload templates + the give command isnt displaying the word key it dosnt suggest it to us
 and cannot get an items.
+
+wont suggest "key" if you naually type it works
+
+but it thinks all the keys are unkown.
  */

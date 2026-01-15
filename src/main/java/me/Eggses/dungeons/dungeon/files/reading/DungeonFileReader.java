@@ -117,10 +117,9 @@ public class DungeonFileReader {
         ConfigurationSection portalRoom = file.getConfigurationSection(PORTAL_ROOM_SECTION);
         if (portalRoom == null) return null;
 
-        Region generalRegion =
-                readingUtility.stringToRegion(portalRoom.getString(PORTAL_ROOM_REGION));
+        Region generalRegion = readingUtility.stringToRegion(portalRoom.getString(PORTAL_ROOM_REGION));
 
-        Position keystonePosition = readingUtility.stringToPosition(portalRoom.getString(PORTAL_ROOM_KEYSTONE_POSITION));
+        Position keystonePosition = readingUtility.unforamttedPosStringToPosition(portalRoom.getString(PORTAL_ROOM_KEYSTONE_POSITION));
 
         String keystoneName = portalRoom.getString(PORTAL_ROOM_KEYSTONE_NAME);
 
