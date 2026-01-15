@@ -20,6 +20,5 @@ public class CauldronLevel implements Listener {
         if (event.getReason() != CauldronLevelChangeEvent.ChangeReason.NATURAL_FILL) return;
 
         event.setCancelled(true);
-
     }
 }
