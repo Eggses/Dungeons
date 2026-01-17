@@ -10,13 +10,11 @@ public enum Placeholder {
 
     PLAYER("%player%"),
     TARGET_PLAYER("%target_player%"),
-    QUANTITY("%quantity%"),
 
     DUNGEON_NAME("%dungeon_name%"),
     OPEN_DURATION("%open_duration%"),
 
     GIVE_TYPE("%give_type%"),
-    GIVE_ID("%give_id%"),
 
     BANNED_ITEMS("%banned_items%"),
     ;

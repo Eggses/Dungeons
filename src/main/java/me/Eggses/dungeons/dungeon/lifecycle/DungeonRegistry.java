@@ -63,4 +63,8 @@ public class DungeonRegistry {
                 .map(World::getName)
                 .collect(Collectors.toCollection(ArrayList::new));
     }
+
+    public boolean isAnyInstanceExist() {
+        return !dungeonInstances.isEmpty();
+    }
 }

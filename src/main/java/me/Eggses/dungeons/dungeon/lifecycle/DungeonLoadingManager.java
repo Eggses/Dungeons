@@ -69,7 +69,6 @@ public class DungeonLoadingManager {
 
     private final Map<DungeonType, Location> keystoneLocations = new EnumMap<>(DungeonType.class);
     private final Map<DungeonType, WorldRegion> portalRooms = new EnumMap<>(DungeonType.class);
-    private boolean loadScheduled = false;
 
     public DungeonLoadingManager(JavaPlugin plugin,
                                  DungeonFactory dungeonFactory,
@@ -114,23 +113,12 @@ public class DungeonLoadingManager {
         this.dungeonInstanceTemplateRegistry = dungeonInstanceTemplateRegistry;
     }
 
-    public void loadAllDungeonsOnEnable() {
-        loadScheduled = true;
-
-        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-            loadScheduled = false;
-            loadDungeons();
-        }, 20 * 30);
-    }
-
     public void reloadAllDungeons() {
-        if (loadScheduled) return;
-
         cleanUpDungeons();
         loadDungeons();
     }
 
-    private void loadDungeons() {
+    public void loadDungeons() {
 
         for (DungeonType dungeonType : dungeons) {
 

@@ -4,11 +4,11 @@ import me.Eggses.dungeons.dungeon.types.DungeonType;
 import me.Eggses.dungeons.items.ItemHandler;
 import me.Eggses.dungeons.items.ItemTemplate;
 import me.Eggses.dungeons.utility.text.Placeholders;
+import me.Eggses.dungeons.utility.text.TextFormatter;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class DungeonKeyItems {
@@ -21,9 +21,11 @@ public class DungeonKeyItems {
     private final Map<DungeonType, KeyItem> dungeonKeys = new HashMap<>();
 
     private final ItemHandler itemHandler;
+    private final TextFormatter textFormatter;
 
-    public DungeonKeyItems(ItemHandler itemHandler) {
+    public DungeonKeyItems(ItemHandler itemHandler, TextFormatter textFormatter) {
         this.itemHandler = itemHandler;
+        this.textFormatter = textFormatter;
     }
 
     public void addKey(DungeonType dungeonType, KeyItem keyItem) {
@@ -45,6 +47,17 @@ public class DungeonKeyItems {
         itemHandler.applyUniqueKey(dungeonKey, keyItem.uniqueKey);
 
         return dungeonKey;
+    }
+
+    public List<String> getDungeonKeyNames() {
+
+        Set<DungeonType> dungeonTypes = dungeonKeys.keySet();
+        List<String> formatted = new ArrayList<>();
+        for (DungeonType dungeonType : dungeonTypes) {
+            var name = textFormatter.formatName(dungeonType.name(), TextFormatter.SPLITTER_UNDERSCORE, TextFormatter.SEPARATOR_UNDERSCORE);
+            formatted.add(name);
+        }
+        return formatted;
     }
 
     public record KeyItem(ItemTemplate itemTemplate, Placeholders placeholders, String uniqueKey) {}

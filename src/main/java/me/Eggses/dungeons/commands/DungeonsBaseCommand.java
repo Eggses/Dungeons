@@ -31,7 +31,6 @@ public class DungeonsBaseCommand implements CommandExecutor, TabCompleter {
     private final ConfigurationFile messagesFile;
     private final ConfigurationFile menusFile;
     private final MessageCreator messageCreator;
-    private final TextFormatter textFormatter;
 
     private final Map<String, SubCommand> subCommands = new HashMap<>();
 
@@ -42,8 +41,7 @@ public class DungeonsBaseCommand implements CommandExecutor, TabCompleter {
                                ItemGive itemGive,
                                ConfigurationFile messagesFile,
                                ConfigurationFile menusFile,
-                               MessageCreator messageCreator,
-                               TextFormatter textFormatter) {
+                               MessageCreator messageCreator) {
 
         this.dungeonRegistry = dungeonRegistry;
         this.dungeonEventRouter = dungeonEventRouter;
@@ -53,7 +51,6 @@ public class DungeonsBaseCommand implements CommandExecutor, TabCompleter {
         this.messagesFile = messagesFile;
         this.menusFile = menusFile;
         this.messageCreator = messageCreator;
-        this.textFormatter = textFormatter;
 
         registerCommands();
     }
@@ -61,7 +58,7 @@ public class DungeonsBaseCommand implements CommandExecutor, TabCompleter {
     private void registerCommands() {
         var trigger = new Trigger(dungeonEventRouter, messageCreator);
         var reload = new Reload(dungeonLoadingManager, messagesFile, menusFile, messageCreator);
-        var give = new Give(dungeonKeyItems, itemGive,messageCreator, textFormatter);
+        var give = new Give(dungeonKeyItems, itemGive,messageCreator);
         var destroyInstance = new DestroyInstance(dungeonRegistry, messageCreator);
 
         subCommands.put(trigger.commandName(), trigger);

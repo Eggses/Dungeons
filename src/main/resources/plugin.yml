@@ -2,7 +2,6 @@ name: Dungeons
 version: ${version}
 main: me.Eggses.dungeons.Dungeons
 api-version: '1.21'
-load: STARTUP
 authors: [ Eggses ]
 description: Dungeons
 

@@ -19,7 +19,6 @@ public class ReadingUtility {
     public static final String ARG_POS_2 = "pos2";
 
     public Region stringToRegion(String entryBounds) {
-
         if (entryBounds == null) return null;
 
         Map<String, String> valuesMap = createValueMap(entryBounds);
@@ -71,7 +70,7 @@ public class ReadingUtility {
         return stringToPosition(valuesMap.get(ARG_POS));
     }
 
-    public <T extends Number> T toNumber(String numberString, Function<String, T> parseFunction) {
+    public <N extends Number> N toNumber(String numberString, Function<String, N> parseFunction) {
         if (numberString == null) return null;
         try {
             return parseFunction.apply(numberString);

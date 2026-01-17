@@ -54,6 +54,12 @@ public class DestroyInstance implements SubCommand {
         placeholders.addPlaceholder(Placeholder.DESTROY_TARGET, destroyTarget);
 
         if (destroyTarget.equals(ALL)) {
+
+            if (!dungeonRegistry.isAnyInstanceExist()) {
+                sender.sendMessage(messageCreator.createMessage(Messages.DUNGEONS_DESTROY_NO_WORLDS_EXIST, placeholders));
+                return;
+            }
+
             dungeonRegistry.endAllInstances(true);
             sender.sendMessage(messageCreator.createMessage(Messages.DUNGEONS_DESTROY_REQUESTED, placeholders));
             return;
@@ -90,11 +96,3 @@ public class DestroyInstance implements SubCommand {
                 .toList();
     }
 }
-
-/*
-TODO: can manually type all its no logner suggest and command runs
-
-/dugneon trigger should be hidden
-
-still getting errors on reading the protal room.
- */

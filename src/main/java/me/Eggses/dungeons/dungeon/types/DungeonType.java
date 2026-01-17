@@ -1,10 +1,10 @@
 package me.Eggses.dungeons.dungeon.types;
 
+import java.util.Locale;
+
 public enum DungeonType {
 
-    FLAT_TEST("flat_test.yml"),
-    //MALIGNANT_MARSH("malignant_marsh.yml", "malignant_marsh"),
-    ;
+    MALIGNANT_MARSH("malignant_marsh.yml");
 
     private final String dungeonConfigFileName;
 
@@ -22,7 +22,7 @@ public enum DungeonType {
 
     public static DungeonType getType(String type) {
         try {
-            return DungeonType.valueOf(type);
+            return DungeonType.valueOf(type.toUpperCase(Locale.ROOT));
         } catch (IllegalArgumentException e) {
             return null;
         }

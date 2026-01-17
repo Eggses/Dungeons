@@ -77,7 +77,7 @@ public final class Dungeons extends JavaPlugin {
         var itemKey = new ItemKey(this);
         var itemHandler = new ItemHandler(itemKey, messageCreator);
         var itemGive = new ItemGive();
-        var dungeonKeyItems = new DungeonKeyItems(itemHandler);
+        var dungeonKeyItems = new DungeonKeyItems(itemHandler, textFormatter);
 
         var eventRegistry = new EventRegistry();
 
@@ -128,12 +128,11 @@ public final class Dungeons extends JavaPlugin {
                 itemGive,
                 messagesFile,
                 menuFile,
-                messageCreator,
-                textFormatter
+                messageCreator
         );
 
         dungeonLifecycleService.destroyLeftAllInstanceWorlds();
-        dungeonLoadingManager.loadAllDungeonsOnEnable();
+        dungeonLoadingManager.loadDungeons();
     }
 
 
@@ -179,8 +178,7 @@ public final class Dungeons extends JavaPlugin {
                                   ItemGive itemGive,
                                   ConfigurationFile messagesFile,
                                   ConfigurationFile menuFile,
-                                  MessageCreator messageCreator,
-                                  TextFormatter textFormatter) {
+                                  MessageCreator messageCreator) {
 
         var dungeonsBaseCommand = new DungeonsBaseCommand(
                 dungeonRegistry,
@@ -190,8 +188,7 @@ public final class Dungeons extends JavaPlugin {
                 itemGive,
                 messagesFile,
                 menuFile,
-                messageCreator,
-                textFormatter
+                messageCreator
         );
 
         Objects.requireNonNull(getCommand("dungeons")).setExecutor(dungeonsBaseCommand);

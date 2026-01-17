@@ -247,7 +247,7 @@ public class DungeonFileReader {
 
     private void exceptionIfNotExist(Object object, String errorMessage) {
         if (object == null) {
-            throw new IllegalArgumentException("Error in: " + configurationFile.getFileName() + " - " + errorMessage);
+            throw new IllegalArgumentException("[Dungeons] Error in: " + configurationFile.getFileName() + " - " + errorMessage);
         }
     }
 }
