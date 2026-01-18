@@ -34,6 +34,7 @@ dungeon_portal:
     - "MESSAGE message=<red>Dungeon portal closed</red>"
 
 default_graveyard: "pos=-42,-60,16"
+# Default graveyard moved into on start - events, time, etc must also be set here!
 
 on_start: []
 

@@ -8,8 +8,7 @@ public class Graveyard {
 
     private RotationPosition activeGraveyard;
 
-    public Graveyard(RotationPosition rotationPosition) {
-        this.activeGraveyard = rotationPosition;
+    public Graveyard() {
     }
 
     public void setActiveGraveyard(RotationPosition rotationPosition) {
@@ -17,6 +16,7 @@ public class Graveyard {
     }
 
     public Location getActiveGraveyardLocation(World world) {
+        if (activeGraveyard == null) throw new RuntimeException("Graveyard has no position defined");
         return activeGraveyard.toLocation(world);
     }
 }

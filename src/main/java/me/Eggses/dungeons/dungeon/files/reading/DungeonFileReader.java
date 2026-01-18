@@ -30,7 +30,6 @@ public class DungeonFileReader {
     private static final String KEY_ITEM_LORE = "lore";
 
     private static final String TEMPLATE_NAME = "dungeon_template_name";
-    private static final String DEFAULT_GRAVEYARD = "default_graveyard";
     private static final String ON_START = "on_start";
 
     private static final String PORTAL_SECTION = "dungeon_portal";
@@ -80,9 +79,6 @@ public class DungeonFileReader {
         ItemTemplate itemTemplate = readKeyItem();
         exceptionIfNotExist(itemTemplate, "Key item settings read error (dungeon_key_item)");
 
-        RotationPosition defaultGraveyard = readDefaultGraveyard();
-        exceptionIfNotExist(defaultGraveyard, "Default graveyard read error (default_graveyard)");
-
         List<String> onStart = readOnStart();
 
         PortalTemplate portalTemplate = readPortalTemplate();
@@ -97,7 +93,6 @@ public class DungeonFileReader {
                 portalWorldName,
                 portalRoomTemplate,
                 itemTemplate,
-                defaultGraveyard,
                 onStart,
                 portalTemplate,
                 areas
@@ -144,10 +139,6 @@ public class DungeonFileReader {
 
     private String readTemplateName() {
         return file.getString(TEMPLATE_NAME);
-    }
-
-    private RotationPosition readDefaultGraveyard() {
-        return readingUtility.stringToRotationPosition(file.getString(DEFAULT_GRAVEYARD));
     }
 
     private List<String> readOnStart() {

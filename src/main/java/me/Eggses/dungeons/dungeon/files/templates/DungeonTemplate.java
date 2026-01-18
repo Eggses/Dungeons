@@ -3,7 +3,6 @@ package me.Eggses.dungeons.dungeon.files.templates;
 import me.Eggses.dungeons.dungeon.files.templates.builders.AreaTemplate;
 import me.Eggses.dungeons.dungeon.files.templates.builders.PortalRoomTemplate;
 import me.Eggses.dungeons.dungeon.files.templates.builders.PortalTemplate;
-import me.Eggses.dungeons.dungeon.regions.RotationPosition;
 import me.Eggses.dungeons.items.ItemTemplate;
 
 import java.util.List;
@@ -16,7 +15,6 @@ public class DungeonTemplate {
     private final String portalRoomWorld;
     private final PortalRoomTemplate portalRoomTemplate;
     private final ItemTemplate itemTemplate;
-    private final RotationPosition defaultGraveyard;
     private final List<String> onStart;
     private final PortalTemplate portalTemplate;
     private final List<AreaTemplate> areas;
@@ -26,7 +24,6 @@ public class DungeonTemplate {
                            String portalRoomWorld,
                            PortalRoomTemplate portalRoomTemplate,
                            ItemTemplate itemTemplate,
-                           RotationPosition defaultGraveyard,
                            List<String> onStart,
                            PortalTemplate portalTemplate,
                            List<AreaTemplate> areas) {
@@ -36,7 +33,6 @@ public class DungeonTemplate {
         this.portalRoomWorld = portalRoomWorld;
         this.portalRoomTemplate = portalRoomTemplate;
         this.itemTemplate = itemTemplate;
-        this.defaultGraveyard = defaultGraveyard;
         this.onStart = onStart;
         this.portalTemplate = portalTemplate;
         this.areas = areas;
@@ -60,10 +56,6 @@ public class DungeonTemplate {
 
     public ItemTemplate getItemTemplate() {
         return itemTemplate;
-    }
-
-    public RotationPosition getDefaultGraveyard() {
-        return defaultGraveyard;
     }
 
     public List<String> getOnStart() {

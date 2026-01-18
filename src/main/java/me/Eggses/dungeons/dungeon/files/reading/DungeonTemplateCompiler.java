@@ -10,7 +10,6 @@ import me.Eggses.dungeons.dungeon.files.templates.builders.ActionTemplate;
 import me.Eggses.dungeons.dungeon.files.templates.builders.AreaTemplate;
 import me.Eggses.dungeons.dungeon.files.templates.builders.PortalRoomTemplate;
 import me.Eggses.dungeons.dungeon.files.templates.builders.PortalTemplate;
-import me.Eggses.dungeons.dungeon.graveyard.Graveyard;
 import me.Eggses.dungeons.dungeon.portals.DungeonPortal;
 import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.dungeon.regions.Region;
@@ -32,7 +31,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Item;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
@@ -128,7 +126,6 @@ public class DungeonTemplateCompiler {
 
         String templateFolderName = createTemplateFileName();
         String dungeonName = createDungeonName();
-        Graveyard graveyard = createGraveyard();
         DungeonPortal dungeonPortal = createDungeonPortal();
         AreaControllerBuilder areaControllerBuilder = createAreaControllerBuilder();
         Consumer<DungeonContext> onDungeonStart = createOnDungeonStart();
@@ -136,7 +133,6 @@ public class DungeonTemplateCompiler {
         return new DungeonInstanceTemplate(
                 templateFolderName,
                 dungeonName,
-                graveyard,
                 dungeonPortal,
                 areaControllerBuilder,
                 onDungeonStart
@@ -173,10 +169,6 @@ public class DungeonTemplateCompiler {
 
     private Consumer<DungeonContext> createOnDungeonStart() {
         return resolveCommandList(dungeonTemplate.getOnStart());
-    }
-
-    private Graveyard createGraveyard() {
-        return new Graveyard(dungeonTemplate.getDefaultGraveyard());
     }
 
     private DungeonPortal createDungeonPortal() {
