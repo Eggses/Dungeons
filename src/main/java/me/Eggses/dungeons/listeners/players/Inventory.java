@@ -25,6 +25,11 @@ public class Inventory implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
+
+        if (event.getView().getTopInventory().getHolder() instanceof Menu) {
+            event.setCancelled(true);
+        }
+
         handleClickingAnItem(event);
         handleClickInMenu(event);
     }
@@ -51,8 +56,6 @@ public class Inventory implements Listener {
         if (clickedInventory == null) return;
 
         if (!(clickedInventory.getHolder() instanceof Menu menu)) return;
-
-        event.setCancelled(true);
 
         ClickType clickType = event.getClick();
         if (clickType != ClickType.LEFT && clickType != ClickType.RIGHT) return;

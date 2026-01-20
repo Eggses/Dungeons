@@ -1,5 +1,5 @@
 keystone_menu:
-  title: "<bold><gold>Keystone: %dungeon_name%"
+  title: "<gradient:#5a0f0f:#8b1a1a:#b22222:#6b0f0f><bold>Keystone: %dungeon_name%"
 
   items:
     info:
