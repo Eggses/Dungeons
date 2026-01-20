@@ -30,6 +30,10 @@ public class DungeonKeyItems {
 
     public void addKey(DungeonType dungeonType, KeyItem keyItem) {
         dungeonKeys.put(dungeonType, keyItem);
+
+        System.out.println("Name of Key: " + keyItem.itemTemplate.name());
+        System.out.println("Material of Key: " + keyItem.itemTemplate.material());
+        //TODO
     }
 
     public void removeKey(DungeonType dungeonType) {

@@ -36,7 +36,7 @@ keystone_menu:
         - "<gray>to open the dungeon portal.</gray>"
 
     insert_key:
-      material: "EMPTY_MAP"
+      material: "MAP"
       name: "<red><bold>Insert Key Above</bold></red>"
       lore:
         - "<gray>Place a valid dungeon key</gray>"
