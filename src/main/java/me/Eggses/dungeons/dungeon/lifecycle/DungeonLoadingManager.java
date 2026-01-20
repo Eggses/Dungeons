@@ -27,10 +27,8 @@ import me.Eggses.dungeons.utility.text.MessageCreator;
 import me.Eggses.dungeons.utility.text.Placeholder;
 import me.Eggses.dungeons.utility.text.Placeholders;
 import me.Eggses.dungeons.utility.sound.SoundPlayer;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.TextDisplay;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -162,11 +160,9 @@ public class DungeonLoadingManager {
                     menuFile
             ));
 
-            blockRegistry.addBlockAndName(locationOfKeystone, textDisplay -> {
-                Component keystoneName = messageCreator.createMessage(nonInstanceDungeonTemplate.keystoneName(), placeholders);
-                textDisplay.text(keystoneName);
-                textDisplay.setAlignment(TextDisplay.TextAlignment.CENTER);
-            });
+            var name = messageCreator.createMessage(nonInstanceDungeonTemplate.keystoneName(), placeholders);
+            blockRegistry.addBlockAndName(locationOfKeystone, name);
+
             blockRegistry.addBlockAndTaskBehaviour(locationOfKeystone, new KeystoneParticleTask().getTaskContext());
 
             var generalPortalRoomRegion = nonInstanceDungeonTemplate.generalPortalRoomRegion();

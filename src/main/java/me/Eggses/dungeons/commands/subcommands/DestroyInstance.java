@@ -73,7 +73,6 @@ public class DestroyInstance implements SubCommand {
         }
 
         sender.sendMessage(messageCreator.createMessage(Messages.DUNGEONS_DESTROY_INVALID_DUNGEON_WORLD, placeholders));
-        sender.sendMessage(messageCreator.createMessage(Messages.DUNGEONS_DESTROY_USAGE, placeholders));
     }
 
     @Override

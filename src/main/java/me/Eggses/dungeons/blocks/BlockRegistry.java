@@ -6,7 +6,9 @@ import me.Eggses.dungeons.eventhandler.EventContext;
 import me.Eggses.dungeons.tasks.ActiveTasks;
 import me.Eggses.dungeons.tasks.TaskContext;
 import me.Eggses.dungeons.tasks.TaskRunner;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
+import org.bukkit.entity.Display;
 import org.bukkit.entity.TextDisplay;
 import org.bukkit.event.Event;
 
@@ -36,14 +38,16 @@ public class BlockRegistry {
         blockEventRegistry.addOrUpdate(location, eventClass, eventBehaviour);
     }
 
-    public void addBlockAndName(Location location, Consumer<TextDisplay> settings) {
+    public void addBlockAndName(Location location, Component name) {
         TextDisplay textDisplay = blockTextDisplayRegistry.get(location);
+
         if (textDisplay == null) {
             Location spawnLocation = location.clone().add(0.5, 1.2, 0.5);
             textDisplay = location.getWorld().spawn(spawnLocation, TextDisplay.class);
+            textDisplay.setBillboard(Display.Billboard.CENTER);
             blockTextDisplayRegistry.put(location, textDisplay);
         }
-        settings.accept(textDisplay);
+        textDisplay.text(name);
     }
 
     public void addBlockAndTaskBehaviour(Location location, Consumer<TaskContext<Location>> task) {
@@ -81,5 +85,14 @@ public class BlockRegistry {
 
     public <E extends Event> void handleEvent(Location location, E event, EventContext eventContext) {
         blockEventRegistry.handleEvent(location, event, eventContext);
+    }
+
+    public void destroyAllTextDisplays() {
+        Set<Location> locationsOfTextDisplays = Set.copyOf(blockTextDisplayRegistry.keySet());
+
+        for (Location location : locationsOfTextDisplays) {
+            TextDisplay textDisplay = blockTextDisplayRegistry.remove(location);
+            if (textDisplay != null) textDisplay.remove();
+        }
     }
 }

@@ -20,7 +20,7 @@ dungeon_portal_world: "world"
 dungeon_portal_room:
   general_portal_room_region: "pos1=-542,62,-175 pos2=-533,69,-166"
   keystone_position: "pos=-540,64,-169"
-  keystone_name: "<purple>Keystone</purple>"
+  keystone_name: "<gradient:#c084fc:#7c3aed>Keystone: %dungeon_name%</gradient>"
 
 dungeon_portal:
   entry_portal_region: "pos1=-536,64,-171 pos2=-536,66,-170"
