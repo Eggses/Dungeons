@@ -64,7 +64,7 @@ public class Give implements SubCommand {
         ItemStack key = dungeonKeyItems.getDungeonKey(dungeonType, placeholders);
 
         if (key == null) {
-            player.sendMessage(messageCreator.createMessage(Messages.DUNGEONS_GIVE_UNKNOWN_TYPE, placeholders));
+            player.sendMessage(messageCreator.createMessage(Messages.DUNGEONS_GIVE_UNKNOWN_KEY, placeholders));
             return;
         }
 

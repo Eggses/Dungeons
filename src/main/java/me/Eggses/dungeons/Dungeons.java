@@ -120,7 +120,7 @@ public final class Dungeons extends JavaPlugin {
                 dungeonInstanceTemplateRegistry
         );
 
-        registerListeners(dungeonEventRouter, blockRegistry, itemRegistry, itemKey, dungeonRegistry);
+        registerListeners(dungeonEventRouter, blockRegistry, itemRegistry, itemKey, dungeonRegistry, dungeonEntranceRoomRegistry);
 
         registerCommands(
                 dungeonRegistry,
@@ -142,7 +142,8 @@ public final class Dungeons extends JavaPlugin {
                                    BlockRegistry blockRegistry,
                                    EventManagerRegistry<String> itemRegistry,
                                    ItemKey itemKey,
-                                   DungeonRegistry dungeonRegistry) {
+                                   DungeonRegistry dungeonRegistry,
+                                   DungeonEntranceRoomRegistry dungeonEntranceRoomRegistry) {
 
         var pluginManager = getServer().getPluginManager();
 
@@ -171,6 +172,7 @@ public final class Dungeons extends JavaPlugin {
         pluginManager.registerEvents(new PlayerBlockInteract(blockRegistry), this);
         pluginManager.registerEvents(new PlayerItemInteract(itemRegistry, itemKey), this);
         pluginManager.registerEvents(new PlayerMovement(dungeonEventRouter), this);
+        pluginManager.registerEvents(new ItemDrop(dungeonEntranceRoomRegistry), this);
     }
 
     private void registerCommands(DungeonRegistry dungeonRegistry,
