@@ -128,13 +128,13 @@ public class DungeonFileReader {
         ConfigurationSection keySection = file.getConfigurationSection(KEY_ITEM_SECTION);
         if (keySection == null) return null;
 
-        String material = keySection.getString(KEY_ITEM_MATERIAL);
         String name = keySection.getString(KEY_ITEM_NAME);
+        String material = keySection.getString(KEY_ITEM_MATERIAL);
         List<String> lore = keySection.getStringList(KEY_ITEM_LORE);
 
         if (material == null || name == null) return null;
 
-        return new ItemTemplate(material, name, lore);
+        return new ItemTemplate(name, material, lore);
     }
 
     private String readTemplateName() {
