@@ -31,11 +31,11 @@ dungeon_portal:
 
   on_open:
     - "SOUND sound=block.end_portal.spawn"
-    - "MESSAGE message=<green>%dungeon_name% Portal has stabilised for <aqua>%open_duration%</aqua> seconds.</green>"
+    - "MESSAGE <green>%dungeon_name% Portal has stabilised for <aqua>%open_duration%</aqua> seconds.</green>"
 
   on_close:
     - "SOUND sound=block.end_portal.spawn"
-    - "MESSAGE message=<red>%dungeon_name% Portal has collapsed.</red>"
+    - "MESSAGE <red>%dungeon_name% Portal has collapsed.</red>"
 
 on_start:
   - "GRAVEYARD pos=-1395,67,54 rotation=45"
