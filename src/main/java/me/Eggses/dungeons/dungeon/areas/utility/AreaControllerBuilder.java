@@ -27,14 +27,14 @@ public class AreaControllerBuilder {
     }
 
     public ChunkMappingRegistry<DungeonArea> getDungeonAreaChunkMapping() {
-        return dungeonAreaChunkMappingRegistry;
+        return dungeonAreaChunkMappingRegistry.copy();
     }
 
     public Map<Position, Consumer<DungeonContext>> getBlockInteractionMap() {
-        return blockInteractionMap;
+        return new HashMap<>(blockInteractionMap);
     }
 
     public Map<Position, Consumer<DungeonContext>> getDungeonTriggerCommandMap() {
-        return dungeonTriggerCommandMap;
+        return new HashMap<>(dungeonTriggerCommandMap);
     }
 }

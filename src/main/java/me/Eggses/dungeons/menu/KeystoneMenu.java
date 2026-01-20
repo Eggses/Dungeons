@@ -92,7 +92,7 @@ public class KeystoneMenu extends Menu {
             boolean creating = dungeonFactory.attemptToCreateDungeon(dungeonType);
 
             if (creating) {
-                player.sendMessage(messageCreator.createMessage(Messages.KEYSTONE_OPENING, placeholders));
+                getInventory().setItem(POSITION_OF_KEY, null);
             } else {
                 player.sendMessage(messageCreator.createMessage(Messages.KEYSTONE_DISABLED, placeholders));
             }

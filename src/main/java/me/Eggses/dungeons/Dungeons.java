@@ -33,9 +33,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;
 
+@SuppressWarnings("unused")
 public final class Dungeons extends JavaPlugin {
 
     private final DungeonRegistry dungeonRegistry = new DungeonRegistry();
+    private BlockRegistry blockRegistry;
 
     @Override
     public void onEnable() {
@@ -54,7 +56,7 @@ public final class Dungeons extends JavaPlugin {
         var dungeonWorldManager = new DungeonWorldManager(this, instanceNameManager);
         var taskRunner = new TaskRunner(this);
 
-        var blockRegistry = new BlockRegistry(taskRunner);
+        this.blockRegistry = new BlockRegistry(taskRunner);
 
         var openPortalRegistry = new OpenPortalRegistry();
 
@@ -201,5 +203,6 @@ public final class Dungeons extends JavaPlugin {
     @Override
     public void onDisable() {
         dungeonRegistry.endAllInstances(false);
+        blockRegistry.removeAllTextDisplays();
     }
 }

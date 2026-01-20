@@ -7,6 +7,7 @@ import me.Eggses.dungeons.tasks.ActiveTasks;
 import me.Eggses.dungeons.tasks.TaskContext;
 import me.Eggses.dungeons.tasks.TaskRunner;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Chunk;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.entity.Display;
@@ -48,7 +49,6 @@ public class BlockRegistry {
             textDisplay.setBillboard(Display.Billboard.CENTER);
             textDisplay.setBackgroundColor(Color.fromARGB(0, 0, 0, 0));
             blockTextDisplayRegistry.put(location, textDisplay);
-            textDisplay.setPersistent(false);
         }
         textDisplay.text(name);
     }
@@ -65,8 +65,7 @@ public class BlockRegistry {
     public void remove(Location location) {
         blockEventRegistry.remove(location);
 
-        TextDisplay textDisplay = blockTextDisplayRegistry.remove(location);
-        if (textDisplay != null) textDisplay.remove();
+        removeTextDisplay(location);
 
         ActiveTasks blockTasks = blockActiveTaskRegistry.remove(location);
         if (blockTasks != null) blockTasks.endAllTasks();
@@ -88,5 +87,22 @@ public class BlockRegistry {
 
     public <E extends Event> void handleEvent(Location location, E event, EventContext eventContext) {
         blockEventRegistry.handleEvent(location, event, eventContext);
+    }
+
+    public void removeTextDisplay(Location location) {
+
+        TextDisplay textDisplay = blockTextDisplayRegistry.remove(location);
+        if (textDisplay != null) {
+
+            Chunk chunk = textDisplay.getChunk();
+            if (!chunk.isLoaded()) {
+                chunk.load();
+            }
+            textDisplay.remove();
+        }
+    }
+
+    public void removeAllTextDisplays() {
+        Set.copyOf(blockTextDisplayRegistry.keySet()).forEach(this::removeTextDisplay);
     }
 }

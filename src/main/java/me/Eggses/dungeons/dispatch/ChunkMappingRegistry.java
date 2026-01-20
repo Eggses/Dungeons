@@ -7,7 +7,15 @@ import java.util.Set;
 
 public class ChunkMappingRegistry<T> {
 
-    private final Map<Long, Set<T>> chunkKeyToSetMap = new HashMap<>();
+    private final Map<Long, Set<T>> chunkKeyToSetMap;
+
+    public ChunkMappingRegistry() {
+        this.chunkKeyToSetMap = new HashMap<>();
+    }
+
+    private ChunkMappingRegistry(Map<Long, Set<T>> chunkKeyToSetMap) {
+        this.chunkKeyToSetMap = chunkKeyToSetMap;
+    }
 
     public Set<T> get(long chunkKey) {
         return chunkKeyToSetMap.get(chunkKey);
@@ -31,5 +39,16 @@ public class ChunkMappingRegistry<T> {
 
             if (set.isEmpty()) chunkKeyToSetMap.remove(chunkKey);
         }
+    }
+
+    public ChunkMappingRegistry<T> copy() {
+
+        Map<Long, Set<T>> copy = new HashMap<>();
+
+        for (Map.Entry<Long, Set<T>> entry : this.chunkKeyToSetMap.entrySet()) {
+            copy.put(entry.getKey(), new HashSet<>(entry.getValue()));
+        }
+
+        return new ChunkMappingRegistry<>(copy);
     }
 }
