@@ -63,7 +63,7 @@ public class KeystoneMenu extends Menu {
         addItem(Items.INFO);
         addItem(Items.CHECK_INVENTORY, () -> bannedItems.createAndSendBannedItemsMessage(getPlayer()));
         insertKeyState();
-        addItem(Items.CLOSE, (this::close));
+        addItem(Items.CLOSE, this::closeInventory);
 
         fillPanelItems(Items.PANEL);
 
@@ -71,9 +71,8 @@ public class KeystoneMenu extends Menu {
     }
 
     @Override
-    public void close() {
+    public void cleanUpOnClose() {
         removeKeyItemIfPlaced();
-        super.close();
     }
 
     protected void insertKeyState() {

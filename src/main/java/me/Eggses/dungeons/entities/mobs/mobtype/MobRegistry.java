@@ -24,9 +24,11 @@ public class MobRegistry {
         this.mobUtility = mobUtility;
         this.textFormatter = textFormatter;
         this.soundPlayer = soundPlayer;
+
+        registerMobs();
     }
 
-    public void registerMobs() {
+    private void registerMobs() {
         mobPresets.put(MobType.KNIGHT, new Knight(mobUtility, textFormatter).getBuilderConsumer());
         mobPresets.put(MobType.FIEND, new Fiend(mobUtility, textFormatter).getBuilderConsumer());
         mobPresets.put(MobType.BRUISER, new Bruiser(mobUtility, textFormatter).getBuilderConsumer());

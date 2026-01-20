@@ -34,7 +34,7 @@ public class Inventory implements Listener {
 
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
-        if (event.getInventory().getHolder() instanceof Menu menu) menu.close();
+        if (event.getInventory().getHolder() instanceof Menu menu) menu.cleanUpOnClose();
     }
 
     private void handleClickingAnItem(InventoryClickEvent event) {

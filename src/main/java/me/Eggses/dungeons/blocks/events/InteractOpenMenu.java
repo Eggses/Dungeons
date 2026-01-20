@@ -30,6 +30,7 @@ public class InteractOpenMenu implements EventBehaviour<PlayerInteractEvent> {
     private final ItemKey itemKey;
     private final BannedItems bannedItems;
     private final MessageCreator messageCreator;
+    private final Placeholders placeholders;
     private final FileConfiguration menuConfig;
 
     public InteractOpenMenu(DungeonFactory dungeonFactory,
@@ -40,6 +41,7 @@ public class InteractOpenMenu implements EventBehaviour<PlayerInteractEvent> {
                             ItemKey itemKey,
                             BannedItems bannedItems,
                             MessageCreator messageCreator,
+                            Placeholders placeholders,
                             FileConfiguration menuConfig) {
 
         this.dungeonFactory = dungeonFactory;
@@ -50,6 +52,7 @@ public class InteractOpenMenu implements EventBehaviour<PlayerInteractEvent> {
         this.itemKey = itemKey;
         this.bannedItems = bannedItems;
         this.messageCreator = messageCreator;
+        this.placeholders = placeholders;
         this.menuConfig = menuConfig;
     }
 
@@ -62,6 +65,7 @@ public class InteractOpenMenu implements EventBehaviour<PlayerInteractEvent> {
 
         Player player = event.getPlayer();
         placeholders.addPlaceholder(Placeholder.PLAYER, player.getName());
+        placeholders.addAll(this.placeholders);
 
         if (!templateReservation.isTemplateFree(dungeonType)) {
             player.sendMessage(messageCreator.createMessage(Messages.KEYSTONE_DISABLED, placeholders));

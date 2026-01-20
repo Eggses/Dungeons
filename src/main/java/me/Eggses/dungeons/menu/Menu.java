@@ -103,9 +103,12 @@ public abstract class Menu implements InventoryHolder {
         player.openInventory(inventory);
     }
 
-    public void close() {
+    public final void closeInventory() {
+        cleanUpOnClose();
         player.closeInventory();
     }
+
+    public abstract void cleanUpOnClose();
 
     public Player getPlayer() {
         return player;

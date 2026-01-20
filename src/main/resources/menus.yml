@@ -2,7 +2,6 @@ keystone_menu:
   title: "<bold>Keystone: %dungeon_name%"
 
   items:
-
     info:
       material: "BOOK"
       name: "<aqua><bold>Keystone Information</bold></aqua>"
@@ -17,7 +16,7 @@ keystone_menu:
         - "<gray>the keystone matches this dungeon.</gray>"
 
     panel:
-      material: "LIGHT_GRAY_STAINED_GLASS_PANE"
+      material: "GRAY_STAINED_GLASS_PANE"
       name: ""
       lore: []
 
@@ -51,7 +50,7 @@ keystone_menu:
       - "<gray>You will be informed if you have any banned items after.</gray>"
 
     close:
-      material: BARRIER
+      material: "BARRIER"
       name: "<red><bold>Close</bold></red>"
       lore:
         - "<gray>Click to close this menu.</gray>"

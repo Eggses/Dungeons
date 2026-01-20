@@ -158,6 +158,7 @@ public class DungeonLoadingManager {
                     itemKey,
                     bannedItems,
                     messageCreator,
+                    placeholders,
                     menuFile
             ));
 
