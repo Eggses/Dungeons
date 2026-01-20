@@ -25,6 +25,7 @@ import me.Eggses.dungeons.eventhandler.EventRegistry;
 import me.Eggses.dungeons.items.ItemTemplate;
 import me.Eggses.dungeons.utility.text.MessageCreator;
 import me.Eggses.dungeons.utility.sound.SoundPlayer;
+import me.Eggses.dungeons.utility.text.Placeholders;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -122,11 +123,11 @@ public class DungeonTemplateCompiler {
         );
     }
 
-    public DungeonInstanceTemplate createDungeonInstanceTemplate() {
+    public DungeonInstanceTemplate createDungeonInstanceTemplate(Placeholders placeholders) {
 
         String templateFolderName = createTemplateFileName();
         String dungeonName = createDungeonName();
-        DungeonPortal dungeonPortal = createDungeonPortal();
+        DungeonPortal dungeonPortal = createDungeonPortal(placeholders);
         AreaControllerBuilder areaControllerBuilder = createAreaControllerBuilder();
         Consumer<DungeonContext> onDungeonStart = createOnDungeonStart();
 
@@ -168,18 +169,18 @@ public class DungeonTemplateCompiler {
     }
 
     private Consumer<DungeonContext> createOnDungeonStart() {
-        return resolveCommandList(dungeonTemplate.getOnStart());
+        return resolveCommandList(dungeonTemplate.getOnStart(), messageCreator.placeholders());
     }
 
-    private DungeonPortal createDungeonPortal() {
+    private DungeonPortal createDungeonPortal(Placeholders placeholders) {
 
         PortalTemplate portalTemplate = dungeonTemplate.getPortalTemplate();
 
         World world = createPortalRoomWorld();
         if (world == null) throw new IllegalArgumentException("Null World used to create a Portal");
 
-        Consumer<DungeonContext> onOpen = resolveCommandList(portalTemplate.getOnOpenCommands());
-        Consumer<DungeonContext> onClose = resolveCommandList(portalTemplate.getOnCloseCommands());
+        Consumer<DungeonContext> onOpen = resolveCommandList(portalTemplate.getOnOpenCommands(), placeholders);
+        Consumer<DungeonContext> onClose = resolveCommandList(portalTemplate.getOnCloseCommands(), placeholders);
 
         return new DungeonPortal(
                 world,
@@ -201,8 +202,8 @@ public class DungeonTemplateCompiler {
 
             Region entryBounds = area.getEntryBounds();
 
-            Consumer<DungeonContext> onEntry = resolveCommandList(area.getOnEntryCommands());
-            Consumer<DungeonContext> onClear = resolveCommandList(area.getOnClearCommands());
+            Consumer<DungeonContext> onEntry = resolveCommandList(area.getOnEntryCommands(), messageCreator.placeholders());
+            Consumer<DungeonContext> onClear = resolveCommandList(area.getOnClearCommands(), messageCreator.placeholders());
 
             builder.addDungeonArea(new DungeonArea(entryBounds, onEntry, onClear));
             builder.addBlockInteractionList(handleActionTemplates(area.getInteractionsTemplates()));
@@ -217,14 +218,14 @@ public class DungeonTemplateCompiler {
 
         for (ActionTemplate<T> actionTemplate : actionTemplates) {
             T t = actionTemplate.getT();
-            Consumer<DungeonContext> commands = resolveCommandList(actionTemplate.getCommands());
+            Consumer<DungeonContext> commands = resolveCommandList(actionTemplate.getCommands(), messageCreator.placeholders());
 
             dungeonActions.add(new DungeonAction<>(t, commands));
         }
         return dungeonActions;
     }
 
-    private Consumer<DungeonContext> resolveCommandList(List<String> commands) {
+    private Consumer<DungeonContext> resolveCommandList(List<String> commands, Placeholders placeholders) {
 
         if (commands == null || commands.isEmpty()) return getEmptyConsumer();
 
@@ -264,7 +265,7 @@ public class DungeonTemplateCompiler {
                     if (action != null) consumersToRun.add(action);
                 }
                 case COMMAND_MESSAGE -> {
-                    var action = resolveMessageCommand(command);
+                    var action = resolveMessageCommand(command, placeholders);
                     if (action != null) consumersToRun.add(action);
                 }
                 case COMMAND_SOUND -> {
@@ -434,11 +435,11 @@ public class DungeonTemplateCompiler {
         };
     }
 
-    private Consumer<DungeonContext> resolveMessageCommand(String text) {
+    private Consumer<DungeonContext> resolveMessageCommand(String text, Placeholders placeholders) {
 
         if (text == null) return null;
 
-        Component message = messageCreator.createMessage(text);
+        Component message = messageCreator.createMessage(text, placeholders);
 
         return dungeonContext -> {
             var playersSupplier = dungeonContext.getPlayers();

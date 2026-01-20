@@ -122,7 +122,7 @@ public class DungeonInstance {
 
         if (destroyWorldFolder) {
             Bukkit.getScheduler().runTaskLater(
-                    plugin, () -> dungeonLifecycleService.destroyWorld(instanceFileName), 30 * 20);
+                    plugin, () -> dungeonLifecycleService.destroyWorld(instanceFileName), 500 * 20);
         }
     }
 

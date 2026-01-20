@@ -125,15 +125,14 @@ public class DungeonLoadingManager {
             DungeonTemplate dungeonTemplate = dungeonFileReader.createTemplate();
             DungeonTemplateCompiler dungeonTemplateCompiler = new DungeonTemplateCompiler(plugin, dungeonTemplate, readingUtility, mobRegistry, eventRegistry, messageCreator, soundPlayer);
 
-            DungeonInstanceTemplate dungeonInstanceTemplate = dungeonTemplateCompiler.createDungeonInstanceTemplate();
-            dungeonInstanceTemplateRegistry.add(dungeonType, dungeonInstanceTemplate);
-
             NonInstanceDungeonTemplate nonInstanceDungeonTemplate = dungeonTemplateCompiler.createNonInstanceDungeonTemplate();
-
             Placeholders placeholders = messageCreator.placeholders();
             placeholders.addPlaceholder(Placeholder.DUNGEON_NAME, nonInstanceDungeonTemplate.dungeonName());
             String openDurationSeconds = String.valueOf(dungeonTemplate.getPortalTemplate().getOpenDurationSeconds());
             placeholders.addPlaceholder(Placeholder.OPEN_DURATION, openDurationSeconds);
+
+            DungeonInstanceTemplate dungeonInstanceTemplate = dungeonTemplateCompiler.createDungeonInstanceTemplate(placeholders);
+            dungeonInstanceTemplateRegistry.add(dungeonType, dungeonInstanceTemplate);
 
             var itemTemplate = nonInstanceDungeonTemplate.itemTemplate();
             var uniqueKey = dungeonType.getUniqueKey();
