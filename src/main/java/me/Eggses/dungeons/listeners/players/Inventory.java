@@ -25,11 +25,8 @@ public class Inventory implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-
-        if (handleClickInMenu(event)) {
-            return;
-        }
         handleClickingAnItem(event);
+        handleClickInMenu(event);
     }
 
     @EventHandler
@@ -48,20 +45,19 @@ public class Inventory implements Listener {
         itemRegistry.handleEvent(key.get(), event, EventContext.EMPTY);
     }
 
-    private boolean handleClickInMenu(InventoryClickEvent event) {
+    private void handleClickInMenu(InventoryClickEvent event) {
 
         org.bukkit.inventory.Inventory clickedInventory = event.getClickedInventory();
-        if (clickedInventory == null) return false;
+        if (clickedInventory == null) return;
 
-        if (!(clickedInventory.getHolder() instanceof Menu menu)) return false;
+        if (!(clickedInventory.getHolder() instanceof Menu menu)) return;
 
         event.setCancelled(true);
 
         ClickType clickType = event.getClick();
-        if (clickType != ClickType.LEFT && clickType != ClickType.RIGHT) return true;
+        if (clickType != ClickType.LEFT && clickType != ClickType.RIGHT) return;
 
         int slot = event.getSlot();
         menu.click(slot);
-        return true;
     }
 }

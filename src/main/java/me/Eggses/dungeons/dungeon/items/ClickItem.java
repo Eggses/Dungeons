@@ -8,19 +8,21 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 public class ClickItem implements EventBehaviour<InventoryClickEvent> {
 
     @Override
     public void handleEvent(InventoryClickEvent event, EventContext eventContext) {
 
+        Inventory clickedInventory = event.getClickedInventory();
+        if (clickedInventory == null) return;
+
+        if (!(event.getWhoClicked() instanceof Player player)) return;
+        if (clickedInventory != player.getInventory()) return;
+
         Inventory top = event.getView().getTopInventory();
         if (!(top.getHolder() instanceof KeystoneMenu keyMenu)) return;
-
-        Inventory clicked = event.getClickedInventory();
-        if (clicked == null) return;
-
-        if (clicked == top) return;
 
         ItemStack clickedItem = event.getCurrentItem();
         if (clickedItem == null) return;
@@ -29,8 +31,6 @@ public class ClickItem implements EventBehaviour<InventoryClickEvent> {
         if (click != ClickType.LEFT && click != ClickType.RIGHT) return;
 
         event.setCancelled(true);
-
-        if (!(event.getWhoClicked() instanceof Player player)) return;
 
         keyMenu.insertDungeonKey(player, event.getSlot(), clickedItem);
     }

@@ -34,7 +34,8 @@ public class ItemHandler {
                                 Consumer<ItemMeta> itemMetaTransformer) {
 
         Component name = messageCreator.createMessage(itemTemplate.name(), placeholders);
-        Material material = Material.matchMaterial(itemTemplate.material());
+        Material material = Material.getMaterial(itemTemplate.material());
+        System.out.println("Material: " + itemTemplate.material()); //TODO remove
         if (material == null) material = Material.BARRIER;
 
         List<Component> lore = new ArrayList<>();
