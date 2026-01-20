@@ -66,6 +66,7 @@ public class KeystoneMenu extends Menu {
         addItem(Items.CLOSE, this::closeInventory);
 
         fillPanelItems(Items.PANEL);
+        destroyItemAt(POSITION_OF_KEY);
 
         addAction(POSITION_OF_KEY, this::removeKeyItemIfPlaced);
     }

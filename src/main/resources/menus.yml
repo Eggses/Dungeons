@@ -1,5 +1,5 @@
 keystone_menu:
-  title: "<bold>Keystone: %dungeon_name%"
+  title: "<bold><gold>Keystone: %dungeon_name%"
 
   items:
     info:

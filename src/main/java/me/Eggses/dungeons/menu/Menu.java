@@ -89,6 +89,10 @@ public abstract class Menu implements InventoryHolder {
         onClickActions.put(slot, runnable);
     }
 
+    protected void destroyItemAt(int slot) {
+        inventory.setItem(slot, null);
+    }
+
     protected Optional<ItemStack> takeAndDestroyItemAt(int slot) {
 
         ItemStack item = inventory.getContents()[slot];

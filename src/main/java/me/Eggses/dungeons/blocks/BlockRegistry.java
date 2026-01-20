@@ -7,6 +7,7 @@ import me.Eggses.dungeons.tasks.ActiveTasks;
 import me.Eggses.dungeons.tasks.TaskContext;
 import me.Eggses.dungeons.tasks.TaskRunner;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.entity.Display;
 import org.bukkit.entity.TextDisplay;
@@ -45,6 +46,7 @@ public class BlockRegistry {
             Location spawnLocation = location.clone().add(0.5, 1.2, 0.5);
             textDisplay = location.getWorld().spawn(spawnLocation, TextDisplay.class);
             textDisplay.setBillboard(Display.Billboard.CENTER);
+            textDisplay.setBackgroundColor(Color.fromARGB(0, 0, 0, 0));
             blockTextDisplayRegistry.put(location, textDisplay);
         }
         textDisplay.text(name);

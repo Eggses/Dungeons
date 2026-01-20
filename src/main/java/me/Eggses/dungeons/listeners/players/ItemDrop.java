@@ -17,6 +17,9 @@ public class ItemDrop implements Listener {
     public void onItemDrop(PlayerDropItemEvent event) {
         if (dungeonEntranceRoomRegistry.isInPortalRoom(event.getPlayer())) {
             event.setCancelled(true);
+            System.out.println("Drop and cancled");
+            return;
         }
+        System.out.println("Drop and not canceld");
     }
 }
