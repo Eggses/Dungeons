@@ -11,6 +11,7 @@ keystone_menu:
         - ""
         - "<gray>Insert a <bold>%dungeon_name%</bold></gray>"
         - "<gray>keystone into the slot above.</gray>"
+        - "<gray> the map to begin the Dungeon.</gray>"
         - ""
         - "<gray>The portal will open only if</gray>"
         - "<gray>the keystone matches this dungeon.</gray>"

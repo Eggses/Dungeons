@@ -18,6 +18,7 @@ import me.Eggses.dungeons.eventhandler.EventRegistry;
 import me.Eggses.dungeons.items.ItemHandler;
 import me.Eggses.dungeons.items.ItemKey;
 import me.Eggses.dungeons.items.ItemGive;
+import me.Eggses.dungeons.listeners.Debug;
 import me.Eggses.dungeons.listeners.players.*;
 import me.Eggses.dungeons.tasks.TaskRunner;
 import me.Eggses.dungeons.listeners.entities.Combustion;
@@ -174,6 +175,9 @@ public final class Dungeons extends JavaPlugin {
         pluginManager.registerEvents(new PlayerItemInteract(itemRegistry, itemKey), this);
         pluginManager.registerEvents(new PlayerMovement(dungeonEventRouter), this);
         pluginManager.registerEvents(new ItemDrop(dungeonEntranceRoomRegistry), this);
+
+        //TODO
+        pluginManager.registerEvents(new Debug(), this);
     }
 
     private void registerCommands(DungeonRegistry dungeonRegistry,

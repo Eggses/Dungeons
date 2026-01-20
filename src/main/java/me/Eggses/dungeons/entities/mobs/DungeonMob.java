@@ -19,7 +19,6 @@ import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Mob;
 import org.bukkit.event.Event;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -86,10 +85,7 @@ public class DungeonMob implements DungeonEntity {
 
         // Update Mob
         entity.setPersistent(true);
-
-        if (livingEntity instanceof Mob mob) {
-            mob.setRemoveWhenFarAway(false);
-        }
+        entity.setRemoveWhenFarAway(false);
 
         AttributeInstance attributeInstance = entity.getAttribute(Attribute.MAX_HEALTH);
         if (attributeInstance != null) entity.setHealth(attributeInstance.getValue());
