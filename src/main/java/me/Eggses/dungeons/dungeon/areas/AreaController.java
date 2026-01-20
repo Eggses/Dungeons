@@ -93,7 +93,7 @@ public class AreaController {
         consumer.accept(dungeonContext);
     }
 
-    public void handleEntityDeath(UUID uuid) {
+    public void handleEntityRemove(UUID uuid) {
         entityManager.removeMob(uuid);
         tryEndActiveDungeonArea();
     }

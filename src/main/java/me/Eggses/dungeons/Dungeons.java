@@ -18,12 +18,11 @@ import me.Eggses.dungeons.eventhandler.EventRegistry;
 import me.Eggses.dungeons.items.ItemHandler;
 import me.Eggses.dungeons.items.ItemKey;
 import me.Eggses.dungeons.items.ItemGive;
-import me.Eggses.dungeons.listeners.Debug;
 import me.Eggses.dungeons.listeners.players.*;
 import me.Eggses.dungeons.tasks.TaskRunner;
 import me.Eggses.dungeons.listeners.entities.Combustion;
 import me.Eggses.dungeons.listeners.entities.EntityCombat;
-import me.Eggses.dungeons.listeners.entities.EntityDeath;
+import me.Eggses.dungeons.listeners.entities.EntityRemove;
 import me.Eggses.dungeons.listeners.entities.EntityExplode;
 import me.Eggses.dungeons.listeners.players.PlayerBlockInteract;
 import me.Eggses.dungeons.listeners.bans.*;
@@ -151,7 +150,7 @@ public final class Dungeons extends JavaPlugin {
 
         pluginManager.registerEvents(new Combustion(dungeonRegistry), this);
         pluginManager.registerEvents(new EntityCombat(dungeonEventRouter), this);
-        pluginManager.registerEvents(new EntityDeath(dungeonEventRouter), this);
+        pluginManager.registerEvents(new EntityRemove(dungeonEventRouter), this);
         pluginManager.registerEvents(new EntityExplode(dungeonEventRouter), this);
 
         pluginManager.registerEvents(new CauldronLevel(dungeonRegistry), this);
@@ -175,9 +174,6 @@ public final class Dungeons extends JavaPlugin {
         pluginManager.registerEvents(new PlayerItemInteract(itemRegistry, itemKey), this);
         pluginManager.registerEvents(new PlayerMovement(dungeonEventRouter), this);
         pluginManager.registerEvents(new ItemDrop(dungeonEntranceRoomRegistry), this);
-
-        //TODO
-        pluginManager.registerEvents(new Debug(), this);
     }
 
     private void registerCommands(DungeonRegistry dungeonRegistry,
