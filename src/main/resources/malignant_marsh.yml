@@ -1,0 +1,381 @@
+dungeon_name: "<gradient:#c084fc:#7c3aed>Malignant Marsh</gradient>"
+
+dungeon_template_name: "malignant_marsh"
+
+dungeon_key_item:
+  material: "OMINOUS_TRIAL_KEY"
+  name: "<gradient:#c084fc:#7c3aed>Keystone: %dungeon_name%</gradient>"
+  lore:
+    - "<gray>Place this key into the</gray>"
+    - "<gold>%dungeon_name%</gold> <gray>keystone to begin.</gray>"
+    - ""
+    - "<gray>Portal Duration:</gray> <aqua>%open_duration% seconds</aqua>"
+    - ""
+    - "<dark_red>1 Use Only</dark_red>"
+    - "<bold><light_purple>Legendary Dungeon Key</light_purple></bold>"
+
+
+dungeon_portal_world: "world"
+
+dungeon_portal_room:
+  general_portal_room_region: "pos1=-542,62,-175 pos2=-533,69,-166"
+  keystone_position: "pos=-540,64,-169"
+  keystone_name: "<purple>Keystone</purple>"
+
+dungeon_portal:
+  entry_portal_region: "pos1=-536,64,-171 pos2=-536,66,-170"
+  dungeon_spawn_position: "pos=-1420,63,56 rotation=0"
+  exit_portal_region: "pos1=-1421,63,54 pos2=-1420,65,54"
+  world_exit_position: "pos=-538,64,-170 rotation=90"
+  open_duration_seconds: "60"
+
+  on_open:
+    - "SOUND sound=block.end_portal.spawn"
+    - "MESSAGE message=<green>%dungeon_name% Portal has stabilised for <aqua>%open_duration%</aqua> seconds.</green>"
+
+  on_close:
+    - "SOUND sound=block.end_portal.spawn"
+    - "MESSAGE message=<red>%dungeon_name% Portal has collapsed.</red>"
+
+on_start:
+  - "GRAVEYARD pos=-1395,67,54 rotation=45"
+  - "WEATHER weather=rain"
+  - "TIME time=7am"
+  - "EVENT events=poisonwater,poisonvine"
+
+dungeon_areas:
+  first_area_after_portal:
+    entry_bounds: "pos1=-1413,63,74 pos2=-1414,66,75"
+    on_entry:
+      - "MOB type=ZOMBIE pos=-1405,63,79 level=6 count=2"
+      - "MOB type=BOGGED pos=-1409,63,79 level=7 count=1"
+      - "MOB type=SPIDER pos=-1414,63,82 level=8 count=2"
+      - "MOB type=SKELETON pos=-1414,63,96 level=7 count=1"
+      - "MOB type=CREEPER pos=-1399,63,109 level=9 count=1"
+      - "MOB type=CAVE_SPIDER pos=-1429,63,109 level=10 count=1"
+      - "MOB type=ZOMBIE pos=-1417,63,90 level=8 count=1 preset=BRUISER armour=CHAINMAIL_SENTRY_IRON_2 weapon=IRON_AXE"
+      - "MOB type=ZOMBIE pos=-1418,63,96 level=9 count=1 preset=BRUISER armour=LEATHER_WARD_COPPER_2 weapon=IRON_SWORD"
+      - "MOB type=BOGGED pos=-1395,63,114 level=10 count=1 preset=BRUISER armour=CHAINMAIL_TIDE_COPPER_2 weapon=IRON_AXE"
+      - "MOB type=SKELETON pos=-1431,64,102 level=9 count=1 preset=BRUISER armour=LEATHER_VEX_REDSTONE_1 weapon=IRON_AXE"
+      - "MOB type=SKELETON pos=-1428,64,94 level=10 count=1 preset=FIEND weapon=IRON_AXE"
+      - "MOB type=MOOSHROOM pos=-1403,63,103 level=8 count=1 preset=NOXIOUS_CULTIVATOR"
+    on_clear:
+      - "FILL pos1=-1417,64,99 pos2=-1418,65,99 block=AIR"
+
+    interactions: []
+    triggers: []
+
+  place_with_blood_shrine:
+    entry_bounds: "pos1=-1417,64,103 pos2=-1418,66,105"
+    on_entry:
+      - "MOB type=BOGGED pos=-1420,63,112 level=8 count=1 preset=KNIGHT armour=COPPER_SILENCE_IRON_2 weapon=IRON_SWORD"
+      - "MOB type=ZOMBIE pos=-1415,63,115 level=8 count=1 preset=KNIGHT armour=COPPER_WARD_COPPER_2 weapon=IRON_SWORD"
+      - "MOB type=SKELETON pos=-1419,63,117 level=9 count=1 preset=FIEND weapon=IRON_AXE"
+      - "MOB type=MOOSHROOM pos=-1423,63,116 level=8 count=1 preset=NOXIOUS_CULTIVATOR"
+      - "MOB type=SPIDER pos=-1417,63,122 level=8 count=2"
+      - "MOB type=MOOSHROOM pos=-1430,63,127 level=9 count=1 preset=NOXIOUS_CULTIVATOR"
+      - "MOB type=MOOSHROOM pos=-1438,63,134 level=10 count=1 preset=NOXIOUS_CULTIVATOR"
+      - "MOB type=ZOMBIE pos=-1432,63,134 level=10 count=1 preset=BRUISER armour=CHAINMAIL_SENTRY_COPPER_2 weapon=IRON_AXE"
+      - "MOB type=SKELETON pos=-1433,63,129 level=9 count=1 preset=KNIGHT armour=COPPER_TIDE_REDSTONE_2 weapon=IRON_SWORD"
+      - "MOB type=BOGGED pos=-1428,63,134 level=10 count=1 preset=KNIGHT armour=COPPER_VEX_COPPER_2 weapon=IRON_SWORD"
+      - "MOB type=CREEPER pos=-1435,63,142 level=11 count=1"
+      - "MOB type=CAVE_SPIDER pos=-1435,63,135 level=9 count=2"
+    on_clear:
+      - "FILL pos1=-1441,65,137 pos2=-1441,66,136 block=AIR"
+
+    interactions: []
+    triggers: []
+
+  3_islands:
+    entry_bounds: "pos1=-1443,67,148 pos2=-1442,65,145"
+    on_entry:
+      - "MOB type=MOOSHROOM pos=-1469,67,182 level=14 count=2 preset=NOXIOUS_CULTIVATOR"
+      - "MOB type=MOOSHROOM pos=-1476,67,184 level=15 count=2 preset=NOXIOUS_CULTIVATOR"
+      - "MOB type=SKELETON pos=-1476,67,178 level=18 count=2 preset=FIEND weapon=IRON_AXE"
+      - "MOB type=ZOMBIE pos=-1471,67,178 level=16 count=2 preset=BRUISER armour=CHAINMAIL_SENTRY_REDSTONE_2 weapon=IRON_AXE"
+      - "MOB type=BOGGED pos=-1471,67,174 level=15 count=2 preset=KNIGHT armour=IRON_SILENCE_IRON_2 weapon=IRON_SWORD"
+      - "MOB type=ZOMBIE pos=-1474,67,175 level=14 count=3"
+      - "MOB type=CREEPER pos=-1472,67,182 level=16 count=2"
+      - "MOB type=SPIDER pos=-1472,63,160 level=13 count=3"
+      - "MOB type=CAVE_SPIDER pos=-1465,63,154 level=12 count=2"
+      - "MOB type=ZOMBIE pos=-1474,63,155 level=19 count=2 preset=FIEND weapon=IRON_AXE"
+      - "MOB type=SKELETON pos=-1476,63,151 level=17 count=2 preset=KNIGHT armour=IRON_WARD_COPPER_2 weapon=IRON_SWORD"
+      - "MOB type=BOGGED pos=-1477,63,155 level=18 count=2 preset=KNIGHT armour=IRON_TIDE_REDSTONE_2 weapon=IRON_SWORD"
+      - "MOB type=ZOMBIE pos=-1470,63,154 level=16 count=2 preset=KNIGHT armour=IRON_VEX_IRON_2 weapon=IRON_SWORD"
+      - "MOB type=MOOSHROOM pos=-1452,63,153 level=14 count=2 preset=NOXIOUS_CULTIVATOR"
+      - "MOB type=ILLUSIONER pos=-1443,65,161 level=21 count=1 preset=ENCHANTER"
+      - "MOB type=EVOKER pos=-1443,65,161 level=21 count=1"
+      - "MOB type=MOOSHROOM pos=-1440,65,157 level=15 count=2 preset=NOXIOUS_CULTIVATOR"
+      - "MOB type=MOOSHROOM pos=-1439,65,165 level=16 count=2 preset=NOXIOUS_CULTIVATOR"
+      - "MOB type=SKELETON pos=-1444,65,165 level=18 count=2 preset=KNIGHT armour=IRON_SILENCE_COPPER_2 weapon=IRON_SWORD"
+      - "MOB type=BOGGED pos=-1449,65,160 level=17 count=2 preset=KNIGHT armour=IRON_WARD_IRON_2 weapon=IRON_SWORD"
+      - "MOB type=SKELETON pos=-1446,65,158 level=15 count=3"
+      - "MOB type=ZOMBIE pos=-1445,65,154 level=14 count=2"
+      - "MOB type=SKELETON pos=-1437,65,159 level=20 count=2 preset=FIEND weapon=IRON_AXE"
+    on_clear:
+      - "FILL pos1=-1479,64,151 pos2=-1479,65,150 block=AIR"
+
+    interactions: []
+    triggers: []
+
+  area_before_first_big_area_with_the_3_enchanters:
+    entry_bounds: "pos1=-1482,63,151 pos2=-1484,65,149"
+    on_entry:
+      - "MOB type=BOGGED pos=-1504,63,154 level=18 count=2 preset=KNIGHT armour=IRON_SILENCE_IRON_2 weapon=IRON_SWORD"
+      - "MOB type=SKELETON pos=-1497,63,151 level=17 count=2 preset=KNIGHT armour=IRON_WARD_COPPER_2 weapon=IRON_SWORD"
+      - "MOB type=ZOMBIE pos=-1494,63,147 level=19 count=2 preset=FIEND weapon=IRON_AXE"
+      - "MOB type=SPIDER pos=-1490,63,151 level=15 count=3"
+      - "MOB type=CREEPER pos=-1488,63,147 level=16 count=2"
+      - "MOB type=CAVE_SPIDER pos=-1490,63,149 level=16 count=3"
+      - "MOB type=MOOSHROOM pos=-1513,63,148 level=16 count=2 preset=NOXIOUS_CULTIVATOR"
+      - "MOB type=MOOSHROOM pos=-1515,63,150 level=17 count=2 preset=NOXIOUS_CULTIVATOR"
+      - "MOB type=MOOSHROOM pos=-1512,64,154 level=18 count=2 preset=NOXIOUS_CULTIVATOR"
+      - "MOB type=MOOSHROOM pos=-1503,63,172 level=20 count=2 preset=NOXIOUS_CULTIVATOR"
+      - "MOB type=ZOMBIE pos=-1498,63,176 level=21 count=2 preset=BRUISER armour=CHAINMAIL_SENTRY_REDSTONE_2 weapon=IRON_AXE"
+    on_clear:
+      - "FILL pos1=-1516,63,147 pos2=-1517,66,147 block=AIR"
+      - "FILL pos1=-1515,63,146 pos2=-1515,66,145 block=AIR"
+      - "FILL pos1=-1516,64,146 pos2=-1516,66,146 block=AIR"
+    interactions: []
+    triggers: []
+
+  big_area_with_the_anvil_gate:
+    entry_bounds: "pos1=-1519,61,146 pos2=-1518,66,141"
+    on_entry:
+      - "MOB type=ILLUSIONER pos=-1525,63,120 level=24 count=1 preset=ENCHANTER"
+      - "MOB type=EVOKER pos=-1525,63,120 level=24 count=1"
+      - "MOB type=ILLUSIONER pos=-1541,63,130 level=25 count=1 preset=ENCHANTER"
+      - "MOB type=EVOKER pos=-1541,63,130 level=25 count=1"
+      - "MOB type=ILLUSIONER pos=-1540,63,107 level=26 count=1 preset=ENCHANTER"
+      - "MOB type=EVOKER pos=-1540,63,107 level=26 count=1"
+      - "MOB type=BOGGED pos=-1529,63,138 level=22 count=2 preset=KNIGHT armour=IRON_SILENCE_IRON_4 weapon=IRON_SWORD,SHIELD riding=ZOMBIE_HORSE"
+      - "MOB type=ZOMBIE pos=-1520,63,126 level=20 count=2 preset=KNIGHT armour=IRON_WARD_COPPER_4 weapon=IRON_SPEAR,SHIELD riding=ZOMBIE_HORSE"
+      - "MOB type=SKELETON pos=-1544,65,133 level=23 count=2 preset=KNIGHT armour=IRON_TIDE_REDSTONE_4 weapon=IRON_SWORD,SHIELD riding=ZOMBIE_HORSE"
+      - "MOB type=BOGGED pos=-1535,63,118 level=21 count=2 preset=KNIGHT armour=IRON_VEX_IRON_4 weapon=IRON_SPEAR,SHIELD riding=ZOMBIE_HORSE"
+      - "MOB type=ZOMBIE pos=-1539,63,104 level=24 count=2 preset=KNIGHT armour=IRON_SILENCE_COPPER_2 weapon=IRON_SWORD"
+      - "MOB type=SKELETON pos=-1545,63,107 level=25 count=2 preset=KNIGHT armour=IRON_WARD_IRON_2 weapon=IRON_SWORD"
+      - "MOB type=BOGGED pos=-1520,64,110 level=23 count=2 preset=KNIGHT armour=IRON_TIDE_COPPER_2 weapon=IRON_SWORD"
+      - "MOB type=MOOSHROOM pos=-1523,63,130 level=20 count=2 preset=NOXIOUS_CULTIVATOR"
+      - "MOB type=MOOSHROOM pos=-1528,63,133 level=21 count=2 preset=NOXIOUS_CULTIVATOR"
+      - "MOB type=ZOMBIE pos=-1525,63,131 level=22 count=2 preset=FIEND weapon=IRON_AXE"
+      - "MOB type=SKELETON pos=-1531,63,136 level=23 count=2 preset=FIEND weapon=IRON_AXE"
+      - "MOB type=ZOMBIE pos=-1525,63,138 level=24 count=2 preset=FIEND weapon=IRON_AXE"
+      - "MOB type=ZOMBIE pos=-1522,63,136 level=22 count=2 preset=BRUISER armour=IRON_SENTRY_REDSTONE_2 weapon=IRON_AXE"
+      - "MOB type=BOGGED pos=-1526,63,141 level=24 count=2 preset=BRUISER armour=IRON_SENTRY_COPPER_2 weapon=IRON_AXE"
+      - "MOB type=CREEPER pos=-1537,63,131 level=21 count=2 preset=BEEHIVE_CREEPER"
+      - "MOB type=CREEPER pos=-1520,63,122 level=20 count=2 preset=BEEHIVE_CREEPER"
+      - "MOB type=CREEPER pos=-1534,63,110 level=23 count=2 preset=BEEHIVE_CREEPER"
+      - "MOB type=SPIDER pos=-1538,63,122 level=21 count=3"
+      - "MOB type=CAVE_SPIDER pos=-1550,63,129 level=22 count=3"
+      - "MOB type=SKELETON pos=-1541,63,158 level=28 count=2 preset=FIEND weapon=IRON_AXE"
+      - "MOB type=CREEPER pos=-1537,63,160 level=27 count=2 preset=BEEHIVE_CREEPER"
+      - "MOB type=ZOMBIE pos=-1536,63,155 level=27 count=2 preset=FIEND weapon=IRON_AXE"
+      - "MOB type=BOGGED pos=-1535,63,160 level=28 count=2 preset=KNIGHT armour=IRON_SILENCE_IRON_2 weapon=IRON_SWORD"
+      - "MOB type=ZOMBIE pos=-1509,63,124 level=19 count=2 preset=BRUISER armour=IRON_SENTRY_IRON_2 weapon=IRON_AXE"
+      - "MOB type=SKELETON pos=-1519,64,116 level=24 count=2 preset=FIEND weapon=IRON_AXE"
+      - "MOB type=BOGGED pos=-1525,64,112 level=23 count=2 preset=BRUISER armour=IRON_SENTRY_COPPER_2 weapon=IRON_AXE"
+      - "MOB type=MOOSHROOM pos=-1528,64,114 level=22 count=2 preset=NOXIOUS_CULTIVATOR"
+      - "MOB type=MOOSHROOM pos=-1533,63,114 level=23 count=2 preset=NOXIOUS_CULTIVATOR"
+      - "MOB type=MOOSHROOM pos=-1542,66,113 level=24 count=2 preset=NOXIOUS_CULTIVATOR"
+      - "MOB type=SKELETON pos=-1545,66,116 level=25 count=2 preset=KNIGHT armour=IRON_WARD_IRON_2 weapon=IRON_SWORD"
+      - "MOB type=BOGGED pos=-1542,66,117 level=25 count=2 preset=KNIGHT armour=IRON_TIDE_REDSTONE_2 weapon=IRON_SWORD"
+      - "MOB type=ZOMBIE pos=-1548,63,126 level=22 count=3"
+      - "MOB type=SPIDER pos=-1553,63,123 level=21 count=3"
+
+    on_clear: []
+    interactions: []
+    triggers:
+      - pos: "-1521,60,121"
+        commands:
+          - "FILL pos1=-1550,64,93 pos2=-1550,68,93 block=AIR"
+          - "FILL pos1=-1549,64,92 pos2=-1549,68,92 block=AIR"
+          - "FILL pos1=-1548,64,91 pos2=-1548,68,91 block=AIR"
+          - "FILL pos1=-1547,64,90 pos2=-1547,68,90 block=AIR"
+
+  area_before_villagers:
+    entry_bounds: "pos1=-1560,61,86 pos2=-1545,73,78"
+    on_entry:
+      - "MOB type=ZOMBIE pos=-1557,65,80 level=23 count=2 preset=FIEND weapon=IRON_AXE"
+      - "MOB type=SKELETON pos=-1559,65,77 level=22 count=2 preset=FIEND weapon=IRON_AXE"
+      - "MOB type=ZOMBIE pos=-1563,66,73 level=22 count=2 preset=BRUISER armour=IRON_SENTRY_REDSTONE_2 weapon=IRON_AXE"
+      - "MOB type=BOGGED pos=-1564,66,69 level=23 count=2 preset=BRUISER armour=IRON_SENTRY_COPPER_2 weapon=IRON_AXE"
+      - "MOB type=SKELETON pos=-1568,66,70 level=24 count=2 preset=KNIGHT armour=IRON_SILENCE_IRON_2 weapon=IRON_SWORD"
+      - "MOB type=SPIDER pos=-1577,66,59 level=21 count=3"
+      - "MOB type=CREEPER pos=-1584,67,58 level=22 count=3"
+      - "MOB type=MOOSHROOM pos=-1589,67,59 level=22 count=2 preset=NOXIOUS_CULTIVATOR"
+      - "MOB type=MOOSHROOM pos=-1609,67,74 level=24 count=2 preset=NOXIOUS_CULTIVATOR"
+      - "MOB type=BOGGED pos=-1604,67,75 level=25 count=2 preset=KNIGHT armour=IRON_WARD_IRON_2 weapon=IRON_SWORD"
+      - "MOB type=ZOMBIE pos=-1597,67,70 level=24 count=2 preset=BRUISER armour=IRON_SENTRY_IRON_2 weapon=IRON_AXE"
+      - "MOB type=SKELETON pos=-1592,67,63 level=24 count=2 preset=FIEND weapon=IRON_AXE"
+      - "MOB type=CAVE_SPIDER pos=-1600,67,73 level=23 count=3"
+      - "MOB type=SKELETON pos=-1627,65,57 level=28 count=2 preset=KNIGHT armour=IRON_TIDE_REDSTONE_2 weapon=IRON_SWORD"
+    on_clear:
+      - "FILL pos1=-1631,65,55 pos2=-1628,69,55 block=AIR"
+    interactions: []
+    triggers: []
+
+  villagers_before_river:
+    entry_bounds: "pos1=-1631,65,53 pos2=-1628,69,52"
+    on_entry:
+      - "MOB type=VILLAGER pos=-1648,76,43 level=22 count=2 preset=VILLAGER"
+      - "MOB type=VILLAGER pos=-1629,73,25 level=21 count=2 preset=VILLAGER"
+      - "MOB type=VILLAGER pos=-1633,73,8 level=21 count=2 preset=VILLAGER"
+      - "MOB type=VILLAGER pos=-1611,72,33 level=20 count=2 preset=VILLAGER"
+      - "MOB type=VILLAGER pos=-1619,73,18 level=21 count=2 preset=VILLAGER"
+      - "MOB type=ILLUSIONER pos=-1619,72,23 level=24 count=1 preset=ENCHANTER"
+      - "MOB type=EVOKER pos=-1619,72,23 level=24 count=1"
+      - "MOB type=ILLUSIONER pos=-1643,75,43 level=26 count=1 preset=ENCHANTER"
+      - "MOB type=EVOKER pos=-1643,75,43 level=26 count=1"
+      - "MOB type=ILLUSIONER pos=-1637,72,10 level=25 count=1 preset=ENCHANTER"
+      - "MOB type=EVOKER pos=-1637,72,10 level=25 count=1"
+      - "MOB type=BOGGED pos=-1611,64,10 level=21 count=2 preset=KNIGHT armour=IRON_SILENCE_IRON_4 weapon=IRON_SWORD"
+      - "MOB type=ZOMBIE pos=-1614,64,11 level=22 count=2 preset=FIEND weapon=IRON_AXE"
+      - "MOB type=ZOMBIE pos=-1609,64,14 level=22 count=2 preset=BRUISER armour=IRON_SENTRY_REDSTONE_2 weapon=IRON_AXE"
+      - "MOB type=SPIDER pos=-1624,67,9 level=20 count=3"
+      - "MOB type=CREEPER pos=-1619,65,9 level=21 count=2 preset=BEEHIVE_CREEPER"
+      - "MOB type=CREEPER pos=-1633,72,32 level=23 count=2 preset=BEEHIVE_CREEPER"
+      - "MOB type=MOOSHROOM pos=-1623,72,28 level=22 count=2 preset=NOXIOUS_CULTIVATOR"
+      - "MOB type=MOOSHROOM pos=-1641,72,16 level=22 count=2 preset=NOXIOUS_CULTIVATOR"
+      - "MOB type=MOOSHROOM pos=-1642,73,36 level=23 count=2 preset=NOXIOUS_CULTIVATOR"
+      - "MOB type=MOOSHROOM pos=-1630,69,14 level=21 count=2 preset=NOXIOUS_CULTIVATOR"
+      - "MOB type=SKELETON pos=-1635,72,23 level=24 count=2 preset=FIEND weapon=IRON_AXE"
+      - "MOB type=ZOMBIE pos=-1627,72,33 level=24 count=2 preset=FIEND weapon=IRON_AXE"
+      - "MOB type=SKELETON pos=-1643,72,33 level=25 count=2 preset=FIEND weapon=IRON_AXE"
+      - "MOB type=ZOMBIE pos=-1621,68,35 level=23 count=2 preset=FIEND weapon=IRON_AXE"
+      - "MOB type=SKELETON pos=-1616,72,27 level=23 count=2 preset=FIEND weapon=IRON_AXE"
+      - "MOB type=ZOMBIE pos=-1617,72,21 level=23 count=2 preset=BRUISER armour=IRON_SENTRY_COPPER_2 weapon=IRON_AXE"
+      - "MOB type=BOGGED pos=-1629,72,21 level=24 count=2 preset=KNIGHT armour=IRON_WARD_IRON_4 weapon=IRON_SWORD"
+      - "MOB type=MOOSHROOM pos=-1624,72,21 level=22 count=2 preset=NOXIOUS_CULTIVATOR"
+      - "MOB type=SKELETON pos=-1637,72,16 level=24 count=2 preset=KNIGHT armour=IRON_TIDE_REDSTONE_4 weapon=IRON_SWORD"
+      - "MOB type=CAVE_SPIDER pos=-1634,72,12 level=22 count=3"
+      - "MOB type=ZOMBIE pos=-1629,72,8 level=23 count=2 preset=FIEND weapon=IRON_AXE"
+      - "MOB type=BOGGED pos=-1638,72,33 level=25 count=2 preset=KNIGHT armour=IRON_VEX_IRON_4 weapon=IRON_SWORD"
+      - "MOB type=SKELETON pos=-1633,72,28 level=24 count=2 preset=KNIGHT armour=IRON_SILENCE_COPPER_4 weapon=IRON_SWORD"
+      - "MOB type=ZOMBIE pos=-1633,72,25 level=24 count=2 preset=BRUISER armour=IRON_SENTRY_IRON_2 weapon=IRON_AXE"
+      - "MOB type=BOGGED pos=-1632,72,21 level=23 count=2 preset=BRUISER armour=IRON_SENTRY_COPPER_2 weapon=IRON_AXE"
+      - "MOB type=ZOMBIE pos=-1639,72,30 level=24 count=2 preset=BRUISER armour=IRON_SENTRY_REDSTONE_2 weapon=IRON_AXE"
+      - "MOB type=SPIDER pos=-1624,72,24 level=22 count=3"
+      - "MOB type=ZOMBIE pos=-1619,72,26 level=22 count=3"
+      - "MOB type=CREEPER pos=-1632,72,30 level=23 count=3"
+      - "MOB type=BOGGED pos=-1634,70,38 level=24 count=2 preset=KNIGHT armour=IRON_WARD_COPPER_4 weapon=IRON_SWORD"
+      - "MOB type=SKELETON pos=-1629,67,49 level=25 count=2 preset=KNIGHT armour=IRON_TIDE_IRON_4 weapon=IRON_SWORD"
+    on_clear:
+      - "GRAVEYARD pos=-1644,75,47 rotation=-135"
+    interactions:
+      - pos: "-1619,70,-24"
+        commands:
+          - "FILL pos1=-1572,61,18 pos2=-1571,71,17 block=AIR"
+          - "FILL pos1=-1571,61,15 pos2=-1570,71,16 block=AIR"
+          - "FILL pos1=-1570,61,13 pos2=-1569,71,14 block=AIR"
+          - "FILL pos1=-1567,61,13 pos2=-1567,71,14 block=AIR"
+          - "FILL pos1=-1568,61,15 pos2=-1568,71,16 block=AIR"
+          - "FILL pos1=-1569,61,17 pos2=-1569,71,18 block=AIR"
+    triggers: []
+
+  swim_area_1_no_campsite:
+    entry_bounds: "pos1=-1566,61,10 pos2=-1564,79,27"
+    on_entry:
+      - "MOB type=VINDICATOR pos=-1538,64,42 level=31 count=2"
+      - "MOB type=PILLAGER pos=-1531,64,36 level=30 count=2"
+      - "MOB type=VINDICATOR pos=-1526,64,41 level=32 count=2"
+      - "MOB type=PILLAGER pos=-1524,64,32 level=29 count=2"
+      - "MOB type=MOOSHROOM pos=-1529,64,48 level=30 count=2 preset=NOXIOUS_CULTIVATOR"
+      - "MOB type=MOOSHROOM pos=-1522,64,47 level=29 count=2 preset=NOXIOUS_CULTIVATOR"
+    on_clear:
+      - "FILL pos1=-1519,60,15 pos2=-1518,70,14 block=AIR"
+      - "FILL pos1=-1521,60,14 pos2=-1520,70,13 block=AIR"
+      - "FILL pos1=-1523,60,13 pos2=-1522,70,12 block=AIR"
+      - "FILL pos1=-1523,60,10 pos2=-1522,71,10 block=AIR"
+      - "FILL pos1=-1521,60,11 pos2=-1520,71,11 block=AIR"
+      - "FILL pos1=-1519,60,12 pos2=-1518,71,12 block=AIR"
+    interactions: []
+    triggers: []
+
+  swim_area_2_tent:
+    entry_bounds: "pos1=-1525,70,8 pos2=-1511,59,6"
+    on_entry:
+      - "MOB type=VINDICATOR pos=-1485,63,-62 level=32 count=2"
+      - "MOB type=ILLUSIONER pos=-1481,63,-67 level=34 count=1 preset=ENCHANTER"
+      - "MOB type=EVOKER pos=-1481,63,-67 level=34 count=1"
+      - "MOB type=CREEPER pos=-1485,63,-67 level=33 count=2 preset=BEEHIVE_CREEPER"
+      - "MOB type=BOGGED pos=-1490,63,-63 level=31 count=2 preset=KNIGHT armour=IRON_SILENCE_IRON_4 weapon=IRON_SWORD"
+      - "MOB type=SKELETON pos=-1491,63,-58 level=30 count=2 preset=KNIGHT armour=IRON_WARD_COPPER_4 weapon=IRON_SWORD"
+      - "MOB type=PILLAGER pos=-1487,63,-59 level=32 count=2"
+    on_clear:
+      - "FILL pos1=-1445,61,-74 pos2=-1444,70,-81 block=AIR"
+      - "FILL pos1=-1442,61,-74 pos2=-1442,71,-81 block=AIR"
+    interactions: []
+    triggers: []
+
+  swim_area_3_ravager_graveyard:
+    entry_bounds: "pos1=-1441,60,-82 pos2=-1441,72,-73"
+    on_entry:
+      - "MOB type=PILLAGER pos=-1404,63,-45 level=31 count=1"
+      - "MOB type=PILLAGER pos=-1427,63,-77 level=32 count=1"
+      - "MOB type=BOGGED pos=-1375,63,-36 level=33 count=2 preset=KNIGHT armour=IRON_SILENCE_IRON_4 weapon=IRON_SWORD"
+      - "MOB type=RAVAGER pos=-1364,63,-26 level=35 count=2"
+      - "MOB type=ZOMBIE pos=-1369,63,-32 level=34 count=2 preset=FIEND weapon=IRON_AXE"
+      - "MOB type=SKELETON pos=-1374,63,-29 level=33 count=2 preset=FIEND weapon=IRON_AXE"
+      - "MOB type=SKELETON pos=-1368,63,-35 level=33 count=2 preset=KNIGHT armour=IRON_WARD_COPPER_4 weapon=IRON_SWORD"
+      - "MOB type=ZOMBIE pos=-1373,63,-42 level=32 count=2 preset=BRUISER armour=IRON_SENTRY_REDSTONE_2 weapon=IRON_AXE"
+      - "MOB type=ZOMBIE pos=-1374,63,-40 level=34 count=2 preset=FIEND weapon=IRON_AXE"
+    on_clear:
+      - "GRAVEYARD pos=-1375,63,-31 rotation=180"
+      - "FILL pos1=-1358,59,-56 pos2=-1357,69,-61 block=AIR"
+      - "FILL pos1=-1355,59,-61 pos2=-1355,70,-56 block=AIR"
+    interactions: []
+    triggers: []
+
+  swim_area_4_campsite:
+    entry_bounds: "pos1=-1354,59,-63 pos2=-1354,70,-55"
+    on_entry:
+      - "MOB type=PILLAGER pos=-1321,63,-41 level=31 count=1"
+      - "MOB type=VINDICATOR pos=-1337,64,-35 level=32 count=2"
+      - "MOB type=SKELETON pos=-1336,64,-31 level=34 count=2 preset=FIEND weapon=IRON_AXE"
+      - "MOB type=ZOMBIE pos=-1328,63,-28 level=33 count=2 preset=FIEND weapon=IRON_AXE"
+      - "MOB type=BOGGED pos=-1321,63,-29 level=33 count=2 preset=KNIGHT armour=IRON_SILENCE_IRON_4 weapon=IRON_SWORD"
+      - "MOB type=SKELETON pos=-1330,63,-23 level=32 count=2 preset=KNIGHT armour=IRON_WARD_COPPER_4 weapon=IRON_SWORD"
+      - "MOB type=ILLUSIONER pos=-1329,63,-21 level=35 count=1 preset=ENCHANTER"
+      - "MOB type=EVOKER pos=-1329,63,-21 level=35 count=1"
+      - "MOB type=ILLUSIONER pos=-1323,63,-29 level=34 count=1 preset=ENCHANTER"
+      - "MOB type=EVOKER pos=-1323,63,-29 level=34 count=1"
+      - "MOB type=CREEPER pos=-1321,63,-24 level=33 count=2 preset=BEEHIVE_CREEPER"
+      - "MOB type=MOOSHROOM pos=-1324,64,-15 level=32 count=2 preset=NOXIOUS_CULTIVATOR"
+      - "MOB type=MOOSHROOM pos=-1335,63,-18 level=33 count=2 preset=NOXIOUS_CULTIVATOR"
+      - "MOB type=ZOMBIE pos=-1332,63,-28 level=33 count=2 preset=BRUISER armour=IRON_SENTRY_REDSTONE_2 weapon=IRON_AXE"
+      - "MOB type=VINDICATOR pos=-1337,63,-27 level=32 count=2"
+      - "MOB type=PILLAGER pos=-1323,63,-26 level=31 count=2"
+      - "MOB type=VINDICATOR pos=-1333,63,-22 level=32 count=2"
+      - "MOB type=PILLAGER pos=-1326,63,-19 level=31 count=2"
+      - "MOB type=VINDICATOR pos=-1328,63,-17 level=32 count=2"
+      - "MOB type=PILLAGER pos=-1327,63,-32 level=31 count=2"
+    on_clear:
+      - "FILL pos1=-1308,57,-44 pos2=-1307,69,-37 block=AIR"
+      - "FILL pos1=-1305,57,-44 pos2=-1305,70,-37 block=AIR"
+    interactions: []
+    triggers: []
+
+  swim_area_5_ship:
+    entry_bounds: "pos1=-1304,71,-36 pos2=-1304,55,-46"
+    on_entry:
+      - "MOB type=PILLAGER pos=-1287,63,-24 level=31 count=2"
+      - "MOB type=VINDICATOR pos=-1269,63,-43 level=32 count=2"
+      - "MOB type=PILLAGER pos=-1256,63,-37 level=31 count=2"
+      - "MOB type=ZOMBIE pos=-1249,66,-26 level=34 count=2 preset=FIEND weapon=IRON_AXE"
+      - "MOB type=SKELETON pos=-1262,66,-26 level=33 count=2 preset=FIEND weapon=IRON_AXE"
+      - "MOB type=ZOMBIE pos=-1258,66,-23 level=33 count=2 preset=BRUISER armour=IRON_SENTRY_REDSTONE_2 weapon=IRON_AXE"
+      - "MOB type=BOGGED pos=-1269,68,-25 level=34 count=2 preset=BRUISER armour=IRON_SENTRY_COPPER_2 weapon=IRON_AXE"
+      - "MOB type=VINDICATOR pos=-1272,69,-25 level=32 count=2"
+      - "MOB type=PILLAGER pos=-1259,66,-25 level=31 count=2"
+      - "MOB type=VINDICATOR pos=-1257,66,-28 level=32 count=2"
+      - "MOB type=PILLAGER pos=-1251,66,-29 level=31 count=2"
+      - "MOB type=ZOMBIE pos=-1250,66,-23 level=33 count=2 preset=KNIGHT armour=IRON_SILENCE_IRON_4 weapon=IRON_SWORD"
+      - "MOB type=SKELETON pos=-1243,71,-25 level=34 count=2 preset=KNIGHT armour=IRON_WARD_COPPER_4 weapon=IRON_SWORD"
+      - "MOB type=BOGGED pos=-1243,70,-28 level=33 count=2 preset=KNIGHT armour=IRON_TIDE_REDSTONE_4 weapon=IRON_SWORD"
+      - "MOB type=SKELETON pos=-1243,70,-22 level=33 count=2 preset=KNIGHT armour=IRON_VEX_IRON_4 weapon=IRON_SWORD"
+      - "MOB type=BOGGED pos=-1237,70,-25 level=35 count=2 preset=KNIGHT armour=IRON_SILENCE_COPPER_4 weapon=IRON_SWORD"
+      - "MOB type=SKELETON pos=-1264,66,-24 level=32 count=2 preset=KNIGHT armour=IRON_WARD_IRON_4 weapon=IRON_SWORD"
+      - "MOB type=BOGGED pos=-1254,66,-27 level=32 count=2 preset=KNIGHT armour=IRON_TIDE_IRON_4 weapon=IRON_SWORD"
+    on_clear: []
+    interactions: []
+    triggers: []
