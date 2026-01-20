@@ -4,7 +4,7 @@ dungeon_template_name: "malignant_marsh"
 
 dungeon_key_item:
   material: "OMINOUS_TRIAL_KEY"
-  name: "<gradient:#5a0f0f:#8b1a1a:#b22222:#6b0f0f><bold>Keystone: %dungeon_name%"
+  name: "<gradient:#8b0000:#c91f1f:#ff3b3b:#b11212><bold>Keystone: %dungeon_name%"
   lore:
     - "<gray>Place this key into the</gray>"
     - "<gold>%dungeon_name%</gold> <gray>keystone to begin.</gray>"
@@ -20,7 +20,7 @@ dungeon_portal_world: "world"
 dungeon_portal_room:
   general_portal_room_region: "pos1=-542,62,-175 pos2=-533,69,-166"
   keystone_position: "pos=-540,64,-169"
-  keystone_name: "<gradient:#5a0f0f:#8b1a1a:#b22222:#6b0f0f><bold>Keystone: %dungeon_name%"
+  keystone_name: "<gradient:#8b0000:#c91f1f:#ff3b3b:#b11212><bold>Keystone: %dungeon_name%"
 
 dungeon_portal:
   entry_portal_region: "pos1=-536,64,-171 pos2=-536,66,-170"

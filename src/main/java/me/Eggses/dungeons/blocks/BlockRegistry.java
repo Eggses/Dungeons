@@ -48,6 +48,7 @@ public class BlockRegistry {
             textDisplay.setBillboard(Display.Billboard.CENTER);
             textDisplay.setBackgroundColor(Color.fromARGB(0, 0, 0, 0));
             blockTextDisplayRegistry.put(location, textDisplay);
+            textDisplay.setPersistent(false);
         }
         textDisplay.text(name);
     }
@@ -87,14 +88,5 @@ public class BlockRegistry {
 
     public <E extends Event> void handleEvent(Location location, E event, EventContext eventContext) {
         blockEventRegistry.handleEvent(location, event, eventContext);
-    }
-
-    public void destroyAllTextDisplays() {
-        Set<Location> locationsOfTextDisplays = Set.copyOf(blockTextDisplayRegistry.keySet());
-
-        for (Location location : locationsOfTextDisplays) {
-            TextDisplay textDisplay = blockTextDisplayRegistry.remove(location);
-            if (textDisplay != null) textDisplay.remove();
-        }
     }
 }
