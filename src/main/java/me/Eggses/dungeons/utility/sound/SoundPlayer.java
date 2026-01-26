@@ -26,4 +26,8 @@ public class SoundPlayer {
     public void playSound(Sound sound, Collection<? extends Player> players) {
         players.forEach(player -> player.playSound(sound, Sound.Emitter.self()));
     }
+
+    public void playSound(Sound sound, Player player) {
+       player.playSound(sound, Sound.Emitter.self());
+    }
 }

@@ -1,13 +1,13 @@
 package me.Eggses.dungeons.entities.mobs;
 
 import me.Eggses.dungeons.entities.attributes.AttributeController;
-import me.Eggses.dungeons.eventhandler.EventContext;
+import me.Eggses.dungeons.eventhandler.*;
 import me.Eggses.dungeons.entities.nameutility.MobName;
 import me.Eggses.dungeons.tasks.ActiveTasks;
+import me.Eggses.dungeons.tasks.Task;
 import me.Eggses.dungeons.tasks.TaskContext;
 import me.Eggses.dungeons.tasks.TaskRunner;
 import me.Eggses.dungeons.entities.nameutility.NameFormatter;
-import me.Eggses.dungeons.eventhandler.EventManager;
 import me.Eggses.dungeons.entities.equipment.EquipmentManager;
 import me.Eggses.dungeons.utility.text.MessageCreator;
 import me.Eggses.dungeons.utility.text.TextFormatter;
@@ -16,6 +16,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
+import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -27,7 +28,6 @@ import org.bukkit.scoreboard.Team;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Consumer;
 
 public class DungeonMob implements DungeonEntity {
 
@@ -97,14 +97,14 @@ public class DungeonMob implements DungeonEntity {
         TEAM.addEntity(entity);
 
         // Set Name
-        updateHealthDisplay(0.0);
+        takeDamage(0.0);
         entity.setCustomNameVisible(true);
 
         // Start Tasks
-        List<Consumer<TaskContext<DungeonEntity>>> tasks = mobBuilder.getEntityTaskBehaviour();
+        List<Task<DungeonEntity>> tasks = mobBuilder.getEntityTaskBehaviour();
         TaskContext<DungeonEntity> taskContext = new TaskContext<>(this, activeTasks, taskRunner);
-        for (Consumer<TaskContext<DungeonEntity>> task : tasks) {
-            task.accept(taskContext);
+        for (Task<DungeonEntity> task : tasks) {
+            task.runTask(taskContext);
         }
 
         // Mount
@@ -120,7 +120,11 @@ public class DungeonMob implements DungeonEntity {
         }
 
         // Potion
-        entity.addPotionEffect(DOLPHINS_GRACE);
+        if (!(livingEntity instanceof Creeper)) entity.addPotionEffect(DOLPHINS_GRACE);
+    }
+
+    public ActiveTasks getActiveTasks() {
+        return activeTasks;
     }
 
     @Override
@@ -139,13 +143,18 @@ public class DungeonMob implements DungeonEntity {
     }
 
     @Override
-    public <E extends Event> void handleEvent(E event, EventContext eventContext) {
-        eventManager.handleEvent(event, eventContext);
+    public AttributeController getAttributeController() {
+        return attributeController;
     }
 
     @Override
-    public AttributeController getAttributeController() {
-        return attributeController;
+    public <E extends Event> void addEvent(Class<E> eventClass, EventBehaviour<E> eventBehaviour) {
+        eventManager.addEventBehaviour(eventClass, eventBehaviour);
+    }
+
+    @Override
+    public <E extends Event> void handleEvent(E event, EventContext eventContext) {
+        eventManager.handleEvent(event, eventContext);
     }
 
     @Override
@@ -159,8 +168,8 @@ public class DungeonMob implements DungeonEntity {
     }
 
     @Override
-    public void updateHealthDisplay(double damageToBeTaken) {
-        int health = (int) (Math.max(0, entity.getHealth() - damageToBeTaken));
+    public void takeDamage(double damage) {
+        int health = (int) (Math.max(0, entity.getHealth() - damage));
         entity.customName(nameFormatter.updateHealth(health));
     }
 }

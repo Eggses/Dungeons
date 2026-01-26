@@ -8,7 +8,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 public class PoisonVine implements EventBehaviour<PlayerMoveEvent>  {
 
-    private final PoisonTick poisonTick = new PoisonTick();
+    private final PoisonTick poisonTick = new PoisonTick(2, 5000);
 
     @Override
     public void handleEvent(PlayerMoveEvent event, EventContext eventContext) {

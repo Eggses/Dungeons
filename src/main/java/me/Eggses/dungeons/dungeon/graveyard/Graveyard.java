@@ -1,6 +1,7 @@
 package me.Eggses.dungeons.dungeon.graveyard;
 
 import me.Eggses.dungeons.dungeon.regions.RotationPosition;
+import me.Eggses.dungeons.utility.exceptions.GraveyardNoDefinedLocationException;
 import org.bukkit.Location;
 import org.bukkit.World;
 
@@ -16,7 +17,7 @@ public class Graveyard {
     }
 
     public Location getActiveGraveyardLocation(World world) {
-        if (activeGraveyard == null) throw new RuntimeException("Graveyard has no position defined");
+        if (activeGraveyard == null) throw new GraveyardNoDefinedLocationException();
         return activeGraveyard.toLocation(world);
     }
 }

@@ -19,21 +19,24 @@ public class PoisonTick {
             true
     );
 
-    private static final long COOLDOWN = 5000;
-
-    private static final double DAMAGE_PER_APPLY = 4.0;
-
+    private final double damagePerApply;
+    private final long cooldown;
     private final Map<UUID, Long> lastEffectApply = new HashMap<>();
+
+    public PoisonTick(double damagePerApply, long cooldown) {
+        this.damagePerApply = damagePerApply;
+        this.cooldown = cooldown;
+    }
 
     public void applyDamageIfApplicable(Player player) {
 
         UUID uuid = player.getUniqueId();
 
         Long lastApplyTime = lastEffectApply.get(uuid);
-        if (lastApplyTime != null && System.currentTimeMillis() < lastApplyTime + COOLDOWN) return;
+        if (lastApplyTime != null && System.currentTimeMillis() < lastApplyTime +  cooldown) return;
 
         lastEffectApply.put(uuid, System.currentTimeMillis());
         player.addPotionEffect(POISON);
-        player.damage(DAMAGE_PER_APPLY);
+        player.damage(damagePerApply);
     }
 }

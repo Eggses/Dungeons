@@ -52,6 +52,12 @@ public class DungeonFileReader {
     private static final String AREA_TRIGGERS_POS =  "pos";
     private static final String AREA_TRIGGERS_COMMANDS = "commands";
 
+    private static final String BOSS_AREA = "boss_area";
+    private static final String BOSS_PRESET = "boss_preset";
+    private static final String BOSS_ROOM_ENTRY_BOUNDS = "boss_room_entry_bounds";
+    private static final String BOSS_ROOM_ENTRY_POSITION = "boss_room_entry_position";
+    private static final String BOSS_ON_BOSS_DEFEAT = "on_boss_defeat";
+
     private final ConfigurationFile configurationFile;
     private final FileConfiguration file;
     private final ReadingUtility readingUtility;
@@ -87,6 +93,9 @@ public class DungeonFileReader {
         List<AreaTemplate> areas = readAllDungeonAreas();
         exceptionIfNotExist(areas, "Dungeon areas read error (dungeon_areas)");
 
+        BossTemplate boss = readBossArea();
+        exceptionIfNotExist(boss, "Boss areas read error (boss_areas)");
+
         return new DungeonTemplate(
                 dungeonName,
                 templateFileName,
@@ -95,7 +104,8 @@ public class DungeonFileReader {
                 itemTemplate,
                 onStart,
                 portalTemplate,
-                areas
+                areas,
+                boss
         );
     }
 
@@ -190,10 +200,10 @@ public class DungeonFileReader {
 
     private List<AreaTemplate> readAllDungeonAreas() {
 
-        List<AreaTemplate> dungeonsAreas = new ArrayList<>();
-
         ConfigurationSection areas = file.getConfigurationSection(AREA_DUNGEON_AREAS);
-        if (areas == null) return dungeonsAreas;
+        if (areas == null) return null;
+
+        List<AreaTemplate> dungeonsAreas = new ArrayList<>();
 
         for (String nameOfArea : areas.getKeys(false)) {
 
@@ -234,6 +244,26 @@ public class DungeonFileReader {
             dungeonsAreas.add(new AreaTemplate(entryBounds, onEntry, onClear, interactionTemplates, triggerTemplates));
         }
         return dungeonsAreas;
+    }
+
+    private BossTemplate readBossArea() {
+
+        ConfigurationSection bossArea = file.getConfigurationSection(BOSS_AREA);
+        if (bossArea == null) return null;
+
+        String bossPreset = bossArea.getString(BOSS_PRESET);
+        if (bossPreset == null) return null;
+
+        Region entryRegion = readingUtility.stringToRegion(bossArea.getString(BOSS_ROOM_ENTRY_BOUNDS));
+        if (entryRegion == null) return null;
+
+        RotationPosition playerSpawningPosition =
+                readingUtility.stringToRotationPosition(bossArea.getString(BOSS_ROOM_ENTRY_POSITION));
+        if (playerSpawningPosition == null) return null;
+
+        List<String> onBossDefeat = bossArea.getStringList(BOSS_ON_BOSS_DEFEAT);
+
+        return new  BossTemplate(bossPreset, entryRegion, playerSpawningPosition, onBossDefeat);
     }
 
     private void exceptionIfNotExist(Object object, String errorMessage) {

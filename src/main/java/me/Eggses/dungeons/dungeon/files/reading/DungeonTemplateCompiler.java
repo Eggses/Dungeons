@@ -1,15 +1,15 @@
 package me.Eggses.dungeons.dungeon.files.reading;
 
+import me.Eggses.dungeons.dungeon.bosses.BossArenaTemplate;
+import me.Eggses.dungeons.dungeon.bosses.BossRegistry;
+import me.Eggses.dungeons.dungeon.bosses.DungeonBossBuilder;
 import me.Eggses.dungeons.dungeon.files.templates.DungeonTemplate;
 import me.Eggses.dungeons.dungeon.files.templates.DungeonInstanceTemplate;
 import me.Eggses.dungeons.dungeon.files.templates.NonInstanceDungeonTemplate;
 import me.Eggses.dungeons.dungeon.areas.utility.AreaControllerBuilder;
 import me.Eggses.dungeons.dungeon.areas.utility.DungeonAction;
 import me.Eggses.dungeons.dungeon.areas.utility.DungeonArea;
-import me.Eggses.dungeons.dungeon.files.templates.builders.ActionTemplate;
-import me.Eggses.dungeons.dungeon.files.templates.builders.AreaTemplate;
-import me.Eggses.dungeons.dungeon.files.templates.builders.PortalRoomTemplate;
-import me.Eggses.dungeons.dungeon.files.templates.builders.PortalTemplate;
+import me.Eggses.dungeons.dungeon.files.templates.builders.*;
 import me.Eggses.dungeons.dungeon.portals.DungeonPortal;
 import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.dungeon.regions.Region;
@@ -34,11 +34,9 @@ import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class DungeonTemplateCompiler {
 
@@ -50,6 +48,7 @@ public class DungeonTemplateCompiler {
     private static final String COMMAND_MESSAGE = "MESSAGE";
     private static final String COMMAND_SOUND = "SOUND";
     private static final String COMMAND_EVENT = "EVENT";
+    private static final String COMMAND_PORTAL = "PORTAL";
 
     private static final String ARG_TYPE = "type";
     private static final String ARG_PRESET = "preset";
@@ -78,6 +77,7 @@ public class DungeonTemplateCompiler {
     private final DungeonTemplate dungeonTemplate;
     private final ReadingUtility readingUtility;
     private final MobRegistry mobRegistry;
+    private final BossRegistry bossRegistry;
     private final EventRegistry eventRegistry;
     private final MessageCreator messageCreator;
     private final SoundPlayer soundPlayer;
@@ -89,6 +89,7 @@ public class DungeonTemplateCompiler {
                                    DungeonTemplate dungeonTemplate,
                                    ReadingUtility readingUtility,
                                    MobRegistry mobRegistry,
+                                   BossRegistry bossRegistry,
                                    EventRegistry eventRegistry,
                                    MessageCreator messageCreator,
                                    SoundPlayer soundPlayer) {
@@ -97,6 +98,7 @@ public class DungeonTemplateCompiler {
         this.dungeonTemplate = dungeonTemplate;
         this.readingUtility = readingUtility;
         this.mobRegistry = mobRegistry;
+        this.bossRegistry = bossRegistry;
         this.eventRegistry = eventRegistry;
         this.messageCreator = messageCreator;
         this.soundPlayer = soundPlayer;
@@ -130,13 +132,15 @@ public class DungeonTemplateCompiler {
         DungeonPortal dungeonPortal = createDungeonPortal(placeholders);
         AreaControllerBuilder areaControllerBuilder = createAreaControllerBuilder();
         Consumer<DungeonContext> onDungeonStart = createOnDungeonStart();
+        BossArenaTemplate bossArenaTemplate = createBossArenaTemplate();
 
         return new DungeonInstanceTemplate(
                 templateFolderName,
                 dungeonName,
                 dungeonPortal,
                 areaControllerBuilder,
-                onDungeonStart
+                onDungeonStart,
+                bossArenaTemplate
         );
     }
 
@@ -170,6 +174,24 @@ public class DungeonTemplateCompiler {
 
     private Consumer<DungeonContext> createOnDungeonStart() {
         return resolveCommandList(dungeonTemplate.getOnStart(), messageCreator.placeholders());
+    }
+
+    private BossArenaTemplate createBossArenaTemplate() {
+
+        BossTemplate template = dungeonTemplate.getBoss();
+
+        Consumer<DungeonContext> onDefeat = resolveCommandList(template.onBossDefeat(), messageCreator.placeholders());
+        if (onDefeat == null) throw new IllegalArgumentException("Error reading Boss Template");
+
+        Supplier<DungeonBossBuilder> bossCreator = bossRegistry.getDungeonBossBuilder(template.bossPreset());
+        if (bossCreator == null) throw new IllegalArgumentException("Error reading Boss Template");
+
+        return new BossArenaTemplate(
+                bossCreator,
+                template.entryRegion(),
+                template.playerSpawningRotationPosition(),
+                onDefeat
+        );
     }
 
     private DungeonPortal createDungeonPortal(Placeholders placeholders) {
@@ -276,6 +298,10 @@ public class DungeonTemplateCompiler {
                     var action = resolveEventCommand(command);
                     if (action != null) consumersToRun.add(action);
                 }
+                case COMMAND_PORTAL -> {
+                    var action = resolvePortalCommand(command);
+                    if (action != null) consumersToRun.add(action);
+                }
                 default -> plugin.getLogger().warning("Unknown Command Used: " + commandName + "!");
             }
         }
@@ -363,6 +389,23 @@ public class DungeonTemplateCompiler {
                     }
                 }
             }
+        };
+    }
+
+    private Consumer<DungeonContext> resolvePortalCommand(String command) {
+
+        Map<String, String> valueMap = readingUtility.createValueMap(command);
+
+        Position pos1 = readingUtility.stringToPosition(valueMap.get(ReadingUtility.ARG_POS_1));
+        Position pos2 = readingUtility.stringToPosition(valueMap.get(ReadingUtility.ARG_POS_2));
+        if (pos1 == null || pos2 == null) return null;
+
+        Region portalRegion = new Region(pos1, pos2);
+
+        return dungeonContext -> {
+            var instance = dungeonContext.getDungeonInstance();
+            if (instance == null) return;
+            instance.getPortalController().addDungeonExitPortalRegion(portalRegion);
         };
     }
 

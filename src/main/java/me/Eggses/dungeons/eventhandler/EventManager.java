@@ -2,10 +2,7 @@ package me.Eggses.dungeons.eventhandler;
 
 import org.bukkit.event.Event;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class EventManager {
 
@@ -30,5 +27,19 @@ public class EventManager {
 
             trueEventBehaviour.handleEvent(event, eventContext);
         }
+    }
+
+    public <E extends Event> void removeEventBehaviour(Class<E> eventClass, EventBehaviour<E> eventBehaviour) {
+
+        List<EventBehaviour<? extends Event>> eventBehaviours = behaviours.get(eventClass);
+        if (eventBehaviours == null) return;
+
+        eventBehaviours.remove(eventBehaviour);
+
+        if (eventBehaviours.isEmpty()) behaviours.remove(eventClass);
+    }
+
+    public void removeAll() {
+        behaviours.clear();
     }
 }

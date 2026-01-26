@@ -1,6 +1,7 @@
 package me.Eggses.dungeons.dungeon.files.templates;
 
 import me.Eggses.dungeons.dungeon.areas.utility.AreaControllerBuilder;
+import me.Eggses.dungeons.dungeon.bosses.BossArenaTemplate;
 import me.Eggses.dungeons.dungeon.portals.DungeonPortal;
 import me.Eggses.dungeons.dungeon.utility.DungeonContext;
 
@@ -14,18 +15,21 @@ public class DungeonInstanceTemplate {
     private final DungeonPortal dungeonPortal;
     private final AreaControllerBuilder areaControllerBuilder;
     private final Consumer<DungeonContext> onDungeonStart;
+    private final BossArenaTemplate bossArenaTemplate;
 
     public DungeonInstanceTemplate(String templateFolderName,
                                    String dungeonName,
                                    DungeonPortal dungeonPortal,
                                    AreaControllerBuilder areaControllerBuilder,
-                                   Consumer<DungeonContext> onDungeonStart) {
+                                   Consumer<DungeonContext> onDungeonStart,
+                                   BossArenaTemplate bossArenaTemplate) {
 
         this.templateFolderName = templateFolderName;
         this.dungeonName = dungeonName;
         this.dungeonPortal = dungeonPortal;
         this.areaControllerBuilder = areaControllerBuilder;
         this.onDungeonStart = onDungeonStart;
+        this.bossArenaTemplate = bossArenaTemplate;
     }
 
     public String getTemplateFolderName() {
@@ -46,5 +50,9 @@ public class DungeonInstanceTemplate {
 
     public Consumer<DungeonContext> getOnDungeonStart() {
         return onDungeonStart;
+    }
+
+    public BossArenaTemplate getBossArenaTemplate() {
+        return bossArenaTemplate;
     }
 }

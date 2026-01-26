@@ -2,6 +2,7 @@ package me.Eggses.dungeons.dungeon.lifecycle;
 
 import me.Eggses.dungeons.blocks.BlockRegistry;
 import me.Eggses.dungeons.blocks.task.KeystoneParticleTask;
+import me.Eggses.dungeons.dungeon.bosses.BossRegistry;
 import me.Eggses.dungeons.dungeon.items.ClickItem;
 import me.Eggses.dungeons.dungeon.items.DungeonKeyItems;
 import me.Eggses.dungeons.dungeon.types.DungeonType;
@@ -51,6 +52,7 @@ public class DungeonLoadingManager {
     private final SoundPlayer soundPlayer;
 
     private final MobRegistry mobRegistry;
+    private final BossRegistry bossRegistry;
     private final EventRegistry eventRegistry;
     private final DungeonEntranceRoomRegistry dungeonEntranceRoomRegistry;
     private final BlockRegistry blockRegistry;
@@ -75,6 +77,7 @@ public class DungeonLoadingManager {
                                  ConfigurationFile menuFile,
                                  SoundPlayer soundPlayer,
                                  MobRegistry mobRegistry,
+                                 BossRegistry bossRegistry,
                                  EventRegistry eventRegistry,
                                  DungeonEntranceRoomRegistry dungeonEntranceRoomRegistry,
                                  BlockRegistry blockRegistry,
@@ -96,6 +99,7 @@ public class DungeonLoadingManager {
         this.soundPlayer = soundPlayer;
 
         this.mobRegistry = mobRegistry;
+        this.bossRegistry = bossRegistry;
         this.eventRegistry = eventRegistry;
         this.dungeonEntranceRoomRegistry = dungeonEntranceRoomRegistry;
         this.blockRegistry = blockRegistry;
@@ -123,7 +127,7 @@ public class DungeonLoadingManager {
             ConfigurationFile fileToRead = new ConfigurationFile(plugin, dungeonType.getDungeonConfigFileName());
             DungeonFileReader dungeonFileReader = new DungeonFileReader(fileToRead, readingUtility);
             DungeonTemplate dungeonTemplate = dungeonFileReader.createTemplate();
-            DungeonTemplateCompiler dungeonTemplateCompiler = new DungeonTemplateCompiler(plugin, dungeonTemplate, readingUtility, mobRegistry, eventRegistry, messageCreator, soundPlayer);
+            DungeonTemplateCompiler dungeonTemplateCompiler = new DungeonTemplateCompiler(plugin, dungeonTemplate, readingUtility, mobRegistry, bossRegistry, eventRegistry, messageCreator, soundPlayer);
 
             NonInstanceDungeonTemplate nonInstanceDungeonTemplate = dungeonTemplateCompiler.createNonInstanceDungeonTemplate();
             Placeholders placeholders = messageCreator.placeholders();
@@ -162,7 +166,7 @@ public class DungeonLoadingManager {
             var name = messageCreator.createMessage(nonInstanceDungeonTemplate.keystoneName(), placeholders);
             blockRegistry.addBlockAndName(locationOfKeystone, name);
 
-            blockRegistry.addBlockAndTaskBehaviour(locationOfKeystone, new KeystoneParticleTask().getTaskContext());
+            blockRegistry.addBlockAndTaskBehaviour(locationOfKeystone, new KeystoneParticleTask().getTask());
 
             var generalPortalRoomRegion = nonInstanceDungeonTemplate.generalPortalRoomRegion();
             var worldRegion = new WorldRegion(worldOfKeystone, generalPortalRoomRegion);

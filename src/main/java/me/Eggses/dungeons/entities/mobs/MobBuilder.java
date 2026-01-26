@@ -6,7 +6,7 @@ import me.Eggses.dungeons.entities.nameutility.MobName;
 import me.Eggses.dungeons.eventhandler.EventManager;
 import me.Eggses.dungeons.entities.equipment.ArmourEquipment;
 import me.Eggses.dungeons.entities.equipment.WeaponEquipment;
-import me.Eggses.dungeons.tasks.TaskContext;
+import me.Eggses.dungeons.tasks.Task;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.Event;
 
@@ -22,7 +22,7 @@ public class MobBuilder {
     private WeaponEquipment weaponEquipment = new WeaponEquipment();
     private ArmourEquipment armourEquipment = new ArmourEquipment();
     private final EventManager eventManager = new EventManager();
-    private final List<Consumer<TaskContext<DungeonEntity>>> taskContextConsumers = new ArrayList<>();
+    private final List<Task<DungeonEntity>> tasks= new ArrayList<>();
     private Consumer<DungeonEntity> spawnChanges = (entity) -> {};
     private int count = 1;
     private MobName mobName = new MobName();
@@ -65,8 +65,8 @@ public class MobBuilder {
         return this;
     }
 
-    public MobBuilder entityTask(Consumer<TaskContext<DungeonEntity>> entityTask) {
-        this.taskContextConsumers.add(entityTask);
+    public MobBuilder entityTask(Task<DungeonEntity> entityTask) {
+        this.tasks.add(entityTask);
         return this;
     }
 
@@ -126,8 +126,8 @@ public class MobBuilder {
         return spawnChanges;
     }
 
-    public List<Consumer<TaskContext<DungeonEntity>>> getEntityTaskBehaviour() {
-        return taskContextConsumers;
+    public List<Task<DungeonEntity>> getEntityTaskBehaviour() {
+        return tasks;
     }
 
     public int getCount() {

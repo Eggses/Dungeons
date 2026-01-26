@@ -1,14 +1,16 @@
 package me.Eggses.dungeons.dungeon.instance;
 
 import me.Eggses.dungeons.blocks.BlockRegistry;
+import me.Eggses.dungeons.dungeon.bosses.BossArenaController;
 import me.Eggses.dungeons.dungeon.graveyard.Graveyard;
 import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.dungeon.types.DungeonType;
 import me.Eggses.dungeons.dungeon.files.templates.DungeonInstanceTemplate;
 import me.Eggses.dungeons.dungeon.areas.AreaController;
+import me.Eggses.dungeons.dungeon.utility.DungeonPlayerStats;
 import me.Eggses.dungeons.entities.mobs.EntityManager;
 import me.Eggses.dungeons.dungeon.lifecycle.DungeonLifecycleService;
-import me.Eggses.dungeons.dungeon.players.DungeonPlayers;
+import me.Eggses.dungeons.dungeon.players.Players;
 import me.Eggses.dungeons.dungeon.portals.PortalController;
 import me.Eggses.dungeons.dungeon.utility.BannedItems;
 import me.Eggses.dungeons.dungeon.utility.DungeonContext;
@@ -36,8 +38,9 @@ public class DungeonInstance {
     private final AreaController areaController;
     private final InstanceEventHandler instanceEventHandler;
     private final PortalController portalController;
-    private final DungeonPlayers dungeonPlayers;
+    private final Players players;
     private final DungeonType dungeonType;
+    private final DungeonPlayerStats dungeonPlayerStats;
 
     public DungeonInstance(JavaPlugin plugin,
                            DungeonLifecycleService dungeonLifecycleService,
@@ -48,7 +51,8 @@ public class DungeonInstance {
                            MessageCreator messageCreator,
                            TextFormatter textFormatter,
                            TaskRunner taskRunner,
-                           BannedItems bannedItems, DungeonType dungeonType) {
+                           BannedItems bannedItems,
+                           DungeonType dungeonType) {
 
         this.plugin = plugin;
         this.dungeonLifecycleService = dungeonLifecycleService;
@@ -60,9 +64,8 @@ public class DungeonInstance {
         var graveyard = new Graveyard();
         var entityManager = new EntityManager(dungeonWorld, taskRunner, messageCreator, textFormatter);
         this.areaController = new AreaController(this, entityManager, graveyard, dungeonWorld, blockRegistry, dungeonInstanceTemplate.getAreaControllerBuilder());
-        this.instanceEventHandler = new InstanceEventHandler(this, areaController, entityManager);
         this.portalController = new PortalController(plugin, this, dungeonInstanceTemplate.getDungeonPortal(), bannedItems);
-        this.dungeonPlayers = new DungeonPlayers();
+        this.players = new Players();
 
         new DungeonGameRules(dungeonWorld).applyRules();
 
@@ -74,10 +77,29 @@ public class DungeonInstance {
                 .players(dungeonWorld::getPlayers)
                 .build();
 
+        var bossTemplate = dungeonInstanceTemplate.getBossArenaTemplate();
+        BossArenaController bossArenaController = new BossArenaController(
+                plugin,
+                this,
+                dungeonContext,
+                dungeonWorld,
+                entityManager,
+                taskRunner,
+                messageCreator,
+                textFormatter,
+                bossTemplate.entryRegion(),
+                bossTemplate.playerSpawningRotationPosition(),
+                bossTemplate.bossBuilderSupplier(),
+                bossTemplate.onBossDefeat()
+        );
+        this.instanceEventHandler = new InstanceEventHandler(this, areaController, entityManager, bossArenaController);
+
         dungeonInstanceTemplate.getOnDungeonStart().accept(dungeonContext);
 
         portalController.openDungeonPortal();
         dungeonLifecycleService.openPortal(portalController);
+
+        this.dungeonPlayerStats = new DungeonPlayerStats(System.currentTimeMillis());
     }
 
     public void closeDungeonPortal() {
@@ -87,7 +109,7 @@ public class DungeonInstance {
     }
 
     public boolean shouldEndDungeon() {
-        return dungeonPlayers.isEmpty() && !portalController.isOpen();
+        return players.isEmpty() && !portalController.isOpen();
     }
 
     public void endDungeon(boolean destroyWorldFolder) {
@@ -127,18 +149,20 @@ public class DungeonInstance {
     }
 
     public void addPlayer(Player player) {
-        dungeonPlayers.add(player);
+        players.add(player);
         player.setGameMode(GameMode.ADVENTURE);
+        dungeonPlayerStats.addPlayer(player);
     }
 
     public void removePlayer(Player player) {
-        dungeonPlayers.remove(player);
+        players.remove(player);
         player.setGameMode(GameMode.SURVIVAL);
         if (shouldEndDungeon()) endDungeon(true);
+        dungeonPlayerStats.endTracking(player);
     }
 
     public boolean isInDungeon(Player player) {
-        return dungeonPlayers.contains(player);
+        return players.contains(player);
     }
 
     public PortalController getPortalController() {

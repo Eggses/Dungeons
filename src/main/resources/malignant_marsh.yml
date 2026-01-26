@@ -236,20 +236,14 @@ dungeon_areas:
       - "MOB type=EVOKER pos=-1637,72,10 level=25 count=1"
       - "MOB type=BOGGED pos=-1611,64,10 level=21 count=1 preset=KNIGHT armour=IRON_SILENCE_IRON_4 weapon=IRON_SWORD"
       - "MOB type=ZOMBIE pos=-1614,64,11 level=22 count=1 preset=FIEND weapon=IRON_AXE"
-      - "MOB type=ZOMBIE pos=-1609,64,14 level=22 count=1 preset=BRUISER armour=IRON_SENTRY_REDSTONE_2 weapon=IRON_AXE"
-      - "MOB type=SPIDER pos=-1624,67,9 level=20 count=3"
       - "MOB type=CREEPER pos=-1619,65,9 level=21 count=2 preset=BEEHIVE_CREEPER"
       - "MOB type=CREEPER pos=-1633,72,32 level=23 count=2 preset=BEEHIVE_CREEPER"
-      - "MOB type=MOOSHROOM pos=-1641,72,16 level=22 count=2 preset=NOXIOUS_CULTIVATOR"
       - "MOB type=MOOSHROOM pos=-1642,73,36 level=23 count=2 preset=NOXIOUS_CULTIVATOR"
       - "MOB type=MOOSHROOM pos=-1630,69,14 level=21 count=2 preset=NOXIOUS_CULTIVATOR"
       - "MOB type=SKELETON pos=-1635,72,23 level=24 count=2 preset=FIEND weapon=IRON_AXE"
-      - "MOB type=ZOMBIE pos=-1627,72,33 level=24 count=2 preset=FIEND weapon=IRON_AXE"
       - "MOB type=ZOMBIE pos=-1621,68,35 level=23 count=2 preset=FIEND weapon=IRON_AXE"
-      - "MOB type=ZOMBIE pos=-1617,72,21 level=23 count=2 preset=BRUISER armour=IRON_SENTRY_COPPER_2 weapon=IRON_AXE"
       - "MOB type=BOGGED pos=-1629,72,21 level=24 count=2 preset=KNIGHT armour=IRON_WARD_IRON_4 weapon=IRON_SWORD"
       - "MOB type=MOOSHROOM pos=-1624,72,21 level=22 count=2 preset=NOXIOUS_CULTIVATOR"
-      - "MOB type=SKELETON pos=-1637,72,16 level=24 count=2 preset=KNIGHT armour=IRON_TIDE_REDSTONE_4 weapon=IRON_SWORD"
       - "MOB type=CAVE_SPIDER pos=-1634,72,12 level=22 count=3"
       - "MOB type=ZOMBIE pos=-1629,72,8 level=23 count=2 preset=FIEND weapon=IRON_AXE"
       - "MOB type=BOGGED pos=-1638,72,33 level=25 count=2 preset=KNIGHT armour=IRON_VEX_IRON_4 weapon=IRON_SWORD"
@@ -321,7 +315,6 @@ dungeon_areas:
       - "MOB type=ZOMBIE pos=-1373,63,-42 level=32 count=2 preset=BRUISER armour=IRON_SENTRY_REDSTONE_2 weapon=IRON_AXE"
       - "MOB type=ZOMBIE pos=-1374,63,-40 level=34 count=2 preset=FIEND weapon=IRON_AXE"
     on_clear:
-      - "GRAVEYARD pos=-1375,63,-31 rotation=180"
       - "FILL pos1=-1358,59,-56 pos2=-1357,69,-61 block=AIR"
       - "FILL pos1=-1355,59,-61 pos2=-1355,70,-56 block=AIR"
     interactions: []
@@ -377,6 +370,15 @@ dungeon_areas:
       - "MOB type=BOGGED pos=-1237,70,-25 level=35 count=2 preset=KNIGHT armour=IRON_SILENCE_COPPER_4 weapon=IRON_SWORD"
       - "MOB type=SKELETON pos=-1264,66,-24 level=32 count=2 preset=KNIGHT armour=IRON_WARD_IRON_4 weapon=IRON_SWORD"
       - "MOB type=BOGGED pos=-1254,66,-27 level=32 count=2 preset=KNIGHT armour=IRON_TIDE_IRON_4 weapon=IRON_SWORD"
-    on_clear: []
+    on_clear: [] # open boss area + graveyard
     interactions: []
     triggers: []
+
+boss_area:
+  boss_preset: "swamp_boss_rotbloom"
+  boss_room_entry_bounds: "pos1=x,y,z pos2=x,y,z"
+  boss_room_entry_position: "pos=x,y,z rotation=r"
+  on_boss_defeat:
+    - "FILL pos1=z,y,z pos2=x,y,z block=END_GATEWAY"
+    - "PORTAL pos1=x,y,z pos2=x,y,z"
+    # remove graveyard from the above place in pillager river put on ship....

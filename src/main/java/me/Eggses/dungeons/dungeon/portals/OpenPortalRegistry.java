@@ -10,11 +10,11 @@ public class OpenPortalRegistry {
     private final ChunkMappingRegistry<PortalController> openPortals = new ChunkMappingRegistry<>();
 
     public void addOpenPortal(PortalController openPortalController) {
-        openPortals.add(openPortalController, openPortalController.getChunkKeysEncompassed());
+        openPortals.add(openPortalController, openPortalController.getChunkKeysEncompassedOfEntryPortal());
     }
 
     public void removeOpenPortal(PortalController portalControllerToClose) {
-        openPortals.remove(portalControllerToClose, portalControllerToClose.getChunkKeysEncompassed());
+        openPortals.remove(portalControllerToClose, portalControllerToClose.getChunkKeysEncompassedOfEntryPortal());
     }
 
     public PortalController getPortalController(Long chunkKey, Location location) {

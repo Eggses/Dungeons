@@ -19,4 +19,8 @@ public class RotationPosition {
         location.setPitch(0f);
         return location;
     }
+
+    public Position getPosition() {
+        return position;
+    }
 }

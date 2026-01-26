@@ -1,10 +1,11 @@
 package me.Eggses.dungeons.dungeon.portals;
 
+import me.Eggses.dungeons.dispatch.ChunkMappingRegistry;
 import me.Eggses.dungeons.dungeon.instance.DungeonInstance;
+import me.Eggses.dungeons.dungeon.regions.Region;
 import me.Eggses.dungeons.dungeon.utility.BannedItems;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import java.util.Set;
@@ -16,7 +17,9 @@ public class PortalController {
     private final DungeonPortal dungeonPortal;
     private final BannedItems bannedItems;
 
-    private final Set<Long> chunkKeys;
+    private final ChunkMappingRegistry<Region> exitPortals = new ChunkMappingRegistry<>();
+
+    private final Set<Long> chunkKeysOfEntry;
     private boolean isOpen = false;
 
     public PortalController(JavaPlugin plugin,
@@ -29,7 +32,10 @@ public class PortalController {
         this.dungeonPortal = dungeonPortal;
         this.bannedItems = bannedItems;
 
-        this.chunkKeys = dungeonPortal.getEntryPortalWorldRegion().getRegion().getCoveredChunkKeys();
+        this.chunkKeysOfEntry = dungeonPortal.getEntryPortalWorldRegion().getRegion().getCoveredChunkKeys();
+
+        Region exitPortalRegion = dungeonPortal.getExitPortalRegion();
+        this.exitPortals.add(exitPortalRegion, exitPortalRegion.getCoveredChunkKeys());
     }
 
     public void openDungeonPortal() {
@@ -64,7 +70,16 @@ public class PortalController {
     }
 
     public boolean isInPortalInDungeonWorld(Location location) {
-        return dungeonPortal.getExitPortalRegion().within(location);
+
+        Set<Region> exitPortalsAtChunk = exitPortals.get(location.getChunk().getChunkKey());
+        for (Region region : exitPortalsAtChunk) {
+            if (region.within(location)) return true;
+        }
+        return false;
+    }
+
+    public void addDungeonExitPortalRegion(Region region) {
+        exitPortals.add(region, region.getCoveredChunkKeys());
     }
 
     public void leaveDungeon(Player player) {
@@ -72,7 +87,7 @@ public class PortalController {
         player.teleport(spawningLocation);
     }
 
-    public Set<Long> getChunkKeysEncompassed() {
-        return chunkKeys;
+    public Set<Long> getChunkKeysEncompassedOfEntryPortal() {
+        return chunkKeysOfEntry;
     }
 }

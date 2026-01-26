@@ -1,6 +1,7 @@
 package me.Eggses.dungeons.dungeon.files.templates;
 
 import me.Eggses.dungeons.dungeon.files.templates.builders.AreaTemplate;
+import me.Eggses.dungeons.dungeon.files.templates.builders.BossTemplate;
 import me.Eggses.dungeons.dungeon.files.templates.builders.PortalRoomTemplate;
 import me.Eggses.dungeons.dungeon.files.templates.builders.PortalTemplate;
 import me.Eggses.dungeons.items.ItemTemplate;
@@ -18,6 +19,7 @@ public class DungeonTemplate {
     private final List<String> onStart;
     private final PortalTemplate portalTemplate;
     private final List<AreaTemplate> areas;
+    private final BossTemplate boss;
 
     public DungeonTemplate(String dungeonName,
                            String templateFileName,
@@ -26,7 +28,8 @@ public class DungeonTemplate {
                            ItemTemplate itemTemplate,
                            List<String> onStart,
                            PortalTemplate portalTemplate,
-                           List<AreaTemplate> areas) {
+                           List<AreaTemplate> areas,
+                           BossTemplate boss) {
 
         this.dungeonName = dungeonName;
         this.templateFileName = templateFileName;
@@ -36,6 +39,7 @@ public class DungeonTemplate {
         this.onStart = onStart;
         this.portalTemplate = portalTemplate;
         this.areas = areas;
+        this.boss = boss;
     }
 
     public String getDungeonName() {
@@ -68,5 +72,9 @@ public class DungeonTemplate {
 
     public List<AreaTemplate> getAreas() {
         return areas;
+    }
+
+    public BossTemplate getBoss() {
+        return boss;
     }
 }

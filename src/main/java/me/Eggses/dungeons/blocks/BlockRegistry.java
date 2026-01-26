@@ -4,6 +4,7 @@ import me.Eggses.dungeons.dispatch.EventManagerRegistry;
 import me.Eggses.dungeons.eventhandler.EventBehaviour;
 import me.Eggses.dungeons.eventhandler.EventContext;
 import me.Eggses.dungeons.tasks.ActiveTasks;
+import me.Eggses.dungeons.tasks.Task;
 import me.Eggses.dungeons.tasks.TaskContext;
 import me.Eggses.dungeons.tasks.TaskRunner;
 import net.kyori.adventure.text.Component;
@@ -18,7 +19,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class BlockRegistry {
@@ -53,13 +53,13 @@ public class BlockRegistry {
         textDisplay.text(name);
     }
 
-    public void addBlockAndTaskBehaviour(Location location, Consumer<TaskContext<Location>> task) {
+    public void addBlockAndTaskBehaviour(Location location, Task<Location> task) {
 
         blockActiveTaskRegistry.putIfAbsent(location, new ActiveTasks());
         ActiveTasks activeTasks = blockActiveTaskRegistry.get(location);
 
         TaskContext<Location> taskContext = new TaskContext<>(location, activeTasks, taskRunner);
-        task.accept(taskContext);
+        task.runTask(taskContext);
     }
 
     public void remove(Location location) {

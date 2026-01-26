@@ -5,7 +5,7 @@ import me.Eggses.dungeons.entities.mobs.MobBuilder;
 import me.Eggses.dungeons.entities.mobs.mobtype.MobPreset;
 import me.Eggses.dungeons.entities.mobs.mobtype.MobUtility;
 import me.Eggses.dungeons.entities.nameutility.MobName;
-import me.Eggses.dungeons.tasks.TaskContext;
+import me.Eggses.dungeons.tasks.Task;
 import me.Eggses.dungeons.utility.misc.NMS;
 import me.Eggses.dungeons.utility.sound.DungeonSound;
 import me.Eggses.dungeons.utility.sound.SoundPlayer;
@@ -18,7 +18,6 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Illusioner;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -88,9 +87,9 @@ public class Enchanter implements MobPreset {
                 pathfinderMob.goalSelector.addGoal(7, new RandomLookAroundGoal(pathfinderMob));
             });
 
-            Consumer<TaskContext<DungeonEntity>> task = (dungeonEntityTaskContext -> dungeonEntityTaskContext.runTaskRepeatedly(() -> {
+            Task<DungeonEntity> task = taskContext -> taskContext.runTaskRepeatedly(() -> {
 
-                LivingEntity enchanter = dungeonEntityTaskContext.getOwner().getEntity();
+                LivingEntity enchanter = taskContext.getOwner().getEntity();
                 if (enchanter == null || enchanter.isDead()) return;
 
                 List<Entity> nearbyEntities = enchanter.getNearbyEntities(BUFF_RANGE, BUFF_RANGE, BUFF_RANGE);
@@ -145,8 +144,8 @@ public class Enchanter implements MobPreset {
 
                     soundPlayer.playSound(sound, players);
                 }
+            }, 0, REPEATING_PERIOD);
 
-            }, 0, REPEATING_PERIOD));
             mobBuilder.entityTask(task);
         };
     }

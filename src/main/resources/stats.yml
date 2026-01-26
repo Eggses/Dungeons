@@ -1,0 +1,6 @@
+player_stats:
+  "8c1c6e3a-2f2b-4f91-9c5d-4a7e3f6c9a12":
+    dungeons:
+      Malignant_Marsh:
+        runs: 27
+        best_time_seconds: 455

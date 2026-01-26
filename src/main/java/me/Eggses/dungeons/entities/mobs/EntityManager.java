@@ -57,7 +57,7 @@ public class EntityManager {
         mobBuilders.forEach(this::spawnMob);
     }
 
-    private void addMob(DungeonEntity dungeonEntity) {
+    public void addMob(DungeonEntity dungeonEntity) {
         dungeonEntities.put(dungeonEntity.getUUID(), dungeonEntity);
     }
 
