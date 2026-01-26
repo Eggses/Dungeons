@@ -111,6 +111,7 @@ public class BossRegistry {
                         BossBar.Overlay.NOTCHED_10,
                         Set.of(BossBar.Flag.DARKEN_SCREEN)))
                 .phases(List.of(phase1, phase2))
+                .addCleanUp(mossController::removeAllMoss)
         );
     }
 }

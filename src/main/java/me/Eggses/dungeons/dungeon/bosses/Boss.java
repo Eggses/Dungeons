@@ -1,6 +1,7 @@
 package me.Eggses.dungeons.dungeon.bosses;
 
 import me.Eggses.dungeons.dungeon.bosses.manager.PhaseController;
+import me.Eggses.dungeons.dungeon.bosses.mechanics.CleanUp;
 import me.Eggses.dungeons.entities.attributes.AttributeController;
 import me.Eggses.dungeons.entities.mobs.DungeonEntity;
 import me.Eggses.dungeons.entities.mobs.DungeonMob;
@@ -21,6 +22,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -55,6 +57,8 @@ public class Boss implements DungeonEntity {
     private final TaskContext<Boss> bossMobFullContext;
     private final TaskContext<Boss> bossPhaseContext;
 
+    private final List<CleanUp> cleanUps;
+
     public Boss(DungeonBossBuilder builder,
                 BossArenaController bossArenaController,
                 World world,
@@ -82,6 +86,8 @@ public class Boss implements DungeonEntity {
 
         this.bossMobFullContext = new TaskContext<>(this, bossMob.getActiveTasks(), taskRunner);
         this.bossPhaseContext = new TaskContext<>(this, phaseActiveTasks, taskRunner);
+
+        this.cleanUps = builder.getCleanUps();
     }
 
     public double getHealth() {
@@ -105,6 +111,7 @@ public class Boss implements DungeonEntity {
         endTasks();
         getEntity().remove();
         bossBarController.removeAllViewers();
+        cleanUps.forEach(CleanUp::cleanUp);
     }
 
     public void tryEndBossFight() {
@@ -116,6 +123,7 @@ public class Boss implements DungeonEntity {
         endTasks();
         bossBarController.removeAllViewers();
         bossArenaController.defeatBoss();
+        cleanUps.forEach(CleanUp::cleanUp);
     }
 
     public boolean isInFight(Player player) {

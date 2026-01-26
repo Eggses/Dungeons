@@ -1,6 +1,7 @@
 package me.Eggses.dungeons.dungeon.bosses;
 
 import me.Eggses.dungeons.dungeon.bosses.manager.Phase;
+import me.Eggses.dungeons.dungeon.bosses.mechanics.CleanUp;
 import me.Eggses.dungeons.entities.mobs.MobBuilder;
 import net.kyori.adventure.text.Component;
 
@@ -15,6 +16,7 @@ public class DungeonBossBuilder {
     private double health;
     private List<Phase> phases = new ArrayList<>();
     private MobBuilder mobBuilder;
+    private final List<CleanUp> cleanUps = new ArrayList<>();
 
     public DungeonBossBuilder() {
     }
@@ -54,6 +56,11 @@ public class DungeonBossBuilder {
         return this;
     }
 
+    public DungeonBossBuilder addCleanUp(CleanUp cleanUp) {
+        this.cleanUps.add(cleanUp);
+        return this;
+    }
+
     public Component getBossName() {
         return bossName;
     }
@@ -76,6 +83,10 @@ public class DungeonBossBuilder {
 
     public MobBuilder getMobBuilder() {
         return mobBuilder;
+    }
+
+    public List<CleanUp> getCleanUps() {
+        return cleanUps;
     }
 }
 
