@@ -146,6 +146,10 @@ public class Boss implements DungeonEntity {
         bossBarController.removeViewer(player);
     }
 
+    public World getBossWorld() {
+        return bossArenaController.getWorld();
+    }
+
     @Override
     public UUID getUUID() {
         return bossMob.getUUID();

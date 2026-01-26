@@ -302,7 +302,7 @@ dungeon_areas:
     interactions: []
     triggers: []
 
-  swim_area_3_ravager_graveyard:
+  swim_area_3_ravager:
     entry_bounds: "pos1=-1441,60,-82 pos2=-1441,72,-73"
     on_entry:
       - "MOB type=PILLAGER pos=-1404,63,-45 level=31 count=1"
@@ -370,15 +370,16 @@ dungeon_areas:
       - "MOB type=BOGGED pos=-1237,70,-25 level=35 count=2 preset=KNIGHT armour=IRON_SILENCE_COPPER_4 weapon=IRON_SWORD"
       - "MOB type=SKELETON pos=-1264,66,-24 level=32 count=2 preset=KNIGHT armour=IRON_WARD_IRON_4 weapon=IRON_SWORD"
       - "MOB type=BOGGED pos=-1254,66,-27 level=32 count=2 preset=KNIGHT armour=IRON_TIDE_IRON_4 weapon=IRON_SWORD"
-    on_clear: [] # open boss area + graveyard
+    on_clear:
+      - "GRAVEYARD pos=-1238,66,-25 rotation=-90"
+      - "MESSAGE <red>up to boss"
     interactions: []
     triggers: []
 
 boss_area:
   boss_preset: "swamp_boss_rotbloom"
-  boss_room_entry_bounds: "pos1=x,y,z pos2=x,y,z"
-  boss_room_entry_position: "pos=x,y,z rotation=r"
+  boss_room_entry_bounds: "pos1=-1246,64,74 pos2=-1246,66,77"
+  boss_room_entry_position: "pos=-1194,67,99 rotation=90"
   on_boss_defeat:
-    - "FILL pos1=z,y,z pos2=x,y,z block=END_GATEWAY"
-    - "PORTAL pos1=x,y,z pos2=x,y,z"
-    # remove graveyard from the above place in pillager river put on ship....
+    - "FILL pos1=-1169,67,98 pos2=-1169,70,100 block=END_GATEWAY"
+    - "PORTAL pos1=-1169,67,98 pos2=-1169,70,100"

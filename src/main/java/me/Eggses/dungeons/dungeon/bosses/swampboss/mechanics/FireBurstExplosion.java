@@ -1,6 +1,9 @@
 package me.Eggses.dungeons.dungeon.bosses.swampboss.mechanics;
 
 import me.Eggses.dungeons.dungeon.bosses.Boss;
+import me.Eggses.dungeons.dungeon.regions.Position;
+import me.Eggses.dungeons.dungeon.regions.Region;
+import me.Eggses.dungeons.dungeon.regions.WorldRegion;
 import me.Eggses.dungeons.entities.mobs.DungeonEntity;
 import me.Eggses.dungeons.eventhandler.EventBehaviour;
 import me.Eggses.dungeons.eventhandler.EventContext;
@@ -27,11 +30,7 @@ public class FireBurstExplosion implements EventBehaviour<EntityCombustByBlockEv
     private static final int BURSTS = 3;
     private static final long BURST_SPACE_TICKS = 50L;
 
-    private final NormalEffectStyle fireParticles = new NormalEffectStyle(
-            null, //TODO: fix this.
-            Particle.FLAME,
-            200
-    );
+    private NormalEffectStyle fireParticles;
 
     public FireBurstExplosion(Harvest harvest, MossController mossController, SoundPlayer soundPlayer) {
         this.harvest = harvest;
@@ -48,6 +47,18 @@ public class FireBurstExplosion implements EventBehaviour<EntityCombustByBlockEv
 
         DungeonEntity dungeonEntity = eventContext.getOwnerOfBehaviour();
         if (!(dungeonEntity instanceof Boss boss)) return;
+
+        if (fireParticles == null) {
+
+            WorldRegion worldRegion = new WorldRegion(
+                    boss.getBossWorld(),
+                    new Region(new Position(-1167, 74, 84), new Position(-1197, 66, 114))
+            );
+            fireParticles = new NormalEffectStyle(
+                    worldRegion,
+                    Particle.FLAME,
+                    200);
+        }
 
         Entity entity = dungeonEntity.getEntity();
         entity.setFireTicks(20 * 20);

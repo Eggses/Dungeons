@@ -54,7 +54,7 @@ public class BossRegistry {
     @SuppressWarnings("ExtractMethodRecommender")
     public void addSwampBoss() {
 
-        MobBuilder swampMobBuilder = new MobBuilder(EntityType.CREAKING, new Position(1, 1, 1));
+        MobBuilder swampMobBuilder = new MobBuilder(EntityType.CREAKING, new Position(-118, 67, 99));
         swampMobBuilder
                 .count(1)
                 .dungeonLevel(1)

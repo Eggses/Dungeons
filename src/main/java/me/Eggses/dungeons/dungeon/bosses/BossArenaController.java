@@ -129,4 +129,8 @@ public class BossArenaController {
     public Set<Player> getPlayers() {
         return playersInFight.getPlayers();
     }
+
+    public World getWorld() {
+        return dungeonInstance.getDungeonWorld();
+    }
 }
