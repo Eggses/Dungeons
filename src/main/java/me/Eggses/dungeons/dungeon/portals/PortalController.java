@@ -72,6 +72,7 @@ public class PortalController {
     public boolean isInPortalInDungeonWorld(Location location) {
 
         Set<Region> exitPortalsAtChunk = exitPortals.get(location.getChunk().getChunkKey());
+        if (exitPortalsAtChunk == null) return false;
         for (Region region : exitPortalsAtChunk) {
             if (region.within(location)) return true;
         }

@@ -40,7 +40,10 @@ public class DeathController implements Listener {
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getPlayer();
         if (!dungeonRegistry.isInDungeon(player)) return;
-        worldsPlayerDiedIn.put(player.getUniqueId(), player.getWorld());
+        World worldDiedIn = player.getWorld();
+
+        worldsPlayerDiedIn.put(player.getUniqueId(), worldDiedIn);
+        dungeonEventRouter.handleEvent(event, worldDiedIn);
     }
 
     @EventHandler
