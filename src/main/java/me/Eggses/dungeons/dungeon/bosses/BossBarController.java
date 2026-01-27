@@ -54,10 +54,9 @@ public class BossBarController {
         String hpText = String.format("%.0f", currentHealth);
         String pctText = String.format("%.0f%%", healthPercentage);
 
-        String numbers = colourScheme + " - " + hpText + " (" + pctText + ")";
-        Component title = style.name.append(messageCreator.createMessage(numbers));
-
-        bossBar.name(title);
+        Component numbers = messageCreator.createMessage(colourScheme + " - " + hpText + " (" + pctText + ")");
+        Component name = style.name.asComponent().append(numbers);
+        bossBar.name(name);
     }
 
     public void addViewer(Player player) {

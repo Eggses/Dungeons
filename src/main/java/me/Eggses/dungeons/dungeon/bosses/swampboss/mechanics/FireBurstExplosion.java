@@ -11,6 +11,7 @@ import me.Eggses.dungeons.particles.NormalEffectStyle;
 import me.Eggses.dungeons.utility.sound.DungeonSound;
 import me.Eggses.dungeons.utility.sound.SoundPlayer;
 import net.kyori.adventure.sound.Sound;
+import net.kyori.adventure.util.TriState;
 import org.bukkit.Particle;
 import org.bukkit.damage.DamageSource;
 import org.bukkit.damage.DamageType;
@@ -20,6 +21,7 @@ import org.bukkit.event.entity.EntityCombustByBlockEvent;
 public class FireBurstExplosion implements EventBehaviour<EntityCombustByBlockEvent> {
 
     private static final long COOLDOWN_MS = 50000L;
+    private static final long BOSS_BURN_TIME_SECONDS = 20L * 20L;
 
     private long lastRun = Long.MIN_VALUE;
 
@@ -49,7 +51,6 @@ public class FireBurstExplosion implements EventBehaviour<EntityCombustByBlockEv
         if (!(dungeonEntity instanceof Boss boss)) return;
 
         if (fireParticles == null) {
-
             WorldRegion worldRegion = new WorldRegion(
                     boss.getBossWorld(),
                     new Region(new Position(-1167, 74, 84), new Position(-1197, 66, 114))
@@ -57,21 +58,26 @@ public class FireBurstExplosion implements EventBehaviour<EntityCombustByBlockEv
             fireParticles = new NormalEffectStyle(
                     worldRegion,
                     Particle.FLAME,
-                    200);
+                    500);
         }
 
         Entity entity = dungeonEntity.getEntity();
-        entity.setFireTicks(20 * 20);
+        entity.setVisualFire(TriState.TRUE);
 
         for (int i = 0; i < BURSTS; i++) {
             long delay = i * BURST_SPACE_TICKS;
 
-            boss.addOneOffTask(ctx ->
-                    ctx.runTaskLaterAndRemove(() -> fireBurstAtBoss(boss), delay)
+            boss.addOneOffTask(ctx
+                    -> ctx.runTaskLaterAndRemove(
+                            () -> fireBurstAtBoss(boss), delay)
             );
         }
         harvest.reset();
         mossController.removeAllMoss();
+
+        boss.addOneOffTask(taskContext
+                -> taskContext.runTaskLaterAndRemove(
+                        () -> boss.getEntity().setVisualFire(TriState.FALSE), BOSS_BURN_TIME_SECONDS));
     }
 
     private void fireBurstAtBoss(Boss boss) {

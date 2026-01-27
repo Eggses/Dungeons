@@ -38,7 +38,7 @@ public class OverwhelmingFungus implements TaskProvider<Boss> {
         return ctx -> {
 
             Boss boss = ctx.getOwner();
-            Component message = messageCreator.createMessage("<light_blue>Overwhelming Fungus!");
+            Component message = messageCreator.createMessage("<dark_red>Overwhelming Fungus!");
             Sound charging = soundPlayer.createSound(DungeonSound.GUARDIAN_AMBIENT.getMinecraftSound());
             Sound damageSound = soundPlayer.createSound(DungeonSound.GENERIC_EXPLODE.getMinecraftSound());
             DamageSource damageSource = DamageSource.builder(DamageType.EXPLOSION).build();
