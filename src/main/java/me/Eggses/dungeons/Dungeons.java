@@ -215,14 +215,16 @@ public final class Dungeons extends JavaPlugin {
     fix errors in the throwing of excpetions of the malginat marsh gaving non real gamerules
 
     boss spawned randomly
+    no bos
+    seems if boss fight started then you cannot delete blocks?
+    like area controller is spanwing mbos but not killing mobs
 
-    boss entry room is the wrong way
+    seems to clean up on death idk.
 
-    no boss
-    boss bar not gone on death
+    giant streak of blocks cut down the world.
 
-    i walked through the gate again it didint work which is good but made a second boss bar...
-
+    got a meessage syaing dungeon with player despite me logging out...
+    but didint throw a full error might be normal.
 
 
      */

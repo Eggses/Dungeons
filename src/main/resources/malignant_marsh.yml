@@ -181,15 +181,14 @@ dungeon_areas:
       - "MOB type=BOGGED pos=-1542,66,117 level=25 count=2 preset=KNIGHT armour=IRON_TIDE_REDSTONE_2 weapon=IRON_SWORD"
       - "MOB type=ZOMBIE pos=-1548,63,126 level=22 count=3"
       - "MOB type=SPIDER pos=-1553,63,123 level=21 count=3"
-
     on_clear: []
     interactions:
       - pos: "-1564,68,105"
         commands:
-          - "FILL pos1=-1521,60,125 pos2=1521,60,125 block=AIR"
+          - "FILL pos1=-1521,60,125 pos2=-1521,60,125 block=AIR"
       - pos: "-1528,68,86"
         commands:
-          - "FILL pos1=-1521,60,123 pos2=1521,60,123 block=AIR"
+          - "FILL pos1=-1521,60,123 pos2=-1521,60,123 block=AIR"
     triggers:
       - pos: "-1521,60,121"
         commands:

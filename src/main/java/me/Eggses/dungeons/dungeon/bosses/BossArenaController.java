@@ -16,7 +16,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -30,14 +29,16 @@ public class BossArenaController {
     private final TaskRunner taskRunner;
     private final MessageCreator messageCreator;
     private final TextFormatter textFormatter;
-    private final Players playersInFight = new Players();
+    private final Players playersInArena = new Players();
     private final Region entryRegion;
-    private final RotationPosition spawnPosition;
+    private final Location spawnLocation;
     private final Supplier<DungeonBossBuilder> bossBuilderSupplier;
     private final Consumer<DungeonContext> onBossDefeat;
     private Boss boss;
+
     private boolean allowEntry = true;
-    private BukkitTask spawningBoss;
+    private boolean bossIsSpawning = false;
+    private BukkitTask bossSpawningTask;
 
     public BossArenaController(JavaPlugin plugin,
                                DungeonInstance dungeonInstance,
@@ -60,80 +61,70 @@ public class BossArenaController {
         this.messageCreator = messageCreator;
         this.textFormatter = textFormatter;
         this.entryRegion = entryRegion;
-        this.spawnPosition = spawnPosition;
+        this.spawnLocation = spawnPosition.toLocation(world);
         this.bossBuilderSupplier = bossBuilderSupplier;
         this.onBossDefeat = onBossDefeat;
     }
 
-    public void handlePlayerMovement(Player player, Location to) {
+    public void handlePlayerMovement(Player player, Location movementLocation) {
         if (!allowEntry) return;
 
-        if (entryRegion.within(to)) {
-            enterBossFight(player);
+        if (entryRegion.within(movementLocation)) {
+            enterBossArena(player);
+
+            if (!bossIsSpawning) {
+                bossIsSpawning = true;
+                bossSpawningTask = Bukkit.getScheduler().runTaskLater(plugin, this::startFight, 30 * 10);
+            }
         }
     }
 
-    public void enterBossFight(Player player) {
-        player.teleport(spawnPosition.toLocation(world));
-        playersInFight.add(player);
-
-        if (spawningBoss != null) return;
-        spawningBoss = Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            try {
-                startFight();
-            } finally {
-                spawningBoss = null;
-            }
-        }, 20 * 30);
+    private void enterBossArena(Player player) {
+        player.teleport(spawnLocation);
+        playersInArena.add(player);
     }
 
-    public void exitBossFight(Player player) {
-        playersInFight.remove(player);
+    public void leaveBossArena(Player player) {
+        playersInArena.remove(player);
 
-        if (playersInFight.isEmpty()) {
-            if (spawningBoss != null) {
-                spawningBoss.cancel();
-                spawningBoss = null;
-            } else {
-                if (boss != null) boss.failBossFight();
-                allowEntry = true;
+        if (boss != null) {
+            boss.removeBossBarViewer(player);
+        }
+
+        if (playersInArena.isEmpty()) {
+            if (!bossIsSpawning && boss != null) {
+                boss.failBossFight();
+            } else if (bossSpawningTask != null) {
+                bossSpawningTask.cancel();
+                bossIsSpawning = false;
             }
-        } else {
-            if (boss != null) boss.removeBossBarViewer(player);
         }
     }
 
-    private void startFight() {
+    public void startFight() {
+
         for (Player player : world.getPlayers()) {
-            if (!playersInFight.contains(player)) {
-                player.teleport(spawnPosition.toLocation(world));
-                playersInFight.add(player);
+            if (!playersInArena.contains(player)) {
+                enterBossArena(player);
             }
         }
-
         allowEntry = false;
 
-        boss = new Boss(bossBuilderSupplier.get(), this, world, taskRunner, messageCreator, textFormatter);
-        entityManager.addMob(boss);
+        boss = new Boss(
+                bossBuilderSupplier.get(),
+                entityManager,
+                world,
+                playersInArena,
+                taskRunner,
+                messageCreator,
+                textFormatter,
+                () -> onBossDefeat.accept(dungeonContext)
+        );
 
-        for (Player player : playersInFight.getPlayers()) {
+        bossIsSpawning = false;
+
+        for (Player player : playersInArena.getPlayers()) {
             boss.addBossBarViewer(player);
         }
-    }
-
-    public void defeatBoss() {
-        onBossDefeat.accept(dungeonContext);
-    }
-
-    public boolean isInFight(Player player) {
-        return playersInFight.contains(player);
-    }
-
-    public Set<Player> getPlayers() {
-        return playersInFight.getPlayers();
-    }
-
-    public World getWorld() {
-        return dungeonInstance.getDungeonWorld();
     }
 }

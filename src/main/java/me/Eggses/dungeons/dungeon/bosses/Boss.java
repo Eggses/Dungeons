@@ -2,9 +2,12 @@ package me.Eggses.dungeons.dungeon.bosses;
 
 import me.Eggses.dungeons.dungeon.bosses.manager.PhaseController;
 import me.Eggses.dungeons.dungeon.bosses.mechanics.CleanUp;
+import me.Eggses.dungeons.dungeon.players.Players;
+import me.Eggses.dungeons.dungeon.utility.DungeonContext;
 import me.Eggses.dungeons.entities.attributes.AttributeController;
 import me.Eggses.dungeons.entities.mobs.DungeonEntity;
 import me.Eggses.dungeons.entities.mobs.DungeonMob;
+import me.Eggses.dungeons.entities.mobs.EntityManager;
 import me.Eggses.dungeons.entities.nameutility.MobName;
 import me.Eggses.dungeons.eventhandler.EventBehaviour;
 import me.Eggses.dungeons.eventhandler.EventContext;
@@ -25,6 +28,7 @@ import org.bukkit.event.Event;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 /**
  * Bosses
@@ -41,8 +45,8 @@ import java.util.UUID;
 public class Boss implements DungeonEntity {
 
     private final DungeonMob bossMob;
-    private final BossArenaController bossArenaController;
     private final BossBarController bossBarController;
+    private final World world;
 
     private final Component bossName;
     private final MessageCreator messageCreator;
@@ -57,14 +61,19 @@ public class Boss implements DungeonEntity {
     private final TaskContext<Boss> bossMobFullContext;
     private final TaskContext<Boss> bossPhaseContext;
 
+    private final Players players;
     private final List<CleanUp> cleanUps;
 
+    private final Runnable onBossDeath;
+
     public Boss(DungeonBossBuilder builder,
-                BossArenaController bossArenaController,
+                EntityManager entityManager,
                 World world,
+                Players players,
                 TaskRunner taskRunner,
                 MessageCreator messageCreator,
-                TextFormatter textFormatter) {
+                TextFormatter textFormatter,
+                Runnable onBossDeath) {
 
         this.bossMob = new DungeonMob(
                 builder.getMobBuilder(),
@@ -73,7 +82,7 @@ public class Boss implements DungeonEntity {
                 messageCreator,
                 textFormatter
         );
-        this.bossArenaController = bossArenaController;
+        this.world = world;
         this.messageCreator = messageCreator;
         this.bossName = builder.getBossName();
         this.bossBarController = new BossBarController(this, builder.getColourScheme(), messageCreator, builder.getStyle());
@@ -86,8 +95,12 @@ public class Boss implements DungeonEntity {
 
         this.bossMobFullContext = new TaskContext<>(this, bossMob.getActiveTasks(), taskRunner);
         this.bossPhaseContext = new TaskContext<>(this, phaseActiveTasks, taskRunner);
-
+        this.players = players;
         this.cleanUps = builder.getCleanUps();
+        this.onBossDeath = onBossDeath;
+
+        takeDamage(0.0);
+        entityManager.addMob(this);
     }
 
     public double getHealth() {
@@ -122,16 +135,16 @@ public class Boss implements DungeonEntity {
         getEntity().setHealth(0.0);
         endTasks();
         bossBarController.removeAllViewers();
-        bossArenaController.defeatBoss();
         cleanUps.forEach(CleanUp::cleanUp);
+        onBossDeath.run();
     }
 
     public boolean isInFight(Player player) {
-        return bossArenaController.isInFight(player);
+        return players.contains(player);
     }
 
     public Set<Player> getPlayersInFight() {
-        return bossArenaController.getPlayers();
+        return players.getPlayers();
     }
 
     public <E extends Event> void addPhaseEvent(EventDefinition<E> eventDefinition) {
@@ -155,7 +168,7 @@ public class Boss implements DungeonEntity {
     }
 
     public World getBossWorld() {
-        return bossArenaController.getWorld();
+        return world;
     }
 
     @Override

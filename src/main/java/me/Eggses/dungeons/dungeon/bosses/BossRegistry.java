@@ -53,65 +53,66 @@ public class BossRegistry {
 
     @SuppressWarnings("ExtractMethodRecommender")
     public void addSwampBoss() {
+        bossBuilders.put(SWAMP_BOSS, () -> {
 
-        MobBuilder swampMobBuilder = new MobBuilder(EntityType.BOGGED, new Position(-118, 67, 99));
-        swampMobBuilder
-                .count(1)
-                .dungeonLevel(1)
-                .spawnChanges(dungeonEntity -> {
-                    var ac = dungeonEntity.getAttributeController();
-                    ac.setBaseAttribute(Attribute.SCALE, 1.1);
+            MobBuilder swampMobBuilder = new MobBuilder(EntityType.BOGGED, new Position(-118, 67, 99));
+            swampMobBuilder
+                    .count(1)
+                    .dungeonLevel(1)
+                    .spawnChanges(dungeonEntity -> {
+                        var ac = dungeonEntity.getAttributeController();
+                        ac.setBaseAttribute(Attribute.SCALE, 1.1);
 
-                    PathfinderMob pathfinderMob = mobUtility.toPathFinderMobWithClearedGoal(dungeonEntity.getEntity());
-                    if (pathfinderMob == null) return;
+                        PathfinderMob pathfinderMob = mobUtility.toPathFinderMobWithClearedGoal(dungeonEntity.getEntity());
+                        if (pathfinderMob == null) return;
 
-                    mobUtility.toZombieStyleMeleeGoals(pathfinderMob);
-                });
+                        mobUtility.toZombieStyleMeleeGoals(pathfinderMob);
+                    });
 
-        final MossController mossController = new MossController(blockRegistry);
-        final Harvest harvest = new Harvest();
+            final MossController mossController = new MossController(blockRegistry);
+            final Harvest harvest = new Harvest();
 
-        Phase phase1 = new Phase.PhaseBuilder(100.0)
-                .addPermanentEvent(new EventDefinition<>(EntityDamageByEntityEvent.class, BossCustomHealth::new))
-                .addPermanentEvent(new EventDefinition<>(EntityDamageByEntityEvent.class, TargetTopDamage::new))
-                .addPermanentEvent(new EventDefinition<>(EntityDamageByEntityEvent.class, InfectedHit::new))
-                .addOneOffTask(new Enrage().getTask())
-                .build();
+            Phase phase1 = new Phase.PhaseBuilder(100.0)
+                    .addPermanentEvent(new EventDefinition<>(EntityDamageByEntityEvent.class, BossCustomHealth::new))
+                    .addPermanentEvent(new EventDefinition<>(EntityDamageByEntityEvent.class, TargetTopDamage::new))
+                    .addPermanentEvent(new EventDefinition<>(EntityDamageByEntityEvent.class, InfectedHit::new))
+                    .addOneOffTask(new Enrage().getTask())
+                    .build();
 
-        var poison = new Poison(messageCreator, soundPlayer).getTask();
-        var overwhelmingFungus = new OverwhelmingFungus(mossController, messageCreator, soundPlayer).getTask();
-        var fungalExplosion = new FungalExplosion(mossController, messageCreator, soundPlayer).getTask();
+            var poison = new Poison(messageCreator, soundPlayer).getTask();
+            var overwhelmingFungus = new OverwhelmingFungus(mossController, messageCreator, soundPlayer).getTask();
+            var fungalExplosion = new FungalExplosion(mossController, messageCreator, soundPlayer).getTask();
 
-        List<Rotation.RotationStep> rotationSteps = List.of(
-                new Rotation.RotationStep(20, poison),
-                new Rotation.RotationStep(22, fungalExplosion),
-                new Rotation.RotationStep(15, poison),
-                new Rotation.RotationStep(20, overwhelmingFungus),
-                new Rotation.RotationStep(26, fungalExplosion)
-        );
+            List<Rotation.RotationStep> rotationSteps = List.of(
+                    new Rotation.RotationStep(20, poison),
+                    new Rotation.RotationStep(22, fungalExplosion),
+                    new Rotation.RotationStep(15, poison),
+                    new Rotation.RotationStep(20, overwhelmingFungus),
+                    new Rotation.RotationStep(26, fungalExplosion)
+            );
 
-        Phase phase2 = new Phase.PhaseBuilder(75.0)
-                .addPermanentEvent(new EventDefinition<>(EntityDamageByEntityEvent.class, () -> new Execute(soundPlayer)))
-                .addPermanentEvent(new EventDefinition<>(EntityCombustByBlockEvent.class, () -> new FireBurstExplosion(harvest, mossController, soundPlayer)))
-                .addOneOffTask(new HarvestIncreaseOverTime(harvest, messageCreator, soundPlayer).getTask())
-                .addPermanentEvent(new EventDefinition<>(EntityDamageByEntityEvent.class, () -> new IncreaseDamage(harvest)))
-                .addRotationStepList(rotationSteps)
-                .build();
+            Phase phase2 = new Phase.PhaseBuilder(75.0)
+                    .addPermanentEvent(new EventDefinition<>(EntityDamageByEntityEvent.class, () -> new Execute(soundPlayer)))
+                    .addPermanentEvent(new EventDefinition<>(EntityCombustByBlockEvent.class, () -> new FireBurstExplosion(harvest, mossController, soundPlayer)))
+                    .addOneOffTask(new HarvestIncreaseOverTime(harvest, messageCreator, soundPlayer).getTask())
+                    .addPermanentEvent(new EventDefinition<>(EntityDamageByEntityEvent.class, () -> new IncreaseDamage(harvest)))
+                    .addRotationStepList(rotationSteps)
+                    .build();
 
-        Component name = messageCreator.createMessage("<gradient:#8b0000:#c91f1f:#ff3b3b:#b11212>Rotbloom Ascendant");
+            Component name = messageCreator.createMessage("<gradient:#8b0000:#c91f1f:#ff3b3b:#b11212>Rotbloom Ascendant");
 
-        bossBuilders.put(SWAMP_BOSS, () -> new DungeonBossBuilder()
-                .mobBuilder(swampMobBuilder)
-                .bossName(name)
-                .colourScheme("<purple>")
-                .health(3000.0)
-                .style(new BossBarController.Style(
-                        name,
-                        BossBar.Color.PURPLE,
-                        BossBar.Overlay.NOTCHED_10,
-                        Set.of(BossBar.Flag.DARKEN_SCREEN)))
-                .phases(List.of(phase1, phase2))
-                .addCleanUp(mossController::removeAllMoss)
-        );
+            return new DungeonBossBuilder()
+                    .mobBuilder(swampMobBuilder)
+                    .bossName(name)
+                    .colourScheme("<purple>")
+                    .health(3000.0)
+                    .style(new BossBarController.Style(
+                            name,
+                            BossBar.Color.PURPLE,
+                            BossBar.Overlay.NOTCHED_10,
+                            Set.of(BossBar.Flag.DARKEN_SCREEN)))
+                    .phases(List.of(phase1, phase2))
+                    .addCleanUp(mossController::removeAllMoss);
+        });
     }
 }
