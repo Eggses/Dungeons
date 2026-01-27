@@ -45,8 +45,8 @@ public class Rotation {
 
             scheduleNext(taskContext);
 
-        }, rotationStep.after);
+        }, rotationStep.afterTicks);
     }
 
-    public record RotationStep(long after, Task<Boss> task) {}
+    public record RotationStep(long afterTicks, Task<Boss> task) {}
 }

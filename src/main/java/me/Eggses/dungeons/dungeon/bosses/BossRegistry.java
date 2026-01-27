@@ -55,7 +55,7 @@ public class BossRegistry {
     public void addSwampBoss() {
         bossBuilders.put(SWAMP_BOSS, () -> {
 
-            MobBuilder swampMobBuilder = new MobBuilder(EntityType.BOGGED, new Position(-1182, 67, 99));
+            MobBuilder swampMobBuilder = new MobBuilder(EntityType.CREAKING, new Position(-1182, 67, 99));
             swampMobBuilder
                     .count(1)
                     .dungeonLevel(1)
@@ -84,11 +84,11 @@ public class BossRegistry {
             var fungalExplosion = new FungalExplosion(mossController, messageCreator, soundPlayer).getTask();
 
             List<Rotation.RotationStep> rotationSteps = List.of(
-                    new Rotation.RotationStep(20, poison),
-                    new Rotation.RotationStep(22, fungalExplosion),
-                    new Rotation.RotationStep(15, poison),
-                    new Rotation.RotationStep(20, overwhelmingFungus),
-                    new Rotation.RotationStep(26, fungalExplosion)
+                    new Rotation.RotationStep(20 * 20, poison),
+                    new Rotation.RotationStep(22 * 20, fungalExplosion),
+                    new Rotation.RotationStep(15 * 20, poison),
+                    new Rotation.RotationStep(20 * 20, overwhelmingFungus),
+                    new Rotation.RotationStep(26 * 20, fungalExplosion)
             );
 
             Phase phase2 = new Phase.PhaseBuilder(75.0)

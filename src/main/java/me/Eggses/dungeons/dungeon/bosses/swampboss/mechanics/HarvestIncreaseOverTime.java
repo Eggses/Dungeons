@@ -9,8 +9,8 @@ import me.Eggses.dungeons.utility.text.MessageCreator;
 
 public class HarvestIncreaseOverTime implements TaskProvider<Boss> {
 
-    private static final long DELAY_BEFORE_STACKING = 20L * 20L;
-    private static final long STACK_APPLY_PERIOD = 20L * 5L;
+    private static final long DELAY_BEFORE_STACKING = 20L;
+    private static final long STACK_APPLY_PERIOD = 20L * 3L;
 
     private final Harvest harvest;
     private final MessageCreator messageCreator;
@@ -31,7 +31,7 @@ public class HarvestIncreaseOverTime implements TaskProvider<Boss> {
 
                     if (stackCount % 10 != 0) return; // Not multiple of 10.
 
-                    var message = messageCreator.createMessage("<green>Harvest at " + stackCount + " stacks.");
+                    var message = messageCreator.createMessage("<dark_red>Harvest at " + stackCount + " stacks.");
                     var sound = soundPlayer.createSound(DungeonSound.WARDEN_ATTACK_IMPACT.getMinecraftSound());
 
                     Boss boss = ctx.getOwner();
