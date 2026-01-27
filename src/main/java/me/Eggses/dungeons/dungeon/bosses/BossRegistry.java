@@ -7,6 +7,8 @@ import me.Eggses.dungeons.dungeon.bosses.mechanics.BossCustomHealth;
 import me.Eggses.dungeons.dungeon.bosses.mechanics.TargetTopDamage;
 import me.Eggses.dungeons.dungeon.bosses.swampboss.mechanics.*;
 import me.Eggses.dungeons.dungeon.regions.Position;
+import me.Eggses.dungeons.entities.equipment.ArmourCreator;
+import me.Eggses.dungeons.entities.equipment.WeaponEquipment;
 import me.Eggses.dungeons.entities.mobs.MobBuilder;
 import me.Eggses.dungeons.entities.mobs.mobtype.MobUtility;
 import me.Eggses.dungeons.eventhandler.EventDefinition;
@@ -15,10 +17,14 @@ import me.Eggses.dungeons.utility.text.MessageCreator;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.minecraft.world.entity.PathfinderMob;
+import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.EntityCombustByBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.inventory.meta.trim.TrimMaterial;
+import org.bukkit.inventory.meta.trim.TrimPattern;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -55,13 +61,24 @@ public class BossRegistry {
     public void addSwampBoss() {
         bossBuilders.put(SWAMP_BOSS, () -> {
 
-            MobBuilder swampMobBuilder = new MobBuilder(EntityType.CREAKING, new Position(-1182, 67, 99));
+            WeaponEquipment weaponEquipment = new WeaponEquipment(Material.DIAMOND_SWORD);
+            weaponEquipment.getMainHand().getItemMeta().addEnchant(Enchantment.BANE_OF_ARTHROPODS, 1, true);
+
+            MobBuilder swampMobBuilder = new MobBuilder(EntityType.BOGGED, new Position(-1182, 67, 99));
             swampMobBuilder
                     .count(1)
                     .dungeonLevel(1)
+                    .weaponEquipment(weaponEquipment)
+                    .armourEquipment(new ArmourCreator(
+                            ArmourCreator.ArmourSetMaterial.DIAMOND,
+                            TrimPattern.FLOW,
+                            TrimMaterial.EMERALD
+                    ).generateFullSet())
                     .spawnChanges(dungeonEntity -> {
                         var ac = dungeonEntity.getAttributeController();
                         ac.setBaseAttribute(Attribute.SCALE, 1.1);
+
+
 
                         PathfinderMob pathfinderMob = mobUtility.toPathFinderMobWithClearedGoal(dungeonEntity.getEntity());
                         if (pathfinderMob == null) return;
