@@ -2,6 +2,9 @@ package me.Eggses.dungeons.entities.equipment;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.function.Consumer;
 
 public class WeaponEquipment {
 
@@ -52,5 +55,18 @@ public class WeaponEquipment {
     private static Material getMaterial(String material) {
         if (material == null) return null;
         return Material.matchMaterial(material);
+    }
+
+    public void alterAllItems(Consumer<ItemMeta> itemMetaConsumer) {
+        alter(mainHand, itemMetaConsumer);
+        alter(offHand, itemMetaConsumer);
+    }
+
+    private void alter(ItemStack item, Consumer<ItemMeta> itemMetaConsumer) {
+        if (item == null || itemMetaConsumer == null) return;
+        ItemMeta itemMeta = item.getItemMeta();
+        if (itemMeta == null) return;
+        itemMetaConsumer.accept(itemMeta);
+        item.setItemMeta(itemMeta);
     }
 }

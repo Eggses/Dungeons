@@ -1,6 +1,9 @@
 package me.Eggses.dungeons.entities.equipment;
 
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.function.Consumer;
 
 public class ArmourEquipment {
 
@@ -34,5 +37,20 @@ public class ArmourEquipment {
 
     public ItemStack getBoots() {
         return boots;
+    }
+
+    public void alterAllArmour(Consumer<ItemMeta> itemMetaConsumer) {
+        alter(helmet, itemMetaConsumer);
+        alter(chestplate, itemMetaConsumer);
+        alter(leggings, itemMetaConsumer);
+        alter(boots, itemMetaConsumer);
+    }
+
+    private void alter(ItemStack item, Consumer<ItemMeta> itemMetaConsumer) {
+        if (item == null || itemMetaConsumer == null) return;
+        ItemMeta itemMeta = item.getItemMeta();
+        if (itemMeta == null) return;
+        itemMetaConsumer.accept(itemMeta);
+        item.setItemMeta(itemMeta);
     }
 }

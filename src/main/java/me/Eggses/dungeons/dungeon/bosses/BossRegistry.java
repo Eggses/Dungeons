@@ -8,6 +8,7 @@ import me.Eggses.dungeons.dungeon.bosses.mechanics.TargetTopDamage;
 import me.Eggses.dungeons.dungeon.bosses.swampboss.mechanics.*;
 import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.entities.equipment.ArmourCreator;
+import me.Eggses.dungeons.entities.equipment.ArmourEquipment;
 import me.Eggses.dungeons.entities.equipment.WeaponEquipment;
 import me.Eggses.dungeons.entities.mobs.MobBuilder;
 import me.Eggses.dungeons.entities.mobs.mobtype.MobUtility;
@@ -62,18 +63,22 @@ public class BossRegistry {
         bossBuilders.put(SWAMP_BOSS, () -> {
 
             WeaponEquipment weaponEquipment = new WeaponEquipment(Material.DIAMOND_SWORD);
-            weaponEquipment.getMainHand().getItemMeta().addEnchant(Enchantment.BANE_OF_ARTHROPODS, 1, true);
+            weaponEquipment.alterAllItems(itemMeta -> itemMeta.addEnchant(Enchantment.BANE_OF_ARTHROPODS, 1, true));
+
+            ArmourEquipment armourEquipment = new ArmourCreator(
+                    ArmourCreator.ArmourSetMaterial.DIAMOND,
+                    TrimPattern.FLOW,
+                    TrimMaterial.EMERALD)
+                    .generateFullSet();
+            armourEquipment.alterAllArmour(itemMeta -> itemMeta.addEnchant(Enchantment.BLAST_PROTECTION, 1, true));
+
 
             MobBuilder swampMobBuilder = new MobBuilder(EntityType.BOGGED, new Position(-1182, 67, 99));
             swampMobBuilder
                     .count(1)
                     .dungeonLevel(1)
                     .weaponEquipment(weaponEquipment)
-                    .armourEquipment(new ArmourCreator(
-                            ArmourCreator.ArmourSetMaterial.DIAMOND,
-                            TrimPattern.FLOW,
-                            TrimMaterial.EMERALD
-                    ).generateFullSet())
+                    .armourEquipment(armourEquipment)
                     .spawnChanges(dungeonEntity -> {
                         var ac = dungeonEntity.getAttributeController();
                         ac.setBaseAttribute(Attribute.SCALE, 1.1);
