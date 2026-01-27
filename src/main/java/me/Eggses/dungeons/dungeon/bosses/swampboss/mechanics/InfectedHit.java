@@ -18,14 +18,6 @@ public class InfectedHit implements EventBehaviour<EntityDamageByEntityEvent> {
 
     private static final List<PotionEffect> POTION_EFFECTS = List.of(
             new PotionEffect(
-                    PotionEffectType.HUNGER,
-                    20 * 5,
-                    0,
-                    false,
-                    true,
-                    true
-            ),
-            new PotionEffect(
                     PotionEffectType.POISON,
                     20 * 5,
                     0,

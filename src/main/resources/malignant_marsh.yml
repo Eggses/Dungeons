@@ -222,11 +222,11 @@ dungeon_areas:
   villagers_before_river:
     entry_bounds: "pos1=-1631,65,53 pos2=-1628,69,52"
     on_entry:
-      - "MOB type=VILLAGER pos=-1648,76,43 level=22 count=2 preset=VILLAGER"
-      - "MOB type=VILLAGER pos=-1629,73,25 level=21 count=2 preset=VILLAGER"
-      - "MOB type=VILLAGER pos=-1633,73,8 level=21 count=2 preset=VILLAGER"
-      - "MOB type=VILLAGER pos=-1611,72,33 level=20 count=2 preset=VILLAGER"
-      - "MOB type=VILLAGER pos=-1619,73,18 level=21 count=2 preset=VILLAGER"
+      - "MOB type=VILLAGER pos=-1648,76,43 level=22 count=1 preset=VILLAGER"
+      - "MOB type=VILLAGER pos=-1629,73,25 level=21 count=1 preset=VILLAGER"
+      - "MOB type=VILLAGER pos=-1633,73,8 level=21 count=1 preset=VILLAGER"
+      - "MOB type=VILLAGER pos=-1611,72,33 level=20 count=1 preset=VILLAGER"
+      - "MOB type=VILLAGER pos=-1619,73,18 level=21 count=1 preset=VILLAGER"
       - "MOB type=ILLUSIONER pos=-1619,72,23 level=24 count=1 preset=ENCHANTER"
       - "MOB type=EVOKER pos=-1619,72,23 level=24 count=1"
       - "MOB type=ILLUSIONER pos=-1643,75,43 level=26 count=1 preset=ENCHANTER"
@@ -371,7 +371,7 @@ dungeon_areas:
       - "MOB type=BOGGED pos=-1254,66,-27 level=32 count=2 preset=KNIGHT armour=IRON_TIDE_IRON_4 weapon=IRON_SWORD"
     on_clear:
       - "GRAVEYARD pos=-1238,66,-25 rotation=-90"
-      - "MESSAGE <red>up to boss"
+      - "WEATHER weather=thunderstorm"
     interactions: []
     triggers: []
 

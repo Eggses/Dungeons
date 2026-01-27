@@ -17,7 +17,7 @@ public class Poison implements TaskProvider<Boss> {
       private static final PotionEffect POISON = new PotionEffect(
               PotionEffectType.POISON,
               20 * 5,
-              0,
+              2,
               false,
               true,
               true
@@ -36,7 +36,7 @@ public class Poison implements TaskProvider<Boss> {
         return ctx -> {
 
             Boss boss = ctx.getOwner();
-            Component message = messageCreator.createMessage("<green> Rot blooms!");
+            Component message = messageCreator.createMessage("<green>Rot blooms!");
             Sound sound = soundPlayer.createSound(DungeonSound.MUD_STEP.getMinecraftSound());
 
             for (Player player : boss.getPlayersInFight()) {

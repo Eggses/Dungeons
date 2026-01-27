@@ -20,6 +20,8 @@ import java.util.stream.Collectors;
 
 public class FungalExplosion implements TaskProvider<Boss> {
 
+    private static final int Y_HEIGHT = 67;
+
     private final MossController mossController;
     private final MessageCreator messageCreator;
     private final SoundPlayer soundPlayer;
@@ -38,7 +40,7 @@ public class FungalExplosion implements TaskProvider<Boss> {
 
             final int numberOfTargets = 2;
             final long explosionAfter = 20 * 5;
-            final double damage = 20.0;
+            final double damage = 10.0;
 
             DamageSource damageSource = DamageSource.builder(DamageType.EXPLOSION).build();
             Sound sound = soundPlayer.createSound(DungeonSound.GENERIC_EXPLODE.getMinecraftSound());
@@ -109,9 +111,8 @@ public class FungalExplosion implements TaskProvider<Boss> {
             int x = baseX + offset[0];
             int z = baseZ + offset[1];
 
-            int y = world.getHighestBlockYAt(x, z);
-            Block ground = world.getBlockAt(x, y - 1, z);
-            Block target = world.getBlockAt(x, y, z);
+            Block ground = world.getBlockAt(x, Y_HEIGHT - 1, z);
+            Block target = world.getBlockAt(x, Y_HEIGHT, z);
 
             if (ground.getType().isSolid() && target.getType().isAir()) {
                 mossController.placeMoss(target);

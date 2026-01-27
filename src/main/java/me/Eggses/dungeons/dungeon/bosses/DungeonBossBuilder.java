@@ -1,6 +1,6 @@
 package me.Eggses.dungeons.dungeon.bosses;
 
-import me.Eggses.dungeons.dungeon.bosses.manager.Phase;
+import me.Eggses.dungeons.dungeon.bosses.phases.Phase;
 import me.Eggses.dungeons.dungeon.bosses.mechanics.CleanUp;
 import me.Eggses.dungeons.entities.mobs.MobBuilder;
 import net.kyori.adventure.text.Component;

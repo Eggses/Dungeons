@@ -1,8 +1,8 @@
 package me.Eggses.dungeons.dungeon.bosses;
 
 import me.Eggses.dungeons.blocks.BlockRegistry;
-import me.Eggses.dungeons.dungeon.bosses.manager.Phase;
-import me.Eggses.dungeons.dungeon.bosses.manager.Rotation;
+import me.Eggses.dungeons.dungeon.bosses.phases.Phase;
+import me.Eggses.dungeons.dungeon.bosses.phases.Rotation;
 import me.Eggses.dungeons.dungeon.bosses.mechanics.BossCustomHealth;
 import me.Eggses.dungeons.dungeon.bosses.mechanics.TargetTopDamage;
 import me.Eggses.dungeons.dungeon.bosses.swampboss.mechanics.*;
@@ -72,7 +72,6 @@ public class BossRegistry {
                     .generateFullSet();
             armourEquipment.alterAllArmour(itemMeta -> itemMeta.addEnchant(Enchantment.BLAST_PROTECTION, 1, true));
 
-
             MobBuilder swampMobBuilder = new MobBuilder(EntityType.BOGGED, new Position(-1182, 67, 99));
             swampMobBuilder
                     .count(1)
@@ -82,8 +81,7 @@ public class BossRegistry {
                     .spawnChanges(dungeonEntity -> {
                         var ac = dungeonEntity.getAttributeController();
                         ac.setBaseAttribute(Attribute.SCALE, 1.1);
-
-
+                        ac.setBaseAttribute(Attribute.MOVEMENT_SPEED, 0.26);
 
                         PathfinderMob pathfinderMob = mobUtility.toPathFinderMobWithClearedGoal(dungeonEntity.getEntity());
                         if (pathfinderMob == null) return;
@@ -113,7 +111,7 @@ public class BossRegistry {
                     new Rotation.RotationStep(26 * 20, fungalExplosion)
             );
 
-            Phase phase2 = new Phase.PhaseBuilder(75.0)
+            Phase phase2 = new Phase.PhaseBuilder(70.0)
                     .addPermanentEvent(new EventDefinition<>(EntityDamageByEntityEvent.class, () -> new Execute(soundPlayer)))
                     .addPermanentEvent(new EventDefinition<>(EntityCombustByBlockEvent.class, () -> new FireBurstExplosion(harvest, mossController, soundPlayer)))
                     .addOneOffTask(new HarvestIncreaseOverTime(harvest, messageCreator, soundPlayer).getTask())
@@ -127,7 +125,7 @@ public class BossRegistry {
                     .mobBuilder(swampMobBuilder)
                     .bossName(name)
                     .colourScheme("<purple>")
-                    .health(3000.0)
+                    .health(2000.0)
                     .style(new BossBarController.Style(
                             name,
                             BossBar.Color.PURPLE,

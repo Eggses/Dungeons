@@ -16,7 +16,7 @@ import org.bukkit.entity.Player;
 public class OverwhelmingFungus implements TaskProvider<Boss> {
 
     private static final long FUNGUS_AFTER = 20L * 4L;
-    private static final double DAMAGE = 20000.0;
+    private static final double DAMAGE = 200.0;
     private static final long POISON_MOSS_AFTER = 20L * 2L;
 
     private final MossController mossController;
@@ -38,7 +38,7 @@ public class OverwhelmingFungus implements TaskProvider<Boss> {
         return ctx -> {
 
             Boss boss = ctx.getOwner();
-            Component message = messageCreator.createMessage("<green>Overwhelming Fungus!");
+            Component message = messageCreator.createMessage("<light_blue>Overwhelming Fungus!");
             Sound charging = soundPlayer.createSound(DungeonSound.GUARDIAN_AMBIENT.getMinecraftSound());
             Sound damageSound = soundPlayer.createSound(DungeonSound.GENERIC_EXPLODE.getMinecraftSound());
             DamageSource damageSource = DamageSource.builder(DamageType.EXPLOSION).build();

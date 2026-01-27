@@ -1,6 +1,6 @@
 package me.Eggses.dungeons.dungeon.bosses;
 
-import me.Eggses.dungeons.dungeon.bosses.manager.PhaseController;
+import me.Eggses.dungeons.dungeon.bosses.phases.PhaseController;
 import me.Eggses.dungeons.dungeon.bosses.mechanics.CleanUp;
 import me.Eggses.dungeons.dungeon.players.Players;
 import me.Eggses.dungeons.entities.attributes.AttributeController;

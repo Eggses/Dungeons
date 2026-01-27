@@ -1,7 +1,7 @@
 package me.Eggses.dungeons.dungeon.instance;
 
 import me.Eggses.dungeons.blocks.BlockRegistry;
-import me.Eggses.dungeons.dungeon.bosses.BossArenaController;
+import me.Eggses.dungeons.dungeon.bosses.controller.BossArenaController;
 import me.Eggses.dungeons.dungeon.graveyard.Graveyard;
 import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.dungeon.types.DungeonType;

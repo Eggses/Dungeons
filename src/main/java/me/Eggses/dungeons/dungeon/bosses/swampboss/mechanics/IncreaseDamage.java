@@ -9,7 +9,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 public class IncreaseDamage implements EventBehaviour<EntityDamageByEntityEvent> {
 
-    private static final double HARVEST_PERCENT_PER_STACK = 0.5;
+    private static final double HARVEST_PERCENT_PER_STACK = 1.5;
 
     private final Harvest harvest;
 

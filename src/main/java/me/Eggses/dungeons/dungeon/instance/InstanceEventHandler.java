@@ -1,7 +1,7 @@
 package me.Eggses.dungeons.dungeon.instance;
 
 import me.Eggses.dungeons.dungeon.areas.AreaController;
-import me.Eggses.dungeons.dungeon.bosses.BossArenaController;
+import me.Eggses.dungeons.dungeon.bosses.controller.BossArenaController;
 import me.Eggses.dungeons.entities.mobs.EntityManager;
 import me.Eggses.dungeons.dungeon.events.core.EntityDamageEntity;
 import me.Eggses.dungeons.dungeon.portals.PortalController;
@@ -10,10 +10,7 @@ import me.Eggses.dungeons.eventhandler.EventContext;
 import me.Eggses.dungeons.eventhandler.EventManager;
 import org.bukkit.Location;
 import org.bukkit.event.Event;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityRemoveEvent;
-import org.bukkit.event.entity.ExplosionPrimeEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -56,24 +53,31 @@ public class InstanceEventHandler {
         });
 
         eventManager.addEventBehaviour(ExplosionPrimeEvent.class, (event, eventContext)
-                -> entityManager.passEventToMobIfExists(event.getEntity(), event, eventContext));
+                -> entityManager.passEventToMobIfExists(event.getEntity(), event, eventContext)
+        );
 
         eventManager.addEventBehaviour(PlayerRespawnEvent.class, (event, eventContext)
-                -> event.setRespawnLocation(areaController.getGraveyardRespawnLocation()));
+                -> event.setRespawnLocation(areaController.getGraveyardRespawnLocation())
+        );
 
         eventManager.addEventBehaviour(PlayerQuitEvent.class, (event, eventContext) -> {
             dungeonInstance.removePlayer(event.getPlayer());
-            bossArenaController.leaveBossArena(event.getPlayer());
+            bossArenaController.leaveArena(event.getPlayer());
         });
 
         eventManager.addEventBehaviour(PlayerDeathEvent.class, ((event, eventContext)
-                -> bossArenaController.leaveBossArena(event.getPlayer())
+                -> bossArenaController.leaveArena(event.getPlayer())
         ));
 
         eventManager.addEventBehaviour(EntityRemoveEvent.class, (event, eventContext)
-                -> areaController.handleEntityRemove(event.getEntity().getUniqueId()));
+                -> areaController.handleEntityRemove(event.getEntity().getUniqueId())
+        );
 
         eventManager.addEventBehaviour(EntityDamageByEntityEvent.class, new EntityDamageEntity(entityManager));
+
+        eventManager.addEventBehaviour(EntityCombustByBlockEvent.class, ((event, eventContext)
+                -> entityManager.passEventToMobIfExists(event.getEntity(), event, eventContext))
+        );
     }
 
     public <E extends Event> void addEventBehaviour(Class<E> eventClass, EventBehaviour<E> eventBehaviour) {

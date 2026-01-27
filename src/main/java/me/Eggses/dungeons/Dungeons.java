@@ -211,6 +211,23 @@ public final class Dungeons extends JavaPlugin {
 
     /*
     TODO
+
+    wont let you re enter after boss dies...
+    no fire in arena
+    boss bar no colour
+    rot has space at front
+    no moss spawns
+    harvest seems ineffective
+    maybe too much damage is going out
+    boss too slow.
+    seems fire wont trigger as like it cant get se ton fire as its rianing..
+    also no moss....
+    player stats need to be done.
+
+    TODO: add another boolean flag to boss to indcate if its defeated so it will not spawn another.
+
+
+
     fix errors in the throwing of excpetions of the malginat marsh gaving non real gamerules
     no fire in arena
     one culdron is out of fire.

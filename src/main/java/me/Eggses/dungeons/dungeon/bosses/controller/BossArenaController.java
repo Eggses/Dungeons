@@ -1,5 +1,7 @@
-package me.Eggses.dungeons.dungeon.bosses;
+package me.Eggses.dungeons.dungeon.bosses.controller;
 
+import me.Eggses.dungeons.dungeon.bosses.Boss;
+import me.Eggses.dungeons.dungeon.bosses.DungeonBossBuilder;
 import me.Eggses.dungeons.dungeon.instance.DungeonInstance;
 import me.Eggses.dungeons.dungeon.players.Players;
 import me.Eggses.dungeons.dungeon.regions.Region;
@@ -9,19 +11,16 @@ import me.Eggses.dungeons.entities.mobs.EntityManager;
 import me.Eggses.dungeons.tasks.TaskRunner;
 import me.Eggses.dungeons.utility.text.MessageCreator;
 import me.Eggses.dungeons.utility.text.TextFormatter;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class BossArenaController {
 
-    private final JavaPlugin plugin;
     private final DungeonInstance dungeonInstance;
     private final DungeonContext dungeonContext;
     private final World world;
@@ -30,15 +29,17 @@ public class BossArenaController {
     private final MessageCreator messageCreator;
     private final TextFormatter textFormatter;
     private final Players playersInArena = new Players();
-    private final Region entryRegion;
     private final Location spawnLocation;
     private final Supplier<DungeonBossBuilder> bossBuilderSupplier;
     private final Consumer<DungeonContext> onBossDefeat;
-    private Boss boss;
 
-    private boolean allowEntry = true;
-    private boolean bossIsSpawning = false;
-    private BukkitTask bossSpawningTask;
+    private ArenaControllerState activeState;
+    private final ArenaControllerState readyToCommenceState;
+    private final ArenaControllerState spawningBossState;
+    private final ArenaControllerState pulledBossState;
+    private final BossDefeatedState bossDefeatedState;
+
+    private Boss boss;
 
     public BossArenaController(JavaPlugin plugin,
                                DungeonInstance dungeonInstance,
@@ -52,7 +53,6 @@ public class BossArenaController {
                                RotationPosition spawnPosition,
                                Supplier<DungeonBossBuilder> bossBuilderSupplier,
                                Consumer<DungeonContext> onBossDefeat) {
-        this.plugin = plugin;
         this.dungeonInstance = dungeonInstance;
         this.dungeonContext = dungeonContext;
         this.world = world;
@@ -60,57 +60,44 @@ public class BossArenaController {
         this.taskRunner = taskRunner;
         this.messageCreator = messageCreator;
         this.textFormatter = textFormatter;
-        this.entryRegion = entryRegion;
         this.spawnLocation = spawnPosition.toLocation(world);
         this.bossBuilderSupplier = bossBuilderSupplier;
         this.onBossDefeat = onBossDefeat;
+
+        this.readyToCommenceState = new ReadyToCommenceState(this, entryRegion);
+        this.spawningBossState = new SpawningBossState(plugin, this, entryRegion);
+        this.pulledBossState = new PulledBossState(this, entryRegion, messageCreator);
+        this.bossDefeatedState = new BossDefeatedState(this, entryRegion);
+        this.activeState = this.readyToCommenceState;
     }
 
-    public void handlePlayerMovement(Player player, Location movementLocation) {
-        if (!allowEntry) return;
-
-        if (entryRegion.within(movementLocation)) {
-            enterBossArena(player);
-
-            if (!bossIsSpawning) {
-                bossIsSpawning = true;
-                bossSpawningTask = Bukkit.getScheduler().runTaskLater(plugin, this::startFight, 30 * 10);
-            }
-        }
+    public void handlePlayerMovement(Player player, Location destination) {
+        activeState.handlePlayerMovement(player, destination);
     }
 
-    private void enterBossArena(Player player) {
+    public void enterArena(Player player) {
         player.teleport(spawnLocation);
         playersInArena.add(player);
     }
 
-    public void leaveBossArena(Player player) {
-        playersInArena.remove(player);
+    public void leaveArena(Player player) {
+        activeState.leaveBossArena(player);
+        if (boss != null) boss.removeBossBarViewer(player);
+    }
 
-        if (boss != null) {
-            boss.removeBossBarViewer(player);
-        }
-
-        if (playersInArena.isEmpty()) {
-            if (!bossIsSpawning && boss != null) {
-                boss.failBossFight();
-            } else if (bossSpawningTask != null) {
-                bossSpawningTask.cancel();
-                bossIsSpawning = false;
-            }
-        }
+    public Players getPlayersInArena() {
+        return playersInArena;
     }
 
     public void startFight() {
 
         for (Player player : world.getPlayers()) {
             if (!playersInArena.contains(player)) {
-                enterBossArena(player);
+                enterArena(player);
             }
         }
-        allowEntry = false;
 
-        boss = new Boss(
+        this.boss = new Boss(
                 bossBuilderSupplier.get(),
                 entityManager,
                 world,
@@ -118,13 +105,48 @@ public class BossArenaController {
                 taskRunner,
                 messageCreator,
                 textFormatter,
-                () -> onBossDefeat.accept(dungeonContext)
+                () -> {
+                    this.changeStateToBossDefeatedState();
+                    onBossDefeat.accept(dungeonContext);
+                }
         );
-
-        bossIsSpawning = false;
-
         for (Player player : playersInArena.getPlayers()) {
             boss.addBossBarViewer(player);
         }
+    }
+
+    public void failBossFight() {
+        if (boss != null) boss.failBossFight();
+        boss = null;
+    }
+
+    public void clearPlayers() {
+        if (boss != null) {
+            for (Player player : playersInArena.getPlayers()) {
+                boss.removeBossBarViewer(player);
+            }
+        }
+        playersInArena.clear();
+    }
+
+    public void changeStateToReadyToCommenceState() {
+        changeStateTo(readyToCommenceState);
+    }
+
+    public void changeStateToBossSpawningState() {
+        changeStateTo(spawningBossState);
+    }
+
+    public void changeStateToPulledBossState() {
+        changeStateTo(pulledBossState);
+    }
+
+    public void changeStateToBossDefeatedState() {
+        changeStateTo(bossDefeatedState);
+    }
+
+    private void changeStateTo(ArenaControllerState newState) {
+        activeState = newState;
+        activeState.onStateStart();
     }
 }

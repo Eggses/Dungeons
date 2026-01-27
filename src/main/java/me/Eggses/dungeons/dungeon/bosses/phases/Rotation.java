@@ -1,4 +1,4 @@
-package me.Eggses.dungeons.dungeon.bosses.manager;
+package me.Eggses.dungeons.dungeon.bosses.phases;
 
 import me.Eggses.dungeons.dungeon.bosses.Boss;
 import me.Eggses.dungeons.tasks.Task;

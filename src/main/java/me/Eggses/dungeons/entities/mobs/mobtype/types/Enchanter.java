@@ -18,6 +18,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Illusioner;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Villager;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -98,6 +99,7 @@ public class Enchanter implements MobPreset {
                         .filter(entity -> entity instanceof LivingEntity)
                         .map(entity -> (LivingEntity) entity)
                         .filter(livingEntity -> !(livingEntity instanceof Illusioner))
+                        .filter(livingEntity -> !(livingEntity instanceof Villager))
                         .filter(livingEntity -> !livingEntity.getUniqueId().equals(enchanter.getUniqueId()))
                         .collect(Collectors.partitioningBy(e -> e instanceof org.bukkit.entity.Player));
 
