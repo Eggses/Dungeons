@@ -209,4 +209,14 @@ public final class Dungeons extends JavaPlugin {
         dungeonRegistry.endAllInstances(false);
         blockRegistry.removeAllTextDisplays();
     }
+
+    /*
+    TODO
+    fix errors in the throwing of excpetions of the malginat marsh gaving non real gamerules
+
+    boss spawned randomly
+
+    boss entry room is the wrong way
+
+     */
 }
