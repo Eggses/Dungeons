@@ -55,7 +55,7 @@ public class BossRegistry {
     public void addSwampBoss() {
         bossBuilders.put(SWAMP_BOSS, () -> {
 
-            MobBuilder swampMobBuilder = new MobBuilder(EntityType.BOGGED, new Position(-118, 67, 99));
+            MobBuilder swampMobBuilder = new MobBuilder(EntityType.BOGGED, new Position(-1182, 67, 99));
             swampMobBuilder
                     .count(1)
                     .dungeonLevel(1)
