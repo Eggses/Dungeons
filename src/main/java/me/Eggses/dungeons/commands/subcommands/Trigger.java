@@ -6,10 +6,8 @@ import me.Eggses.dungeons.utility.text.MessageCreator;
 import me.Eggses.dungeons.utility.text.Messages;
 import me.Eggses.dungeons.utility.text.Placeholders;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.util.List;
 

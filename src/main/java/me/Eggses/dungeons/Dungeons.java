@@ -25,7 +25,6 @@ import me.Eggses.dungeons.listeners.entities.Combustion;
 import me.Eggses.dungeons.listeners.entities.EntityCombat;
 import me.Eggses.dungeons.listeners.entities.EntityRemove;
 import me.Eggses.dungeons.listeners.entities.EntityExplode;
-import me.Eggses.dungeons.listeners.players.PlayerBlockInteract;
 import me.Eggses.dungeons.listeners.bans.*;
 import me.Eggses.dungeons.utility.sound.SoundPlayer;
 import me.Eggses.dungeons.utility.text.MessageCreator;

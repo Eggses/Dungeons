@@ -63,11 +63,11 @@ public class InstanceEventHandler {
 
         eventManager.addEventBehaviour(PlayerQuitEvent.class, (event, eventContext) -> {
             dungeonInstance.removePlayer(event.getPlayer());
-            bossArenaController.exitBossFight(event.getPlayer());
+            bossArenaController.leaveBossArena(event.getPlayer());
         });
 
         eventManager.addEventBehaviour(PlayerDeathEvent.class, ((event, eventContext)
-                -> bossArenaController.exitBossFight(event.getPlayer())
+                -> bossArenaController.leaveBossArena(event.getPlayer())
         ));
 
         eventManager.addEventBehaviour(EntityRemoveEvent.class, (event, eventContext)

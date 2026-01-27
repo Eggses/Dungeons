@@ -3,7 +3,6 @@ package me.Eggses.dungeons.dungeon.bosses;
 import me.Eggses.dungeons.dungeon.bosses.manager.PhaseController;
 import me.Eggses.dungeons.dungeon.bosses.mechanics.CleanUp;
 import me.Eggses.dungeons.dungeon.players.Players;
-import me.Eggses.dungeons.dungeon.utility.DungeonContext;
 import me.Eggses.dungeons.entities.attributes.AttributeController;
 import me.Eggses.dungeons.entities.mobs.DungeonEntity;
 import me.Eggses.dungeons.entities.mobs.DungeonMob;
@@ -28,7 +27,6 @@ import org.bukkit.event.Event;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Consumer;
 
 /**
  * Bosses

@@ -1,7 +1,6 @@
 package me.Eggses.dungeons.dungeon.bosses.manager;
 
 import me.Eggses.dungeons.dungeon.bosses.Boss;
-import me.Eggses.dungeons.dungeon.bosses.mechanics.CleanUp;
 import me.Eggses.dungeons.eventhandler.EventDefinition;
 import me.Eggses.dungeons.tasks.Task;
 import me.Eggses.dungeons.tasks.TaskContext;
