@@ -218,5 +218,12 @@ public final class Dungeons extends JavaPlugin {
 
     boss entry room is the wrong way
 
+    no boss
+    boss bar not gone on death
+
+    i walked through the gate again it didint work which is good but made a second boss bar...
+
+
+
      */
 }

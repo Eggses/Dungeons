@@ -379,7 +379,7 @@ dungeon_areas:
 boss_area:
   boss_preset: "swamp_boss_rotbloom"
   boss_room_entry_bounds: "pos1=-1246,64,74 pos2=-1246,66,77"
-  boss_room_entry_position: "pos=-1194,67,99 rotation=90"
+  boss_room_entry_position: "pos=-1194,67,99 rotation=-90"
   on_boss_defeat:
     - "FILL pos1=-1169,67,98 pos2=-1169,70,100 block=END_GATEWAY"
     - "PORTAL pos1=-1169,67,98 pos2=-1169,70,100"

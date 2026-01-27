@@ -65,7 +65,6 @@ public class BossArenaController {
         this.onBossDefeat = onBossDefeat;
     }
 
-
     public void handlePlayerMovement(Player player, Location to) {
         if (!allowEntry) return;
 
@@ -106,8 +105,12 @@ public class BossArenaController {
 
     private void startFight() {
         for (Player player : world.getPlayers()) {
-            if (!playersInFight.contains(player)) enterBossFight(player);
+            if (!playersInFight.contains(player)) {
+                player.teleport(spawnPosition.toLocation(world));
+                playersInFight.add(player);
+            }
         }
+
         allowEntry = false;
 
         boss = new Boss(bossBuilderSupplier.get(), this, world, taskRunner, messageCreator, textFormatter);

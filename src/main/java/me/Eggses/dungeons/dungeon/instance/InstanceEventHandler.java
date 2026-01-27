@@ -67,7 +67,7 @@ public class InstanceEventHandler {
         });
 
         eventManager.addEventBehaviour(PlayerDeathEvent.class, ((event, eventContext)
-                -> bossArenaController.enterBossFight(event.getPlayer())
+                -> bossArenaController.exitBossFight(event.getPlayer())
         ));
 
         eventManager.addEventBehaviour(EntityRemoveEvent.class, (event, eventContext)
