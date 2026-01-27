@@ -1,5 +1,6 @@
 package me.Eggses.dungeons.listeners.entities;
 
+import me.Eggses.dungeons.dungeon.lifecycle.DungeonEventRouter;
 import me.Eggses.dungeons.dungeon.lifecycle.DungeonRegistry;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -10,9 +11,11 @@ import org.bukkit.event.entity.EntityCombustEvent;
 public class Combustion implements Listener {
 
     private final DungeonRegistry dungeonRegistry;
+    private final DungeonEventRouter dungeonEventRouter;
 
-    public Combustion(DungeonRegistry dungeonRegistry) {
+    public Combustion(DungeonRegistry dungeonRegistry, DungeonEventRouter dungeonEventRouter) {
         this.dungeonRegistry = dungeonRegistry;
+        this.dungeonEventRouter = dungeonEventRouter;
     }
 
     /*
@@ -26,8 +29,16 @@ public class Combustion implements Listener {
         if (!dungeonRegistry.isDungeonWorld(event.getEntity().getWorld())) return;
 
         if (event instanceof EntityCombustByEntityEvent) return;
-        if (event instanceof EntityCombustByBlockEvent) return;
+
+        if (event instanceof EntityCombustByBlockEvent combustByBlockEvent) {
+            onCombustByBlock(combustByBlockEvent);
+            return;
+        }
 
         event.setCancelled(true);
+    }
+
+    private void onCombustByBlock(EntityCombustByBlockEvent event) {
+        dungeonEventRouter.handleEvent(event, event.getEntity().getWorld());
     }
 }

@@ -151,7 +151,7 @@ public final class Dungeons extends JavaPlugin {
 
         var pluginManager = getServer().getPluginManager();
 
-        pluginManager.registerEvents(new Combustion(dungeonRegistry), this);
+        pluginManager.registerEvents(new Combustion(dungeonRegistry, dungeonEventRouter), this);
         pluginManager.registerEvents(new EntityCombat(dungeonEventRouter), this);
         pluginManager.registerEvents(new EntityRemove(dungeonEventRouter), this);
         pluginManager.registerEvents(new EntityExplode(dungeonEventRouter), this);
@@ -212,6 +212,17 @@ public final class Dungeons extends JavaPlugin {
     /*
     TODO
     fix errors in the throwing of excpetions of the malginat marsh gaving non real gamerules
+    no fire in arena
+    one culdron is out of fire.
+    boss boss bar isnt being coloured.
+    boss name tag endless formatting health like too many deicmal
+    Rotation mechanics running every second not at all split
+    as rot blooms has a space at the front.
+    moss isnt working/
+    no indication i think you have the other setting.
+    harvest is rising but slowly... got 10 stacks after a while idk
+    didnt reset on death
+    did not run the fire thing either...
 
     boss spawned randomly
     no bos
@@ -224,6 +235,8 @@ public final class Dungeons extends JavaPlugin {
 
     got a meessage syaing dungeon with player despite me logging out...
     but didint throw a full error might be normal.
+
+
 
 
      */

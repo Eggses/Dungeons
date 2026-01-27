@@ -215,7 +215,7 @@ public class Boss implements DungeonEntity {
     public void takeDamage(double damage) {
         health = Math.max(0.0, health - damage);
 
-        String healthPart = "<gray> ⟡ </gray>" + "<red> " + health;
+        String healthPart = "<white> ⟡ </white>" + "<dark_green> " + String.format("%.0f", health) + "<gray>ʜᴘ</gray>";
         Component newName = bossName.append(messageCreator.createMessage(healthPart));
         bossMob.getEntity().customName(newName);
 
