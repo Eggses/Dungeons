@@ -5,6 +5,7 @@ import me.Eggses.dungeons.blocks.task.KeystoneParticleTask;
 import me.Eggses.dungeons.dungeon.bosses.BossRegistry;
 import me.Eggses.dungeons.dungeon.items.ClickItem;
 import me.Eggses.dungeons.dungeon.items.DungeonKeyItems;
+import me.Eggses.dungeons.dungeon.regions.WorldPosition;
 import me.Eggses.dungeons.dungeon.types.DungeonType;
 import me.Eggses.dungeons.blocks.events.InteractOpenMenu;
 import me.Eggses.dungeons.configuration.ConfigurationFile;
@@ -28,7 +29,6 @@ import me.Eggses.dungeons.utility.text.MessageCreator;
 import me.Eggses.dungeons.utility.text.Placeholder;
 import me.Eggses.dungeons.utility.text.Placeholders;
 import me.Eggses.dungeons.utility.sound.SoundPlayer;
-import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -67,7 +67,7 @@ public class DungeonLoadingManager {
     private final TemplateReservation templateReservation;
     private final DungeonInstanceTemplateRegistry dungeonInstanceTemplateRegistry;
 
-    private final Map<DungeonType, Location> keystoneLocations = new EnumMap<>(DungeonType.class);
+    private final Map<DungeonType, WorldPosition> keystoneLocations = new EnumMap<>(DungeonType.class);
     private final Map<DungeonType, WorldRegion> portalRooms = new EnumMap<>(DungeonType.class);
 
     public DungeonLoadingManager(JavaPlugin plugin,
@@ -147,10 +147,10 @@ public class DungeonLoadingManager {
 
             var positionOfKeystone = nonInstanceDungeonTemplate.positionOfKeyStone();
             var worldOfKeystone = nonInstanceDungeonTemplate.dungeonPortalRoomWorld();
-            var locationOfKeystone = positionOfKeystone.toLocation(worldOfKeystone);
-            keystoneLocations.put(dungeonType, locationOfKeystone);
+            var worldPositionOfKeystone = new WorldPosition(worldOfKeystone, positionOfKeystone);
+            keystoneLocations.put(dungeonType, worldPositionOfKeystone);
 
-            blockRegistry.addBlockAndEvent(locationOfKeystone, PlayerInteractEvent.class, new InteractOpenMenu(
+            blockRegistry.addBlockAndEvent(worldPositionOfKeystone, PlayerInteractEvent.class, new InteractOpenMenu(
                     dungeonFactory,
                     templateReservation,
                     dungeonType,
@@ -164,9 +164,9 @@ public class DungeonLoadingManager {
             ));
 
             var name = messageCreator.createMessage(nonInstanceDungeonTemplate.keystoneName(), placeholders);
-            blockRegistry.addBlockAndName(locationOfKeystone, name);
+            blockRegistry.addBlockAndName(worldPositionOfKeystone, name);
 
-            blockRegistry.addBlockAndTaskBehaviour(locationOfKeystone, new KeystoneParticleTask().getTask());
+            blockRegistry.addBlockAndTaskBehaviour(worldPositionOfKeystone, new KeystoneParticleTask().getTask());
 
             var generalPortalRoomRegion = nonInstanceDungeonTemplate.generalPortalRoomRegion();
             var worldRegion = new WorldRegion(worldOfKeystone, generalPortalRoomRegion);
@@ -182,8 +182,8 @@ public class DungeonLoadingManager {
             dungeonKeyItems.removeKey(dungeonType);
             itemRegistry.remove(dungeonType.getUniqueKey());
 
-            Location locationOfKeystone = keystoneLocations.remove(dungeonType);
-            if (locationOfKeystone != null) blockRegistry.remove(locationOfKeystone);
+            WorldPosition worldPositionOfKeystone = keystoneLocations.remove(dungeonType);
+            if (worldPositionOfKeystone != null) blockRegistry.remove(worldPositionOfKeystone);
 
             WorldRegion generalPortalRoomRegion = portalRooms.remove(dungeonType);
             if (generalPortalRoomRegion != null) dungeonEntranceRoomRegistry.remove(generalPortalRoomRegion);

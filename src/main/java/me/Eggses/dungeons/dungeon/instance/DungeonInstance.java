@@ -138,7 +138,7 @@ public class DungeonInstance {
 
         areaController.endAllTasks();
 
-        blockRegistry.removeAll(location -> location.getWorld().equals(dungeonWorld));
+        blockRegistry.removeAll(worldPosition -> worldPosition.getWorld().equals(dungeonWorld));
 
         dungeonLifecycleService.destroyInstanceRuntime(this);
 

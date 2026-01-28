@@ -2,6 +2,7 @@ package me.Eggses.dungeons.listeners.entities;
 
 import me.Eggses.dungeons.blocks.BlockRegistry;
 import me.Eggses.dungeons.dungeon.lifecycle.DungeonRegistry;
+import me.Eggses.dungeons.dungeon.regions.WorldPosition;
 import me.Eggses.dungeons.eventhandler.EventContext;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
@@ -34,7 +35,7 @@ public class Combustion implements Listener {
         if (event instanceof EntityCombustByBlockEvent combustByBlockEvent) {
             Block block = combustByBlockEvent.getCombuster();
             if (block != null) {
-                blockRegistry.handleEvent(block.getLocation(), combustByBlockEvent, EventContext.EMPTY);
+                blockRegistry.handleEvent(new WorldPosition(block), combustByBlockEvent, EventContext.EMPTY);
             }
             return;
         }

@@ -1,5 +1,6 @@
 package me.Eggses.dungeons.blocks.task;
 
+import me.Eggses.dungeons.dungeon.regions.WorldPosition;
 import me.Eggses.dungeons.particles.OrbitParticleEffect;
 import me.Eggses.dungeons.tasks.Task;
 import me.Eggses.dungeons.tasks.TaskProvider;
@@ -8,7 +9,7 @@ import org.bukkit.Particle;
 
 import java.util.List;
 
-public class KeystoneParticleTask implements TaskProvider<Location> {
+public class KeystoneParticleTask implements TaskProvider<WorldPosition> {
 
     private static final long DELAY_TICKS = 0;
     private static final long REPEATING_PERIOD_TICKS = 1;
@@ -17,13 +18,13 @@ public class KeystoneParticleTask implements TaskProvider<Location> {
     }
 
     @Override
-    public Task<Location> getTask() {
+    public Task<WorldPosition> getTask() {
 
         double radius = 0.73;
         List<OrbitParticleEffect> particleEffectList = getOrbitParticleEffects(radius);
 
         return (taskContext -> {
-            Location center = taskContext.getOwner().clone().add(0.5, 0, 0.5);
+            Location center = taskContext.getOwner().toLocation().add(0.5, 0, 0.5);
 
             taskContext.runTaskRepeatedly(
                     () -> particleEffectList.forEach(ope -> ope.spawnParticle(center))

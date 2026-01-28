@@ -1,6 +1,7 @@
 package me.Eggses.dungeons.listeners.players;
 
 import me.Eggses.dungeons.blocks.BlockRegistry;
+import me.Eggses.dungeons.dungeon.regions.WorldPosition;
 import me.Eggses.dungeons.eventhandler.EventContext;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
@@ -20,6 +21,6 @@ public class PlayerBlockInteract implements Listener {
         Block block = event.getClickedBlock();
         if (block == null) return;
 
-        blockRegistry.handleEvent(block.getLocation(), event, EventContext.EMPTY);
+        blockRegistry.handleEvent(new WorldPosition(block), event, EventContext.EMPTY);
     }
 }

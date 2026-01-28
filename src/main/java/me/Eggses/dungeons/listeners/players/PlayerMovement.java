@@ -2,6 +2,7 @@ package me.Eggses.dungeons.listeners.players;
 
 import me.Eggses.dungeons.blocks.BlockRegistry;
 import me.Eggses.dungeons.dungeon.lifecycle.DungeonEventRouter;
+import me.Eggses.dungeons.dungeon.regions.WorldPosition;
 import me.Eggses.dungeons.eventhandler.EventContext;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,6 +23,6 @@ public class PlayerMovement implements Listener {
     public void onPlayerMove(PlayerMoveEvent event) {
         if (!event.hasExplicitlyChangedBlock()) return;
         dungeonEventRouter.handlePlayerMovementEvent(event);
-        blockRegistry.handleEvent(event.getTo(), event, eventContext);
+        blockRegistry.handleEvent(new WorldPosition(event.getTo()), event, eventContext);
     }
 }

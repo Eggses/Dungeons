@@ -1,6 +1,7 @@
 package me.Eggses.dungeons.blocks;
 
 import me.Eggses.dungeons.dispatch.EventManagerRegistry;
+import me.Eggses.dungeons.dungeon.regions.WorldPosition;
 import me.Eggses.dungeons.eventhandler.EventBehaviour;
 import me.Eggses.dungeons.eventhandler.EventContext;
 import me.Eggses.dungeons.tasks.ActiveTasks;
@@ -25,74 +26,73 @@ public class BlockRegistry {
 
     private final TaskRunner taskRunner;
 
-    private final EventManagerRegistry<Location> blockEventRegistry = new EventManagerRegistry<>();
-    private final Map<Location, TextDisplay> blockTextDisplayRegistry = new HashMap<>();
-    private final Map<Location, ActiveTasks> blockActiveTaskRegistry = new HashMap<>();
+    private final EventManagerRegistry<WorldPosition> blockEventRegistry = new EventManagerRegistry<>();
+    private final Map<WorldPosition, TextDisplay> blockTextDisplayRegistry = new HashMap<>();
+    private final Map<WorldPosition, ActiveTasks> blockActiveTaskRegistry = new HashMap<>();
 
     public BlockRegistry(TaskRunner taskRunner) {
         this.taskRunner = taskRunner;
     }
 
-    public <E extends Event> void addBlockAndEvent(Location location,
+    public <E extends Event> void addBlockAndEvent(WorldPosition worldPosition,
                                            Class<E> eventClass,
                                            EventBehaviour<E> eventBehaviour) {
 
-        blockEventRegistry.addOrUpdate(location, eventClass, eventBehaviour);
+        blockEventRegistry.addOrUpdate(worldPosition, eventClass, eventBehaviour);
     }
 
-    public void addBlockAndName(Location location, Component name) {
-        TextDisplay textDisplay = blockTextDisplayRegistry.get(location);
+    public void addBlockAndName(WorldPosition worldPosition, Component name) {
+        TextDisplay textDisplay = blockTextDisplayRegistry.get(worldPosition);
 
         if (textDisplay == null) {
-            Location spawnLocation = location.clone().add(0.5, 1.2, 0.5);
-            textDisplay = location.getWorld().spawn(spawnLocation, TextDisplay.class);
+            Location spawnLocation = worldPosition.toLocation().add(0.5, 1.2, 0.5);
+            textDisplay = spawnLocation.getWorld().spawn(spawnLocation, TextDisplay.class);
             textDisplay.setBillboard(Display.Billboard.CENTER);
             textDisplay.setBackgroundColor(Color.fromARGB(0, 0, 0, 0));
-            blockTextDisplayRegistry.put(location, textDisplay);
+            blockTextDisplayRegistry.put(worldPosition, textDisplay);
         }
         textDisplay.text(name);
     }
 
-    public void addBlockAndTaskBehaviour(Location location, Task<Location> task) {
+    public void addBlockAndTaskBehaviour(WorldPosition worldPosition, Task<WorldPosition> task) {
+        blockActiveTaskRegistry.putIfAbsent(worldPosition, new ActiveTasks());
+        ActiveTasks activeTasks = blockActiveTaskRegistry.get(worldPosition);
 
-        blockActiveTaskRegistry.putIfAbsent(location, new ActiveTasks());
-        ActiveTasks activeTasks = blockActiveTaskRegistry.get(location);
-
-        TaskContext<Location> taskContext = new TaskContext<>(location, activeTasks, taskRunner);
+        TaskContext<WorldPosition> taskContext = new TaskContext<>(worldPosition, activeTasks, taskRunner);
         task.runTask(taskContext);
     }
 
-    public void remove(Location location) {
-        blockEventRegistry.remove(location);
+    public void remove(WorldPosition worldPosition) {
 
-        removeTextDisplay(location);
+        blockEventRegistry.remove(worldPosition);
 
-        ActiveTasks blockTasks = blockActiveTaskRegistry.remove(location);
+        removeTextDisplay(worldPosition);
+
+        ActiveTasks blockTasks = blockActiveTaskRegistry.remove(worldPosition);
         if (blockTasks != null) blockTasks.endAllTasks();
     }
 
-    public void removeAll(Predicate<Location> locationPredicate) {
+    public void removeAll(Predicate<WorldPosition> worldPositionPredicate) {
 
-        Set<Location> allKeys = new HashSet<>();
+        Set<WorldPosition> allKeys = new HashSet<>();
         allKeys.addAll(blockEventRegistry.getKeySet());
         allKeys.addAll(blockTextDisplayRegistry.keySet());
         allKeys.addAll(blockActiveTaskRegistry.keySet());
 
-        for (Location location : Set.copyOf(allKeys)) {
-            if (locationPredicate.test(location)) {
-                remove(location);
+        for (WorldPosition worldPosition : Set.copyOf(allKeys)) {
+            if (worldPositionPredicate.test(worldPosition)) {
+                remove(worldPosition);
             }
         }
     }
 
-    public <E extends Event> void handleEvent(Location location, E event, EventContext eventContext) {
-        location = new Location(location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
-        blockEventRegistry.handleEvent(location, event, eventContext);
+    public <E extends Event> void handleEvent(WorldPosition worldPosition, E event, EventContext eventContext) {
+        blockEventRegistry.handleEvent(worldPosition, event, eventContext);
     }
 
-    public void removeTextDisplay(Location location) {
+    private void removeTextDisplay(WorldPosition worldPosition) {
 
-        TextDisplay textDisplay = blockTextDisplayRegistry.remove(location);
+        TextDisplay textDisplay = blockTextDisplayRegistry.remove(worldPosition);
         if (textDisplay != null) {
 
             Chunk chunk = textDisplay.getChunk();

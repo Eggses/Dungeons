@@ -77,17 +77,10 @@ public class InstanceEventHandler {
         eventManager.addEventBehaviour(EntityDamageByEntityEvent.class, new EntityDamageEntity(entityManager));
 
         eventManager.addEventBehaviour(EntityDamageEvent.class, (event, eventContext) -> {
-            if (event.isCancelled()) {
-                System.out.println("Damage Event is canacled and is returning");
-                return;
-            }
+            if (event.isCancelled()) return;
             DungeonEntity dungeonEntity = entityManager.getDungeonEntity(event.getEntity().getUniqueId());
-            if (dungeonEntity == null) {
-                System.out.println("Dungeon entity pulled was null so returning");
-                return;
-            }
+            if (dungeonEntity == null) return;
             dungeonEntity.takeDamage(event.getFinalDamage());
-            System.out.println("Dungeon entity took some damage!");
         });
     }
 

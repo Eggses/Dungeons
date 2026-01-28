@@ -6,10 +6,12 @@ import me.Eggses.dungeons.tasks.Task;
 import me.Eggses.dungeons.tasks.TaskProvider;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class LightningFire implements TaskProvider<Boss> {
 
@@ -19,17 +21,25 @@ public class LightningFire implements TaskProvider<Boss> {
             new Position(7, 2, 3)
     );
 
-    private static final int NUMBER_OF_STRIKES = 2;
-    private static final long FIRE_LIFETIME_TICKS = 10L * 20L;
-    private static final long REPEATING_PERIOD_TICKS = 26L * 20L;
+    private static final List<int[]> FIRE_OFFSETS = List.of(
+            new int[]{-1, 0, -1},
+            new int[]{0, 0, -1},
+            new int[]{1, 0, -1},
+            new int[]{-1, 0,  0},
+            new int[]{1, 0,  0},
+            new int[]{-1, 0,  1},
+            new int[]{0, 0,  1},
+            new int[]{1, 0,  1}
+    );
 
-    private static final int[][] FIRE_OFFSETS = {
-            { 0, 0, 0 },
-            { 1, 0, 0 },
-            { -1, 0, 0 },
-            { 0, 0, 1 },
-            { 0, 0, -1 }
-    };
+    private static final int NUMBER_OF_STRIKES = 2;
+
+    private static final int MINIMUM_FIRE = 3;
+    private static final int MAXIMUM_FIRE = 7;
+
+    private static final long MIN_FIRE_LIFETIME_TICKS = 30L * 20L;
+    private static final long MAX_FIRE_LIFETIME_TICKS = 50L * 20L;
+    private static final long REPEATING_PERIOD_TICKS = 60L * 20L;
 
     private final LightningFireController lightningFireController;
     private World world;
@@ -53,21 +63,48 @@ public class LightningFire implements TaskProvider<Boss> {
                 for (int i = 0; i < NUMBER_OF_STRIKES; i++) {
 
                     Location strikeLocation = pickLightningStrikeLocationAvoidingPlayers();
-
                     world.strikeLightningEffect(strikeLocation);
 
-                    for (int[] offset : FIRE_OFFSETS) {
-                        Location fireSpawningLocation = strikeLocation.clone().add(
-                                offset[0],
-                                offset[1],
-                                offset[2]
+                    int[][] fireOffsets = getFireOffsets();
+
+                    long fireLifeTime = ThreadLocalRandom.current().nextLong(
+                            MIN_FIRE_LIFETIME_TICKS,
+                            MAX_FIRE_LIFETIME_TICKS + 1
+                    );
+
+                    for (int[] offset : fireOffsets) {
+
+                        Block fire = world.getBlockAt(
+                                strikeLocation.getBlockX() + offset[0],
+                                strikeLocation.getBlockY() + offset[1],
+                                strikeLocation.getBlockZ() + offset[2]
                         );
-                        lightningFireController.placeFire(fireSpawningLocation.getBlock());
+
+                        lightningFireController.placeFire(fire);
+
+                        taskContext.runTaskLaterAndRemove(()
+                                -> lightningFireController.removeFire(fire), fireLifeTime
+                        );
                     }
-                    taskContext.runTaskLaterAndRemove(lightningFireController::removeAllFire, FIRE_LIFETIME_TICKS);
                 }
             }, 0L, REPEATING_PERIOD_TICKS);
         };
+    }
+
+    private int[][] getFireOffsets() {
+
+        int fireToSpawn = ThreadLocalRandom.current().nextInt(MINIMUM_FIRE, MAXIMUM_FIRE + 1);
+        fireToSpawn = Math.min(fireToSpawn, FIRE_OFFSETS.size());
+        int[][] newOffsets = new int[fireToSpawn][3];
+
+        List<int[]> fireOffsets = new ArrayList<>(FIRE_OFFSETS);
+        Collections.shuffle(fireOffsets);
+
+        for (int i = 0; i < newOffsets.length; i++) {
+            newOffsets[i] = fireOffsets.get(i);
+        }
+
+        return newOffsets;
     }
 
     private Location pickLightningStrikeLocationAvoidingPlayers() {

@@ -8,6 +8,7 @@ import me.Eggses.dungeons.dungeon.instance.DungeonInstance;
 import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.dungeon.areas.utility.AreaControllerBuilder;
 import me.Eggses.dungeons.dungeon.areas.utility.DungeonArea;
+import me.Eggses.dungeons.dungeon.regions.WorldPosition;
 import me.Eggses.dungeons.dungeon.utility.DungeonContext;
 import me.Eggses.dungeons.entities.mobs.EntityManager;
 import org.bukkit.Location;
@@ -61,9 +62,9 @@ public class AreaController {
     private void addAllCustomBlocks(Map<Position, Consumer<DungeonContext>> blockInteractionMap) {
 
         for (Map.Entry<Position, Consumer<DungeonContext>> entry : blockInteractionMap.entrySet()) {
-            Location location = entry.getKey().toLocation(dungeonWorld);
 
-            blockRegistry.addBlockAndEvent(location, PlayerInteractEvent.class, new DungeonInteraction(
+            WorldPosition worldPosition = new WorldPosition(dungeonWorld, entry.getKey());
+            blockRegistry.addBlockAndEvent(worldPosition, PlayerInteractEvent.class, new DungeonInteraction(
                     blockRegistry,
                     entry.getValue(),
                     dungeonContext,

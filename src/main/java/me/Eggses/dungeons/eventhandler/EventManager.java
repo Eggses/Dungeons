@@ -18,25 +18,22 @@ public class EventManager {
 
     public <E extends Event> void handleEvent(E event, EventContext eventContext) {
 
-        List<EventBehaviour<? extends Event>> eventBehaviours = behaviours.get(event.getClass());
-        if (eventBehaviours == null) return;
+        Class<?> currentClass = event.getClass();
 
-        for (EventBehaviour<? extends Event> eventBehaviour : eventBehaviours) {
-            @SuppressWarnings("unchecked")
-            EventBehaviour<E> trueEventBehaviour = (EventBehaviour<E>) eventBehaviour;
+        // If an Event reference can refer to an object whose class is currentClass.
+        while (currentClass != null && Event.class.isAssignableFrom(currentClass)) {
 
-            trueEventBehaviour.handleEvent(event, eventContext);
+            List<EventBehaviour<? extends Event>> eventBehaviours = behaviours.get(currentClass);
+            currentClass = currentClass.getSuperclass();
+
+            if (eventBehaviours == null) continue;
+
+            for (EventBehaviour<? extends Event> eventBehaviour : eventBehaviours) {
+                @SuppressWarnings("unchecked")
+                EventBehaviour<? super E> trueEventBehaviour = (EventBehaviour<? super E>) eventBehaviour;
+                trueEventBehaviour.handleEvent(event, eventContext);
+            }
         }
-    }
-
-    public <E extends Event> void removeEventBehaviour(Class<E> eventClass, EventBehaviour<E> eventBehaviour) {
-
-        List<EventBehaviour<? extends Event>> eventBehaviours = behaviours.get(eventClass);
-        if (eventBehaviours == null) return;
-
-        eventBehaviours.remove(eventBehaviour);
-
-        if (eventBehaviours.isEmpty()) behaviours.remove(eventClass);
     }
 
     public void removeAll() {

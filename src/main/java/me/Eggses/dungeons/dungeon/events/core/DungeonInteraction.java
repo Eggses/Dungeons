@@ -1,6 +1,7 @@
 package me.Eggses.dungeons.dungeon.events.core;
 
 import me.Eggses.dungeons.blocks.BlockRegistry;
+import me.Eggses.dungeons.dungeon.regions.WorldPosition;
 import me.Eggses.dungeons.dungeon.utility.DungeonContext;
 import me.Eggses.dungeons.eventhandler.EventBehaviour;
 import me.Eggses.dungeons.eventhandler.EventContext;
@@ -52,6 +53,6 @@ public class DungeonInteraction implements EventBehaviour<PlayerInteractEvent> {
             return;
         }
         onInteractConsumer.accept(dungeonContext);
-        blockRegistry.remove(block.getLocation());
+        blockRegistry.remove(new WorldPosition(block));
     }
 }
