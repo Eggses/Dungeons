@@ -11,7 +11,6 @@ import me.Eggses.dungeons.particles.NormalEffectStyle;
 import me.Eggses.dungeons.utility.sound.DungeonSound;
 import me.Eggses.dungeons.utility.sound.SoundPlayer;
 import net.kyori.adventure.sound.Sound;
-import net.kyori.adventure.util.TriState;
 import org.bukkit.Particle;
 import org.bukkit.damage.DamageSource;
 import org.bukkit.damage.DamageType;
@@ -21,7 +20,6 @@ import org.bukkit.event.entity.EntityCombustByBlockEvent;
 public class FireBurstExplosion implements EventBehaviour<EntityCombustByBlockEvent> {
 
     private static final long COOLDOWN_MS = 50000L;
-    private static final long BOSS_BURN_TIME_SECONDS = 20L * 20L;
 
     private long lastRun = Long.MIN_VALUE;
 
@@ -42,6 +40,7 @@ public class FireBurstExplosion implements EventBehaviour<EntityCombustByBlockEv
 
     @Override
     public void handleEvent(EntityCombustByBlockEvent event, EventContext eventContext) {
+        event.setCancelled(true);
 
         long currentTime = System.currentTimeMillis();
         if (currentTime < COOLDOWN_MS + lastRun) return;
@@ -62,7 +61,7 @@ public class FireBurstExplosion implements EventBehaviour<EntityCombustByBlockEv
         }
 
         Entity entity = dungeonEntity.getEntity();
-        entity.setVisualFire(TriState.TRUE);
+        entity.setFireTicks(20 * 20);
 
         for (int i = 0; i < BURSTS; i++) {
             long delay = i * BURST_SPACE_TICKS;
@@ -74,10 +73,6 @@ public class FireBurstExplosion implements EventBehaviour<EntityCombustByBlockEv
         }
         harvest.reset();
         mossController.removeAllMoss();
-
-        boss.addOneOffTask(taskContext
-                -> taskContext.runTaskLaterAndRemove(
-                        () -> boss.getEntity().setVisualFire(TriState.FALSE), BOSS_BURN_TIME_SECONDS));
     }
 
     private void fireBurstAtBoss(Boss boss) {

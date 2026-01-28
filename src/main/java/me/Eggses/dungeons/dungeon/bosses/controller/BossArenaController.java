@@ -121,11 +121,6 @@ public class BossArenaController {
     }
 
     public void clearPlayers() {
-        if (boss != null) {
-            for (Player player : playersInArena.getPlayers()) {
-                boss.removeBossBarViewer(player);
-            }
-        }
         playersInArena.clear();
     }
 

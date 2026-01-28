@@ -29,16 +29,12 @@ public class Combustion implements Listener {
         if (!dungeonRegistry.isDungeonWorld(event.getEntity().getWorld())) return;
 
         if (event instanceof EntityCombustByEntityEvent) return;
-
         if (event instanceof EntityCombustByBlockEvent combustByBlockEvent) {
-            onCombustByBlock(combustByBlockEvent);
+            dungeonEventRouter.handleEvent(event, event.getEntity().getWorld());
             return;
         }
 
+        System.out.println("Burn Event Canclled");
         event.setCancelled(true);
-    }
-
-    private void onCombustByBlock(EntityCombustByBlockEvent event) {
-        dungeonEventRouter.handleEvent(event, event.getEntity().getWorld());
     }
 }

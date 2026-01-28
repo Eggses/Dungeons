@@ -19,12 +19,9 @@ import me.Eggses.dungeons.eventhandler.EventRegistry;
 import me.Eggses.dungeons.items.ItemHandler;
 import me.Eggses.dungeons.items.ItemKey;
 import me.Eggses.dungeons.items.ItemGive;
+import me.Eggses.dungeons.listeners.entities.*;
 import me.Eggses.dungeons.listeners.players.*;
 import me.Eggses.dungeons.tasks.TaskRunner;
-import me.Eggses.dungeons.listeners.entities.Combustion;
-import me.Eggses.dungeons.listeners.entities.EntityCombat;
-import me.Eggses.dungeons.listeners.entities.EntityRemove;
-import me.Eggses.dungeons.listeners.entities.EntityExplode;
 import me.Eggses.dungeons.listeners.bans.*;
 import me.Eggses.dungeons.utility.sound.SoundPlayer;
 import me.Eggses.dungeons.utility.text.MessageCreator;
@@ -155,6 +152,7 @@ public final class Dungeons extends JavaPlugin {
         pluginManager.registerEvents(new EntityCombat(dungeonEventRouter), this);
         pluginManager.registerEvents(new EntityRemove(dungeonEventRouter), this);
         pluginManager.registerEvents(new EntityExplode(dungeonEventRouter), this);
+        pluginManager.registerEvents(new GeneralEntityDamage(dungeonEventRouter), this);
 
         pluginManager.registerEvents(new CauldronLevel(dungeonRegistry), this);
         pluginManager.registerEvents(new ChorusFruitTeleport(dungeonRegistry), this);
@@ -212,7 +210,14 @@ public final class Dungeons extends JavaPlugin {
     /*
     TODO
 
-    wont let you re enter after boss dies...
+    facing wrong wya on deathw ehn spanwing in the ship maybe FIXED.
+    make biome have no rain in the boss arena?
+    moss isnt posioning
+    moss too small
+    maligant marhs orignal file: has errors; achivement file + gamerules need to be destroyed.
+    SMP changes plugin notifies people where they die.
+
+
     no fire in arena
     boss bar no colour
     rot has space at front

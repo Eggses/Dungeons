@@ -2,6 +2,7 @@ package me.Eggses.dungeons.dungeon.instance;
 
 import me.Eggses.dungeons.dungeon.areas.AreaController;
 import me.Eggses.dungeons.dungeon.bosses.controller.BossArenaController;
+import me.Eggses.dungeons.entities.mobs.DungeonEntity;
 import me.Eggses.dungeons.entities.mobs.EntityManager;
 import me.Eggses.dungeons.dungeon.events.core.EntityDamageEntity;
 import me.Eggses.dungeons.dungeon.portals.PortalController;
@@ -78,6 +79,12 @@ public class InstanceEventHandler {
         eventManager.addEventBehaviour(EntityCombustByBlockEvent.class, ((event, eventContext)
                 -> entityManager.passEventToMobIfExists(event.getEntity(), event, eventContext))
         );
+
+        eventManager.addEventBehaviour(EntityDamageEvent.class, (event, eventContext) -> {
+            DungeonEntity dungeonEntity = entityManager.getDungeonEntity(event.getEntity().getUniqueId());
+            if (dungeonEntity == null) return;
+            dungeonEntity.takeDamage(event.getFinalDamage());
+        });
     }
 
     public <E extends Event> void addEventBehaviour(Class<E> eventClass, EventBehaviour<E> eventBehaviour) {

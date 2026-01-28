@@ -31,7 +31,7 @@ public class HarvestIncreaseOverTime implements TaskProvider<Boss> {
 
                     if (stackCount % 10 != 0) return; // Not multiple of 10.
 
-                    var message = messageCreator.createMessage("<dark_red>Harvest at " + stackCount + " stacks.");
+                    var message = messageCreator.createMessage("<dark_red>Harvest is at " + stackCount + " stacks.");
                     var sound = soundPlayer.createSound(DungeonSound.WARDEN_ATTACK_IMPACT.getMinecraftSound());
 
                     Boss boss = ctx.getOwner();

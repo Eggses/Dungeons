@@ -10,7 +10,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 public class SpawningBossState implements ArenaControllerState {
 
-    private static final long SPAWN_BOSS_AFTER_SECONDS = 20 * 20;
+    private static final long SPAWN_BOSS_AFTER_SECONDS = 10 * 20;
 
     private final JavaPlugin plugin;
     private final BossArenaController bossArenaController;

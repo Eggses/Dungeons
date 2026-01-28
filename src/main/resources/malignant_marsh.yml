@@ -370,8 +370,9 @@ dungeon_areas:
       - "MOB type=SKELETON pos=-1264,66,-24 level=32 count=2 preset=KNIGHT armour=IRON_WARD_IRON_4 weapon=IRON_SWORD"
       - "MOB type=BOGGED pos=-1254,66,-27 level=32 count=2 preset=KNIGHT armour=IRON_TIDE_IRON_4 weapon=IRON_SWORD"
     on_clear:
-      - "GRAVEYARD pos=-1238,66,-25 rotation=-90"
+      - "GRAVEYARD pos=-1238,66,-25 rotation=90"
       - "WEATHER weather=thunderstorm"
+      - "TIME time=12am"
     interactions: []
     triggers: []
 
@@ -380,5 +381,6 @@ boss_area:
   boss_room_entry_bounds: "pos1=-1246,64,74 pos2=-1246,66,77"
   boss_room_entry_position: "pos=-1194,67,99 rotation=-90"
   on_boss_defeat:
-    - "FILL pos1=-1169,67,98 pos2=-1169,70,100 block=END_GATEWAY"
-    - "PORTAL pos1=-1169,67,98 pos2=-1169,70,100"
+    - "FILL pos1=-1164,67,98 pos2=-1164,70,100 block=END_GATEWAY"
+    - "PORTAL pos1=-1164,67,98 pos2=-1164,70,100"
+    - "FILL pos1=-1165,67,98 pos2=-1165,67,100"

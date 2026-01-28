@@ -86,6 +86,7 @@ public class BlockRegistry {
     }
 
     public <E extends Event> void handleEvent(Location location, E event, EventContext eventContext) {
+        location = new Location(location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
         blockEventRegistry.handleEvent(location, event, eventContext);
     }
 

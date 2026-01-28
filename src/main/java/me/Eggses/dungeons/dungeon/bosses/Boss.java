@@ -126,7 +126,7 @@ public class Boss implements DungeonEntity {
     }
 
     public void tryEndBossFight() {
-        if (health <= 0 ) defeatBossFight();
+        if (health <= 0) defeatBossFight();
     }
 
     private void defeatBossFight() {

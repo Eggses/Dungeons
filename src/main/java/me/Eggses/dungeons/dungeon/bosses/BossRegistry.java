@@ -81,7 +81,7 @@ public class BossRegistry {
                     .spawnChanges(dungeonEntity -> {
                         var ac = dungeonEntity.getAttributeController();
                         ac.setBaseAttribute(Attribute.SCALE, 1.1);
-                        ac.setBaseAttribute(Attribute.MOVEMENT_SPEED, 0.26);
+                        ac.setBaseAttribute(Attribute.MOVEMENT_SPEED, 0.28);
 
                         PathfinderMob pathfinderMob = mobUtility.toPathFinderMobWithClearedGoal(dungeonEntity.getEntity());
                         if (pathfinderMob == null) return;
