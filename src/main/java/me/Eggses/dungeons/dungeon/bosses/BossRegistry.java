@@ -23,6 +23,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.meta.trim.TrimMaterial;
 import org.bukkit.inventory.meta.trim.TrimPattern;
 
@@ -92,7 +93,7 @@ public class BossRegistry {
             final Harvest harvest = new Harvest();
 
             Phase phase1 = new Phase.PhaseBuilder(100.0)
-                    .addPermanentEvent(new EventDefinition<>(EntityDamageByEntityEvent.class, BossCustomHealth::new))
+                    .addPermanentEvent(new EventDefinition<>(EntityDamageEvent.class, BossCustomHealth::new))
                     .addPermanentEvent(new EventDefinition<>(EntityDamageByEntityEvent.class, TargetTopDamage::new))
                     .addPermanentEvent(new EventDefinition<>(EntityDamageByEntityEvent.class, InfectedHit::new))
                     .addOneOffTask(new Enrage().getTask())
