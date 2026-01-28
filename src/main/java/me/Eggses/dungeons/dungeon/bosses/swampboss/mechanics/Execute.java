@@ -27,7 +27,7 @@ public class Execute implements EventBehaviour<EntityDamageByEntityEvent> {
 
         if (!(event.getEntity() instanceof Player player)) return;
 
-        if (player.getHealth() <= 1.0) {
+        if (player.getHealth() <= 2.0) {
             Sound sound = soundPlayer.createSound(DungeonSound.GRINDSTONE_USE.getMinecraftSound());
             soundPlayer.playSound(sound, player);
             event.setDamage(10000);

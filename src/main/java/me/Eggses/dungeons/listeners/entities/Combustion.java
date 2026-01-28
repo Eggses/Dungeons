@@ -1,7 +1,9 @@
 package me.Eggses.dungeons.listeners.entities;
 
-import me.Eggses.dungeons.dungeon.lifecycle.DungeonEventRouter;
+import me.Eggses.dungeons.blocks.BlockRegistry;
 import me.Eggses.dungeons.dungeon.lifecycle.DungeonRegistry;
+import me.Eggses.dungeons.eventhandler.EventContext;
+import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityCombustByBlockEvent;
@@ -11,11 +13,11 @@ import org.bukkit.event.entity.EntityCombustEvent;
 public class Combustion implements Listener {
 
     private final DungeonRegistry dungeonRegistry;
-    private final DungeonEventRouter dungeonEventRouter;
+    private final BlockRegistry blockRegistry;
 
-    public Combustion(DungeonRegistry dungeonRegistry, DungeonEventRouter dungeonEventRouter) {
+    public Combustion(DungeonRegistry dungeonRegistry, BlockRegistry blockRegistry) {
         this.dungeonRegistry = dungeonRegistry;
-        this.dungeonEventRouter = dungeonEventRouter;
+        this.blockRegistry = blockRegistry;
     }
 
     /*
@@ -30,7 +32,10 @@ public class Combustion implements Listener {
 
         if (event instanceof EntityCombustByEntityEvent) return;
         if (event instanceof EntityCombustByBlockEvent combustByBlockEvent) {
-            dungeonEventRouter.handleEvent(event, event.getEntity().getWorld());
+            Block block = combustByBlockEvent.getCombuster();
+            if (block != null) {
+                blockRegistry.handleEvent(block.getLocation(), combustByBlockEvent, EventContext.EMPTY);
+            }
             return;
         }
 

@@ -22,7 +22,6 @@ import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
-import org.bukkit.event.entity.EntityCombustByBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.meta.trim.TrimMaterial;
 import org.bukkit.inventory.meta.trim.TrimPattern;
@@ -111,10 +110,13 @@ public class BossRegistry {
                     new Rotation.RotationStep(26 * 20, fungalExplosion)
             );
 
-            Phase phase2 = new Phase.PhaseBuilder(70.0)
+            var fireBurstExplosion = new FireBurstExplosion(harvest, mossController, soundPlayer);
+            var lightningFireController = new LightningFireController(blockRegistry, fireBurstExplosion);
+
+            Phase phase2 = new Phase.PhaseBuilder(75.0)
                     .addPermanentEvent(new EventDefinition<>(EntityDamageByEntityEvent.class, () -> new Execute(soundPlayer)))
-                    .addPermanentEvent(new EventDefinition<>(EntityCombustByBlockEvent.class, () -> new FireBurstExplosion(harvest, mossController, soundPlayer)))
                     .addOneOffTask(new HarvestIncreaseOverTime(harvest, messageCreator, soundPlayer).getTask())
+                    .addOneOffTask(new LightningFire(lightningFireController).getTask())
                     .addPermanentEvent(new EventDefinition<>(EntityDamageByEntityEvent.class, () -> new IncreaseDamage(harvest)))
                     .addRotationStepList(rotationSteps)
                     .build();
@@ -124,7 +126,7 @@ public class BossRegistry {
             return new DungeonBossBuilder()
                     .mobBuilder(swampMobBuilder)
                     .bossName(name)
-                    .colourScheme("<purple>")
+                    .colourScheme("<magenta>")
                     .health(2000.0)
                     .style(new BossBarController.Style(
                             name,
@@ -132,7 +134,10 @@ public class BossRegistry {
                             BossBar.Overlay.NOTCHED_10,
                             Set.of(BossBar.Flag.DARKEN_SCREEN)))
                     .phases(List.of(phase1, phase2))
-                    .addCleanUp(mossController::removeAllMoss);
+                    .addCleanUp(() -> {
+                        mossController.removeAllMoss();
+                        lightningFireController.removeAllFire();
+                    });
         });
     }
 }

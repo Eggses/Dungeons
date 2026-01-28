@@ -148,11 +148,10 @@ public final class Dungeons extends JavaPlugin {
 
         var pluginManager = getServer().getPluginManager();
 
-        pluginManager.registerEvents(new Combustion(dungeonRegistry, dungeonEventRouter), this);
+        pluginManager.registerEvents(new Combustion(dungeonRegistry, blockRegistry), this);
         pluginManager.registerEvents(new EntityCombat(dungeonEventRouter), this);
         pluginManager.registerEvents(new EntityRemove(dungeonEventRouter), this);
         pluginManager.registerEvents(new EntityExplode(dungeonEventRouter), this);
-        pluginManager.registerEvents(new GeneralEntityDamage(dungeonEventRouter), this);
 
         pluginManager.registerEvents(new CauldronLevel(dungeonRegistry), this);
         pluginManager.registerEvents(new ChorusFruitTeleport(dungeonRegistry), this);
@@ -208,10 +207,22 @@ public final class Dungeons extends JavaPlugin {
     }
 
     /*
-    TODO
+    TODO mob health isnt updating - maybe the new lsitener isnt registered.
+    TODO: maybe return back to the old system for mob health - to avoid these errors / other errors.
+    TODO: maybe ignore the advcncements when deleting seems to always cause an error..
+    TODO: or maybe dleet advancement older before pasitng into the server?
+    TODO: boss health bar sitll wott work jsut i think maybe <purple> dosnt exist that is probably it
 
-    facing wrong wya on deathw ehn spanwing in the ship maybe FIXED.
-    make biome have no rain in the boss arena?
+    TODO New mechanic, lightning strikes the ground, spawning some fire blocks, after 30 seocnds they despsawn
+    TODO: fire blocks have a entit ymove event... OR just an entity CombustByBlock dosnt really matter... then the
+    TODO listener fowards into that - remember if its a movememnt lsitener you need remove yaw / pitch.
+    *
+
+
+
+
+
+
     moss isnt posioning
     moss too small
     maligant marhs orignal file: has errors; achivement file + gamerules need to be destroyed.
