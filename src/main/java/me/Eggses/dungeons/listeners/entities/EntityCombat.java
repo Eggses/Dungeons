@@ -16,9 +16,12 @@ public class EntityCombat implements Listener {
 
     @EventHandler
     public void onEntityHitEntity(EntityDamageEvent event) {
+        System.out.println("Entity damagae event");
         if (event instanceof EntityDamageByEntityEvent entityEvent) {
             dungeonEventRouter.handleEvent(entityEvent, event.getEntity().getWorld());
+            System.out.println("passing damage by entity event");
         }
         dungeonEventRouter.handleEvent(event, event.getEntity().getWorld());
+        System.out.println("passing entity dmagae general to the dungeon handler.");
     }
 }
