@@ -35,4 +35,22 @@ public class WorldPosition {
     public Location toLocation() {
         return new Location(world, position.getX(), position.getY(), position.getZ());
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof WorldPosition other)) return false;
+
+        if (world == null || other.world == null) return false;
+
+        return world.equals(other.world) && position.equals(other.position);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 17;
+        result = 31 * result + world.hashCode();
+        result = 31 * result + position.hashCode();
+        return result;
+    }
 }
