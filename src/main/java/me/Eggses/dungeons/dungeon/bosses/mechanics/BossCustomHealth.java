@@ -18,8 +18,8 @@ public class BossCustomHealth implements EventBehaviour<EntityDamageEvent> {
         Entity entity = event.getEntity();
         if (!DungeonEntity.equalsIgnoreNull(owner, entity)) return;
 
+        boss.takeDamage(event.getFinalDamage());
         event.setDamage(0.0);
-      //TODO remove this as the other one should handle it?  boss.takeDamage(event.getFinalDamage());
         boss.tryEndBossFight();
     }
 }

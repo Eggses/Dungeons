@@ -1,6 +1,7 @@
 package me.Eggses.dungeons.dungeon.instance;
 
 import me.Eggses.dungeons.dungeon.areas.AreaController;
+import me.Eggses.dungeons.dungeon.bosses.Boss;
 import me.Eggses.dungeons.dungeon.bosses.controller.BossArenaController;
 import me.Eggses.dungeons.entities.mobs.DungeonEntity;
 import me.Eggses.dungeons.entities.mobs.EntityManager;
@@ -79,6 +80,7 @@ public class InstanceEventHandler {
         eventManager.addEventBehaviour(EntityDamageEvent.class, (event, eventContext) -> {
             if (event.isCancelled()) return;
             DungeonEntity dungeonEntity = entityManager.getDungeonEntity(event.getEntity().getUniqueId());
+            if (dungeonEntity instanceof Boss) return;
             if (dungeonEntity == null) return;
             dungeonEntity.takeDamage(event.getFinalDamage());
         });
