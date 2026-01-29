@@ -3,7 +3,6 @@ package me.Eggses.dungeons.dungeon.bosses.swampboss.mechanics;
 import me.Eggses.dungeons.blocks.BlockRegistry;
 import me.Eggses.dungeons.blocks.task.FireBlockTask;
 import me.Eggses.dungeons.dungeon.regions.WorldPosition;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.entity.EntityCombustByBlockEvent;
 
@@ -32,7 +31,7 @@ public class LightningFireController {
     public void removeFire(Block block) {
         if (block == null) return;
 
-        block.setType(Material.AIR);
+        //block.setType(Material.AIR);
         WorldPosition worldPosition = new WorldPosition(block);
         blockRegistry.remove(worldPosition);
         locationsOfFire.remove(worldPosition);
