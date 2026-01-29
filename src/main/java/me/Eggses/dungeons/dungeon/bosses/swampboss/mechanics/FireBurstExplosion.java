@@ -21,7 +21,7 @@ public class FireBurstExplosion implements EventBehaviour<EntityMoveEvent> {
     private static final int FIRE_TICKS = 20 * 20;
 
     private static final int BURSTS = 3;
-    private static final long BURST_SPACE_TICKS = (long) (20L * 2.5);
+    private static final long BURST_SPACE_TICKS = 20L;
 
     private static final Position POSITION_A = new Position(-1167, 74, 84);
     private static final Position POSITION_B = new Position(-1197, 66, 114);
@@ -68,12 +68,12 @@ public class FireBurstExplosion implements EventBehaviour<EntityMoveEvent> {
     }
 
     private void fireBurstAtBoss() {
-        DamageSource damageSource = DamageSource.builder(DamageType.IN_FIRE).build();
+        DamageSource damageSource = DamageSource.builder(DamageType.ON_FIRE).build();
         Sound sound = soundPlayer.createSound(DungeonSound.ILLUSIONER_PREPARE_BLINDNESS.getMinecraftSound());
 
         fireParticles.spawn();
 
-        final double damagePerBurst = 20.0;
+        final double damagePerBurst = 25.0;
 
         boss.getPlayersInFight().forEach(player -> {
             soundPlayer.playSound(sound, player);
