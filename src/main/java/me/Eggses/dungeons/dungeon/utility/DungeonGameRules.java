@@ -30,7 +30,6 @@ public class DungeonGameRules {
         dungeonWorld.setGameRule(GameRules.RAIDS, false);
         dungeonWorld.setGameRule(GameRules.ADVANCE_TIME, false);
         dungeonWorld.setGameRule(GameRules.ADVANCE_WEATHER, false);
-        dungeonWorld.setGameRule(GameRules.FIRE_DAMAGE, false);
         dungeonWorld.setGameRule(GameRules.FIRE_SPREAD_RADIUS_AROUND_PLAYER, 0);
         dungeonWorld.setGameRule(GameRules.SPAWN_MOBS, false);
         dungeonWorld.setGameRule(GameRules.MOB_DROPS, false);

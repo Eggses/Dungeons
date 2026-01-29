@@ -19,7 +19,6 @@ import me.Eggses.dungeons.eventhandler.EventRegistry;
 import me.Eggses.dungeons.items.ItemHandler;
 import me.Eggses.dungeons.items.ItemKey;
 import me.Eggses.dungeons.items.ItemGive;
-import me.Eggses.dungeons.listeners.Test;
 import me.Eggses.dungeons.listeners.entities.*;
 import me.Eggses.dungeons.listeners.players.*;
 import me.Eggses.dungeons.tasks.TaskRunner;
@@ -148,8 +147,6 @@ public final class Dungeons extends JavaPlugin {
                                    DungeonEntranceRoomRegistry dungeonEntranceRoomRegistry) {
 
         var pluginManager = getServer().getPluginManager();
-
-        pluginManager.registerEvents(new Test(), this);
 
         pluginManager.registerEvents(new Combustion(dungeonRegistry, blockRegistry), this);
         pluginManager.registerEvents(new EntityCombat(dungeonEventRouter), this);
