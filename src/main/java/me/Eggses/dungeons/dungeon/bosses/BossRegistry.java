@@ -100,8 +100,8 @@ public class BossRegistry {
                     .addOneOffTask(new Enrage().getTask())
                     .build();
 
-            var poison = new Poison(messageCreator, soundPlayer).getTask();
-            var overwhelmingFungus = new OverwhelmingFungus(mossController, messageCreator, soundPlayer).getTask();
+            var poison = new Poison(soundPlayer).getTask();
+            var overwhelmingFungus = new OverwhelmingFungus(mossController, soundPlayer).getTask();
             var fungalExplosion = new FungalExplosion(mossController, messageCreator, soundPlayer).getTask();
 
             List<Rotation.RotationStep> rotationSteps = List.of(
@@ -127,7 +127,7 @@ public class BossRegistry {
             return new DungeonBossBuilder()
                     .mobBuilder(swampMobBuilder)
                     .bossName(name)
-                    .colourScheme("<magenta>")
+                    .colourScheme("<red>")
                     .health(2000.0)
                     .style(new BossBarController.Style(
                             name,

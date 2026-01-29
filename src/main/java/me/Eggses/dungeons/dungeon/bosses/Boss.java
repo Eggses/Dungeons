@@ -47,6 +47,8 @@ public class Boss implements DungeonEntity {
     private final World world;
 
     private final Component bossName;
+    private final Component bossChatName;
+    private final String colourScheme;
     private final MessageCreator messageCreator;
 
     private final double maxHealth;
@@ -83,7 +85,12 @@ public class Boss implements DungeonEntity {
         this.world = world;
         this.messageCreator = messageCreator;
         this.bossName = builder.getBossName();
-        this.bossBarController = new BossBarController(this, builder.getColourScheme(), messageCreator, builder.getStyle());
+        this.colourScheme = builder.getColourScheme();
+        this.bossBarController = new BossBarController(this, colourScheme, messageCreator, builder.getStyle());
+
+        Component prefix = messageCreator.createMessage(colourScheme + "[");
+        Component suffix = messageCreator.createMessage(colourScheme + "]<gray>: ");
+        this.bossChatName = prefix.append(bossName).append(suffix);
         this.maxHealth = builder.getHealth();
         this.health = maxHealth;
 
@@ -167,6 +174,11 @@ public class Boss implements DungeonEntity {
 
     public World getBossWorld() {
         return world;
+    }
+
+    public Component createMessage(String message) {
+        Component finalMessage = messageCreator.createMessage(colourScheme + message);
+        return bossChatName.append(finalMessage);
     }
 
     @Override

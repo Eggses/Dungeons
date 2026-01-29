@@ -55,12 +55,14 @@ public class BossBarController {
         String hpText = String.format("%.0f", currentHealth);
         String pctText = String.format("%.0f%%", healthPercentage);
 
-        Component numbers = Component.text(" - " + hpText + " (" + pctText + ")").color(TextColor.color(60, 80, 200));
+        bossBar.name(messageCreator.createMessage("<red> boss bar"));
+
+       // Component numbers = Component.text(" - " + hpText + " (" + pctText + ")").color(TextColor.color(60, 80, 200));
 
         //Component numbers = messageCreator.createMessage(colourScheme + " - " + hpText + " (" + pctText + ")");
        // System.out.println(colourScheme + "- " + hpText + " (" + pctText + ")");
         //TODO
-        bossBar.name(style.name.append(numbers));
+       // bossBar.name(style.name.append(numbers));
     }
 
     public void addViewer(Player player) {

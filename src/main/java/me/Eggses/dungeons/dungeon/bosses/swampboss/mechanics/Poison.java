@@ -5,7 +5,6 @@ import me.Eggses.dungeons.tasks.Task;
 import me.Eggses.dungeons.tasks.TaskProvider;
 import me.Eggses.dungeons.utility.sound.DungeonSound;
 import me.Eggses.dungeons.utility.sound.SoundPlayer;
-import me.Eggses.dungeons.utility.text.MessageCreator;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
@@ -23,11 +22,9 @@ public class Poison implements TaskProvider<Boss> {
               true
       );
 
-    private final MessageCreator messageCreator;
     private final SoundPlayer soundPlayer;
 
-    public Poison(MessageCreator messageCreator, SoundPlayer soundPlayer) {
-        this.messageCreator = messageCreator;
+    public Poison(SoundPlayer soundPlayer) {
         this.soundPlayer = soundPlayer;
     }
 
@@ -36,7 +33,7 @@ public class Poison implements TaskProvider<Boss> {
         return ctx -> {
 
             Boss boss = ctx.getOwner();
-            Component message = messageCreator.createMessage("<green>Rot blooms!");
+            Component message = boss.createMessage("<green>Rot blooms!");
             Sound sound = soundPlayer.createSound(DungeonSound.MUD_STEP.getMinecraftSound());
 
             for (Player player : boss.getPlayersInFight()) {
