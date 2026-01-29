@@ -51,13 +51,16 @@ public class FireBurstExplosion implements EventBehaviour<EntityMoveEvent> {
     @Override
     public void handleEvent(EntityMoveEvent event, EventContext eventContext) {
 
+        System.out.println("Move Event ran");
+        if (!event.getEntity().getUniqueId().equals(boss.getUUID())) return;
+
         long currentTime = System.currentTimeMillis();
         if (currentTime < COOLDOWN_MS + lastRanTime) return;
         lastRanTime = currentTime;
 
+        System.out.println("Move Event passed cooldown ran");
         boss.getEntity().setFireTicks(FIRE_TICKS);
-
-
+        System.out.println("boss should burn");
         for (int i = 0; i < BURSTS; i++) {
             long delay = i * BURST_SPACE_TICKS;
             boss.addOneOffTask(taskContext
@@ -65,6 +68,7 @@ public class FireBurstExplosion implements EventBehaviour<EntityMoveEvent> {
         }
         harvest.reset();
         mossController.removeAllMoss();
+        System.out.println("destroyed all the moss");
     }
 
     private void fireBurstAtBoss() {
