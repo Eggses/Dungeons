@@ -79,9 +79,12 @@ public class InstanceEventHandler {
 
         eventManager.addEventBehaviour(EntityDamageEvent.class, (event, eventContext) -> {
             if (event.isCancelled()) return;
+
             DungeonEntity dungeonEntity = entityManager.getDungeonEntity(event.getEntity().getUniqueId());
             if (dungeonEntity == null) return;
-            entityManager.passEventToMobIfExists(dungeonEntity.getEntity(), event, eventContext);
+
+            EventContext newContext = EventContext.builder().ownerOfBehaviour(dungeonEntity).build();
+            entityManager.passEventToMobIfExists(dungeonEntity.getEntity(), event, newContext);
             if (dungeonEntity instanceof Boss) return;
             dungeonEntity.takeDamage(event.getFinalDamage());
         });

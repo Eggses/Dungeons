@@ -128,7 +128,7 @@ public class BossRegistry {
                     .mobBuilder(swampMobBuilder)
                     .bossName(name)
                     .colourScheme("<red>")
-                    .health(2000.0)
+                    .health(1750.0)
                     .style(new BossBarController.Style(
                             name,
                             BossBar.Color.PURPLE,
