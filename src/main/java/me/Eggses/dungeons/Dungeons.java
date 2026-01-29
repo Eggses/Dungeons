@@ -208,10 +208,17 @@ public final class Dungeons extends JavaPlugin {
     }
 
     /*
-    TODO: culdrons event is fine just replace them all
-    TODO: move light blocks in arena 1 block up
-    TODO: lightning not spawning
-    TODO: boss maybe died or it was my strength? i m\punched it a few times.
+
+
+
+    //TODO seems alm,sot everything is wroking - lightning is now fire blocks its just not doing
+    // TODO the fire burst epxlosion thing maybe just re make that whole class.
+    // TODO is is probably workingnjsut reutnring becuase boss is null it canot pull the boss out i think thats it
+    // TODO: maybe the entiy needs to store its behavicour idk. or fire checks if its the boss?
+
+    // TODO: fix - when making
+
+
 
      */
 

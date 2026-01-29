@@ -4,6 +4,7 @@ import me.Eggses.dungeons.dungeon.bosses.Boss;
 import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.tasks.Task;
 import me.Eggses.dungeons.tasks.TaskProvider;
+import me.Eggses.dungeons.utility.sound.SoundPlayer;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -50,18 +51,31 @@ public class LightningFire implements TaskProvider<Boss> {
     private static final long REPEATING_PERIOD_TICKS = 60L * 20L;
 
     private final LightningFireController lightningFireController;
+    private final Harvest harvest;
+    private final MossController mossController;
+    private final SoundPlayer soundPlayer;
+
+    private FireBurstExplosion fireBurstExplosion;
     private World world;
 
-    public LightningFire(LightningFireController lightningFireController) {
+    public LightningFire(LightningFireController lightningFireController,
+                         Harvest harvest,
+                         MossController mossController,
+                         SoundPlayer soundPlayer) {
+
         this.lightningFireController = lightningFireController;
+        this.harvest = harvest;
+        this.mossController = mossController;
+        this.soundPlayer = soundPlayer;
     }
 
     @Override
     public Task<Boss> getTask() {
         return taskContext -> {
             Boss boss = taskContext.getOwner();
-            if (world == null) {
+            if (world == null || fireBurstExplosion == null) {
                 world = boss.getBossWorld();
+                fireBurstExplosion = new FireBurstExplosion(boss, harvest, mossController, soundPlayer);
             }
 
             if (FIRE_SPAWNING_LOCATIONS.isEmpty()) return;
@@ -88,7 +102,7 @@ public class LightningFire implements TaskProvider<Boss> {
                                 strikeLocation.getBlockZ() + offset[2]
                         );
 
-                        lightningFireController.placeFire(fire);
+                        lightningFireController.placeFire(fire, fireBurstExplosion);
 
                         taskContext.runTaskLaterAndRemove(()
                                 -> lightningFireController.removeFire(fire), fireLifeTime

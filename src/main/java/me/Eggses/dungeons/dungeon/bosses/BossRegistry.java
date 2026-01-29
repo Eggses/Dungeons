@@ -112,13 +112,12 @@ public class BossRegistry {
                     new Rotation.RotationStep(26 * 20, fungalExplosion)
             );
 
-            var fireBurstExplosion = new FireBurstExplosion(harvest, mossController, soundPlayer);
-            var lightningFireController = new LightningFireController(blockRegistry, fireBurstExplosion);
+            var lightningFireController = new LightningFireController(blockRegistry);
 
             Phase phase2 = new Phase.PhaseBuilder(75.0)
                     .addPermanentEvent(new EventDefinition<>(EntityDamageByEntityEvent.class, () -> new Execute(soundPlayer)))
                     .addOneOffTask(new HarvestIncreaseOverTime(harvest, messageCreator, soundPlayer).getTask())
-                    .addOneOffTask(new LightningFire(lightningFireController).getTask())
+                    .addOneOffTask(new LightningFire(lightningFireController, harvest, mossController, soundPlayer).getTask())
                     .addPermanentEvent(new EventDefinition<>(EntityDamageByEntityEvent.class, () -> new IncreaseDamage(harvest)))
                     .addRotationStepList(rotationSteps)
                     .build();

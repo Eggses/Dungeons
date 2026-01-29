@@ -13,14 +13,12 @@ public class LightningFireController {
 
     private final BlockRegistry blockRegistry;
     private final Set<WorldPosition> locationsOfFire = new HashSet<>();
-    private final FireBurstExplosion fireBurstExplosion;
 
-    public LightningFireController(BlockRegistry blockRegistry, FireBurstExplosion fireBurstExplosion) {
+    public LightningFireController(BlockRegistry blockRegistry) {
         this.blockRegistry = blockRegistry;
-        this.fireBurstExplosion = fireBurstExplosion;
     }
 
-    public void placeFire(Block block) {
+    public void placeFire(Block block, FireBurstExplosion fireBurstExplosion) {
         if (block == null) return;
         WorldPosition worldPosition = new WorldPosition(block);
         blockRegistry.addBlockAndEvent(worldPosition, EntityMoveEvent.class, fireBurstExplosion);

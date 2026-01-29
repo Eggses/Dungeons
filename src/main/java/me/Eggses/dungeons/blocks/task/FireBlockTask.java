@@ -17,7 +17,7 @@ public class FireBlockTask implements TaskProvider<WorldPosition> {
 
         return taskContext -> {
             WorldRegion bounds = taskContext.getOwner().toWorldRegion();
-            NormalEffectStyle normalEffectStyle = new NormalEffectStyle(bounds, Particle.FLAME, 10);
+            NormalEffectStyle normalEffectStyle = new NormalEffectStyle(bounds, Particle.ELECTRIC_SPARK, 10);
             taskContext.runTaskRepeatedly(normalEffectStyle::spawn, DELAY_TICKS, REPEATING_PERIOD_TICKS);
         };
     }
