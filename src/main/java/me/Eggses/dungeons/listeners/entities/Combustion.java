@@ -5,6 +5,8 @@ import me.Eggses.dungeons.dungeon.lifecycle.DungeonRegistry;
 import me.Eggses.dungeons.dungeon.regions.WorldPosition;
 import me.Eggses.dungeons.eventhandler.EventContext;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityCombustByBlockEvent;
@@ -29,7 +31,9 @@ public class Combustion implements Listener {
     @EventHandler
     public void onCombustion(EntityCombustEvent event) {
 
-        if (!dungeonRegistry.isDungeonWorld(event.getEntity().getWorld())) return;
+        Entity entity = event.getEntity();
+        if (entity instanceof Player) return;
+        if (!dungeonRegistry.isDungeonWorld(entity.getWorld())) return;
 
         if (event instanceof EntityCombustByEntityEvent) return;
         if (event instanceof EntityCombustByBlockEvent combustByBlockEvent) {
@@ -39,8 +43,6 @@ public class Combustion implements Listener {
             }
             return;
         }
-
-        System.out.println("Burn Event Canclled");
         event.setCancelled(true);
     }
 }
