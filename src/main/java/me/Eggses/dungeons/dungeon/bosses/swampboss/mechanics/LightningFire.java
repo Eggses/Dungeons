@@ -16,9 +16,17 @@ import java.util.concurrent.ThreadLocalRandom;
 public class LightningFire implements TaskProvider<Boss> {
 
     private static final List<Position> FIRE_SPAWNING_LOCATIONS = List.of(
-            new Position(1, 2, 3),
-            new Position(4, 2, 3),
-            new Position(7, 2, 3)
+            new Position(-1176, 67, 88),
+            new Position(-1185, 67, 86),
+            new Position(-1173, 67, 94),
+            new Position(-1169, 67, 100),
+            new Position(-1176, 67, 102),
+            new Position(-1173, 67, 109),
+            new Position(-1184, 67, 106),
+            new Position(-1186, 67, 112),
+            new Position(-1194, 67, 105),
+            new Position(-1189, 67, 96),
+            new Position(-1195, 67, 93)
     );
 
     private static final List<int[]> FIRE_OFFSETS = List.of(
