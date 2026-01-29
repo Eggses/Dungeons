@@ -40,7 +40,6 @@ public class FireBurstExplosion implements EventBehaviour<EntityMoveEvent> {
 
     @Override
     public void handleEvent(EntityMoveEvent event, EventContext eventContext) {
-        event.setCancelled(true);
 
         long currentTime = System.currentTimeMillis();
         if (currentTime < COOLDOWN_MS + lastRun) return;
