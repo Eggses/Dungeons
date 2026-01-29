@@ -15,7 +15,7 @@ public class Poison implements TaskProvider<Boss> {
 
       private static final PotionEffect POISON = new PotionEffect(
               PotionEffectType.POISON,
-              20 * 5,
+              20 * 7,
               2,
               false,
               true,

@@ -5,7 +5,6 @@ import me.Eggses.dungeons.tasks.Task;
 import me.Eggses.dungeons.tasks.TaskProvider;
 import me.Eggses.dungeons.utility.sound.DungeonSound;
 import me.Eggses.dungeons.utility.sound.SoundPlayer;
-import me.Eggses.dungeons.utility.text.MessageCreator;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -15,7 +14,7 @@ import org.bukkit.entity.Player;
 
 public class OverwhelmingFungus implements TaskProvider<Boss> {
 
-    private static final long FUNGUS_AFTER = 20L * 4L;
+    private static final long FUNGUS_AFTER = 20L * 6L;
     private static final double DAMAGE = 200.0;
     private static final long POISON_MOSS_AFTER = 20L * 2L;
 

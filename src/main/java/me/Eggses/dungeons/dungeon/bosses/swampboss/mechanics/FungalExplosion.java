@@ -14,11 +14,22 @@ import org.bukkit.block.Block;
 import org.bukkit.damage.DamageSource;
 import org.bukkit.damage.DamageType;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class FungalExplosion implements TaskProvider<Boss> {
+
+    private static final PotionEffect RESISTANCE = new PotionEffect(
+            PotionEffectType.RESISTANCE,
+            2 * 20,
+            49,
+            false,
+            false,
+            false
+    );
 
     private static final int Y_HEIGHT = 67;
 
@@ -71,8 +82,9 @@ public class FungalExplosion implements TaskProvider<Boss> {
                         player.damage(damage, damageSource);
                         soundPlayer.playSound(sound, player);
                     });
-
+                    target.addPotionEffect(RESISTANCE);
                     placeMossCarpetShape(target);
+
 
                 }, explosionAfter);
             }
