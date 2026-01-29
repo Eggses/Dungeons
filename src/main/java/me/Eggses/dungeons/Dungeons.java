@@ -152,7 +152,7 @@ public final class Dungeons extends JavaPlugin {
         pluginManager.registerEvents(new EntityCombat(dungeonEventRouter), this);
         pluginManager.registerEvents(new EntityRemove(dungeonEventRouter), this);
         pluginManager.registerEvents(new EntityExplode(dungeonEventRouter), this);
-        pluginManager.registerEvents(new EntityMove(blockRegistry), this);
+        pluginManager.registerEvents(new EntityMovement(blockRegistry), this);
 
         pluginManager.registerEvents(new CauldronLevel(dungeonRegistry), this);
         pluginManager.registerEvents(new ChorusFruitTeleport(dungeonRegistry), this);

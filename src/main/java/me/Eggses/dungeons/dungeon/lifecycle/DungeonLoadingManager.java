@@ -164,7 +164,7 @@ public class DungeonLoadingManager {
             ));
 
             var name = messageCreator.createMessage(nonInstanceDungeonTemplate.keystoneName(), placeholders);
-            blockRegistry.addBlockAndName(worldPositionOfKeystone, name);
+            blockRegistry.addBlockAndTextDisplay(worldPositionOfKeystone, name);
 
             blockRegistry.addBlockAndTaskBehaviour(worldPositionOfKeystone, new KeystoneParticleTask().getTask());
 
