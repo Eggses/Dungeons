@@ -36,6 +36,10 @@ public class WorldPosition {
         return new Location(world, position.getX(), position.getY(), position.getZ());
     }
 
+    public WorldRegion toWorldRegion() {
+        return new WorldRegion(world, new Region(position, position));
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
