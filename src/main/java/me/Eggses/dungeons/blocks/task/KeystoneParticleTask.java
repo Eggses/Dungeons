@@ -37,7 +37,7 @@ public class KeystoneParticleTask implements TaskProvider<WorldPosition> {
 
         int countOfPointsInBetween = 10;
         double maxY = 2.5;
-        Particle particle = Particle.PORTAL;
+        Particle particle = Particle.REVERSE_PORTAL;
 
         return List.of(
                 new OrbitParticleEffect(radius, 135, 0, particle, countOfPointsInBetween, maxY),
