@@ -3,7 +3,6 @@ package me.Eggses.dungeons.dungeon.bosses;
 import me.Eggses.dungeons.utility.text.MessageCreator;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.entity.Player;
 
 import java.util.HashSet;
@@ -55,14 +54,9 @@ public class BossBarController {
         String hpText = String.format("%.0f", currentHealth);
         String pctText = String.format("%.0f%%", healthPercentage);
 
-        bossBar.name(messageCreator.createMessage("<red> boss bar"));
-
-       // Component numbers = Component.text(" - " + hpText + " (" + pctText + ")").color(TextColor.color(60, 80, 200));
-
-        //Component numbers = messageCreator.createMessage(colourScheme + " - " + hpText + " (" + pctText + ")");
-       // System.out.println(colourScheme + "- " + hpText + " (" + pctText + ")");
-        //TODO
-       // bossBar.name(style.name.append(numbers));
+        Component name = style.name;
+        Component numbers = messageCreator.createMessage(colourScheme + " - " + hpText + "ʜᴘ (" + pctText + ")");
+        bossBar.name(name.append(numbers));
     }
 
     public void addViewer(Player player) {

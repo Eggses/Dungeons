@@ -21,7 +21,7 @@ public class FireBurstExplosion implements EventBehaviour<EntityMoveEvent> {
     private static final int FIRE_TICKS = 20 * 20;
 
     private static final int BURSTS = 3;
-    private static final long BURST_SPACE_TICKS = (long) (20L * 3.5);
+    private static final long BURST_SPACE_TICKS = (long) (20L * 2.5);
 
     private static final Position POSITION_A = new Position(-1167, 74, 84);
     private static final Position POSITION_B = new Position(-1197, 66, 114);
@@ -45,22 +45,19 @@ public class FireBurstExplosion implements EventBehaviour<EntityMoveEvent> {
         this.soundPlayer = soundPlayer;
 
         var worldRegion = new WorldRegion(boss.getBossWorld(), new Region(POSITION_A, POSITION_B));
-        this.fireParticles = new NormalEffectStyle(worldRegion, Particle.FLAME, 200);
+        this.fireParticles = new NormalEffectStyle(worldRegion, Particle.FLAME, 1000);
     }
 
     @Override
     public void handleEvent(EntityMoveEvent event, EventContext eventContext) {
 
-        System.out.println("Move Event ran");
         if (!event.getEntity().getUniqueId().equals(boss.getUUID())) return;
 
         long currentTime = System.currentTimeMillis();
         if (currentTime < COOLDOWN_MS + lastRanTime) return;
         lastRanTime = currentTime;
 
-        System.out.println("Move Event passed cooldown ran");
         boss.getEntity().setFireTicks(FIRE_TICKS);
-        System.out.println("boss should burn");
         for (int i = 0; i < BURSTS; i++) {
             long delay = i * BURST_SPACE_TICKS;
             boss.addOneOffTask(taskContext
@@ -68,7 +65,6 @@ public class FireBurstExplosion implements EventBehaviour<EntityMoveEvent> {
         }
         harvest.reset();
         mossController.removeAllMoss();
-        System.out.println("destroyed all the moss");
     }
 
     private void fireBurstAtBoss() {
@@ -77,7 +73,7 @@ public class FireBurstExplosion implements EventBehaviour<EntityMoveEvent> {
 
         fireParticles.spawn();
 
-        final double damagePerBurst = 17.0;
+        final double damagePerBurst = 20.0;
 
         boss.getPlayersInFight().forEach(player -> {
             soundPlayer.playSound(sound, player);
