@@ -207,6 +207,14 @@ public final class Dungeons extends JavaPlugin {
     }
 
     /*
+    TODO: culdrons event is fine just replace them all
+    TODO: move light blocks in arena 1 block up
+    TODO: lightning not spawning
+    TODO: boss maybe died or it was my strength? i m\punched it a few times.
+
+     */
+
+    /*
     TODO mob health isnt updating - maybe the new lsitener isnt registered.
     TODO: maybe return back to the old system for mob health - to avoid these errors / other errors.
     TODO: maybe ignore the advcncements when deleting seems to always cause an error..

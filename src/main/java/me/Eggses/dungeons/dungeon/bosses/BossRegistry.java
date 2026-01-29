@@ -72,7 +72,7 @@ public class BossRegistry {
                     .generateFullSet();
             armourEquipment.alterAllArmour(itemMeta -> itemMeta.addEnchant(Enchantment.BLAST_PROTECTION, 1, true));
 
-            MobBuilder swampMobBuilder = new MobBuilder(EntityType.BOGGED, new Position(-1182, 67, 99));
+            MobBuilder swampMobBuilder = new MobBuilder(EntityType.SKELETON, new Position(-1182, 67, 99));
             swampMobBuilder
                     .count(1)
                     .dungeonLevel(1)
