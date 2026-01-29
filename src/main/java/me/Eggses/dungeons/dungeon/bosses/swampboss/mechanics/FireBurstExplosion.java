@@ -73,7 +73,7 @@ public class FireBurstExplosion implements EventBehaviour<EntityMoveEvent> {
 
         fireParticles.spawn();
 
-        final double damagePerBurst = 25.0;
+        final double damagePerBurst = 40.0;
 
         boss.getPlayersInFight().forEach(player -> {
             soundPlayer.playSound(sound, player);
