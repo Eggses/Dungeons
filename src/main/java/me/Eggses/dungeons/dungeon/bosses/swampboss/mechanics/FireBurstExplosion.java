@@ -19,7 +19,7 @@ import org.bukkit.entity.Entity;
 
 public class FireBurstExplosion implements EventBehaviour<EntityMoveEvent> {
 
-    private static final long COOLDOWN_MS = 50000L;
+    private static final long COOLDOWN_MS = 5000L;
 
     private long lastRun = Long.MIN_VALUE;
 
