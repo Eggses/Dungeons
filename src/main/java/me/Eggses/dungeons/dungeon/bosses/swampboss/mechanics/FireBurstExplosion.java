@@ -1,5 +1,6 @@
 package me.Eggses.dungeons.dungeon.bosses.swampboss.mechanics;
 
+import io.papermc.paper.event.entity.EntityMoveEvent;
 import me.Eggses.dungeons.dungeon.bosses.Boss;
 import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.dungeon.regions.Region;
@@ -15,9 +16,8 @@ import org.bukkit.Particle;
 import org.bukkit.damage.DamageSource;
 import org.bukkit.damage.DamageType;
 import org.bukkit.entity.Entity;
-import org.bukkit.event.entity.EntityCombustByBlockEvent;
 
-public class FireBurstExplosion implements EventBehaviour<EntityCombustByBlockEvent> {
+public class FireBurstExplosion implements EventBehaviour<EntityMoveEvent> {
 
     private static final long COOLDOWN_MS = 50000L;
 
@@ -39,7 +39,7 @@ public class FireBurstExplosion implements EventBehaviour<EntityCombustByBlockEv
     }
 
     @Override
-    public void handleEvent(EntityCombustByBlockEvent event, EventContext eventContext) {
+    public void handleEvent(EntityMoveEvent event, EventContext eventContext) {
         event.setCancelled(true);
 
         long currentTime = System.currentTimeMillis();

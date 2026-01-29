@@ -1,10 +1,10 @@
 package me.Eggses.dungeons.dungeon.bosses.swampboss.mechanics;
 
+import io.papermc.paper.event.entity.EntityMoveEvent;
 import me.Eggses.dungeons.blocks.BlockRegistry;
 import me.Eggses.dungeons.blocks.task.FireBlockTask;
 import me.Eggses.dungeons.dungeon.regions.WorldPosition;
 import org.bukkit.block.Block;
-import org.bukkit.event.entity.EntityCombustByBlockEvent;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -23,15 +23,13 @@ public class LightningFireController {
     public void placeFire(Block block) {
         if (block == null) return;
         WorldPosition worldPosition = new WorldPosition(block);
-        blockRegistry.addBlockAndEvent(worldPosition, EntityCombustByBlockEvent.class, fireBurstExplosion);
+        blockRegistry.addBlockAndEvent(worldPosition, EntityMoveEvent.class, fireBurstExplosion);
         blockRegistry.addBlockAndTaskBehaviour(worldPosition, new FireBlockTask().getTask());
         locationsOfFire.add(worldPosition);
     }
 
     public void removeFire(Block block) {
         if (block == null) return;
-
-        //block.setType(Material.AIR);
         WorldPosition worldPosition = new WorldPosition(block);
         blockRegistry.remove(worldPosition);
         locationsOfFire.remove(worldPosition);
@@ -39,7 +37,6 @@ public class LightningFireController {
 
     public void removeAllFire() {
         for (WorldPosition worldPosition : locationsOfFire) {
-            //worldPosition.toLocation().getBlock().setType(Material.AIR);
             blockRegistry.remove(worldPosition);
         }
         locationsOfFire.clear();
