@@ -82,9 +82,9 @@ public class FungalExplosion implements TaskProvider<Boss> {
                         player.damage(damage, damageSource);
                         soundPlayer.playSound(sound, player);
                     });
+                    ctx.runTaskLaterAndRemove(() -> target.removePotionEffect(PotionEffectType.POISON), 20L * 2L);
                     target.addPotionEffect(RESISTANCE);
                     placeMossCarpetShape(target);
-
 
                 }, explosionAfter);
             }
