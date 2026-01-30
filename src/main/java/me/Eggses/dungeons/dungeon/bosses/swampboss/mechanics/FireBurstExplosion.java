@@ -14,6 +14,7 @@ import net.kyori.adventure.sound.Sound;
 import org.bukkit.Particle;
 import org.bukkit.damage.DamageSource;
 import org.bukkit.damage.DamageType;
+import org.bukkit.potion.PotionEffectType;
 
 public class FireBurstExplosion implements EventBehaviour<EntityMoveEvent> {
 
@@ -68,14 +69,15 @@ public class FireBurstExplosion implements EventBehaviour<EntityMoveEvent> {
     }
 
     private void fireBurstAtBoss() {
-        DamageSource damageSource = DamageSource.builder(DamageType.LAVA).build();
+        DamageSource damageSource = DamageSource.builder(DamageType.ON_FIRE).build();
         Sound sound = soundPlayer.createSound(DungeonSound.ILLUSIONER_PREPARE_BLINDNESS.getMinecraftSound());
 
         fireParticles.spawn();
 
-        final double damagePerBurst = 40.0;
+        final double damagePerBurst = 25.0;
 
         boss.getPlayersInFight().forEach(player -> {
+            player.removePotionEffect(PotionEffectType.FIRE_RESISTANCE);
             soundPlayer.playSound(sound, player);
             player.damage(damagePerBurst, damageSource);
             player.setFireTicks(20 * 5);
