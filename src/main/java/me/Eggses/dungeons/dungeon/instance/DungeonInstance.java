@@ -195,6 +195,7 @@ public class DungeonInstance {
         long timeTaken = System.currentTimeMillis() - dungeonStartTime;
         for (Player player : players.getPlayers()) {
             playerStats.addOrUpdateEntry(player, dungeonType, timeTaken);
+            System.out.println("Updated stats for " + player.getName());
         }
     }
 }

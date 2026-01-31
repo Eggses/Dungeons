@@ -7,7 +7,6 @@ import me.Eggses.dungeons.items.ItemHandler;
 import me.Eggses.dungeons.utility.text.MessageCreator;
 import me.Eggses.dungeons.utility.text.Placeholder;
 import me.Eggses.dungeons.utility.text.Placeholders;
-import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -25,6 +24,7 @@ public class StatsMenu extends Menu {
     private final PlayerStats playerStats;
     private final DungeonTemplateRegistry dungeonTemplateRegistry;
     private final MessageCreator messageCreator;
+    private final Placeholders placeholders;
 
     public StatsMenu(Player player,
                      Player statsFor,
@@ -47,6 +47,7 @@ public class StatsMenu extends Menu {
         this.playerStats = playerStats;
         this.messageCreator = messageCreator;
         this.dungeonTemplateRegistry = dungeonTemplateRegistry;
+        this.placeholders = placeholders;
 
         createItems();
     }
@@ -61,7 +62,11 @@ public class StatsMenu extends Menu {
 
         addItem(Items.CLOSE, this::closeInventory);
 
-        Placeholders placeholders = messageCreator.placeholders();
+        addItem(Items.INFO, null, placeholders, (itemMeta -> {
+            if (!(itemMeta instanceof SkullMeta skullMeta)) return;
+            skullMeta.setOwningPlayer(statsFor);
+        }));
+        // TODO make this stuff support offline players... as skull meta supports that.
 
         for (Map.Entry<DungeonType, MenuItem> entry : MENU_ITEM_MAP.entrySet()) {
 
@@ -79,12 +84,6 @@ public class StatsMenu extends Menu {
                 placeholders.addPlaceholder(Placeholder.BEST_TIME, msToTime(stats.bestTimeMs()));
                 placeholders.addPlaceholder(Placeholder.COMPLETIONS, String.valueOf(stats.completions()));
             }
-
-            // TODO make this stuff support offline players... as skull meta supports that.
-            addItem(entry.getValue(), () -> {}, placeholders, itemMeta -> {
-                if (!(itemMeta instanceof SkullMeta skullMeta)) return;
-                skullMeta.setOwningPlayer(statsFor);
-            });
         }
         fillPanelItems(Items.PANEL);
     }

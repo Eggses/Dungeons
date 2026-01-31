@@ -81,7 +81,6 @@ public abstract class Menu implements InventoryHolder {
         inventory.setItem(slot, itemStack);
 
         if (action != null) onClickActions.put(slot, action);
-
     }
 
     protected void fillPanelItems(MenuItem menuItem) {
