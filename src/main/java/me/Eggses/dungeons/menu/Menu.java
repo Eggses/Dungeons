@@ -10,12 +10,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public abstract class Menu implements InventoryHolder {
 
@@ -49,15 +51,23 @@ public abstract class Menu implements InventoryHolder {
         this.messageCreator = messageCreator;
     }
 
+    protected void addItem(MenuItem menuItem) {
+        addItem(menuItem, null, null, null);
+    }
+
     protected void addItem(MenuItem menuItem, Runnable action) {
-        addItem(menuItem, action, messageCreator.placeholders());
+        addItem(menuItem, action, messageCreator.placeholders(), null);
     }
 
     protected void addItem(MenuItem menuItem, Placeholders placeholders) {
-        addItem(menuItem, null, placeholders);
+        addItem(menuItem, null, placeholders, null);
     }
 
     protected void addItem(MenuItem menuItem, Runnable action, Placeholders placeholders) {
+        addItem(menuItem, action, placeholders, null);
+    }
+
+    protected void addItem(MenuItem menuItem, Runnable action, Placeholders placeholders, Consumer<ItemMeta> itemMetaConsumer) {
 
         String name = menuConfig.getString(menuItem.getNamePath());
         String material = menuConfig.getString(menuItem.getMaterialPath());
@@ -66,16 +76,12 @@ public abstract class Menu implements InventoryHolder {
 
         ItemTemplate itemTemplate = new ItemTemplate(name, material, lore);
 
-        ItemStack itemStack = itemHandler.createItem(itemTemplate, placeholders);
+        ItemStack itemStack = itemHandler.createItem(itemTemplate, placeholders, itemMetaConsumer);
 
         inventory.setItem(slot, itemStack);
 
         if (action != null) onClickActions.put(slot, action);
 
-    }
-
-    protected void addItem(MenuItem menuItem) {
-        addItem(menuItem, null, null);
     }
 
     protected void fillPanelItems(MenuItem menuItem) {

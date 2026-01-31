@@ -7,8 +7,10 @@ import me.Eggses.dungeons.items.ItemHandler;
 import me.Eggses.dungeons.utility.text.MessageCreator;
 import me.Eggses.dungeons.utility.text.Placeholder;
 import me.Eggses.dungeons.utility.text.Placeholders;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.Map;
 import java.util.Optional;
@@ -60,13 +62,13 @@ public class StatsMenu extends Menu {
         addItem(Items.CLOSE, this::closeInventory);
 
         Placeholders placeholders = messageCreator.placeholders();
+
         for (Map.Entry<DungeonType, MenuItem> entry : MENU_ITEM_MAP.entrySet()) {
 
             DungeonType dungeonType = entry.getKey();
-
             var template = dungeonTemplateRegistry.getNonInstanceDungeonTemplate(dungeonType);
-
             placeholders.addPlaceholder(Placeholder.DUNGEON_NAME, template.dungeonName());
+
             Optional<PlayerStats.DungeonStat> maybeStats = playerStats.getStatsFor(statsFor, dungeonType);
 
             if (maybeStats.isEmpty()) {
@@ -77,7 +79,12 @@ public class StatsMenu extends Menu {
                 placeholders.addPlaceholder(Placeholder.BEST_TIME, msToTime(stats.bestTimeMs()));
                 placeholders.addPlaceholder(Placeholder.COMPLETIONS, String.valueOf(stats.completions()));
             }
-            addItem(entry.getValue(), placeholders);
+
+            // TODO make this stuff support offline players... as skull meta supports that.
+            addItem(entry.getValue(), () -> {}, placeholders, itemMeta -> {
+                if (!(itemMeta instanceof SkullMeta skullMeta)) return;
+                skullMeta.setOwningPlayer(statsFor);
+            });
         }
         fillPanelItems(Items.PANEL);
     }
@@ -100,7 +107,8 @@ public class StatsMenu extends Menu {
     private enum Items implements MenuItem {
 
         PANEL("panel", -1),
-        MALIGNANT_MARSH("malignant_marsh", 10),
+        INFO("info", 13),
+        MALIGNANT_MARSH("malignant_marsh", 19),
         CLOSE("close", 49);
 
         private static final String BASE = "keystone_menu.items.";

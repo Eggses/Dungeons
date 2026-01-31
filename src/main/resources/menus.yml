@@ -55,11 +55,16 @@ keystone_menu:
       lore:
         - "<gray>Click to close this menu.</gray>"
 
-
 stats_menu:
-  title: "<gradient:#00c6ff:#0072ff><bold>Dungeon Stats: %player%</bold></gradient>"
+  title: "<blue><bold>Dungeon Stats</bold><blue>"
 
   items:
+    info:
+      material: "PLAYER_HEAD"
+      name: "<bold><gradient:#00c6ff:#0072ff>Dungeon Stats: %target%</bold>"
+      lore:
+        - ""
+        - "<gray>View this player's dungeon performance.</gray>"
     malignant_marsh:
       material: "LILY_PAD"
       name: "<bold>%dungeon_name%</bold>"
