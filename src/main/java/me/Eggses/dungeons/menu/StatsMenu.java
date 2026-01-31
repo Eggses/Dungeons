@@ -35,7 +35,7 @@ public class StatsMenu extends Menu {
                      FileConfiguration menuConfig,
                      DungeonTemplateRegistry dungeonTemplateRegistry) {
         super(
-                menuConfig.getString("keystone_menu.title"),
+                menuConfig.getString("stats_menu.title"),
                 Row.SIX,
                 player,
                 itemHandler,
