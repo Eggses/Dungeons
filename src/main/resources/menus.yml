@@ -1,6 +1,5 @@
 keystone_menu:
   title: "<gradient:#8b0000:#c91f1f:#ff3b3b:#b11212><bold>Keystone: %dungeon_name%"
-
   items:
     info:
       material: "BOOK"
@@ -50,6 +49,24 @@ keystone_menu:
       - "<gray>Click to check your inventory for banned items.</gray>"
       - "<gray>You will be informed if you have any banned items after.</gray>"
 
+    close:
+      material: "BARRIER"
+      name: "<red><bold>Close</bold></red>"
+      lore:
+        - "<gray>Click to close this menu.</gray>"
+
+
+stats_menu:
+  title: "<gradient:#00c6ff:#0072ff><bold>Dungeon Stats: %player%</bold></gradient>"
+
+  items:
+    malignant_marsh:
+      material: "LILY_PAD"
+      name: "<bold>%dungeon_name%</bold>"
+      lore:
+        - ""
+        - "<gray>Best Time: %best_time%</gray>"
+        - "<gray>Completions: %completions%</gray>"
     close:
       material: "BARRIER"
       name: "<red><bold>Close</bold></red>"

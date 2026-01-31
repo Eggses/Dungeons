@@ -2,11 +2,14 @@ package me.Eggses.dungeons.commands;
 
 import me.Eggses.dungeons.commands.subcommands.*;
 import me.Eggses.dungeons.configuration.ConfigurationFile;
+import me.Eggses.dungeons.dungeon.files.PlayerStats;
 import me.Eggses.dungeons.dungeon.items.DungeonKeyItems;
 import me.Eggses.dungeons.dungeon.lifecycle.DungeonEventRouter;
 import me.Eggses.dungeons.dungeon.lifecycle.DungeonLoadingManager;
 import me.Eggses.dungeons.dungeon.lifecycle.DungeonRegistry;
+import me.Eggses.dungeons.dungeon.lifecycle.DungeonTemplateRegistry;
 import me.Eggses.dungeons.items.ItemGive;
+import me.Eggses.dungeons.items.ItemHandler;
 import me.Eggses.dungeons.utility.misc.Permission;
 import me.Eggses.dungeons.utility.text.*;
 import org.bukkit.command.Command;
@@ -26,10 +29,13 @@ public class DungeonsBaseCommand implements CommandExecutor, TabCompleter {
     private final DungeonRegistry dungeonRegistry;
     private final DungeonEventRouter dungeonEventRouter;
     private final DungeonLoadingManager dungeonLoadingManager;
+    private final DungeonTemplateRegistry dungeonTemplateRegistry;
     private final DungeonKeyItems dungeonKeyItems;
+    private final ItemHandler itemHandler;
     private final ItemGive itemGive;
     private final ConfigurationFile messagesFile;
     private final ConfigurationFile menusFile;
+    private final PlayerStats playerStats;
     private final MessageCreator messageCreator;
 
     private final Map<String, SubCommand> subCommands = new HashMap<>();
@@ -37,19 +43,25 @@ public class DungeonsBaseCommand implements CommandExecutor, TabCompleter {
     public DungeonsBaseCommand(DungeonRegistry dungeonRegistry,
                                DungeonEventRouter dungeonEventRouter,
                                DungeonLoadingManager dungeonLoadingManager,
+                               DungeonTemplateRegistry dungeonTemplateRegistry,
                                DungeonKeyItems dungeonKeyItems,
+                               ItemHandler itemHandler,
                                ItemGive itemGive,
                                ConfigurationFile messagesFile,
                                ConfigurationFile menusFile,
+                               PlayerStats playerStats,
                                MessageCreator messageCreator) {
 
         this.dungeonRegistry = dungeonRegistry;
         this.dungeonEventRouter = dungeonEventRouter;
         this.dungeonLoadingManager = dungeonLoadingManager;
+        this.dungeonTemplateRegistry = dungeonTemplateRegistry;
         this.dungeonKeyItems = dungeonKeyItems;
+        this.itemHandler = itemHandler;
         this.itemGive = itemGive;
         this.messagesFile = messagesFile;
         this.menusFile = menusFile;
+        this.playerStats = playerStats;
         this.messageCreator = messageCreator;
 
         registerCommands();
@@ -57,14 +69,16 @@ public class DungeonsBaseCommand implements CommandExecutor, TabCompleter {
 
     private void registerCommands() {
         var trigger = new Trigger(dungeonEventRouter, messageCreator);
-        var reload = new Reload(dungeonLoadingManager, messagesFile, menusFile, messageCreator);
+        var reload = new Reload(dungeonLoadingManager, messagesFile, menusFile, playerStats, messageCreator);
         var give = new Give(dungeonKeyItems, itemGive,messageCreator);
         var destroyInstance = new DestroyInstance(dungeonRegistry, messageCreator);
+        var stats = new Stats(playerStats, itemHandler, menusFile, dungeonTemplateRegistry, messageCreator);
 
         subCommands.put(trigger.commandName(), trigger);
         subCommands.put(reload.commandName(), reload);
         subCommands.put(give.commandName(), give);
         subCommands.put(destroyInstance.commandName(), destroyInstance);
+        subCommands.put(stats.commandName(), stats);
     }
 
     @Override

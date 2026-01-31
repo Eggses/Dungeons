@@ -37,3 +37,7 @@ permissions:
   dungeons.command.destroy:
     description: Allows use of /dungeons destroy
     default: op
+
+  dungeons.command.stats:
+    description: Allows use of /dungeons stats
+    default: op

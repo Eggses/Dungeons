@@ -17,6 +17,9 @@ public enum Placeholder {
     GIVE_TYPE("%give_type%"),
 
     BANNED_ITEMS("%banned_items%"),
+
+    BEST_TIME("%best_time%"),
+    COMPLETIONS("%completions%")
     ;
 
     private final String placeholder;

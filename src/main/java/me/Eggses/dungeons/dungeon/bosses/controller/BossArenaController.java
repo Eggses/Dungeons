@@ -108,6 +108,7 @@ public class BossArenaController {
                 () -> {
                     this.changeStateToBossDefeatedState();
                     onBossDefeat.accept(dungeonContext);
+                    dungeonInstance.defeatDungeon();
                 }
         );
         for (Player player : playersInArena.getPlayers()) {

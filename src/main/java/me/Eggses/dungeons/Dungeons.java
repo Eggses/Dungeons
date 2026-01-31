@@ -6,6 +6,7 @@ import me.Eggses.dungeons.configuration.ConfigurationFile;
 import me.Eggses.dungeons.dispatch.EventManagerRegistry;
 import me.Eggses.dungeons.dungeon.bosses.BossRegistry;
 import me.Eggses.dungeons.dungeon.files.DungeonLog;
+import me.Eggses.dungeons.dungeon.files.PlayerStats;
 import me.Eggses.dungeons.dungeon.files.reading.ReadingUtility;
 import me.Eggses.dungeons.dungeon.items.DungeonKeyItems;
 import me.Eggses.dungeons.dungeon.lifecycle.*;
@@ -34,6 +35,7 @@ import java.util.Objects;
 public final class Dungeons extends JavaPlugin {
 
     private final DungeonRegistry dungeonRegistry = new DungeonRegistry();
+    private final PlayerStats playerStats = new PlayerStats(this);
     private BlockRegistry blockRegistry;
 
     @Override
@@ -44,7 +46,7 @@ public final class Dungeons extends JavaPlugin {
         var messageCreator = new MessageCreator(messagesFile);
         var textFormatter = new TextFormatter();
 
-        var dungeonInstanceTemplateRegistry = new DungeonInstanceTemplateRegistry();
+        var dungeonTemplateRegistry = new DungeonTemplateRegistry();
         var templateReservation = new TemplateReservation();
         var itemRegistry = new EventManagerRegistry<String>();
 
@@ -86,13 +88,14 @@ public final class Dungeons extends JavaPlugin {
         var dungeonFactory = new DungeonFactory(
                 this,
                 dungeonRegistry,
-                dungeonInstanceTemplateRegistry,
+                dungeonTemplateRegistry,
                 templateReservation,
                 dungeonLifecycleService,
                 dungeonWorldManager,
                 blockRegistry,
                 instanceNameManager,
                 taskRunner,
+                playerStats,
                 messageCreator,
                 textFormatter,
                 dungeonLog,
@@ -118,7 +121,7 @@ public final class Dungeons extends JavaPlugin {
                 itemKey,
                 bannedItems,
                 templateReservation,
-                dungeonInstanceTemplateRegistry
+                dungeonTemplateRegistry
         );
 
         registerListeners(dungeonEventRouter, blockRegistry, itemRegistry, itemKey, dungeonRegistry, dungeonEntranceRoomRegistry);
@@ -127,7 +130,9 @@ public final class Dungeons extends JavaPlugin {
                 dungeonRegistry,
                 dungeonEventRouter,
                 dungeonLoadingManager,
+                dungeonTemplateRegistry,
                 dungeonKeyItems,
+                itemHandler,
                 itemGive,
                 messagesFile,
                 menuFile,
@@ -180,7 +185,9 @@ public final class Dungeons extends JavaPlugin {
     private void registerCommands(DungeonRegistry dungeonRegistry,
                                   DungeonEventRouter dungeonEventRouter,
                                   DungeonLoadingManager dungeonLoadingManager,
+                                  DungeonTemplateRegistry dungeonTemplateRegistry,
                                   DungeonKeyItems dungeonKeyItems,
+                                  ItemHandler itemHandler,
                                   ItemGive itemGive,
                                   ConfigurationFile messagesFile,
                                   ConfigurationFile menuFile,
@@ -190,10 +197,13 @@ public final class Dungeons extends JavaPlugin {
                 dungeonRegistry,
                 dungeonEventRouter,
                 dungeonLoadingManager,
+                dungeonTemplateRegistry,
                 dungeonKeyItems,
+                itemHandler,
                 itemGive,
                 messagesFile,
                 menuFile,
+                playerStats,
                 messageCreator
         );
 
@@ -204,6 +214,7 @@ public final class Dungeons extends JavaPlugin {
     @Override
     public void onDisable() {
         dungeonRegistry.endAllInstances(false);
+        playerStats.flushSave();
         blockRegistry.removeAllTextDisplays();
     }
 

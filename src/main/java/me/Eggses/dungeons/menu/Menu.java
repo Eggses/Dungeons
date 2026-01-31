@@ -26,8 +26,8 @@ public abstract class Menu implements InventoryHolder {
     private final Inventory inventory;
     private final Player player;
     private final ItemHandler itemHandler;
-    private final Placeholders placeholders;
     private final FileConfiguration menuConfig;
+    private final MessageCreator messageCreator;
 
     private final Map<Integer, Runnable> onClickActions = new HashMap<>();
 
@@ -37,19 +37,27 @@ public abstract class Menu implements InventoryHolder {
                    ItemHandler itemHandler,
                    MessageCreator messageCreator,
                    Placeholders placeholders,
-                   FileConfiguration menuConfig) {
-
+                   FileConfiguration menuConfig
+    ) {
         this.inventory = Bukkit.createInventory(
                 this, rows.getSlotCount(), messageCreator.createMessage(title, placeholders)
         );
 
         this.player = player;
         this.itemHandler = itemHandler;
-        this.placeholders = placeholders;
         this.menuConfig = menuConfig;
+        this.messageCreator = messageCreator;
     }
 
     protected void addItem(MenuItem menuItem, Runnable action) {
+        addItem(menuItem, action, messageCreator.placeholders());
+    }
+
+    protected void addItem(MenuItem menuItem, Placeholders placeholders) {
+        addItem(menuItem, null, placeholders);
+    }
+
+    protected void addItem(MenuItem menuItem, Runnable action, Placeholders placeholders) {
 
         String name = menuConfig.getString(menuItem.getNamePath());
         String material = menuConfig.getString(menuItem.getMaterialPath());
@@ -67,14 +75,14 @@ public abstract class Menu implements InventoryHolder {
     }
 
     protected void addItem(MenuItem menuItem) {
-        addItem(menuItem, null);
+        addItem(menuItem, null, null);
     }
 
     protected void fillPanelItems(MenuItem menuItem) {
 
         String material = menuConfig.getString(menuItem.getMaterialPath());
         ItemTemplate itemTemplate = new ItemTemplate(null, material, null);
-        ItemStack item = itemHandler.createItem(itemTemplate, placeholders, ItemHandler.NO_DISPLAY);
+        ItemStack item = itemHandler.createItem(itemTemplate, messageCreator.placeholders(), ItemHandler.NO_DISPLAY);
 
         ItemStack[] items = inventory.getContents();
 

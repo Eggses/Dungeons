@@ -51,3 +51,9 @@ keystone:
 banned_items:
   allowed_to_enter: "%prefix_main%<green>You are allowed to enter this Dungeon.</green>"
   denied_to_enter: "%prefix_main%%prefix_error%<red>You are unable to enter this Dungeon with these items:</red> <dark_red>%banned_items%</dark_red>"
+
+# =========================================================
+# /dungeons stats
+# =========================================================
+dungeons_stats:
+  usage: "%prefix_main%%prefix_error%<red>Usage: /dungeons stats [player]</red>"

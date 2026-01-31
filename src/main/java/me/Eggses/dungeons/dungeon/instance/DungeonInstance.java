@@ -2,12 +2,12 @@ package me.Eggses.dungeons.dungeon.instance;
 
 import me.Eggses.dungeons.blocks.BlockRegistry;
 import me.Eggses.dungeons.dungeon.bosses.controller.BossArenaController;
+import me.Eggses.dungeons.dungeon.files.PlayerStats;
 import me.Eggses.dungeons.dungeon.graveyard.Graveyard;
 import me.Eggses.dungeons.dungeon.regions.Position;
 import me.Eggses.dungeons.dungeon.types.DungeonType;
 import me.Eggses.dungeons.dungeon.files.templates.DungeonInstanceTemplate;
 import me.Eggses.dungeons.dungeon.areas.AreaController;
-import me.Eggses.dungeons.dungeon.utility.DungeonPlayerStats;
 import me.Eggses.dungeons.entities.mobs.EntityManager;
 import me.Eggses.dungeons.dungeon.lifecycle.DungeonLifecycleService;
 import me.Eggses.dungeons.dungeon.players.Players;
@@ -40,7 +40,8 @@ public class DungeonInstance {
     private final PortalController portalController;
     private final Players players;
     private final DungeonType dungeonType;
-    private final DungeonPlayerStats dungeonPlayerStats;
+    private final PlayerStats playerStats;
+    private long dungeonStartTime = 0;
 
     public DungeonInstance(JavaPlugin plugin,
                            DungeonLifecycleService dungeonLifecycleService,
@@ -52,7 +53,8 @@ public class DungeonInstance {
                            TextFormatter textFormatter,
                            TaskRunner taskRunner,
                            BannedItems bannedItems,
-                           DungeonType dungeonType) {
+                           DungeonType dungeonType,
+                           PlayerStats playerStats) {
 
         this.plugin = plugin;
         this.dungeonLifecycleService = dungeonLifecycleService;
@@ -60,6 +62,7 @@ public class DungeonInstance {
         this.instanceFileName = instanceFileName;
         this.blockRegistry = blockRegistry;
         this.dungeonType = dungeonType;
+        this.playerStats = playerStats;
 
         var graveyard = new Graveyard();
         var entityManager = new EntityManager(dungeonWorld, taskRunner, messageCreator, textFormatter);
@@ -98,8 +101,6 @@ public class DungeonInstance {
 
         portalController.openDungeonPortal();
         dungeonLifecycleService.openPortal(portalController);
-
-        this.dungeonPlayerStats = new DungeonPlayerStats(System.currentTimeMillis());
     }
 
     public void closeDungeonPortal() {
@@ -151,14 +152,15 @@ public class DungeonInstance {
     public void addPlayer(Player player) {
         players.add(player);
         player.setGameMode(GameMode.ADVENTURE);
-        dungeonPlayerStats.addPlayer(player);
+        if (dungeonStartTime == 0) {
+            dungeonStartTime = System.currentTimeMillis();
+        }
     }
 
     public void removePlayer(Player player) {
         players.remove(player);
         player.setGameMode(GameMode.SURVIVAL);
         if (shouldEndDungeon()) endDungeon(true);
-        dungeonPlayerStats.endTracking(player);
     }
 
     public boolean isInDungeon(Player player) {
@@ -189,4 +191,10 @@ public class DungeonInstance {
         return dungeonWorld;
     }
 
+    public void defeatDungeon() {
+        long timeTaken = System.currentTimeMillis() - dungeonStartTime;
+        for (Player player : players.getPlayers()) {
+            playerStats.addOrUpdateEntry(player, dungeonType, timeTaken);
+        }
+    }
 }

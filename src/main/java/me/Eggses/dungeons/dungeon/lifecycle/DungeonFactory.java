@@ -1,6 +1,7 @@
 package me.Eggses.dungeons.dungeon.lifecycle;
 
 import me.Eggses.dungeons.blocks.BlockRegistry;
+import me.Eggses.dungeons.dungeon.files.PlayerStats;
 import me.Eggses.dungeons.dungeon.types.DungeonType;
 import me.Eggses.dungeons.dungeon.files.templates.DungeonInstanceTemplate;
 import me.Eggses.dungeons.dungeon.files.DungeonLog;
@@ -22,13 +23,14 @@ public class DungeonFactory {
 
     private final JavaPlugin plugin;
     private final DungeonRegistry dungeonRegistry;
-    private final DungeonInstanceTemplateRegistry dungeonInstanceTemplateRegistry;
+    private final DungeonTemplateRegistry dungeonInstanceTemplateRegistry;
     private final TemplateReservation templateReservation;
     private final DungeonLifecycleService dungeonLifecycleService;
     private final DungeonWorldManager dungeonWorldManager;
     private final BlockRegistry blockRegistry;
     private final InstanceNameManager instanceNameManager;
     private final TaskRunner taskRunner;
+    private final PlayerStats playerStats;
     private final MessageCreator messageCreator;
     private final TextFormatter textFormatter;
     private final DungeonLog dungeonLog;
@@ -36,13 +38,14 @@ public class DungeonFactory {
 
     public DungeonFactory(JavaPlugin plugin,
                           DungeonRegistry dungeonRegistry,
-                          DungeonInstanceTemplateRegistry dungeonInstanceTemplateRegistry,
+                          DungeonTemplateRegistry dungeonInstanceTemplateRegistry,
                           TemplateReservation templateReservation,
                           DungeonLifecycleService dungeonLifecycleService,
                           DungeonWorldManager dungeonWorldManager,
                           BlockRegistry blockRegistry,
                           InstanceNameManager instanceNameManager,
                           TaskRunner taskRunner,
+                          PlayerStats playerStats,
                           MessageCreator messageCreator,
                           TextFormatter textFormatter,
                           DungeonLog dungeonLog,
@@ -57,6 +60,7 @@ public class DungeonFactory {
         this.blockRegistry = blockRegistry;
         this.instanceNameManager = instanceNameManager;
         this.taskRunner = taskRunner;
+        this.playerStats = playerStats;
         this.messageCreator = messageCreator;
         this.textFormatter = textFormatter;
         this.dungeonLog = dungeonLog;
@@ -79,7 +83,8 @@ public class DungeonFactory {
                 textFormatter,
                 taskRunner,
                 bannedItems,
-                dungeonType
+                dungeonType,
+                playerStats
         );
         dungeonRegistry.addDungeonInstance(dungeonInstance);
     }

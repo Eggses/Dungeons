@@ -65,7 +65,7 @@ public class DungeonLoadingManager {
     private final BannedItems bannedItems;
 
     private final TemplateReservation templateReservation;
-    private final DungeonInstanceTemplateRegistry dungeonInstanceTemplateRegistry;
+    private final DungeonTemplateRegistry dungeonInstanceTemplateRegistry;
 
     private final Map<DungeonType, WorldPosition> keystoneLocations = new EnumMap<>(DungeonType.class);
     private final Map<DungeonType, WorldRegion> portalRooms = new EnumMap<>(DungeonType.class);
@@ -88,7 +88,7 @@ public class DungeonLoadingManager {
                                  ItemKey itemKey,
                                  BannedItems bannedItems,
                                  TemplateReservation templateReservation,
-                                 DungeonInstanceTemplateRegistry dungeonInstanceTemplateRegistry) {
+                                 DungeonTemplateRegistry dungeonInstanceTemplateRegistry) {
 
         this.plugin = plugin;
         this.dungeonFactory = dungeonFactory;
@@ -136,7 +136,7 @@ public class DungeonLoadingManager {
             placeholders.addPlaceholder(Placeholder.OPEN_DURATION, openDurationSeconds);
 
             DungeonInstanceTemplate dungeonInstanceTemplate = dungeonTemplateCompiler.createDungeonInstanceTemplate(placeholders);
-            dungeonInstanceTemplateRegistry.add(dungeonType, dungeonInstanceTemplate);
+            dungeonInstanceTemplateRegistry.add(dungeonType, dungeonInstanceTemplate, nonInstanceDungeonTemplate);
 
             var itemTemplate = nonInstanceDungeonTemplate.itemTemplate();
             var uniqueKey = dungeonType.getUniqueKey();

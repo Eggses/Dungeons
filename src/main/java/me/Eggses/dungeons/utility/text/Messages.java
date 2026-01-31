@@ -28,15 +28,17 @@ public enum Messages {
     DUNGEONS_GIVE_USAGE("dungeons_give.usage"),
     DUNGEONS_GIVE_UNKNOWN_KEY("dungeons_give.unknown_key"),
     DUNGEONS_GIVE_GIVEN("dungeons_give.given"),
+
     // Keystone
     KEYSTONE_DISABLED("keystone.disabled"),
-    KEYSTONE_OPENING("keystone.opening"),
 
     BANNED_ITEMS_ALLOWED_TO_ENTER("banned_items.allowed_to_enter"),
     BANNED_ITEMS_DENIED_TO_ENTER("banned_items.denied_to_enter"),
 
-    ;
+    // Stats
+    DUNGEONS_STATS_USAGE("dungeons_stats.usage"),
 
+    ;
     private final String path;
 
     Messages(String path) {
