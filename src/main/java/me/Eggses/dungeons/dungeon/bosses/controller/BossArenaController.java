@@ -21,7 +21,6 @@ import java.util.function.Supplier;
 
 public class BossArenaController {
 
-    private final DungeonInstance dungeonInstance;
     private final DungeonContext dungeonContext;
     private final World world;
     private final EntityManager entityManager;
@@ -53,7 +52,7 @@ public class BossArenaController {
                                RotationPosition spawnPosition,
                                Supplier<DungeonBossBuilder> bossBuilderSupplier,
                                Consumer<DungeonContext> onBossDefeat) {
-        this.dungeonInstance = dungeonInstance;
+
         this.dungeonContext = dungeonContext;
         this.world = world;
         this.entityManager = entityManager;
@@ -67,7 +66,7 @@ public class BossArenaController {
         this.readyToCommenceState = new ReadyToCommenceState(this, entryRegion);
         this.spawningBossState = new SpawningBossState(plugin, this, entryRegion);
         this.pulledBossState = new PulledBossState(this, entryRegion, messageCreator);
-        this.bossDefeatedState = new BossDefeatedState(this, entryRegion);
+        this.bossDefeatedState = new BossDefeatedState(this, entryRegion, dungeonInstance);
         this.activeState = this.readyToCommenceState;
     }
 
@@ -108,7 +107,6 @@ public class BossArenaController {
                 () -> {
                     this.changeStateToBossDefeatedState();
                     onBossDefeat.accept(dungeonContext);
-                    dungeonInstance.defeatDungeon();
                 }
         );
         for (Player player : playersInArena.getPlayers()) {
@@ -126,22 +124,23 @@ public class BossArenaController {
     }
 
     public void changeStateToReadyToCommenceState() {
-        changeStateTo(readyToCommenceState);
+        changeStateToUnlessAlreadyActive(readyToCommenceState);
     }
 
     public void changeStateToBossSpawningState() {
-        changeStateTo(spawningBossState);
+        changeStateToUnlessAlreadyActive(spawningBossState);
     }
 
     public void changeStateToPulledBossState() {
-        changeStateTo(pulledBossState);
+        changeStateToUnlessAlreadyActive(pulledBossState);
     }
 
     public void changeStateToBossDefeatedState() {
-        changeStateTo(bossDefeatedState);
+        changeStateToUnlessAlreadyActive(bossDefeatedState);
     }
 
-    private void changeStateTo(ArenaControllerState newState) {
+    private void changeStateToUnlessAlreadyActive(ArenaControllerState newState) {
+        if (activeState == newState) return;
         activeState = newState;
         activeState.onStateStart();
     }

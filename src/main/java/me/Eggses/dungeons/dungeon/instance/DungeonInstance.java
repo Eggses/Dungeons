@@ -191,11 +191,10 @@ public class DungeonInstance {
         return dungeonWorld;
     }
 
-    public void defeatDungeon() {
+    public void updatePlayerStats() {
         long timeTaken = System.currentTimeMillis() - dungeonStartTime;
         for (Player player : players.getPlayers()) {
-            playerStats.addOrUpdateEntry(player, dungeonType, timeTaken);
-            System.out.println("Updated stats for " + player.getName());
+            playerStats.addOrUpdateEntry(player.getUniqueId(), dungeonType, timeTaken);
         }
     }
 }

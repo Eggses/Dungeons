@@ -7,6 +7,7 @@ import me.Eggses.dungeons.items.ItemHandler;
 import me.Eggses.dungeons.utility.text.MessageCreator;
 import me.Eggses.dungeons.utility.text.Placeholder;
 import me.Eggses.dungeons.utility.text.Placeholders;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -20,14 +21,13 @@ public class StatsMenu extends Menu {
             DungeonType.MALIGNANT_MARSH, Items.MALIGNANT_MARSH
     );
 
-    private final Player statsFor;
+    private final OfflinePlayer statsFor;
     private final PlayerStats playerStats;
     private final DungeonTemplateRegistry dungeonTemplateRegistry;
-    private final MessageCreator messageCreator;
     private final Placeholders placeholders;
 
     public StatsMenu(Player player,
-                     Player statsFor,
+                     OfflinePlayer statsFor,
                      PlayerStats playerStats,
                      ItemHandler itemHandler,
                      MessageCreator messageCreator,
@@ -45,7 +45,6 @@ public class StatsMenu extends Menu {
         );
         this.statsFor = statsFor;
         this.playerStats = playerStats;
-        this.messageCreator = messageCreator;
         this.dungeonTemplateRegistry = dungeonTemplateRegistry;
         this.placeholders = placeholders;
 
@@ -66,7 +65,6 @@ public class StatsMenu extends Menu {
             if (!(itemMeta instanceof SkullMeta skullMeta)) return;
             skullMeta.setOwningPlayer(statsFor);
         }));
-        // TODO make this stuff support offline players... as skull meta supports that.
 
         for (Map.Entry<DungeonType, MenuItem> entry : MENU_ITEM_MAP.entrySet()) {
 
@@ -74,7 +72,7 @@ public class StatsMenu extends Menu {
             var template = dungeonTemplateRegistry.getNonInstanceDungeonTemplate(dungeonType);
             placeholders.addPlaceholder(Placeholder.DUNGEON_NAME, template.dungeonName());
 
-            Optional<PlayerStats.DungeonStat> maybeStats = playerStats.getStatsFor(statsFor, dungeonType);
+            Optional<PlayerStats.DungeonStat> maybeStats = playerStats.getStatsFor(statsFor.getUniqueId(), dungeonType);
 
             if (maybeStats.isEmpty()) {
                 placeholders.addPlaceholder(Placeholder.BEST_TIME, "N/A");
@@ -102,7 +100,6 @@ public class StatsMenu extends Menu {
         return String.format("%dm %ds", minutes, seconds);
     }
 
-
     private enum Items implements MenuItem {
 
         PANEL("panel", -1),
@@ -110,7 +107,7 @@ public class StatsMenu extends Menu {
         MALIGNANT_MARSH("malignant_marsh", 19),
         CLOSE("close", 49);
 
-        private static final String BASE = "keystone_menu.items.";
+        private static final String BASE = "stats_menu.items.";
 
         private final String key;
         private final int slot;

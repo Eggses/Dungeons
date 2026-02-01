@@ -12,6 +12,7 @@ import me.Eggses.dungeons.utility.text.Messages;
 import me.Eggses.dungeons.utility.text.Placeholder;
 import me.Eggses.dungeons.utility.text.Placeholders;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -80,8 +81,9 @@ public class Stats implements SubCommand {
             String targetPlayerName = args[1];
             placeholders.addPlaceholder(Placeholder.TARGET_PLAYER, targetPlayerName);
 
-            Player target = Bukkit.getPlayerExact(targetPlayerName);
-            if (target == null) {
+            // Works for online players too.
+            OfflinePlayer target = Bukkit.getOfflinePlayer(targetPlayerName);
+            if (!target.hasPlayedBefore()) {
                 sender.sendMessage(messageCreator.createMessage(Messages.ERROR_PLAYER_NOT_FOUND, placeholders));
                 return;
             }

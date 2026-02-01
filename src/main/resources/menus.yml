@@ -77,3 +77,7 @@ stats_menu:
       name: "<red><bold>Close</bold></red>"
       lore:
         - "<gray>Click to close this menu.</gray>"
+    panel:
+      material: "GRAY_STAINED_GLASS_PANE"
+      name: ""
+      lore: []

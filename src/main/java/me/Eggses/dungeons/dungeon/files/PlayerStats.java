@@ -6,11 +6,11 @@ import me.Eggses.dungeons.dungeon.types.DungeonType;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.Optional;
+import java.util.UUID;
 
 public class PlayerStats {
 
@@ -32,11 +32,11 @@ public class PlayerStats {
         this.configurationFile = new ConfigurationFile(plugin, FILE_NAME);
     }
 
-    public void addOrUpdateEntry(Player player, DungeonType dungeonType, long timeTakenMs) {
+    public void addOrUpdateEntry(UUID uuid, DungeonType dungeonType, long timeTakenMs) {
         synchronized (lock) {
             FileConfiguration config = configurationFile.getCustomFile();
 
-            String path = PLAYER_STATS_PATH + "." + player.getUniqueId() + "." + DUNGEONS + "." + dungeonType.name();
+            String path = PLAYER_STATS_PATH + "." + uuid + "." + DUNGEONS + "." + dungeonType.name();
 
             ConfigurationSection section = config.getConfigurationSection(path);
             if (section == null) section = config.createSection(path);
@@ -50,11 +50,11 @@ public class PlayerStats {
         }
     }
 
-    public Optional<DungeonStat> getStatsFor(Player player, DungeonType dungeonType) {
+    public Optional<DungeonStat> getStatsFor(UUID uuid, DungeonType dungeonType) {
         synchronized (lock) {
             FileConfiguration config = configurationFile.getCustomFile();
 
-            String path = PLAYER_STATS_PATH + "." + player.getUniqueId() + "." + DUNGEONS + "." + dungeonType.name();
+            String path = PLAYER_STATS_PATH + "." + uuid + "." + DUNGEONS + "." + dungeonType.name();
             ConfigurationSection section = config.getConfigurationSection(path);
             if (section == null) return Optional.empty();
 
