@@ -1,48 +1,34 @@
 package me.Eggses.dungeons.dungeon.items.management;
 
-import io.papermc.paper.block.BlockPredicate;
-import io.papermc.paper.datacomponent.DataComponentTypes;
-import io.papermc.paper.datacomponent.item.ItemAdventurePredicate;
-import io.papermc.paper.registry.RegistryKey;
-import io.papermc.paper.registry.keys.BlockTypeKeys;
-import io.papermc.paper.registry.set.RegistryKeySet;
-import io.papermc.paper.registry.set.RegistrySet;
-import org.bukkit.block.BlockType;
-import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.bukkit.Material;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Locale;
+import java.util.Set;
 import java.util.function.Consumer;
 
 public enum DungeonTool {
-    AXE("dungeon_axe",itemStack -> {
 
-        /*
-        RegistryKeySet<@NotNull BlockType> blocks = RegistrySet.keySet(RegistryKey.BLOCK, BlockTypeKeys.OAK_FENCE);
-                BlockPredicate blockPredicate = BlockPredicate.predicate().blocks(blocks).build();
-        ItemAdventurePredicate canBreak = ItemAdventurePredicate.itemAdventurePredicate().addPredicate(blockPredicate).build();
-
-        itemStack.setData(DataComponentTypes.CAN_BREAK, canBreak);
-
-         */
-        itemStack.setAmount(2);
+    AXE("dungeon_axe",itemMeta -> {
+        itemMeta.setCanDestroy(Set.of(Material.OAK_FENCE));
+        itemMeta.setEnchantmentGlintOverride(true);
     }),
     ;
 
     private final String configurationSectionName;
-    private final Consumer<ItemStack> itemStackConsumer;
+    private final Consumer<ItemMeta> itemMetaConsumer;
 
-    DungeonTool(String configurationSectionName, Consumer<ItemStack> itemStackConsumer) {
+    DungeonTool(String configurationSectionName, Consumer<ItemMeta> itemMetaConsumer) {
         this.configurationSectionName = configurationSectionName;
-        this.itemStackConsumer = itemStackConsumer;
+        this.itemMetaConsumer = itemMetaConsumer;
     }
 
     public String getConfigurationSectionName() {
         return configurationSectionName;
     }
 
-    public Consumer<ItemStack> getItemStackConsumer() {
-        return itemStackConsumer;
+    public Consumer<ItemMeta> getItemMetaConsumer() {
+        return itemMetaConsumer;
     }
 
     public static DungeonTool getType(String type) {

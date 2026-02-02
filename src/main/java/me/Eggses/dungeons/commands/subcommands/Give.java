@@ -74,7 +74,7 @@ public class Give implements SubCommand {
         switch (args[1].toLowerCase(Locale.ROOT)) {
             case KEY -> {
                 DungeonType dungeonType = DungeonType.getType(args[2]);
-                ItemStack key = dungeonKeyItems.createItemMetaConsumer(
+                ItemStack key = dungeonKeyItems.createItem(
                         dungeonType,
                         placeholders,
                         DungeonItems.DUNGEON_KEY_META_CONSUMER
@@ -83,11 +83,11 @@ public class Give implements SubCommand {
             }
             case TOOL -> {
                 DungeonTool dungeonTool = DungeonTool.getType(args[2]);
+                if (dungeonTool == null) return;
                 ItemStack item = dungeonTools.createItem(
                         dungeonTool,
                         placeholders,
-                        () -> dungeonTool != null ? dungeonTool.getItemStackConsumer() : null,
-                        DungeonItems.DUNGEON_GLOW_META_CONSUMER
+                        dungeonTool.getItemMetaConsumer()
                 );
                 giveItemResolver(player, item, args, placeholders);
             }

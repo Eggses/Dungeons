@@ -10,18 +10,13 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public class DungeonItems<T extends Enum<T>> {
-
-    public static final Consumer<ItemMeta> DUNGEON_GLOW_META_CONSUMER = itemMeta
-            -> itemMeta.setEnchantmentGlintOverride(true);
 
     public static final Consumer<ItemMeta> DUNGEON_KEY_META_CONSUMER = itemMeta -> {
         itemMeta.setMaxStackSize(1);
         itemMeta.setEnchantmentGlintOverride(true);
     };
-
 
     private final Map<T, Item> dungeonsItems;
     private final ItemHandler itemHandler;
@@ -48,13 +43,8 @@ public class DungeonItems<T extends Enum<T>> {
         dungeonsItems.remove(constant);
     }
 
-    public ItemStack createItemMetaConsumer(T constant, Placeholders placeholders, Consumer<ItemMeta> itemMetaConsumer) {
-        return createItem(constant, placeholders, null, itemMetaConsumer);
-    }
-
     public ItemStack createItem(T constant,
                                 Placeholders placeholders,
-                                Supplier<Consumer<ItemStack>> itemStackConsumerSupplier,
                                 Consumer<ItemMeta> itemMetaConsumer) {
 
         Item item = dungeonsItems.get(constant);
@@ -65,9 +55,6 @@ public class DungeonItems<T extends Enum<T>> {
         ItemStack itemStack = itemHandler.createItem(item.itemTemplate, placeholders, itemMetaConsumer);
 
         if (item.uniqueKey != null) itemHandler.applyUniqueKey(itemStack, item.uniqueKey);
-
-        var consumer = itemStackConsumerSupplier.get();
-        if (consumer != null) consumer.accept(itemStack);
 
         return itemStack;
     }

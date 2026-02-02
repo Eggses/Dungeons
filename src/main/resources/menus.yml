@@ -61,7 +61,7 @@ stats_menu:
   items:
     info:
       material: "PLAYER_HEAD"
-      name: "<bold><gradient:#00c6ff:#0072ff>Dungeon Stats: %target%</bold>"
+      name: "<bold><gradient:#00c6ff:#0072ff>Dungeon Stats: %target_player%</bold>"
       lore:
         - ""
         - "<gray>View this player's dungeon performance.</gray>"
