@@ -27,6 +27,7 @@ public class KeystoneMenu extends Menu {
     private final ItemKey itemKey;
     private final BannedItems bannedItems;
     private final MessageCreator messageCreator;
+    private final Placeholders placeholders;
 
     public KeystoneMenu(Player player,
                         DungeonFactory dungeonFactory,
@@ -53,6 +54,7 @@ public class KeystoneMenu extends Menu {
         this.itemKey = itemKey;
         this.bannedItems = bannedItems;
         this.messageCreator = messageCreator;
+        this.placeholders = placeholders;
 
         createItems();
     }
@@ -60,7 +62,7 @@ public class KeystoneMenu extends Menu {
     @Override
     protected void createItems() {
 
-        addItem(Items.INFO);
+        addItem(Items.INFO, placeholders);
         addItem(Items.CHECK_INVENTORY, () -> bannedItems.createAndSendBannedItemsMessage(getPlayer()));
         insertKeyState();
         addItem(Items.CLOSE, this::closeInventory);

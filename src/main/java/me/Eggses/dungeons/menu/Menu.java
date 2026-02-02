@@ -51,10 +51,6 @@ public abstract class Menu implements InventoryHolder {
         this.messageCreator = messageCreator;
     }
 
-    protected void addItem(MenuItem menuItem) {
-        addItem(menuItem, null, null, null);
-    }
-
     protected void addItem(MenuItem menuItem, Runnable action) {
         addItem(menuItem, action, messageCreator.placeholders(), null);
     }
