@@ -86,18 +86,13 @@ public class Give implements SubCommand {
                 ItemStack item = dungeonTools.createItem(
                         dungeonTool,
                         placeholders,
-                        DungeonItems.DUNGEON_TOOLS_AXE_CONSUMER,
+                        () -> dungeonTool != null ? dungeonTool.getItemStackConsumer() : null,
                         DungeonItems.DUNGEON_GLOW_META_CONSUMER
                 );
                 giveItemResolver(player, item, args, placeholders);
             }
-            default -> {
-                player.sendMessage(messageCreator.createMessage(Messages.DUNGEONS_GIVE_UNKNOWN_TYPE, placeholders));
-                return;
-            }
+            default -> player.sendMessage(messageCreator.createMessage(Messages.DUNGEONS_GIVE_UNKNOWN_TYPE, placeholders));
         }
-
-        player.sendMessage(messageCreator.createMessage(Messages.DUNGEONS_GIVE_USAGE, placeholders));
     }
 
     public void giveItemResolver(Player sender, ItemStack itemToGive, String[] args, Placeholders placeholders) {
@@ -138,16 +133,18 @@ public class Give implements SubCommand {
 
         if (args.length == 3) {
 
-            List<String> keyNames = dungeonKeyItems.getFormattedKeyNames();
-            List<String> toolsNames = dungeonTools.getFormattedKeyNames();
+            if (args[1].equalsIgnoreCase(KEY)) {
+                return dungeonKeyItems.getFormattedKeyNames()
+                        .stream()
+                        .filter(name -> name.startsWith(args[2]))
+                        .toList();
 
-            List<String> combined = new ArrayList<>();
-            combined.addAll(keyNames);
-            combined.addAll(toolsNames);
-
-            return combined.stream()
-                    .filter(name -> name.startsWith(args[2]))
-                    .toList();
+            } else if (args[1].equalsIgnoreCase(TOOL)) {
+                return dungeonTools.getFormattedKeyNames()
+                        .stream()
+                        .filter(name -> name.startsWith(args[2]))
+                        .toList();
+            }
         }
 
         if (args.length == 4) {

@@ -1,23 +1,16 @@
 package me.Eggses.dungeons.dungeon.items;
 
-import io.papermc.paper.block.BlockPredicate;
-import io.papermc.paper.datacomponent.DataComponentTypes;
-import io.papermc.paper.datacomponent.item.ItemAdventurePredicate;
-import io.papermc.paper.registry.RegistryKey;
-import io.papermc.paper.registry.keys.BlockTypeKeys;
-import io.papermc.paper.registry.set.RegistryKeySet;
-import io.papermc.paper.registry.set.RegistrySet;
 import me.Eggses.dungeons.items.ItemHandler;
 import me.Eggses.dungeons.items.ItemTemplate;
 import me.Eggses.dungeons.utility.text.Placeholders;
 import me.Eggses.dungeons.utility.text.TextFormatter;
-import org.bukkit.block.BlockType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class DungeonItems<T extends Enum<T>> {
 
@@ -29,15 +22,6 @@ public class DungeonItems<T extends Enum<T>> {
         itemMeta.setEnchantmentGlintOverride(true);
     };
 
-    @SuppressWarnings("UnstableApiUsage")
-    public static final Consumer<ItemStack> DUNGEON_TOOLS_AXE_CONSUMER = itemStack -> {
-
-        RegistryKeySet<@org.jetbrains.annotations.NotNull BlockType> blocks = RegistrySet.keySet(RegistryKey.BLOCK, BlockTypeKeys.OAK_FENCE);
-        BlockPredicate blockPredicate = BlockPredicate.predicate().blocks(blocks).build();
-        ItemAdventurePredicate canBreak = ItemAdventurePredicate.itemAdventurePredicate().addPredicate(blockPredicate).build();
-
-        itemStack.setData(DataComponentTypes.CAN_BREAK, canBreak);
-    };
 
     private final Map<T, Item> dungeonsItems;
     private final ItemHandler itemHandler;
@@ -70,7 +54,7 @@ public class DungeonItems<T extends Enum<T>> {
 
     public ItemStack createItem(T constant,
                                 Placeholders placeholders,
-                                Consumer<ItemStack> itemStackConsumer,
+                                Supplier<Consumer<ItemStack>> itemStackConsumerSupplier,
                                 Consumer<ItemMeta> itemMetaConsumer) {
 
         Item item = dungeonsItems.get(constant);
@@ -82,7 +66,8 @@ public class DungeonItems<T extends Enum<T>> {
 
         if (item.uniqueKey != null) itemHandler.applyUniqueKey(itemStack, item.uniqueKey);
 
-        if (itemStackConsumer != null) itemStackConsumer.accept(itemStack);
+        var consumer = itemStackConsumerSupplier.get();
+        if (consumer != null) consumer.accept(itemStack);
 
         return itemStack;
     }
