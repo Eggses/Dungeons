@@ -1,11 +1,9 @@
 package me.Eggses.dungeons.dungeon.lifecycle;
 
 import me.Eggses.dungeons.dungeon.files.DungeonLog;
-import me.Eggses.dungeons.dungeon.instance.DungeonInstance;
 import me.Eggses.dungeons.dungeon.portals.OpenPortalRegistry;
 import me.Eggses.dungeons.dungeon.portals.PortalController;
 import me.Eggses.dungeons.dungeon.types.DungeonType;
-import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -45,10 +43,7 @@ public class DungeonLifecycleService {
         templateReservation.free(dungeonType);
     }
 
-    public void destroyInstanceRuntime(DungeonInstance dungeonInstance) {
-        World world = dungeonInstance.getDungeonWorld();
-        Bukkit.unloadWorld(world, false);
-
+    public void removeDungeonWorld(World world) {
         dungeonRegistry.removeDungeonInstance(world);
     }
 

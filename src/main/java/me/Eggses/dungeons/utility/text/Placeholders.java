@@ -18,6 +18,12 @@ public class Placeholders {
         placeholders.putAll(other.placeholders);
     }
 
+    public Placeholders copy() {
+        Placeholders copy = new Placeholders();
+        copy.addAll(this);
+        return copy;
+    }
+
     public String replace(String text) {
         for (Map.Entry<String, String> entry : placeholders.entrySet()) {
             text = text.replace(entry.getKey(), entry.getValue());

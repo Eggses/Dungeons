@@ -141,7 +141,8 @@ public class DungeonInstance {
 
         blockRegistry.removeAll(worldPosition -> worldPosition.getWorld().equals(dungeonWorld));
 
-        dungeonLifecycleService.destroyInstanceRuntime(this);
+        dungeonLifecycleService.removeDungeonWorld(dungeonWorld);
+        Bukkit.unloadWorld(dungeonWorld, false);
 
         if (destroyWorldFolder) {
             Bukkit.getScheduler().runTaskLater(

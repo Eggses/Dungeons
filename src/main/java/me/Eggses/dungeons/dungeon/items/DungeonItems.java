@@ -50,7 +50,8 @@ public class DungeonItems<T extends Enum<T>> {
         Item item = dungeonsItems.get(constant);
         if (item == null) return null;
 
-        if (item.placeholders != null) placeholders.addAll(item.placeholders);
+        Placeholders combined = placeholders.copy();
+        if (item.placeholders != null) combined.addAll(item.placeholders);
 
         ItemStack itemStack = itemHandler.createItem(item.itemTemplate, placeholders, itemMetaConsumer);
 
