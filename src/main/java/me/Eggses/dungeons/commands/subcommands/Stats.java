@@ -66,6 +66,7 @@ public class Stats implements SubCommand {
         }
 
         if (args.length == 1) {
+            placeholders.addPlaceholder(Placeholder.TARGET_PLAYER, sender.getName());
             Menu statsMenu = new StatsMenu(
                     player,
                     player,

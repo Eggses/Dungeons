@@ -82,7 +82,7 @@ public class StatsMenu extends Menu {
                 placeholders.addPlaceholder(Placeholder.BEST_TIME, msToTime(stats.bestTimeMs()));
                 placeholders.addPlaceholder(Placeholder.COMPLETIONS, String.valueOf(stats.completions()));
             }
-            addItem(entry.getValue());
+            addItem(entry.getValue(), null, placeholders, itemMeta -> itemMeta.setEnchantmentGlintOverride(true));
         }
         fillPanelItems(Items.PANEL);
     }

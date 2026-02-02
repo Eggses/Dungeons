@@ -9,7 +9,7 @@ import java.util.function.Consumer;
 
 public enum DungeonTool {
 
-    AXE("dungeon_axe",itemMeta -> {
+    DUNGEON_AXE("dungeon_axe",itemMeta -> {
         itemMeta.setCanDestroy(Set.of(Material.OAK_FENCE));
         itemMeta.setEnchantmentGlintOverride(true);
     }),
