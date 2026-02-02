@@ -83,10 +83,6 @@ public class Give implements SubCommand {
             }
             case TOOL -> {
                 DungeonTool dungeonTool = DungeonTool.getType(args[2]);
-                if (dungeonTool == null) {
-                    System.out.println("null type");
-                    return;
-                }
                 ItemStack item = dungeonTools.createItem(
                         dungeonTool,
                         placeholders,
