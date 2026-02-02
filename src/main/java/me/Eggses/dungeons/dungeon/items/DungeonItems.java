@@ -33,6 +33,8 @@ public class DungeonItems<T extends Enum<T>> {
 
     public void addItem(T constant, ItemTemplate itemTemplate, Placeholders placeholders, String uniqueKey) {
         dungeonsItems.put(constant, new Item(itemTemplate, placeholders, uniqueKey));
+
+        placeholders.print();
     }
 
     public void addItem(T constant, ItemTemplate itemTemplate) {

@@ -30,4 +30,11 @@ public class Placeholders {
         }
         return text;
     }
+
+    @Deprecated
+    public void print() {
+        for (Map.Entry<String, String> entry : placeholders.entrySet()) {
+            System.out.println("Placeholder: " + entry.getKey() + "value: " + entry.getValue());
+        }
+    }
 }
