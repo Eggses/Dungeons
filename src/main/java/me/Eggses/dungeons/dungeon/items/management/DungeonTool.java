@@ -15,13 +15,17 @@ import java.util.Locale;
 import java.util.function.Consumer;
 
 public enum DungeonTool {
-    @SuppressWarnings("UnstableApiUsage")
     AXE("dungeon_axe",itemStack -> {
+
+        /*
         RegistryKeySet<@NotNull BlockType> blocks = RegistrySet.keySet(RegistryKey.BLOCK, BlockTypeKeys.OAK_FENCE);
-        BlockPredicate blockPredicate = BlockPredicate.predicate().blocks(blocks).build();
+                BlockPredicate blockPredicate = BlockPredicate.predicate().blocks(blocks).build();
         ItemAdventurePredicate canBreak = ItemAdventurePredicate.itemAdventurePredicate().addPredicate(blockPredicate).build();
 
         itemStack.setData(DataComponentTypes.CAN_BREAK, canBreak);
+
+         */
+        itemStack.setAmount(2);
     }),
     ;
 
