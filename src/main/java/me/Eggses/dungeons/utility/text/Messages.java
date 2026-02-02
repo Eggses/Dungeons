@@ -26,6 +26,7 @@ public enum Messages {
 
     // Give
     DUNGEONS_GIVE_USAGE("dungeons_give.usage"),
+    DUNGEONS_GIVE_UNKNOWN_TYPE("dungeons_give.unknown_type"),
     DUNGEONS_GIVE_UNKNOWN_KEY("dungeons_give.unknown_key"),
     DUNGEONS_GIVE_GIVEN("dungeons_give.given"),
 

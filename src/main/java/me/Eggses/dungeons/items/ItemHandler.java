@@ -25,13 +25,7 @@ public class ItemHandler {
         this.messageCreator = messageCreator;
     }
 
-    public ItemStack createItem(ItemTemplate itemTemplate, Placeholders placeholders) {
-        return createItem(itemTemplate, placeholders, null);
-    }
-
-    public ItemStack createItem(ItemTemplate itemTemplate,
-                                Placeholders placeholders,
-                                Consumer<ItemMeta> itemMetaTransformer) {
+    public ItemStack createItem(ItemTemplate itemTemplate, Placeholders placeholders, Consumer<ItemMeta> itemMetaConsumer) {
 
         Component name = messageCreator.createMessage(itemTemplate.name(), placeholders);
         Material material = Material.getMaterial(itemTemplate.material());
@@ -51,7 +45,7 @@ public class ItemHandler {
         meta.displayName(name);
         meta.lore(lore);
 
-        if (itemMetaTransformer != null) itemMetaTransformer.accept(meta);
+        if (itemMetaConsumer != null) itemMetaConsumer.accept(meta);
 
         item.setItemMeta(meta);
 

@@ -35,8 +35,9 @@ dungeons_destroy:
 # /dungeons give <type> [Player]
 # =========================================================
 dungeons_give:
-  usage: "%prefix_main%%prefix_error%<red>Usage: /dungeons give <type> [player]</red>"
-  unknown_key: "%prefix_main%%prefix_error%<red>Unknown key: %give_type%.</red>"
+  usage: "%prefix_main%%prefix_error%<red>Usage: /dungeons give <type> <key> [player]</red>"
+  unknown_type: "%prefix_main%%prefix_error%<red>Unknown type: %give_type%.</red>"
+  unknown_key: "%prefix_main%%prefix_error%<red>Unknown key: %give_key%.</red>"
   given: "%prefix_main%<green>Given %give_type% to %target_player%.</green>"
 
 # =========================================================

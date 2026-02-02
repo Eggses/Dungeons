@@ -15,6 +15,7 @@ public enum Placeholder {
     OPEN_DURATION("%open_duration%"),
 
     GIVE_TYPE("%give_type%"),
+    GIVE_KEY("%give_key%"),
 
     BANNED_ITEMS("%banned_items%"),
 

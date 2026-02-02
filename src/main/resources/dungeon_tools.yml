@@ -1,0 +1,5 @@
+dungeon_axe:
+  material: "WOODEN_AXE"
+  name: "<dark_green>Dungeon Axe"
+  lore:
+    - "<gray>A rare axe capable of breaking Villager Traps.</gray>"

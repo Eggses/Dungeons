@@ -4,7 +4,7 @@ import me.Eggses.dungeons.blocks.BlockRegistry;
 import me.Eggses.dungeons.blocks.task.KeystoneParticleTask;
 import me.Eggses.dungeons.dungeon.bosses.BossRegistry;
 import me.Eggses.dungeons.dungeon.items.ClickItem;
-import me.Eggses.dungeons.dungeon.items.DungeonKeyItems;
+import me.Eggses.dungeons.dungeon.items.DungeonItems;
 import me.Eggses.dungeons.dungeon.regions.WorldPosition;
 import me.Eggses.dungeons.dungeon.types.DungeonType;
 import me.Eggses.dungeons.blocks.events.InteractOpenMenu;
@@ -56,7 +56,7 @@ public class DungeonLoadingManager {
     private final EventRegistry eventRegistry;
     private final DungeonEntranceRoomRegistry dungeonEntranceRoomRegistry;
     private final BlockRegistry blockRegistry;
-    private final DungeonKeyItems dungeonKeyItems;
+    private final DungeonItems<DungeonType> dungeonKeyItems;
     private final EventManagerRegistry<String> itemRegistry;
 
     private final ItemHandler itemHandler;
@@ -81,7 +81,7 @@ public class DungeonLoadingManager {
                                  EventRegistry eventRegistry,
                                  DungeonEntranceRoomRegistry dungeonEntranceRoomRegistry,
                                  BlockRegistry blockRegistry,
-                                 DungeonKeyItems dungeonKeyItems,
+                                 DungeonItems<DungeonType> dungeonKeyItems,
                                  EventManagerRegistry<String> itemRegistry,
                                  ItemHandler itemHandler,
                                  ItemGive itemGive,
@@ -140,7 +140,7 @@ public class DungeonLoadingManager {
 
             var itemTemplate = nonInstanceDungeonTemplate.itemTemplate();
             var uniqueKey = dungeonType.getUniqueKey();
-            dungeonKeyItems.addKey(dungeonType, new DungeonKeyItems.KeyItem(itemTemplate, placeholders, uniqueKey));
+            dungeonKeyItems.addItem(dungeonType, itemTemplate, placeholders, uniqueKey);
 
             itemRegistry.addOrUpdate(uniqueKey, PlayerInteractEvent.class, new CancelUse());
             itemRegistry.addOrUpdate(uniqueKey, InventoryClickEvent.class, new ClickItem());
@@ -179,7 +179,7 @@ public class DungeonLoadingManager {
 
         for (DungeonType dungeonType : dungeons) {
 
-            dungeonKeyItems.removeKey(dungeonType);
+            dungeonKeyItems.removeItem(dungeonType);
             itemRegistry.remove(dungeonType.getUniqueKey());
 
             WorldPosition worldPositionOfKeystone = keystoneLocations.remove(dungeonType);

@@ -6,12 +6,15 @@ import me.Eggses.dungeons.configuration.ConfigurationFile;
 import me.Eggses.dungeons.dispatch.EventManagerRegistry;
 import me.Eggses.dungeons.dungeon.bosses.BossRegistry;
 import me.Eggses.dungeons.dungeon.files.DungeonLog;
+import me.Eggses.dungeons.dungeon.files.DungeonTools;
 import me.Eggses.dungeons.dungeon.files.PlayerStats;
 import me.Eggses.dungeons.dungeon.files.reading.ReadingUtility;
-import me.Eggses.dungeons.dungeon.items.DungeonKeyItems;
+import me.Eggses.dungeons.dungeon.items.DungeonItems;
 import me.Eggses.dungeons.dungeon.lifecycle.*;
 import me.Eggses.dungeons.dungeon.portalroom.DungeonEntranceRoomRegistry;
 import me.Eggses.dungeons.dungeon.portals.OpenPortalRegistry;
+import me.Eggses.dungeons.dungeon.items.management.DungeonTool;
+import me.Eggses.dungeons.dungeon.types.DungeonType;
 import me.Eggses.dungeons.dungeon.utility.BannedItems;
 import me.Eggses.dungeons.dungeon.utility.InstanceNameManager;
 import me.Eggses.dungeons.entities.mobs.mobtype.MobRegistry;
@@ -43,6 +46,8 @@ public final class Dungeons extends JavaPlugin {
 
         var messagesFile = new ConfigurationFile(this, "messages.yml");
         var menuFile = new ConfigurationFile(this, "menus.yml");
+        var itemsFile = new ConfigurationFile(this, "dungeon_tools.yml");
+
         var messageCreator = new MessageCreator(messagesFile);
         var textFormatter = new TextFormatter();
 
@@ -81,7 +86,9 @@ public final class Dungeons extends JavaPlugin {
         var itemKey = new ItemKey(this);
         var itemHandler = new ItemHandler(itemKey, messageCreator);
         var itemGive = new ItemGive();
-        var dungeonKeyItems = new DungeonKeyItems(itemHandler, textFormatter);
+        var dungeonKeyItems = new DungeonItems<>(DungeonType.class, itemHandler, textFormatter);
+        var dungeonToolItems = new DungeonItems<>(DungeonTool.class, itemHandler, textFormatter);
+        var dungeonTools = new DungeonTools(this, dungeonToolItems);
 
         var eventRegistry = new EventRegistry();
 
@@ -132,8 +139,10 @@ public final class Dungeons extends JavaPlugin {
                 dungeonLoadingManager,
                 dungeonTemplateRegistry,
                 dungeonKeyItems,
+                dungeonToolItems,
                 itemHandler,
                 itemGive,
+                dungeonTools,
                 messagesFile,
                 menuFile,
                 messageCreator
@@ -186,9 +195,11 @@ public final class Dungeons extends JavaPlugin {
                                   DungeonEventRouter dungeonEventRouter,
                                   DungeonLoadingManager dungeonLoadingManager,
                                   DungeonTemplateRegistry dungeonTemplateRegistry,
-                                  DungeonKeyItems dungeonKeyItems,
+                                  DungeonItems<DungeonType> dungeonKeyItems,
+                                  DungeonItems<DungeonTool> dungeonToolItems,
                                   ItemHandler itemHandler,
                                   ItemGive itemGive,
+                                  DungeonTools dungeonTools,
                                   ConfigurationFile messagesFile,
                                   ConfigurationFile menuFile,
                                   MessageCreator messageCreator) {
@@ -199,11 +210,13 @@ public final class Dungeons extends JavaPlugin {
                 dungeonLoadingManager,
                 dungeonTemplateRegistry,
                 dungeonKeyItems,
+                dungeonToolItems,
                 itemHandler,
                 itemGive,
                 messagesFile,
                 menuFile,
                 playerStats,
+                dungeonTools,
                 messageCreator
         );
 

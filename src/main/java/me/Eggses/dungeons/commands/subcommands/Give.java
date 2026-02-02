@@ -1,6 +1,7 @@
 package me.Eggses.dungeons.commands.subcommands;
 
-import me.Eggses.dungeons.dungeon.items.DungeonKeyItems;
+import me.Eggses.dungeons.dungeon.items.DungeonItems;
+import me.Eggses.dungeons.dungeon.items.management.DungeonTool;
 import me.Eggses.dungeons.dungeon.types.DungeonType;
 import me.Eggses.dungeons.items.ItemGive;
 import me.Eggses.dungeons.utility.misc.Permission;
@@ -10,22 +11,30 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
+import java.util.*;
 
 public class Give implements SubCommand {
 
     private static final String COMMAND_NAME = "give";
     private static final Permission PERMISSION = Permission.GIVE;
 
-    private final DungeonKeyItems dungeonKeyItems;
+    private static final String KEY = "key";
+    private static final String TOOL = "tool";
+
+    private static final List<String> OPTIONS = List.of(KEY, TOOL);
+
+    private final DungeonItems<DungeonType> dungeonKeyItems;
+    private final DungeonItems<DungeonTool> dungeonTools;
     private final ItemGive itemGive;
     private final MessageCreator messageCreator;
 
-    public Give(DungeonKeyItems dungeonKeyItems,
+    public Give(DungeonItems<DungeonType> dungeonKeyItems,
+                DungeonItems<DungeonTool> dungeonTools,
                 ItemGive itemGive,
                 MessageCreator messageCreator) {
 
         this.dungeonKeyItems = dungeonKeyItems;
+        this.dungeonTools = dungeonTools;
         this.itemGive = itemGive;
         this.messageCreator = messageCreator;
     }
@@ -40,6 +49,7 @@ public class Give implements SubCommand {
         return PERMISSION;
     }
 
+
     @Override
     public void execute(CommandSender sender, String[] args, Placeholders placeholders) {
 
@@ -53,45 +63,67 @@ public class Give implements SubCommand {
             return;
         }
 
-        if (args.length < 2) {
+        if (args.length < 3) {
             player.sendMessage(messageCreator.createMessage(Messages.DUNGEONS_GIVE_USAGE, placeholders));
             return;
         }
 
         placeholders.addPlaceholder(Placeholder.GIVE_TYPE, args[1]);
+        placeholders.addPlaceholder(Placeholder.GIVE_KEY, args[2]);
 
-        DungeonType dungeonType = DungeonType.getType(args[1]);
-        ItemStack key = dungeonKeyItems.getDungeonKey(dungeonType, placeholders);
-
-        if (key == null) {
-            player.sendMessage(messageCreator.createMessage(Messages.DUNGEONS_GIVE_UNKNOWN_KEY, placeholders));
-            return;
-        }
-
-        if (args.length == 2) {
-            placeholders.addPlaceholder(Placeholder.TARGET_PLAYER, player.getName());
-            itemGive.giveOrDrop(player, key);
-            player.sendMessage(messageCreator.createMessage(Messages.DUNGEONS_GIVE_GIVEN, placeholders));
-            return;
-        }
-
-        if (args.length == 3) {
-            placeholders.addPlaceholder(Placeholder.TARGET_PLAYER, args[2]);
-
-            Player recipient = Bukkit.getPlayer(args[2]);
-            if (recipient == null) {
-                player.sendMessage(messageCreator.createMessage(Messages.ERROR_PLAYER_NOT_FOUND, placeholders));
+        switch (args[1].toLowerCase(Locale.ROOT)) {
+            case KEY -> {
+                DungeonType dungeonType = DungeonType.getType(args[2]);
+                ItemStack key = dungeonKeyItems.createItemMetaConsumer(
+                        dungeonType,
+                        placeholders,
+                        DungeonItems.DUNGEON_KEY_META_CONSUMER
+                );
+                giveItemResolver(player, key, args, placeholders);
+            }
+            case TOOL -> {
+                DungeonTool dungeonTool = DungeonTool.getType(args[2]);
+                ItemStack item = dungeonTools.createItem(
+                        dungeonTool,
+                        placeholders,
+                        DungeonItems.DUNGEON_TOOLS_AXE_CONSUMER,
+                        DungeonItems.DUNGEON_GLOW_META_CONSUMER
+                );
+                giveItemResolver(player, item, args, placeholders);
+            }
+            default -> {
+                player.sendMessage(messageCreator.createMessage(Messages.DUNGEONS_GIVE_UNKNOWN_TYPE, placeholders));
                 return;
             }
-
-            itemGive.giveOrDrop(recipient, key);
-            player.sendMessage(messageCreator.createMessage(Messages.DUNGEONS_GIVE_GIVEN, placeholders));
-            return;
         }
 
         player.sendMessage(messageCreator.createMessage(Messages.DUNGEONS_GIVE_USAGE, placeholders));
     }
 
+    public void giveItemResolver(Player sender, ItemStack itemToGive, String[] args, Placeholders placeholders) {
+
+        if (itemToGive == null) {
+            sender.sendMessage(messageCreator.createMessage(Messages.DUNGEONS_GIVE_UNKNOWN_KEY, placeholders));
+            return;
+        }
+
+        if (args.length == 3) {
+            placeholders.addPlaceholder(Placeholder.TARGET_PLAYER, sender.getName());
+            itemGive.giveOrDrop(sender, itemToGive);
+            sender.sendMessage(messageCreator.createMessage(Messages.DUNGEONS_GIVE_GIVEN, placeholders));
+        } else if (args.length == 4) {
+            placeholders.addPlaceholder(Placeholder.TARGET_PLAYER, args[3]);
+
+            Player recipient = Bukkit.getPlayer(args[3]);
+            if (recipient == null) {
+                sender.sendMessage(messageCreator.createMessage(Messages.ERROR_PLAYER_NOT_FOUND, placeholders));
+                return;
+            }
+
+            itemGive.giveOrDrop(recipient, itemToGive);
+            sender.sendMessage(messageCreator.createMessage(Messages.DUNGEONS_GIVE_GIVEN, placeholders));
+        }
+    }
 
     @Override
     public List<String> tabComplete(CommandSender sender, String[] args) {
@@ -101,17 +133,28 @@ public class Give implements SubCommand {
         }
 
         if (args.length == 2) {
-            return dungeonKeyItems.getDungeonKeyNames()
-                    .stream()
-                    .filter(name -> name.startsWith(args[1]))
-                    .toList();
+            return OPTIONS;
         }
 
         if (args.length == 3) {
+
+            List<String> keyNames = dungeonKeyItems.getFormattedKeyNames();
+            List<String> toolsNames = dungeonTools.getFormattedKeyNames();
+
+            List<String> combined = new ArrayList<>();
+            combined.addAll(keyNames);
+            combined.addAll(toolsNames);
+
+            return combined.stream()
+                    .filter(name -> name.startsWith(args[2]))
+                    .toList();
+        }
+
+        if (args.length == 4) {
             return Bukkit.getOnlinePlayers()
                     .stream()
                     .map(Player::getName)
-                    .filter(name -> name.startsWith(args[2]))
+                    .filter(name -> name.startsWith(args[3]))
                     .toList();
         }
 

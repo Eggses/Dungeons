@@ -2,12 +2,15 @@ package me.Eggses.dungeons.commands;
 
 import me.Eggses.dungeons.commands.subcommands.*;
 import me.Eggses.dungeons.configuration.ConfigurationFile;
+import me.Eggses.dungeons.dungeon.files.DungeonTools;
 import me.Eggses.dungeons.dungeon.files.PlayerStats;
-import me.Eggses.dungeons.dungeon.items.DungeonKeyItems;
+import me.Eggses.dungeons.dungeon.items.DungeonItems;
+import me.Eggses.dungeons.dungeon.items.management.DungeonTool;
 import me.Eggses.dungeons.dungeon.lifecycle.DungeonEventRouter;
 import me.Eggses.dungeons.dungeon.lifecycle.DungeonLoadingManager;
 import me.Eggses.dungeons.dungeon.lifecycle.DungeonRegistry;
 import me.Eggses.dungeons.dungeon.lifecycle.DungeonTemplateRegistry;
+import me.Eggses.dungeons.dungeon.types.DungeonType;
 import me.Eggses.dungeons.items.ItemGive;
 import me.Eggses.dungeons.items.ItemHandler;
 import me.Eggses.dungeons.utility.misc.Permission;
@@ -30,12 +33,14 @@ public class DungeonsBaseCommand implements CommandExecutor, TabCompleter {
     private final DungeonEventRouter dungeonEventRouter;
     private final DungeonLoadingManager dungeonLoadingManager;
     private final DungeonTemplateRegistry dungeonTemplateRegistry;
-    private final DungeonKeyItems dungeonKeyItems;
+    private final DungeonItems<DungeonType> dungeonKeyItems;
+    private final DungeonItems<DungeonTool> dungeonToolItems;
     private final ItemHandler itemHandler;
     private final ItemGive itemGive;
     private final ConfigurationFile messagesFile;
     private final ConfigurationFile menusFile;
     private final PlayerStats playerStats;
+    private final DungeonTools dungeonTools;
     private final MessageCreator messageCreator;
 
     private final Map<String, SubCommand> subCommands = new HashMap<>();
@@ -44,12 +49,14 @@ public class DungeonsBaseCommand implements CommandExecutor, TabCompleter {
                                DungeonEventRouter dungeonEventRouter,
                                DungeonLoadingManager dungeonLoadingManager,
                                DungeonTemplateRegistry dungeonTemplateRegistry,
-                               DungeonKeyItems dungeonKeyItems,
+                               DungeonItems<DungeonType> dungeonKeyItems,
+                               DungeonItems<DungeonTool> dungeonToolItems,
                                ItemHandler itemHandler,
                                ItemGive itemGive,
                                ConfigurationFile messagesFile,
                                ConfigurationFile menusFile,
                                PlayerStats playerStats,
+                               DungeonTools dungeonTools,
                                MessageCreator messageCreator) {
 
         this.dungeonRegistry = dungeonRegistry;
@@ -57,11 +64,13 @@ public class DungeonsBaseCommand implements CommandExecutor, TabCompleter {
         this.dungeonLoadingManager = dungeonLoadingManager;
         this.dungeonTemplateRegistry = dungeonTemplateRegistry;
         this.dungeonKeyItems = dungeonKeyItems;
+        this.dungeonToolItems = dungeonToolItems;
         this.itemHandler = itemHandler;
         this.itemGive = itemGive;
         this.messagesFile = messagesFile;
         this.menusFile = menusFile;
         this.playerStats = playerStats;
+        this.dungeonTools = dungeonTools;
         this.messageCreator = messageCreator;
 
         registerCommands();
@@ -69,8 +78,8 @@ public class DungeonsBaseCommand implements CommandExecutor, TabCompleter {
 
     private void registerCommands() {
         var trigger = new Trigger(dungeonEventRouter, messageCreator);
-        var reload = new Reload(dungeonLoadingManager, messagesFile, menusFile, playerStats, messageCreator);
-        var give = new Give(dungeonKeyItems, itemGive,messageCreator);
+        var reload = new Reload(dungeonLoadingManager, dungeonTools, messagesFile, menusFile, playerStats, messageCreator);
+        var give = new Give(dungeonKeyItems, dungeonToolItems, itemGive,messageCreator);
         var destroyInstance = new DestroyInstance(dungeonRegistry, messageCreator);
         var stats = new Stats(playerStats, itemHandler, menusFile, dungeonTemplateRegistry, messageCreator);
 

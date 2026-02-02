@@ -1,6 +1,7 @@
 package me.Eggses.dungeons.commands.subcommands;
 
 import me.Eggses.dungeons.configuration.ConfigurationFile;
+import me.Eggses.dungeons.dungeon.files.DungeonTools;
 import me.Eggses.dungeons.dungeon.files.PlayerStats;
 import me.Eggses.dungeons.dungeon.lifecycle.DungeonLoadingManager;
 import me.Eggses.dungeons.utility.misc.Permission;
@@ -23,21 +24,25 @@ public class Reload implements SubCommand {
     private static final String MENUS = "menus";
     private static final String TEMPLATES = "dungeon_templates";
     private static final String PLAYER_STATS = "player_stats";
+    private static final String DUNGEON_TOOLS = "dungeon_tools";
 
-    private static final List<String> OPTIONS = List.of(ALL, MESSAGES, MENUS, TEMPLATES, PLAYER_STATS);
+    private static final List<String> OPTIONS = List.of(ALL, MESSAGES, MENUS, TEMPLATES, PLAYER_STATS, DUNGEON_TOOLS);
 
     private final DungeonLoadingManager dungeonLoadingManager;
+    private final DungeonTools dungeonTools;
     private final ConfigurationFile messagesFile;
     private final ConfigurationFile menusFile;
     private final PlayerStats playerStats;
     private final MessageCreator messageCreator;
 
     public Reload(DungeonLoadingManager dungeonLoadingManager,
+                  DungeonTools dungeonTools,
                   ConfigurationFile messagesFile,
                   ConfigurationFile menusFile, PlayerStats playerStats,
                   MessageCreator messageCreator) {
 
         this.dungeonLoadingManager = dungeonLoadingManager;
+        this.dungeonTools = dungeonTools;
         this.messagesFile = messagesFile;
         this.menusFile = menusFile;
         this.playerStats = playerStats;
@@ -74,6 +79,7 @@ public class Reload implements SubCommand {
                 menusFile.reloadCustomFile();
                 playerStats.flushSave();
                 playerStats.reload();
+                dungeonTools.reload();
                 placeholders.addPlaceholder(Placeholder.RELOAD_TARGET, ALL);
                 sender.sendMessage(messageCreator.createMessage(Messages.DUNGEONS_RELOAD_RELOADED, placeholders));
             }
@@ -96,6 +102,11 @@ public class Reload implements SubCommand {
                 playerStats.flushSave();
                 playerStats.reload();
                 placeholders.addPlaceholder(Placeholder.RELOAD_TARGET, PLAYER_STATS);
+                sender.sendMessage(messageCreator.createMessage(Messages.DUNGEONS_RELOAD_RELOADED, placeholders));
+            }
+            case DUNGEON_TOOLS -> {
+                dungeonTools.reload();
+                placeholders.addPlaceholder(Placeholder.RELOAD_TARGET, DUNGEON_TOOLS);
                 sender.sendMessage(messageCreator.createMessage(Messages.DUNGEONS_RELOAD_RELOADED, placeholders));
             }
             default -> {
