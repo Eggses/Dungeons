@@ -8,6 +8,7 @@ public enum Permission {
     RELOAD("dungeons.command.reload"),
     TRIGGER("dungeons.command.trigger"),
     GIVE("dungeons.command.give"),
+    GIVE_OTHERS("dungeons.command.give.others"),
     DESTROY("dungeons.command.destroy"),
     STATS("dungeons.command.stats"),
     ;

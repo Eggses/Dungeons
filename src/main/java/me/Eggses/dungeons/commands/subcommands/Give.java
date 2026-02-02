@@ -17,6 +17,7 @@ public class Give implements SubCommand {
 
     private static final String COMMAND_NAME = "give";
     private static final Permission PERMISSION = Permission.GIVE;
+    private static final Permission GIVE_OTHER = Permission.GIVE_OTHERS;
 
     private static final String KEY = "key";
     private static final String TOOL = "tool";
@@ -83,6 +84,10 @@ public class Give implements SubCommand {
             }
             case TOOL -> {
                 DungeonTool dungeonTool = DungeonTool.getType(args[2]);
+                if (dungeonTool == null) {
+                    sender.sendMessage(messageCreator.createMessage(Messages.DUNGEONS_GIVE_UNKNOWN_KEY, placeholders));
+                    return;
+                }
                 ItemStack item = dungeonTools.createItem(
                         dungeonTool,
                         placeholders,
@@ -105,7 +110,14 @@ public class Give implements SubCommand {
             placeholders.addPlaceholder(Placeholder.TARGET_PLAYER, sender.getName());
             itemGive.giveOrDrop(sender, itemToGive);
             sender.sendMessage(messageCreator.createMessage(Messages.DUNGEONS_GIVE_GIVEN, placeholders));
+
         } else if (args.length == 4) {
+
+            if (!GIVE_OTHER.has(sender)) {
+                sender.sendMessage(messageCreator.createMessage(Messages.ERROR_PERMISSION_FAIL, placeholders));
+                return;
+            }
+
             placeholders.addPlaceholder(Placeholder.TARGET_PLAYER, args[3]);
 
             Player recipient = Bukkit.getPlayer(args[3]);
@@ -146,7 +158,7 @@ public class Give implements SubCommand {
             }
         }
 
-        if (args.length == 4) {
+        if (args.length == 4 && GIVE_OTHER.has(sender)) {
             return Bukkit.getOnlinePlayers()
                     .stream()
                     .map(Player::getName)

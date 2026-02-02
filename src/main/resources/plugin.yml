@@ -34,6 +34,12 @@ permissions:
     description: Allows use of /dungeons give
     default: op
 
+  dungeons.command.give.others:
+    description: Allows use of /dungeons give [player]
+    default: op
+    children:
+      dungeons.command.give: true
+
   dungeons.command.destroy:
     description: Allows use of /dungeons destroy
     default: op
