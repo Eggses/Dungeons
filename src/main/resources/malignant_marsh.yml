@@ -370,15 +370,30 @@ dungeon_areas:
       - "MOB type=SKELETON pos=-1264,66,-24 level=32 count=2 preset=KNIGHT armour=IRON_WARD_IRON_4 weapon=IRON_SWORD"
       - "MOB type=BOGGED pos=-1254,66,-27 level=32 count=2 preset=KNIGHT armour=IRON_TIDE_IRON_4 weapon=IRON_SWORD"
     on_clear:
-      - "GRAVEYARD pos=-1238,66,-25 rotation=90"
-      - "WEATHER weather=thunderstorm"
-      - "TIME time=12am"
+      - "FILL pos1=-1295,64,16 pos2=-1297,67,16 block=AIR"
     interactions: []
     triggers: []
 
+  area_before_boss:
+    entry_bounds: "pos1=-1294,63,19 pos2=-1298,67,20"
+    on_entry:
+      - "MOB type=ZOMBIE pos=-1299,64,87 level=35 count=4 preset=KNIGHT armour=NETHERITE_SILENCE_IRON_4 weapon=NETHERITE_SWORD offhand=SHIELD"
+      - "MOB type=SKELETON pos=-1303,64,73 level=36 count=3 preset=KNIGHT armour=NETHERITE_WARD_COPPER_4 weapon=NETHERITE_SWORD offhand=SHIELD"
+      - "MOB type=BOGGED pos=-1288,64,78 level=37 count=5 preset=KNIGHT armour=NETHERITE_TIDE_REDSTONE_4 weapon=NETHERITE_SWORD offhand=SHIELD"
+      - "MOB type=ZOMBIE pos=-1291,64,61 level=38 count=3 preset=KNIGHT armour=NETHERITE_VEX_GOLD_4 weapon=NETHERITE_SWORD offhand=SHIELD"
+      - "MOB type=SKELETON pos=-1291,64,55 level=39 count=4 preset=KNIGHT armour=NETHERITE_SPIRE_DIAMOND_4 weapon=NETHERITE_SWORD offhand=SHIELD"
+      - "MOB type=BOGGED pos=-1302,64,45 level=40 count=3 preset=KNIGHT armour=NETHERITE_RIB_EMERALD_4 weapon=NETHERITE_SWORD offhand=SHIELD"
+      - "MOB type=ZOMBIE pos=-1297,63,30 level=37 count=5 preset=KNIGHT armour=NETHERITE_DUNE_LAPIS_4 weapon=NETHERITE_SWORD offhand=SHIELD"
+    on_clear:
+      - "FILL pos1=-1296,67,98 pos2=-1308,76,98 block=AIR"
+      - "WEATHER weather=thunderstorm"
+      - "GRAVEYARD pos=-1304,64,62 rotation=0"
+    interactions: [ ]
+    triggers: [ ]
+
 boss_area:
   boss_preset: "swamp_boss_rotbloom"
-  boss_room_entry_bounds: "pos1=-1246,64,74 pos2=-1246,66,77"
+  boss_room_entry_bounds: "pos1=-1301,69,105 pos2=-1302,71,105"
   boss_room_entry_position: "pos=-1194,67,99 rotation=-90"
   on_boss_defeat:
     - "FILL pos1=-1164,67,98 pos2=-1164,70,100 block=END_GATEWAY"
