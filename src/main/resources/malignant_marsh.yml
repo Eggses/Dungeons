@@ -22,7 +22,7 @@ dungeon_portal_room:
   keystone_name: "<gradient:#8b0000:#c91f1f:#ff3b3b:#b11212><bold>Keystone: %dungeon_name%"
 
 dungeon_portal:
-  entry_portal_region: "pos1=-536,64,-171 pos2=-536,66,-170"
+  entry_portal_region: "pos1=-387,74,-343 pos2=-386,76,-343"
   dungeon_spawn_position: "pos=-1420,63,56 rotation=0"
   exit_portal_region: "pos1=-1421,63,54 pos2=-1420,65,54"
   world_exit_position: "pos=-386,74,-341 rotation=0"
