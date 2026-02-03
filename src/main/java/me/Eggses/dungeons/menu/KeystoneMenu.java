@@ -83,7 +83,7 @@ public class KeystoneMenu extends Menu {
 
     protected void readyToOpenState() {
 
-        addItem(Items.OPEN_PORTAL, () -> {
+        addItem(Items.OPEN_PORTAL, placeholders, () -> {
 
             Player player = getPlayer();
 

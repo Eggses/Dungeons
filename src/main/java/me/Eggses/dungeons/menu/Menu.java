@@ -55,6 +55,10 @@ public abstract class Menu implements InventoryHolder {
         addItem(menuItem, action, messageCreator.placeholders(), null);
     }
 
+    protected void addItem(MenuItem menuItem, Placeholders placeholders, Runnable action) {
+        addItem(menuItem, action, placeholders, null);
+    }
+
     protected void addItem(MenuItem menuItem, Placeholders placeholders) {
         addItem(menuItem, null, placeholders, null);
     }

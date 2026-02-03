@@ -13,6 +13,7 @@ import me.Eggses.dungeons.eventhandler.EventManager;
 import org.bukkit.Location;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.*;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -73,6 +74,10 @@ public class InstanceEventHandler {
 
         eventManager.addEventBehaviour(EntityRemoveEvent.class, (event, eventContext)
                 -> areaController.handleEntityRemove(event.getEntity().getUniqueId())
+        );
+
+        eventManager.addEventBehaviour(PlayerInteractEntityEvent.class, (event, eventContext)
+                -> entityManager.passEventToMobIfExists(event.getRightClicked(), event, eventContext)
         );
 
         eventManager.addEventBehaviour(EntityDamageByEntityEvent.class, new EntityDamageEntity(entityManager));
