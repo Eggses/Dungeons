@@ -14,19 +14,18 @@ dungeon_key_item:
     - "<dark_red>1 Use Only</dark_red>"
     - "<bold><light_purple>Legendary Dungeon Key</light_purple></bold>"
 
-
 dungeon_portal_world: "world"
 
 dungeon_portal_room:
-  general_portal_room_region: "pos1=-542,62,-175 pos2=-533,69,-166"
-  keystone_position: "pos=-540,64,-169"
+  general_portal_room_region: "pos1=-394,71,-334 pos2=-380,81,-346"
+  keystone_position: "pos=-383,74,-340"
   keystone_name: "<gradient:#8b0000:#c91f1f:#ff3b3b:#b11212><bold>Keystone: %dungeon_name%"
 
 dungeon_portal:
   entry_portal_region: "pos1=-536,64,-171 pos2=-536,66,-170"
   dungeon_spawn_position: "pos=-1420,63,56 rotation=0"
   exit_portal_region: "pos1=-1421,63,54 pos2=-1420,65,54"
-  world_exit_position: "pos=-538,64,-170 rotation=90"
+  world_exit_position: "pos=-386,74,-341 rotation=0"
   open_duration_seconds: "60"
 
   on_open:

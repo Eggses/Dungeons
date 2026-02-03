@@ -62,7 +62,6 @@ public class EntityDamageEntity implements EventBehaviour<EntityDamageByEntityEv
 
         DungeonEntity dungeonVictim = entityManager.getDungeonEntity(victimUUID);
         if (dungeonVictim != null) {
-           //TODO remove dungeonVictim.takeDamage(event.getFinalDamage());
             EventContext innerEventContext = EventContext
                     .builder()
                     .ownerOfBehaviour(dungeonVictim)
