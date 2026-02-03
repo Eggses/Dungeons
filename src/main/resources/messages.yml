@@ -58,3 +58,9 @@ banned_items:
 # =========================================================
 dungeons_stats:
   usage: "%prefix_main%%prefix_error%<red>Usage: /dungeons stats [player]</red>"
+
+# =========================================================
+# Items
+# =========================================================
+items:
+  click_to_claim: "<gold>Click to claim!</gold> <red>(Cost: %cost%)</red>"

@@ -59,24 +59,32 @@ public abstract class Menu implements InventoryHolder {
         addItem(menuItem, null, placeholders, null);
     }
 
-    protected void addItem(MenuItem menuItem, Runnable action, Placeholders placeholders) {
-        addItem(menuItem, action, placeholders, null);
+    protected void addItem(ItemStack item, int position, Runnable action) {
+        inventory.setItem(position, item);
+        if (action != null) onClickActions.put(position, action);
     }
 
     protected void addItem(MenuItem menuItem, Runnable action, Placeholders placeholders, Consumer<ItemMeta> itemMetaConsumer) {
+        ItemStack itemStack = createItemStack(menuItem, placeholders, itemMetaConsumer);
 
-        String name = menuConfig.getString(menuItem.getNamePath());
-        String material = menuConfig.getString(menuItem.getMaterialPath());
-        List<String> lore = menuConfig.getStringList(menuItem.getLorePath());
         int slot = menuItem.getSlot();
-
-        ItemTemplate itemTemplate = new ItemTemplate(name, material, lore);
-
-        ItemStack itemStack = itemHandler.createItem(itemTemplate, placeholders, itemMetaConsumer);
-
         inventory.setItem(slot, itemStack);
 
         if (action != null) onClickActions.put(slot, action);
+    }
+
+    protected ItemStack createItemStack(MenuItem menuItem, Placeholders placeholders, Consumer<ItemMeta> itemMetaConsumer) {
+        String name = menuConfig.getString(menuItem.getNamePath());
+        String material = menuConfig.getString(menuItem.getMaterialPath());
+        List<String> lore = menuConfig.getStringList(menuItem.getLorePath());
+
+        ItemTemplate itemTemplate = new ItemTemplate(name, material, lore);
+
+        return itemHandler.createItem(itemTemplate, placeholders, itemMetaConsumer);
+    }
+
+    protected ItemStack getItemAt(int position) {
+        return inventory.getItem(position);
     }
 
     protected void fillPanelItems(MenuItem menuItem) {

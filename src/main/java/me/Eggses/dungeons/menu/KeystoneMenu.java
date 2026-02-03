@@ -12,7 +12,6 @@ import me.Eggses.dungeons.utility.text.Placeholder;
 import me.Eggses.dungeons.utility.text.Placeholders;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Optional;
@@ -94,13 +93,12 @@ public class KeystoneMenu extends Menu {
             boolean creating = dungeonFactory.attemptToCreateDungeon(dungeonType);
 
             if (creating) {
-                getInventory().setItem(POSITION_OF_KEY, null);
+                addItem(null, POSITION_OF_KEY, null);
             } else {
                 player.sendMessage(messageCreator.createMessage(Messages.KEYSTONE_DISABLED, placeholders));
             }
         });
     }
-
 
     public void insertDungeonKey(Player player, int slot, ItemStack item) {
 
@@ -108,15 +106,13 @@ public class KeystoneMenu extends Menu {
         if (maybeKey.isEmpty()) return;
         if (!maybeKey.get().equals(dungeonType.getUniqueKey())) return;
 
-        Inventory menuInventory = getInventory();
-
-        ItemStack existing = menuInventory.getItem(POSITION_OF_KEY);
+        ItemStack existing = getItemAt(POSITION_OF_KEY);
         if (existing != null && !existing.getType().isAir()) return;
 
         ItemStack key = item.clone();
         player.getInventory().setItem(slot, null);
 
-        menuInventory.setItem(POSITION_OF_KEY, key);
+        addItem(key, POSITION_OF_KEY, null);
 
         readyToOpenState();
     }

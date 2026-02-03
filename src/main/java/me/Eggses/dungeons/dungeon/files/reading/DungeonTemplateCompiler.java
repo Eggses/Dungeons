@@ -49,6 +49,7 @@ public class DungeonTemplateCompiler {
     private static final String COMMAND_SOUND = "SOUND";
     private static final String COMMAND_EVENT = "EVENT";
     private static final String COMMAND_PORTAL = "PORTAL";
+    private static final String COMMAND_SHOP = "SHOP";
 
     private static final String ARG_TYPE = "type";
     private static final String ARG_PRESET = "preset";
@@ -302,6 +303,10 @@ public class DungeonTemplateCompiler {
                     var action = resolvePortalCommand(command);
                     if (action != null) consumersToRun.add(action);
                 }
+                case COMMAND_SHOP -> {
+                    var action = resolveShopCommand(command);
+                    if (action != null) consumersToRun.add(action);
+                }
                 default -> plugin.getLogger().warning("Unknown Command Used: " + commandName + "!");
             }
         }
@@ -541,6 +546,17 @@ public class DungeonTemplateCompiler {
 
             List<EventDefinition<?>> copy = List.copyOf(eventDefinitions);
             copy.forEach(instance::addEventBehaviour);
+        };
+    }
+
+    private Consumer<DungeonContext> resolveShopCommand(String command) {
+        RotationPosition rotationPosition = readingUtility.stringToRotationPosition(command);
+        if (rotationPosition == null) return null;
+
+        return dungeonContext -> {
+            var shop = dungeonContext.getDungeonShopController();
+            if (shop == null) return;
+            shop.createShop(rotationPosition);
         };
     }
 

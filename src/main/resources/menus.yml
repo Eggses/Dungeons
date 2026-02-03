@@ -81,3 +81,22 @@ stats_menu:
       material: "GRAY_STAINED_GLASS_PANE"
       name: ""
       lore: []
+
+dungeon_shop_menu:
+  title: "<gold><bold>Dungeon Shop</bold><gold>"
+  items:
+    out_of_stock:
+      material: "YELLOW_STAINED_GLASS_PANE"
+      name: "<red>Out of Stock"
+      lore:
+        - ""
+        - "<gray>This item is no longer available</gray>"
+    close:
+      material: "BARRIER"
+      name: "<red><bold>Close</bold></red>"
+      lore:
+        - "<gray>Click to close this menu.</gray>"
+    panel:
+      material: "GRAY_STAINED_GLASS_PANE"
+      name: ""
+      lore: [ ]

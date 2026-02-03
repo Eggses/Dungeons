@@ -61,7 +61,7 @@ public class DungeonMob implements DungeonEntity {
                       TextFormatter textFormatter) {
 
         // Spawn Entity
-        Location location = mobBuilder.getPosition().toLocation(world);
+        Location location = mobBuilder.getRotationPosition().toLocation(world);
 
         Entity entitySpawned = world.spawnEntity(location, mobBuilder.getEntityType());
         if (!(entitySpawned instanceof LivingEntity livingEntity)) throw new IllegalArgumentException("Tried to Spawn a Non-Living Mob!");

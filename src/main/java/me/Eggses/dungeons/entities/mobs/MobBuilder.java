@@ -1,6 +1,7 @@
 package me.Eggses.dungeons.entities.mobs;
 
 import me.Eggses.dungeons.dungeon.regions.Position;
+import me.Eggses.dungeons.dungeon.regions.RotationPosition;
 import me.Eggses.dungeons.eventhandler.EventBehaviour;
 import me.Eggses.dungeons.entities.nameutility.MobName;
 import me.Eggses.dungeons.eventhandler.EventManager;
@@ -17,7 +18,7 @@ import java.util.function.Consumer;
 public class MobBuilder {
 
     private EntityType entityType;
-    private Position position;
+    private RotationPosition rotationPosition;
     private int dungeonLevel = 1;
     private WeaponEquipment weaponEquipment = new WeaponEquipment();
     private ArmourEquipment armourEquipment = new ArmourEquipment();
@@ -30,7 +31,12 @@ public class MobBuilder {
 
     public MobBuilder(EntityType entityType, Position position) {
         this.entityType = entityType;
-        this.position = position;
+        this.rotationPosition = new RotationPosition(position);
+    }
+
+    public MobBuilder(EntityType entityType, RotationPosition rotationPosition) {
+        this.entityType = entityType;
+        this.rotationPosition = rotationPosition;
     }
 
     // Builders
@@ -40,8 +46,8 @@ public class MobBuilder {
         return this;
     }
 
-    public MobBuilder position(Position position) {
-        this.position = position;
+    public MobBuilder rotationPosition(RotationPosition rotationPosition) {
+        this.rotationPosition = rotationPosition;
         return this;
     }
 
@@ -102,8 +108,8 @@ public class MobBuilder {
         return entityType;
     }
 
-    public Position getPosition() {
-        return position;
+    public RotationPosition getRotationPosition() {
+        return rotationPosition;
     }
 
     public int getDungeonLevel() {

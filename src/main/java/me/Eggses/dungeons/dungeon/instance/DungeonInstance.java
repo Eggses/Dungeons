@@ -1,10 +1,14 @@
 package me.Eggses.dungeons.dungeon.instance;
 
 import me.Eggses.dungeons.blocks.BlockRegistry;
+import me.Eggses.dungeons.configuration.ConfigurationFile;
 import me.Eggses.dungeons.dungeon.bosses.controller.BossArenaController;
 import me.Eggses.dungeons.dungeon.files.PlayerStats;
 import me.Eggses.dungeons.dungeon.graveyard.Graveyard;
+import me.Eggses.dungeons.dungeon.items.DungeonItems;
+import me.Eggses.dungeons.dungeon.items.management.DungeonTool;
 import me.Eggses.dungeons.dungeon.regions.Position;
+import me.Eggses.dungeons.dungeon.shop.DungeonShopController;
 import me.Eggses.dungeons.dungeon.types.DungeonType;
 import me.Eggses.dungeons.dungeon.files.templates.DungeonInstanceTemplate;
 import me.Eggses.dungeons.dungeon.areas.AreaController;
@@ -17,6 +21,8 @@ import me.Eggses.dungeons.dungeon.utility.DungeonContext;
 import me.Eggses.dungeons.dungeon.utility.DungeonGameRules;
 import me.Eggses.dungeons.eventhandler.EventBehaviour;
 import me.Eggses.dungeons.eventhandler.EventDefinition;
+import me.Eggses.dungeons.items.ItemGive;
+import me.Eggses.dungeons.items.ItemHandler;
 import me.Eggses.dungeons.tasks.TaskRunner;
 import me.Eggses.dungeons.utility.text.MessageCreator;
 import me.Eggses.dungeons.utility.text.TextFormatter;
@@ -54,7 +60,11 @@ public class DungeonInstance {
                            TaskRunner taskRunner,
                            BannedItems bannedItems,
                            DungeonType dungeonType,
-                           PlayerStats playerStats) {
+                           PlayerStats playerStats,
+                           DungeonItems<DungeonTool> dungeonsToolItems,
+                           ItemHandler itemHandler,
+                           ItemGive itemGive,
+                           ConfigurationFile guiFile) {
 
         this.plugin = plugin;
         this.dungeonLifecycleService = dungeonLifecycleService;
@@ -72,12 +82,22 @@ public class DungeonInstance {
 
         new DungeonGameRules(dungeonWorld).applyRules();
 
+        var shop = new DungeonShopController(
+                entityManager,
+                dungeonsToolItems,
+                itemHandler,
+                itemGive,
+                messageCreator,
+                guiFile
+        );
+
         var dungeonContext = DungeonContext.builder()
                 .dungeonInstance(this)
                 .world(dungeonWorld)
                 .entityManager(entityManager)
                 .graveyard(graveyard)
                 .players(dungeonWorld::getPlayers)
+                .dungeonShopController(shop)
                 .build();
 
         var bossTemplate = dungeonInstanceTemplate.getBossArenaTemplate();
@@ -95,7 +115,12 @@ public class DungeonInstance {
                 bossTemplate.bossBuilderSupplier(),
                 bossTemplate.onBossDefeat()
         );
-        this.instanceEventHandler = new InstanceEventHandler(this, areaController, entityManager, bossArenaController);
+        this.instanceEventHandler = new InstanceEventHandler(
+                this,
+                areaController,
+                entityManager,
+                bossArenaController
+        );
 
         dungeonInstanceTemplate.getOnDungeonStart().accept(dungeonContext);
 

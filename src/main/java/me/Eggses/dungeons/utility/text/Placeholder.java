@@ -20,7 +20,10 @@ public enum Placeholder {
     BANNED_ITEMS("%banned_items%"),
 
     BEST_TIME("%best_time%"),
-    COMPLETIONS("%completions%")
+    COMPLETIONS("%completions%"),
+
+    COST("%cost%"),
+
     ;
 
     private final String placeholder;

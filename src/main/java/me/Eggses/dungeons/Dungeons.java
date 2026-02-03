@@ -106,7 +106,11 @@ public final class Dungeons extends JavaPlugin {
                 messageCreator,
                 textFormatter,
                 dungeonLog,
-                bannedItems
+                bannedItems,
+                dungeonToolItems,
+                itemHandler,
+                itemGive,
+                menuFile
         );
 
         var dungeonLoadingManager = new DungeonLoadingManager(

@@ -1,6 +1,7 @@
 package me.Eggses.dungeons.dungeon.utility;
 
 import me.Eggses.dungeons.dungeon.instance.DungeonInstance;
+import me.Eggses.dungeons.dungeon.shop.DungeonShopController;
 import me.Eggses.dungeons.entities.mobs.EntityManager;
 import me.Eggses.dungeons.dungeon.graveyard.Graveyard;
 import org.bukkit.World;
@@ -19,6 +20,7 @@ public class DungeonContext {
     private final @Nullable EntityManager entityManager;
     private final @Nullable Graveyard graveyard;
     private final @Nullable Supplier<Collection<? extends Player>> players;
+    private final @Nullable DungeonShopController dungeonShopController;
 
     public DungeonContext(DungeonContextBuilder dungeonContextBuilder) {
         this.dungeonInstance = dungeonContextBuilder.dungeonInstance;
@@ -26,6 +28,7 @@ public class DungeonContext {
         this.entityManager = dungeonContextBuilder.entityManager;
         this.graveyard = dungeonContextBuilder.graveyard;
         this.players = dungeonContextBuilder.players;
+        this.dungeonShopController = dungeonContextBuilder.dungeonShopController;
     }
 
     public DungeonContext() {
@@ -34,6 +37,7 @@ public class DungeonContext {
         this.entityManager = null;
         this.graveyard = null;
         this.players = null;
+        this.dungeonShopController = null;
     }
 
     public @Nullable World getWorld() {
@@ -56,6 +60,10 @@ public class DungeonContext {
         return players;
     }
 
+    public @Nullable DungeonShopController getDungeonShopController() {
+        return dungeonShopController;
+    }
+
     public static DungeonContextBuilder builder() {
         return new DungeonContextBuilder();
     }
@@ -66,6 +74,7 @@ public class DungeonContext {
         private EntityManager entityManager;
         private Graveyard graveyard;
         private Supplier<Collection<? extends Player>> players;
+        private DungeonShopController dungeonShopController;
 
         public DungeonContextBuilder dungeonInstance(DungeonInstance dungeonInstance) {
             this.dungeonInstance = dungeonInstance;
@@ -89,6 +98,11 @@ public class DungeonContext {
 
         public DungeonContextBuilder players(Supplier<Collection<? extends Player>> players) {
             this.players = players;
+            return this;
+        }
+
+        public DungeonContextBuilder dungeonShopController(DungeonShopController dungeonShopController) {
+            this.dungeonShopController = dungeonShopController;
             return this;
         }
 

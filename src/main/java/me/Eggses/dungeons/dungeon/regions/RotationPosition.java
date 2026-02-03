@@ -13,10 +13,15 @@ public class RotationPosition {
         this.rotation = rotation;
     }
 
+    public RotationPosition(Position position) {
+        this.position = position;
+        this.rotation = 0.0f;
+    }
+
     public Location toLocation(World world) {
         Location location = position.toLocationCenterBlock(world);
         location.setYaw(rotation);
-        location.setPitch(0f);
+        location.setPitch(0.0f);
         return location;
     }
 

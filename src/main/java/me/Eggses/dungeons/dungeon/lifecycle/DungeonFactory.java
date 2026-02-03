@@ -1,13 +1,18 @@
 package me.Eggses.dungeons.dungeon.lifecycle;
 
 import me.Eggses.dungeons.blocks.BlockRegistry;
+import me.Eggses.dungeons.configuration.ConfigurationFile;
 import me.Eggses.dungeons.dungeon.files.PlayerStats;
+import me.Eggses.dungeons.dungeon.items.DungeonItems;
+import me.Eggses.dungeons.dungeon.items.management.DungeonTool;
 import me.Eggses.dungeons.dungeon.types.DungeonType;
 import me.Eggses.dungeons.dungeon.files.templates.DungeonInstanceTemplate;
 import me.Eggses.dungeons.dungeon.files.DungeonLog;
 import me.Eggses.dungeons.dungeon.instance.DungeonInstance;
 import me.Eggses.dungeons.dungeon.utility.BannedItems;
 import me.Eggses.dungeons.dungeon.utility.InstanceNameManager;
+import me.Eggses.dungeons.items.ItemGive;
+import me.Eggses.dungeons.items.ItemHandler;
 import me.Eggses.dungeons.tasks.TaskRunner;
 import me.Eggses.dungeons.utility.text.MessageCreator;
 import me.Eggses.dungeons.utility.text.TextFormatter;
@@ -35,6 +40,10 @@ public class DungeonFactory {
     private final TextFormatter textFormatter;
     private final DungeonLog dungeonLog;
     private final BannedItems bannedItems;
+    private final DungeonItems<DungeonTool> dungeonsToolItems;
+    private final ItemHandler itemHandler;
+    private final ItemGive itemGive;
+    private final ConfigurationFile guiFile;
 
     public DungeonFactory(JavaPlugin plugin,
                           DungeonRegistry dungeonRegistry,
@@ -49,7 +58,11 @@ public class DungeonFactory {
                           MessageCreator messageCreator,
                           TextFormatter textFormatter,
                           DungeonLog dungeonLog,
-                          BannedItems bannedItems) {
+                          BannedItems bannedItems,
+                          DungeonItems<DungeonTool> dungeonsToolItems,
+                          ItemHandler itemHandler,
+                          ItemGive itemGive,
+                          ConfigurationFile guiFile) {
 
         this.plugin = plugin;
         this.dungeonRegistry = dungeonRegistry;
@@ -65,6 +78,10 @@ public class DungeonFactory {
         this.textFormatter = textFormatter;
         this.dungeonLog = dungeonLog;
         this.bannedItems = bannedItems;
+        this.dungeonsToolItems = dungeonsToolItems;
+        this.itemHandler = itemHandler;
+        this.itemGive = itemGive;
+        this.guiFile = guiFile;
     }
 
     private void createDungeonInstance(World world,
@@ -84,7 +101,11 @@ public class DungeonFactory {
                 taskRunner,
                 bannedItems,
                 dungeonType,
-                playerStats
+                playerStats,
+                dungeonsToolItems,
+                itemHandler,
+                itemGive,
+                guiFile
         );
         dungeonRegistry.addDungeonInstance(dungeonInstance);
     }

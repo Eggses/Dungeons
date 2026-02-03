@@ -39,7 +39,10 @@ public enum Messages {
     // Stats
     DUNGEONS_STATS_USAGE("dungeons_stats.usage"),
 
+    //Items
+    CLICK_TO_CLAIM("items.click_to_claim"),
     ;
+
     private final String path;
 
     Messages(String path) {
