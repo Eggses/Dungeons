@@ -383,4 +383,4 @@ boss_area:
   on_boss_defeat:
     - "FILL pos1=-1164,67,98 pos2=-1164,70,100 block=END_GATEWAY"
     - "PORTAL pos1=-1164,67,98 pos2=-1164,70,100"
-    - "FILL pos1=-1165,67,98 pos2=-1165,67,100 block=AIR"
+    - "FILL pos1=-1165,67,98 pos2=-1165,70,100 block=AIR"
