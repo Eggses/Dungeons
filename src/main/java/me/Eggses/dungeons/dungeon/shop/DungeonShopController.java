@@ -10,20 +10,20 @@ import me.Eggses.dungeons.entities.nameutility.MobName;
 import me.Eggses.dungeons.items.ItemGive;
 import me.Eggses.dungeons.items.ItemHandler;
 import me.Eggses.dungeons.menu.DungeonShopMenu;
-import me.Eggses.dungeons.menu.Menu;
 import me.Eggses.dungeons.utility.text.MessageCreator;
 import me.Eggses.dungeons.utility.text.Placeholder;
 import me.Eggses.dungeons.utility.text.Placeholders;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
 
 import java.util.*;
 
 public class DungeonShopController {
 
     private final Map<UUID, EnumSet<DungeonTool>> availableTools = new HashMap<>();
+    private final Set<UUID> shopkeepers = new HashSet<>();
 
     private final EntityManager entityManager;
     private final DungeonItems<DungeonTool> dungeonsToolItems;
@@ -59,6 +59,25 @@ public class DungeonShopController {
         available.remove(dungeonTool);
     }
 
+    public void handleInteract(Player player, Entity entity) {
+
+        if (!shopkeepers.contains(entity.getUniqueId())) return;
+
+        Placeholders placeholders = messageCreator.placeholders();
+        placeholders.addPlaceholder(Placeholder.PLAYER, player.getName());
+
+        new DungeonShopMenu(
+                player,
+                dungeonsToolItems,
+                this,
+                itemHandler,
+                itemGive,
+                messageCreator,
+                placeholders,
+                menuFile.getCustomFile()
+        ).open();
+    }
+
     public void createShop(RotationPosition spawningLocation) {
 
         MobBuilder shopBuilder = new MobBuilder(EntityType.VILLAGER, spawningLocation)
@@ -71,25 +90,11 @@ public class DungeonShopController {
                     ac.setBaseAttribute(Attribute.MOVEMENT_SPEED, 0);
                     ac.setBaseAttribute(Attribute.MOVEMENT_EFFICIENCY, 0);
 
-                    dungeonEntity.getEntity().setInvulnerable(true);
-                })
-                .eventBehaviour(PlayerInteractEntityEvent.class, (event, eventContext) -> {
-
-                    Player player = event.getPlayer();
-                    Placeholders placeholders = messageCreator.placeholders();
-                    placeholders.addPlaceholder(Placeholder.PLAYER, player.getName());
-                    Menu shopMenu = new DungeonShopMenu(
-                            event.getPlayer(),
-                            dungeonsToolItems,
-                            this,
-                            itemHandler,
-                            itemGive,
-                            messageCreator,
-                            placeholders,
-                            menuFile.getCustomFile()
-                    );
-                    shopMenu.open();
+                    Entity entity = dungeonEntity.getEntity();
+                    entity.setInvulnerable(true);
+                    shopkeepers.add(entity.getUniqueId());
                 });
+
         entityManager.spawnMobWithoutAdding(shopBuilder);
     }
 }

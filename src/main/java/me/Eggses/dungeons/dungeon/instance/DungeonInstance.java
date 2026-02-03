@@ -82,7 +82,7 @@ public class DungeonInstance {
 
         new DungeonGameRules(dungeonWorld).applyRules();
 
-        var shop = new DungeonShopController(
+        var dungeonShopController = new DungeonShopController(
                 entityManager,
                 dungeonsToolItems,
                 itemHandler,
@@ -97,7 +97,7 @@ public class DungeonInstance {
                 .entityManager(entityManager)
                 .graveyard(graveyard)
                 .players(dungeonWorld::getPlayers)
-                .dungeonShopController(shop)
+                .dungeonShopController(dungeonShopController)
                 .build();
 
         var bossTemplate = dungeonInstanceTemplate.getBossArenaTemplate();
@@ -115,11 +115,13 @@ public class DungeonInstance {
                 bossTemplate.bossBuilderSupplier(),
                 bossTemplate.onBossDefeat()
         );
+
         this.instanceEventHandler = new InstanceEventHandler(
                 this,
                 areaController,
                 entityManager,
-                bossArenaController
+                bossArenaController,
+                dungeonShopController
         );
 
         dungeonInstanceTemplate.getOnDungeonStart().accept(dungeonContext);

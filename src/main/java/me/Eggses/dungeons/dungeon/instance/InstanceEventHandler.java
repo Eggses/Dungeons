@@ -3,6 +3,7 @@ package me.Eggses.dungeons.dungeon.instance;
 import me.Eggses.dungeons.dungeon.areas.AreaController;
 import me.Eggses.dungeons.dungeon.bosses.Boss;
 import me.Eggses.dungeons.dungeon.bosses.controller.BossArenaController;
+import me.Eggses.dungeons.dungeon.shop.DungeonShopController;
 import me.Eggses.dungeons.entities.mobs.DungeonEntity;
 import me.Eggses.dungeons.entities.mobs.EntityManager;
 import me.Eggses.dungeons.dungeon.events.core.EntityDamageEntity;
@@ -26,16 +27,19 @@ public class InstanceEventHandler {
     private final AreaController areaController;
     private final EntityManager entityManager;
     private final BossArenaController bossArenaController;
+    private final DungeonShopController dungeonShopController;
 
     public InstanceEventHandler(DungeonInstance dungeonInstance,
                                 AreaController areaController,
                                 EntityManager entityManager,
-                                BossArenaController bossArenaController) {
+                                BossArenaController bossArenaController,
+                                DungeonShopController dungeonShopController) {
 
         this.dungeonInstance = dungeonInstance;
         this.areaController = areaController;
         this.entityManager = entityManager;
         this.bossArenaController = bossArenaController;
+        this.dungeonShopController = dungeonShopController;
 
         registerEvents();
     }
@@ -77,7 +81,7 @@ public class InstanceEventHandler {
         );
 
         eventManager.addEventBehaviour(PlayerInteractEntityEvent.class, (event, eventContext)
-                -> entityManager.passEventToMobIfExists(event.getRightClicked(), event, eventContext)
+                -> dungeonShopController.handleInteract(event.getPlayer(), event.getRightClicked())
         );
 
         eventManager.addEventBehaviour(EntityDamageByEntityEvent.class, new EntityDamageEntity(entityManager));
