@@ -83,7 +83,7 @@ stats_menu:
       lore: []
 
 dungeon_shop_menu:
-  title: "<gold><bold>Dungeon Shop</bold><gold>"
+  title: "<dark_green><bold>Dungeon Shop</bold><dark_green>"
   items:
     out_of_stock:
       material: "YELLOW_STAINED_GLASS_PANE"
