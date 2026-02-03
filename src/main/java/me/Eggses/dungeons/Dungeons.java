@@ -189,6 +189,7 @@ public final class Dungeons extends JavaPlugin {
         pluginManager.registerEvents(new DeathController(dungeonRegistry, dungeonEventRouter), this);
         pluginManager.registerEvents(new Inventory(itemRegistry, itemKey), this);
         pluginManager.registerEvents(new PlayerDungeonWorld(dungeonRegistry, dungeonEventRouter), this);
+        pluginManager.registerEvents(new PlayerEntityInteract(dungeonEventRouter), this);
         pluginManager.registerEvents(new PlayerBlockInteract(blockRegistry), this);
         pluginManager.registerEvents(new PlayerItemInteract(itemRegistry, itemKey), this);
         pluginManager.registerEvents(new PlayerMovement(dungeonEventRouter, blockRegistry), this);

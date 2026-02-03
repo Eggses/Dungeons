@@ -37,7 +37,6 @@ public class DungeonTools {
             String material = itemSection.getString("material");
             List<String> lore = itemSection.getStringList("lore");
 
-            System.out.println(material == null || name == null);
             if (material == null || name == null) continue;
 
             dungeonTools.addItem(dungeonTool, new ItemTemplate(name, material, lore));
