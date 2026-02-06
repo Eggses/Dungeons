@@ -2,6 +2,7 @@ package me.Eggses.dungeons.particles;
 
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.jetbrains.annotations.NotNull;
 
 public class OrbitParticleEffect {
 
@@ -42,7 +43,7 @@ public class OrbitParticleEffect {
         this.yStep = maxY / (totalPoints - 1); // Y is treated like the other stepping.
     }
 
-    public void spawnParticle(Location center) {
+    public void spawnParticle(@NotNull Location center) {
 
         double radians = startRad + stepRad * index;
 
