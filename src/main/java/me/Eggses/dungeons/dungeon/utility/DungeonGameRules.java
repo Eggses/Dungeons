@@ -32,7 +32,7 @@ public class DungeonGameRules {
         dungeonWorld.setGameRule(GameRules.ADVANCE_WEATHER, false);
         dungeonWorld.setGameRule(GameRules.FIRE_SPREAD_RADIUS_AROUND_PLAYER, 0);
         dungeonWorld.setGameRule(GameRules.SPAWN_MOBS, false);
-        dungeonWorld.setGameRule(GameRules.MOB_DROPS, false);
+        dungeonWorld.setGameRule(GameRules.MOB_DROPS, true);
         dungeonWorld.setGameRule(GameRules.SPAWN_PATROLS, false);
         dungeonWorld.setGameRule(GameRules.SPAWN_WANDERING_TRADERS, false);
         dungeonWorld.setGameRule(GameRules.MOB_GRIEFING, false);
