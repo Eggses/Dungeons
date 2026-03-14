@@ -2,7 +2,7 @@
 
 > **Note:** This plugin was built for a specific private server and is not currently available as a public release.
 
-A Minecraft plugin that brings instanced dungeon experiences to your server. Each dungeon run clones a template world, loads it with a unique name, and cleans itself up automatically when the run ends.
+A Minecraft plugin that brings instanced dungeon experiences. Each dungeon run clones a template world, loads it with a unique name, and cleans itself up automatically when the run ends.
 
 ## Features
 
