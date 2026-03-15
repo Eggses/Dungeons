@@ -27,12 +27,14 @@ All commands are under `/dungeons`. Most subcommands require operator permission
 
 | Command | Permission | Description |
 |---|---|---|
-| `/dungeons` | everyone | Base command |
-| `/dungeons reload <all\|messages\|menus\|dungeon_templates>` | op | Reload config files without restarting the server |
-| `/dungeons give <type> <key> [player]` | op | Give a dungeon item to yourself or another player |
-| `/dungeons destroy <all\|instance>` | op | Force-destroy one or all active dungeon instances |
-| `/dungeons trigger` | op | Manually fire a dungeon trigger |
-| `/dungeons stats [player]` | op | View dungeon stats for yourself or another player |
+| `/dungeons` | `dungeons.command.base` | Base command |
+| `/dungeons reload <all\|messages\|menus\|dungeon_templates>` | `dungeons.command.reload` | Reload config files without restarting the server |
+| `/dungeons give <type> <key>` | `dungeons.command.give` | Give a dungeon item to yourself |
+| `/dungeons give <type> <key> [player]` | `dungeons.command.give.others` | Give a dungeon item to another player |
+| `/dungeons destroy <all\|instance>` | `dungeons.command.destroy` | Force-destroy one or all active dungeon instances |
+| `/dungeons trigger` | `dungeons.command.trigger` | Manually fire a dungeon trigger |
+| `/dungeons stats` | `dungeons.command.stats` | View your own dungeon stats |
+| `/dungeons stats [player]` | `dungeons.command.stats` | View dungeon stats for another player |
 
 ## Configuration
 
